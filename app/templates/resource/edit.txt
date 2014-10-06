@@ -1,5 +1,8 @@
 @section('content')
 <div class="row">
+	<a href="{{ URL::previous() }}">&lsaquo; Back</a>
+</div>
+<div class="row">
     <h2>Edit [model]</h2>
 </div>
 <div class="row">
@@ -7,7 +10,7 @@
 
     [repeat]
     <div class="form-group">
-        {{ Form::label('[property]', '[Property]') }}
+        {{ Form::label('[property]', '[formatted_property]') }}
         {{ Form::text('[property]', null, array('class' => 'form-control')) }}
     </div>
     [/repeat]

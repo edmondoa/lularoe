@@ -39,7 +39,7 @@ return array(
 	|
 	*/
 
-    'appName' => 'Your project',
+    'appName' => 'SociallyMobile',
 
     /*
 	|--------------------------------------------------------------------------

@@ -49,7 +49,7 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'mlm',
+			'database'  => 'sociallymobile',
 			'username'  => 'mlm_user',
 			'password'  => '12345678',
 			'charset'   => 'utf8',

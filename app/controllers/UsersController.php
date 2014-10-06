@@ -22,7 +22,7 @@ class UsersController extends \BaseController
 
 	public function store()
 	{
-        $this->users->store(\Input::only('first','last','email','password'));
+        $this->users->store(\Input::only('first_name','last_name','email','password','key','code','phone','role_id','sponsor_id','mobile_plan_id','min_commission'));
         return \Redirect::route('users.index');
 	}
 
@@ -40,7 +40,7 @@ class UsersController extends \BaseController
 
 	public function update($id)
 	{
-        $this->users->find($id)->update(\Input::only('first','last','email','password'));
+        $this->users->find($id)->update(\Input::only('first_name','last_name','email','password','key','code','phone','role_id','sponsor_id','mobile_plan_id','min_commission'));
         return \Redirect::route('users.show', $id);
 	}
 

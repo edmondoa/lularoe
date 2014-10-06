@@ -3,17 +3,15 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateUsersTable extends Migration 
+class CreateUserRanksTable extends Migration 
 {
 
 	public function up()
 	{
-		Schema::create('users', function(Blueprint $table) {
+		Schema::create('user_ranks', function(Blueprint $table) {
 			$table->increments('id');
-			$table->string('first');
-			$table->string('last');
-			$table->string('email');
-			$table->string('password');
+			$table->integer('user_id');
+			$table->integer('rank_id');
 			$table->timestamp('created_at');
 			$table->timestamp('updated_at');
 		});
@@ -21,7 +19,7 @@ class CreateUsersTable extends Migration
 
 	public function down()
 	{
-		Schema::dropIfExists('users');
+		Schema::dropIfExists('user_ranks');
 	}
 
 }

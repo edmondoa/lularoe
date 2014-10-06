@@ -1,5 +1,8 @@
 @section('content')
 <div class="row">
+	<a href="{{ URL::previous() }}">&lsaquo; Back</a>
+</div>
+<div class="row">
     <h1>Viewing [model]</h1>
     <a class="btn btn-primary" href="{{ url('[model]/'.$[model]->id .'/edit') }}">Edit</a>
     {{ Form::open(array('url' => '[model]/' . $[model]->id, 'method' => 'DELETE')) }}
@@ -10,7 +13,7 @@
     <table class="table">
         [repeat]
         <tr>
-            <td>[Property]:</td>
+            <th>[formatted_property]:</th>
             <td>{{ $[model]->[property] }}</td>
         </tr>
         [/repeat]
