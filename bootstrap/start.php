@@ -24,11 +24,27 @@ $app = new Illuminate\Foundation\Application;
 |
 */
 
-$env = $app->detectEnvironment(array(
-
-	'local' => array('homestead'),
-
-));
+$env = $app->detectEnvironment(function(){
+	//if the LARAVEL_ENV can be found, return it
+	$haystack = getenv('LARAVEL_ENV');
+	if(!empty($haystack))
+	{
+		return $haystack;
+	}
+	//if not look in the hostname and map it to an environment
+	$environments = [
+		//'hostname'=>'environment', 
+		'Jake-PC'=>'jake_local', 
+	];
+	$default = 'local';
+	$hostname = gethostname();
+	if((!empty($hostname))&&(isset($environments[$hostname])))
+	{
+		return $environments[$hostname];
+	}
+	//if that cannot be found return local
+	return 'production';
+});
 
 /*
 |--------------------------------------------------------------------------
