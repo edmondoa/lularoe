@@ -88,3 +88,5 @@ Route::resource('sessions','SessionController',['only' => ['create','destroy','s
 Route::get('test', function(){
 	return App::environment();
 });
+Route::resource('productCategory', 'ProductCategoryController');
+

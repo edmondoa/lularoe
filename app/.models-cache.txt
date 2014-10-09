@@ -1,2 +1,2 @@
 resource = false
-Role string( name ) boolean( disabled )
+Product_category string( name ) boolean( disabled )
