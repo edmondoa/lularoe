@@ -52,26 +52,25 @@
  		@if (Auth::check())
  		<div class="col-xs-6 col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
 			<div class="list-group">
-				<a href="{{ url('addresses') }}" class="list-group-item">Addresses</a>
-				<a href="{{ url('bonuses') }}" class="list-group-item">Bonuses</a>
-				<a href="{{ url('cart') }}" class="list-group-item">Cart</a>
-				<a href="{{ url('commissions') }}" class="list-group-item">Commissions</a>
-				<a href="{{ url('emailMessages') }}" class="list-group-item">EmailMessages</a>
-				<a href="{{ url('images') }}" class="list-group-item">Images</a>
-				<a href="{{ url('levels') }}" class="list-group-item">Levels</a>
-				<a href="{{ url('mobilePlans') }}" class="list-group-item">MobilePlans</a>
-				<a href="{{ url('pages') }}" class="list-group-item">Pages</a>
+				<!-- <a href="{{ url('addresses') }}" class="list-group-item">Addresses</a> -->
+				<!-- <a href="{{ url('bonuses') }}" class="list-group-item">Bonuses</a> -->
+				<!-- <a href="{{ url('cart') }}" class="list-group-item">Cart</a> -->
+				<!-- <a href="{{ url('commissions') }}" class="list-group-item">Commissions</a> -->
+				<!-- <a href="{{ url('emailMessages') }}" class="list-group-item">EmailMessages</a> -->
+				<!-- <a href="{{ url('images') }}" class="list-group-item">Images</a> -->
+				<!-- <a href="{{ url('levels') }}" class="list-group-item">Levels</a> -->
+				<!-- <a href="{{ url('pages') }}" class="list-group-item">Pages</a> -->
 				<a href="{{ url('payments') }}" class="list-group-item">Payments</a>
 				<a href="{{ url('products') }}" class="list-group-item">Products</a>
-				<a href="{{ url('profiles') }}" class="list-group-item">Profiles</a>
-				<a href="{{ url('ranks') }}" class="list-group-item">Ranks</a>
-				<a href="{{ url('reviews') }}" class="list-group-item">Reviews</a>
-				<a href="{{ url('roles') }}" class="list-group-item">Roles</a>
-				<a href="{{ url('sales') }}" class="list-group-item">Sales</a>
+				<!-- <a href="{{ url('profiles') }}" class="list-group-item">Profiles</a> -->
+				<!-- <a href="{{ url('ranks') }}" class="list-group-item">Ranks</a> -->
+				<!-- <a href="{{ url('reviews') }}" class="list-group-item">Reviews</a> -->
+				<!-- <a href="{{ url('roles') }}" class="list-group-item">Roles</a> -->
+				<!-- <a href="{{ url('sales') }}" class="list-group-item">Sales</a> -->
 				<a href="{{ url('users') }}" class="list-group-item">Users</a>
-				<a href="{{ url('userProducts') }}" class="list-group-item">UserProducts</a>
-				<a href="{{ url('userRanks') }}" class="list-group-item">UserRanks</a>
-				<a href="{{ url('smsMessages') }}" class="list-group-item">SmsMessages</a>
+				<!-- <a href="{{ url('userProducts') }}" class="list-group-item">UserProducts</a> -->
+				<!-- <a href="{{ url('userRanks') }}" class="list-group-item">UserRanks</a> -->
+				<!-- <a href="{{ url('smsMessages') }}" class="list-group-item">SmsMessages</a> -->
  			</div>
 		</div><!--/span-->
 	 	@endif

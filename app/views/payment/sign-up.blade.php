@@ -7,7 +7,7 @@
 	
 	    <div class="form-group">
 	        {{ Form::label('sponsor_id', 'Sponsor ID (required)') }}
-	        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control')) }}
+	        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control', 'value' => $sponsor->id)) }}
 	    </div>
 	    
 	    <div class="form-group">
