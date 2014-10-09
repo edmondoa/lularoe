@@ -46,8 +46,58 @@ class [controller] extends \BaseController
 
 	public function destroy($id)
 	{
-        $this->[model]->destroy($id);
-        return \Redirect::route('[model].index');
+		if ($id == 0) {
+			foreach (Input::only('ids') as $id) {
+				$this->[model]->destroy($id);
+			}
+			return \Redirect::route('[model].index');
+		}
+		else {
+	        $this->[model]->destroy($id);
+	        return \Redirect::route('[model].index');
+		}
 	}
-
+	
+	public function delete($id)
+	{
+		if ($id == 0) {
+			foreach (Input::only('ids') as $id) {
+				$this->[model]->destroy($id);
+			}
+			return \Redirect::route('[model].index')->with('message', '[Models] deleted.');;
+		}
+		else {
+	        $this->[model]->destroy($id);
+	        return \Redirect::route('[model].index')->with('message', '[Model] deleted.');;
+		}
+	}
+	
+	public function disable($id)
+	{
+		if ($id == 0) {
+			foreach (Input::only('ids') as $id) {
+				$this->[model]->where('id', $id)->update(array('disabled' => 1));
+			}
+			return \Redirect::route('[model].index')->with('message', '[Models] disabled.');
+		}
+		else {
+	        $this->[model]->where('id', $id)->update(array('disabled' => 1));
+	        return \Redirect::route('[model].index')->with('message', '[Model] disabled.');;
+		}
+	}
+	
+	public function enable($id)
+	{
+		if ($id == 0) {
+			foreach (Input::only('ids') as $id) {
+				$this->[model]->where('id', $id)->update(array('disabled' => NULL));
+			}
+			return \Redirect::route('[model].index')->with('message', '[Models] enabled.');;
+		}
+		else {
+	        $this->[model]->where('id', $id)->update(array('disabled' => NULL));
+	        return \Redirect::route('[model].index')->with('message', '[Model] enabled.');;
+		}
+	}
+	
 }

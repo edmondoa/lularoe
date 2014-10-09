@@ -86,4 +86,6 @@ require $framework.'/Illuminate/Foundation/start.php';
 |
 */
 
+include('helpers.php');
+include('events.php');
 return $app;

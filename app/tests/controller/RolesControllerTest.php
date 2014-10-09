@@ -4,25 +4,25 @@ class RolesControllerTest extends \TestCase
 {
 	public function testIndex()
 	{
-		$this->call('GET', 'roles');
+		$this->call('GET', 'role');
         $this->assertResponseOk();
     }
 
     public function testShow()
     {
-        $this->call('GET', 'roles/1');
+        $this->call('GET', 'role/1');
         $this->assertResponseOk();
     }
 
     public function testCreate()
     {
-        $this->call('GET', 'roles/create');
+        $this->call('GET', 'role/create');
         $this->assertResponseOk();
     }
 
     public function testEdit()
     {
-        $this->call('GET', 'roles/1/edit');
+        $this->call('GET', 'role/1/edit');
         $this->assertResponseOk();
     }
 }
