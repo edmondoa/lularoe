@@ -47,7 +47,8 @@ class DatabaseSeeder extends Seeder {
 		$this->call('EmailRecipientsTableSeeder');
 		$this->call('SmsRecipientsTableSeeder');
 		$this->call('PaymentsTableSeeder');
-		$this->call('UserTestsTableSeeder');
+		//$this->call('UsersTableSeederTest');
+
 	}
 
 }
