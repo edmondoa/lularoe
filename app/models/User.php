@@ -8,13 +8,14 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public $timestamps = false;
+	//public $eighteenyearsago = date('Y-m-d',strtotime('18 years ago'));
 	public static $rules = [
 		'email' => 'required|unique:users,email',
 		'first_name' => 'required|alpha',
 		'last_name' => 'required|alpha',
 		'phone' => 'required|numeric|digits:10',
 		'gender' => 'required|in:M,F',
-		'dob' => 'required|date',
+		'dob' => 'required',
 	];
 
 	// Don't forget to fill this array

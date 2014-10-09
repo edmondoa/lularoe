@@ -3,13 +3,12 @@
 <div class="row">
 	<div class="col col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
 		<h2>Sign Up</h2>
-	    {{ Form::open(array('url' => 'user', 'class' => 'full')) }}
-	
-	    <div class="form-group">
-	        {{ Form::label('sponsor_id', 'Sponsor ID (required)') }}
-	        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control')) }}
-	    </div>
-	    
+	    {{ Form::open(array('action' => 'PreRegisterController@store', 'class' => 'full')) }}
+        {{ Form::hidden('sponsor_id', $user->id) }}
+		<!--<div class="form-group">
+	            *{{ Form::label('sponsor_id', 'Sponsor ID (required)') }}
+	            *{{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control')) }}
+	        </div>-->	    
 	    <div class="form-group">
 	        {{ Form::label('first_name', 'First Name') }}
 	        {{ Form::text('first_name', Input::old('first_name'), array('class' => 'form-control')) }}
@@ -77,7 +76,53 @@
 	        {{ Form::label('zip', 'Zip') }}
 	        {{ Form::text('zip', Input::old('zip'), array('class' => 'form-control')) }}
 	    </div>
-	    
+	<div class="form-group">
+		{{ Form::label('name_on_card','* Name on Card') }}
+		{{ Form::text('name_on_card',null, array('class' => 'form-control')) }}
+	</div>
+	
+	<div class="form-group">
+		{{ Form::label('card_number','* Card Number') }}
+		{{ Form::text('card_number',null, array('class' => 'form-control')) }}
+	</div>
+
+	<div class="form-group">
+		{{ Form::label('expires_year','* Expires') }}
+		<select name="expires_month" class="selectpicker">
+			<?php
+				for ($y = 1; $y <= 12; $y ++) {
+					if ($y < 10) $y = "0" . $y;
+					echo "<option>$y</option>";
+				}
+			?>
+		</select>
+		<select name="expires_year" class="selectpicker">
+			<?php
+				$y = date('Y');
+				$x = $y + 10;
+				for ($y = date('Y'); $y <= $x; $y ++) {
+					echo "<option>$y</option>";
+				}
+			?>
+		</select>
+	</div>
+
+	<div class="form-group">
+		{{ Form::label('expires_year','* Security Code') }}
+		{{ Form::text('security', null, array('style' => 'width:22px')) }}
+	</div>
+
+	<div class="form-group">
+		{{ Form::label('refund_policy','* Refund Policy') }}
+		{{ Form::checkbox('refund_policy') }}
+	</div>
+	
+	<div class="form-group">
+		<label for="refund_policy" style="font-size:10pt; !important; max-width:250px; display:inline-block; vertical-align:top;">
+			I agree to the terms and conditions.
+		</label>
+	</div>
+   
 	    {{ Form::submit('Sign Up', array('class' => 'btn btn-success')) }}
 	
 	    {{ Form::close() }}

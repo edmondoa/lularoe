@@ -76,8 +76,8 @@ Route::resource('smsRecipient', 'SmsRecipientController');
 Route::resource('smsRecipients', 'SmsRecipientController');
 Route::resource('payment', 'PaymentController');
 Route::resource('payments', 'PaymentController');
-Route::get('sign-up', 'PreRegistersController@create');
-Route::resource('pre-register', 'PreRegistersController',['only' => ['create','store']]);
+Route::get('pre-register/{code}', 'PreRegisterController@create');
+Route::resource('pre-register', 'PreRegisterController',['only' => ['create','store']]);
 
 //Sessions controller
 Route::get('login',array('as' => 'login','uses' => 'SessionController@create'));
