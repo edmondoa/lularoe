@@ -34,7 +34,7 @@ class UserController extends \BaseController
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
 		$rules['password'] = 'required|confirmed|digits_between:8,12';
 		$rules['sponsor_id'] = 'required|digits';
-		$check_sponsor_id = User::where('id', $data['sponsor_id']);
+		$check_sponsor_id = User::where('public_id', $data['sponsor_id']);
 		if ($check_sponsor_id == UNDEFINED) {
 			echo 'Invalid sponsor id';
 			exit;

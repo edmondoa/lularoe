@@ -35,7 +35,8 @@ class PaymentController extends \BaseController {
 	 */
 	public function signUp()
 	{
-		return View::make('payment.sign-up', compact('event','data'));
+		if (isset($_GET['sponsor'])) $sponsor = User::where('id', $_GET['sponsor']);
+		return View::make('payment.sign-up', compact('event','data', 'sponsor'));
 	}
 
 	/**

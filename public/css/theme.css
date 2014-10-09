@@ -11,6 +11,11 @@ body { padding-top: 70px; }
 /* main footer */
 footer { padding: 30px 0; }
 
+/* global classes */
+.auto { width:auto; }
+.full { width:100%; }
+.inline-block { display:inline-block; }
+
 /* bootstrap overrides */
 .btn { vertical-align:top; }
 .input-group .bootstrap-select .selectpicker {

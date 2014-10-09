@@ -15,10 +15,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'phone' => 'required|numeric|digits:10',
 		'gender' => 'required|in:M,F',
 		'dob' => 'required|date',
+		'sponsor_id' => 'required'
 	];
 
 	// Don't forget to fill this array
 	protected $fillable = [
+		'sponsor_id',
 		'email',
 		'password',
 		'first_name',
@@ -26,6 +28,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'phone',
 		'gender',
 		'dob',
+		'public_id'
 	];
 
 	use UserTrait, RemindableTrait;
@@ -67,6 +70,4 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	{
 	return 'remember_token';
 	}
-
 }
-		
