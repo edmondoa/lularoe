@@ -108,8 +108,8 @@
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('expires_year','* Security Code') }}
-		{{ Form::text('security', null, array('style' => 'width:22px')) }}
+		{{ Form::label('security','* Security Code') }}
+		{{ Form::text('security', null, array('style' => 'width:122px')) }}
 	</div>
 
 	<div class="form-group">
@@ -118,7 +118,7 @@
 	</div>
 	
 	<div class="form-group">
-		<label for="refund_policy" style="font-size:10pt; !important; max-width:250px; display:inline-block; vertical-align:top;">
+		<label for="terms_policy" style="font-size:10pt; !important; max-width:250px; display:inline-block; vertical-align:top;">
 			I agree to the terms and conditions.
 		</label>
 	</div>
