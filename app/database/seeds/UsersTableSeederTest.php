@@ -1,6 +1,6 @@
 <?php 
 
-class UsersTableSeeder extends DatabaseSeeder 
+class UsersTableSeederTest extends DatabaseSeeder 
 {
 
 	public function run()
