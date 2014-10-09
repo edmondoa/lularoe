@@ -1,6 +1,6 @@
 <?php
 use Eventz\Payments\USAEpayment;
-class PaymentsController extends \BaseController {
+class PaymentController extends \BaseController {
 
 	/**
 	 * Display a listing of payments
@@ -11,7 +11,7 @@ class PaymentsController extends \BaseController {
 	{
 		$payments = Payment::all();
 
-		return View::make('payments.index', compact('payments'));
+		return View::make('payment.index', compact('payments'));
 	}
 
 	/**
@@ -25,7 +25,17 @@ class PaymentsController extends \BaseController {
 		$divisions = Division::where('uvent_id', $id)->orderBy('name', 'ASC')->lists('name','id');
 		$teams = Team::where('uvent_id', $id)->orderBy('team_name', 'ASC')->get();
 		$shirts = Uvent::find($id)->shirts()->get();
-		return View::make('payments.register', compact('event', 'divisions', 'teams', 'shirts'));
+		return View::make('payment.register', compact('event', 'divisions', 'teams', 'shirts'));
+	}
+	
+	/**
+	 * Show the form for creating a new sign-up and payment
+	 *
+	 * @return Response
+	 */
+	public function signUp()
+	{
+		return View::make('payment.sign-up', compact('event','data'));
 	}
 
 	/**
@@ -68,7 +78,7 @@ class PaymentsController extends \BaseController {
 		$data['total'] = /*$data['tax']+*/$data['sub_total'];
 		
 		//$info = Input::all();
-		return View::make('payments.create', compact('event','data'));
+		return View::make('payment.create', compact('event','data'));
 	}
 
 	/**
@@ -199,7 +209,7 @@ class PaymentsController extends \BaseController {
 		    $event->roles()->attach(Auth::user(),array('role_id' => $role->id));
 
 			//exit('we got to here');
-			return Redirect::route('dashboard')->with('message',"Success: Your payment has been received, and you're now registered for ".$event->title.". You can log in at any time to view the event details or to create an event of your own.");
+			return Redirect::route('dashboard')->with('message',"Success: Your payment has been received.");
 		}
 		else
 		{
@@ -222,7 +232,7 @@ class PaymentsController extends \BaseController {
 	{
 		$payment = Payment::findOrFail($id);
 
-		return View::make('payments.show', compact('payment'));
+		return View::make('payment.show', compact('payment'));
 	}
 
 	/**
@@ -235,7 +245,7 @@ class PaymentsController extends \BaseController {
 	{
 		$payment = Payment::find($id);
 
-		return View::make('payments.edit', compact('payment'));
+		return View::make('payment.edit', compact('payment'));
 	}
 
 	/**
@@ -257,7 +267,7 @@ class PaymentsController extends \BaseController {
 
 		$payment->update($data);
 
-		return Redirect::route('payments.index');
+		return Redirect::route('payment.index');
 	}
 
 	/**
@@ -270,7 +280,7 @@ class PaymentsController extends \BaseController {
 	{
 		Payment::destroy($id);
 
-		return Redirect::route('payments.index');
+		return Redirect::route('payment.index');
 	}
 
 }

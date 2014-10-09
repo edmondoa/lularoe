@@ -68,6 +68,7 @@ Route::resource('smsRecipient', 'SmsRecipientController');
 Route::resource('smsRecipients', 'SmsRecipientController');
 Route::resource('payment', 'PaymentController');
 Route::resource('payments', 'PaymentController');
+Route::get('sign-up', 'PaymentController@signUp');
 
 //Sessions controller
 Route::get('login',array('as' => 'login','uses' => 'SessionController@create'));
