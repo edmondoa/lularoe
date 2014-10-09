@@ -29,9 +29,15 @@
 	    </div>
 	    
 		<div class="form-group">
-			{{ Form::label('password_confirmation','* Enter it again') }}
+			{{ Form::label('password_confirmation','Enter it again') }}
 			{{ Form::password('password_confirmation', array('class' => 'form-control')) }}
 		</div>
+		
+	    <div class="form-group">
+	        {{ Form::label('public_id', 'Public ID') }}
+	        {{ Form::text('public_id', Input::old('public_id'), array('class' => 'form-control')) }}
+	        <small>Example for John Doe: "jdoe"</small>
+	    </div>
 	    
 		<div class="form-group">
 			{{ Form::radio('gender', 'M', true, array('id' => 'gender_male')) }}

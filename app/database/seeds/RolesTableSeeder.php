@@ -5,15 +5,11 @@ class RolesTableSeeder extends DatabaseSeeder
 
 	public function run()
 	{
-		$faker = $this->getFaker();
-
-		for($i = 1; $i <= 10; $i++) {
-			$role = array(
-				'name' => $faker->name,
-				'disabled' => $faker->boolean,
-			);
-			Role::create($role);
-		}
+		Role::create(["name"=>"Customer"]);
+		Role::create(["name"=>"Rep"]);
+		Role::create(["name"=>"Editor"]);
+		Role::create(["name"=>"Admin"]);
+		Role::create(["name"=>"Superadmin"]);
 	}
 
 }
