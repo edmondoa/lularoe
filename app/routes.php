@@ -15,7 +15,15 @@ Route::get('/', function()
 {
 	return View::make('hello');
 });
+Route::group(array('domain' => '{account}.myapp.com'), function()
+{
 
+    Route::get('user/{id}', function($account, $id)
+    {
+        //
+    });
+
+});
 // dashboard
 Route::get('dashboard', 'DashboardController@index');
 
@@ -68,10 +76,15 @@ Route::resource('smsRecipient', 'SmsRecipientController');
 Route::resource('smsRecipients', 'SmsRecipientController');
 Route::resource('payment', 'PaymentController');
 Route::resource('payments', 'PaymentController');
-Route::get('sign-up', 'PaymentController@signUp');
+Route::get('sign-up', 'PreRegistersController@create');
+Route::resource('pre-register', 'PreRegistersController',['only' => ['create','store']]);
 
 //Sessions controller
 Route::get('login',array('as' => 'login','uses' => 'SessionController@create'));
 Route::get('logout',array('as' => 'logout','uses' => 'SessionController@destroy'));
 Route::get('sign-up/{code}',array('as' => 'sign-up','uses' => 'UserController@create'));
-Route::resource('sessions','SessionController',['only' => ['create','destroy','store']]);Route::resource('userTest', 'UserTestController');
+Route::resource('sessions','SessionController',['only' => ['create','destroy','store']]);
+
+Route::get('test', function(){
+	return App::environment();
+});
