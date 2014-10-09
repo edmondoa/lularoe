@@ -9,14 +9,14 @@ class PreRegisterController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function create($code = '')
+	public function create($public_id)
 	{
-		$user = User::where('code','=',$code)->first();
-		//echo"<pre>"; print_r($user); echo"</pre>";
-		//exit;
-		if(isset($user->id))
+		$sponsor = User::where('public_id','=',$public_id)->first();
+		// echo"<pre>"; print_r($sponsor); echo"</pre>";
+		// exit;
+		if(isset($sponsor->id))
 		{
-			return View::make('pre-register.create',compact('user'));
+			return View::make('pre-register.create',compact('sponsor'));
 		}
 		else
 		{
