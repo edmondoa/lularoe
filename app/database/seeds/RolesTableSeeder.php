@@ -8,10 +8,11 @@ class RolesTableSeeder extends DatabaseSeeder
 		$faker = $this->getFaker();
 
 		for($i = 1; $i <= 10; $i++) {
-			$roles = array(
+			$role = array(
 				'name' => $faker->name,
+				'disabled' => $faker->boolean,
 			);
-			Roles::create($roles);
+			Role::create($role);
 		}
 	}
 

@@ -1,3 +1,5 @@
-	@if($errors->any())
-		{{ HTML::ul($errors->all(),array('class' => 'form-errors')) }}
-	@endif
+@if($errors->any())
+<div class="alert alert-danger">
+	{{ HTML::ul($errors->all()) }}
+</div>
+@endif

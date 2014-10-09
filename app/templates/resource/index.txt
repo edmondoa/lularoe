@@ -2,15 +2,30 @@
 <div class="row">
     <h1>All [Models]</h1>
     <a class="btn btn-success" href="{{ url('[model]/create') }}">New</a>
+    {{ Form::open(array('url' => '[models]/' . 0, 'method' => 'POST')) }}
+    <div class='input-group'>
+        <select class="form-control selectpicker actions">
+	    	<option value="[model]/disable" selected>Disable</option>
+	    	<option value="[model]/enable" selected>Enable</option>
+	    	<option value="[model]/delete" selected>Delete</option>
+        </select>
+        <div class='input-group-btn'>
+        	<button class="btn btn-default applyAction" disabled><i class='fa fa-check'></i></button>
+        </div>
+    </div>
 </div>
 <div class="row">
     <table class="table">
         <thead>
-        [repeat]<th>[formatted_property]</th>[/repeat]
+        	<tr>
+        		<th><input type="checkbox"></th>
+        		[repeat]<th>[formatted_property]</th>[/repeat]
+        	</tr>
         </thead>
         <tbody>
         @foreach($[models] as $[model])
         <tr>
+            <td><input class="bulk-check" type="checkbox" name="ids[]" value="{{ $[model]->id }}"></td>
             [repeat]
             <td>
                 <a href="{{ url('[model]/'.$[model]->id) }}">{{ $[model]->[property] }}</a>
@@ -20,5 +35,6 @@
         @endforeach
         </tbody>
     </table>
+    {{ Form::close() }}
 </div>
 @stop

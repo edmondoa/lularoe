@@ -4,12 +4,4 @@ class [Model] extends \Eloquent
 {
     [content]
 
-    public function store($input)
-    {
-        $[model] = new [Model];
-        [repeat]
-        $[model]->[property] = $input['[property]'];
-        [/repeat]
-        $[model]->save();
-    }
 }

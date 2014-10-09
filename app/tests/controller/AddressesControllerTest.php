@@ -4,25 +4,25 @@ class AddressesControllerTest extends \TestCase
 {
 	public function testIndex()
 	{
-		$this->call('GET', 'addresses');
+		$this->call('GET', 'address');
         $this->assertResponseOk();
     }
 
     public function testShow()
     {
-        $this->call('GET', 'addresses/1');
+        $this->call('GET', 'address/1');
         $this->assertResponseOk();
     }
 
     public function testCreate()
     {
-        $this->call('GET', 'addresses/create');
+        $this->call('GET', 'address/create');
         $this->assertResponseOk();
     }
 
     public function testEdit()
     {
-        $this->call('GET', 'addresses/1/edit');
+        $this->call('GET', 'address/1/edit');
         $this->assertResponseOk();
     }
 }
