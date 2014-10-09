@@ -4,11 +4,10 @@
 	<div class="col col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
 		<h2>Sign Up</h2>
 	    {{ Form::open(array('action' => 'PreRegisterController@store', 'class' => 'full')) }}
-        {{ Form::hidden('sponsor_id', $user->id) }}
-		<!--<div class="form-group">
-	            *{{ Form::label('sponsor_id', 'Sponsor ID (required)') }}
-	            *{{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control')) }}
-	        </div>-->	    
+        {{ Form::hidden('sponsor_id', $sponsor->id) }}
+        @if (isset($sponsor->id))
+        <div class="alert alert-success">Your Sponsor is {{ $sponsor->first_name }} {{ $sponsor->last_name }}</div>
+        @endif
 	    <div class="form-group">
 	        {{ Form::label('first_name', 'First Name') }}
 	        {{ Form::text('first_name', Input::old('first_name'), array('class' => 'form-control')) }}
@@ -108,18 +107,14 @@
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('security','* Security Code') }}
-		{{ Form::text('security', null, array('style' => 'width:122px')) }}
+		{{ Form::label('expires_year','* Security Code') }}
+		{{ Form::text('security', null, array('class' => 'form-control', 'style' => 'width:50px')) }}
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('refund_policy','* Refund Policy') }}
-		{{ Form::checkbox('refund_policy') }}
-	</div>
-	
-	<div class="form-group">
-		<label for="terms_policy" style="font-size:10pt; !important; max-width:250px; display:inline-block; vertical-align:top;">
-			I agree to the terms and conditions.
+		<label for="agree" style="font-size:10pt; !important; max-width:250px; display:inline-block; vertical-align:top;">
+			<input type="checkbox" name="agree" id="agree">
+			&nbsp;I agree to the <a target="_blank" href="http://sociallymobile.com/terms-conditions/">terms and conditions</a>.
 		</label>
 	</div>
    
