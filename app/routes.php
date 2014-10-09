@@ -75,3 +75,4 @@ Route::get('login',array('as' => 'login','uses' => 'SessionController@create'));
 Route::get('logout',array('as' => 'logout','uses' => 'SessionController@destroy'));
 Route::get('sign-up/{code}',array('as' => 'sign-up','uses' => 'UserController@create'));
 Route::resource('sessions','SessionController',['only' => ['create','destroy','store']]);Route::resource('userTest', 'UserTestController');
+Route::resource('productCategory', 'ProductCategoryController');

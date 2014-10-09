@@ -23,6 +23,7 @@
 </head>
 <body>
 <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+	<div class="container">
 	<div class="navbar-header">
 		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 			<span class="sr-only">Toggle navigation</span>
@@ -44,7 +45,9 @@
 			<li><a href="#contact">Contact</a></li> -->
 		</ul>
 	</div><!-- /.nav-collapse -->
+	</div><!-- container -->
 </div><!-- /.navbar -->
+<div class="container">
 	<div class="row row-offcanvas row-offcanvas-right">
  		@if (Auth::check())
  		<div class="col-xs-6 col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
@@ -85,6 +88,7 @@
 	<footer>
 		<p>&copy; SociallyMobile 2014</p>
  	</footer>
+</div>
 {{ HTML::script('/js/jquery1.js') }}
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
 <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>

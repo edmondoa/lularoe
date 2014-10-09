@@ -35,6 +35,7 @@ $env = $app->detectEnvironment(function(){
 	$environments = [
 		//'hostname'=>'environment', 
 		'Jake-PC'=>'jake_local', 
+		'OWNER-PC'=>'steve_local'
 	];
 	$default = 'local';
 	$hostname = gethostname();

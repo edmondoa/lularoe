@@ -1,28 +1,28 @@
 <?php 
 
-class ProductsControllerTest extends \TestCase
+class ProductCategoriesControllerTest extends \TestCase
 {
 	public function testIndex()
 	{
-		$this->call('GET', 'product');
+		$this->call('GET', 'productCategory');
         $this->assertResponseOk();
     }
 
     public function testShow()
     {
-        $this->call('GET', 'product/1');
+        $this->call('GET', 'productCategory/1');
         $this->assertResponseOk();
     }
 
     public function testCreate()
     {
-        $this->call('GET', 'product/create');
+        $this->call('GET', 'productCategory/create');
         $this->assertResponseOk();
     }
 
     public function testEdit()
     {
-        $this->call('GET', 'product/1/edit');
+        $this->call('GET', 'productCategory/1/edit');
         $this->assertResponseOk();
     }
 }
