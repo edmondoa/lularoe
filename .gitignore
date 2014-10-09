@@ -9,3 +9,5 @@ Thumbs.db
 *.class
 *.pyc
 *.pyo
+/app/config/jake_local
+/public/server_config

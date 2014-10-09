@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
 			$table->string('code');
 			$table->integer('phone');
 			$table->integer('role_id');
-			$table->integer('sponsor_id');
+			$table->integer('sponsor_id')->nullable();
 			$table->integer('mobile_plan_id');
 			$table->integer('min_commission');
 			$table->timestamp('created_at');
