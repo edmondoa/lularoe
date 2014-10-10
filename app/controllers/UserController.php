@@ -62,8 +62,11 @@ class UserController extends \BaseController
 
 	public function show($id)
 	{
-        $user = $this->user->find($id);
-		$address = User::find($id)->address;
+        $user = User::find($id);
+        //echo"<pre>"; print_r($user); echo"</pre>";
+        //exit;
+		$address = User::find($id)->addresses()->first();
+		//echo"<pre>"; print_r($address); echo"</pre>";
         $this->layout->content = \View::make('user.show', compact('user', 'address'));
 	}
 

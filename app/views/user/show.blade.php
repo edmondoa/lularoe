@@ -79,19 +79,19 @@
 			<div class="panel-heading">
 				<h2 div class="panel-title">Address</h2>
 			</div>
-		    @if(is_array($address))
+		    @if(isset($address))
 		    <table class="table table-striped">
 		        <tr>
-		            <td>{{ $address[0]->address_1 }}</td>
+		            <td>{{ $address->address_1 }}</td>
 		        </tr>
 		        
-		        @if (isset($address->address_2))
+		        @if (!empty($address->address_2))
 			        <tr>
-			            <td>{{ $address[0]->address_2 }}</td>
+			            <td>{{ $address->address_2 }}</td>
 			        </tr>
 		        @endif
 		        <tr>
-		            <td>{{ $address[0]->city }}, {{ $address[0]->state }} {{ $address[0]->zip }}</td>
+		            <td>{{ $address->city }}, {{ $address->state }} {{ $address->zip }}</td>
 		        </tr>
 		        
 		    </table>
