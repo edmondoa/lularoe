@@ -53,7 +53,7 @@ class UsersTableSeeder extends DatabaseSeeder
 			'mobile_plan_id' => $faker->randomDigitNotNull,
 			'min_commission' => $faker->randomDigitNotNull,
 			'disabled' => $faker->boolean,
-			'public_id' => $faker->word
+			'public_id' => 'delectus'
 		]);
 		User::create([
 			'first_name' => $faker->firstName,

@@ -74,7 +74,7 @@
 	    
 	    <div class="form-group">
 	        {{ Form::label('state', 'State') }}
-	        {{ Form::text('state', Input::old('state'), array('class' => 'form-control')) }}
+	        {{ Form::select('state',State::lists('full_name', 'abbr'), array('class' => 'form-control')) }}
 	    </div>
 	    
 	    <div class="form-group">

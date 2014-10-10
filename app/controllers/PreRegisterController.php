@@ -93,8 +93,8 @@ class PreRegisterController extends \BaseController {
 			), //credit card payment object or add later
 			//"check_data" => array(), //e-check payment object or add later
 		);
-		echo"<pre>"; print_r($params); echo"</pre>";
-		exit;
+		//echo"<pre>"; print_r($params); echo"</pre>";
+		//exit;
 		$payment = new USAEpayment();
 		//exit;
 		$payment->create_request($params);
