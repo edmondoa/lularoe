@@ -173,7 +173,7 @@ class PreRegisterController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 		//User::create($data);
-		exit;
+		//exit;
 		Auth::loginUsingId($user->id);
 		return Redirect::to('/dashboard');
 	}
