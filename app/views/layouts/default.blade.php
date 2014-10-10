@@ -49,8 +49,8 @@
 </div><!-- /.navbar -->
 <div class="container">
 	<div class="row row-offcanvas row-offcanvas-right">
-		{{ Auth::user()->role_id }}
- 		@if (Auth::check() && (Auth::user()->role_id >= 4))
+		
+ 		@if (Auth::check() && (Auth::user()->hasRole(['Admin','Superadmin'])))
  		<div class="col-xs-6 col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
 			<div class="list-group">
 				<!-- <a href="{{ url('addresses') }}" class="list-group-item">Addresses</a> -->

@@ -106,7 +106,7 @@ class UsersTableSeeder extends DatabaseSeeder
 		User::create([
 			'first_name' => 'Steve',
 			'last_name' => 'Gashler',
-			'email' => 'sgashler@example.com',
+			'email' => 'sgashler@controlpad.com',
 			'password' => \Hash::make('password2'),
 			'key' => $faker->word,
 			'phone' => $faker->numerify($string = '##########'),
@@ -122,7 +122,7 @@ class UsersTableSeeder extends DatabaseSeeder
 		User::create([
 			'first_name' => 'Jake',
 			'last_name' => 'Barlow',
-			'email' => 'superadmin@example.com',
+			'email' => 'jbarlow@controlpad.com',
 			'password' => \Hash::make('password2'),
 			'key' => $faker->word,
 			'phone' => $faker->numerify($string = '##########'),
