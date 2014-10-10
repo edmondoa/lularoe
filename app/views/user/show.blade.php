@@ -78,6 +78,7 @@
 			<div class="panel-heading">
 				<h2 div class="panel-title">Address</h2>
 			</div>
+		    @if(is_array($address))
 		    <table class="table table-striped">
 		        <tr>
 		            <td>{{ $address[0]->address_1 }}</td>
@@ -93,6 +94,7 @@
 		        </tr>
 		        
 		    </table>
+		    @endif
 		</div><!-- panel -->
 	</div><!-- row -->
 </div><!-- row -->
