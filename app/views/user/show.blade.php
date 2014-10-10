@@ -9,6 +9,8 @@
 	    {{ Form::open(array('url' => 'user/' . $user->id, 'method' => 'DELETE')) }}
 	    {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
 	    {{ Form::close() }}
+	    <br>
+	    <br>
 	@endif
 </div>
 <div class="row">

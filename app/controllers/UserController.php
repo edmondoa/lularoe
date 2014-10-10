@@ -23,9 +23,6 @@ class UserController extends \BaseController
 	public function store()
 	{
 		$data = Input::all();
-		echo"<pre>"; print_r('Whatevs'); echo"</pre>";
-		echo"<pre>"; print_r($data); echo"</pre>";
-		exit;
 		$data['phone'] = formatPhone($data['phone']);
 		$rules = User::$rules;
 		$rules['email'] = 'required|unique:users,email';
