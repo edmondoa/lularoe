@@ -27,16 +27,16 @@
 		        </tr>
 		        
 		        <tr>
-		            <th>Gender:</th>
-		            <td>{{ $user->gender }}</td>
-		        </tr>
-		        
-		        <tr>
 		            <th>Phone:</th>
 		            <td>{{ $user->phone }}</td>
 		        </tr>
 		        
 				@if (Auth::user()->hasRole(['Admin','Superadmin']))
+				
+		        <tr>
+		            <th>Gender:</th>
+		            <td>{{ $user->gender }}</td>
+		        </tr>
 				
 		        <tr>
 		            <th>DOB:</th>
