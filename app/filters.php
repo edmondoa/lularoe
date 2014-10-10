@@ -17,6 +17,7 @@ App::before(function($request)
 });
 
 
+
 App::after(function($request, $response)
 {
 	//
@@ -52,6 +53,41 @@ Route::filter('auth', function()
 Route::filter('auth.basic', function()
 {
 	return Auth::basic();
+});
+
+Route::filter('customer', function(){
+	if (!Auth::user()->hasRole('Cuspomer'))
+	{
+		return App::abort('403', 'You are not authorized (Customer).');
+	}
+});
+
+Route::filter('Rep', function(){
+	if (!Auth::user()->hasRole('Superadmin'))
+	{
+		return App::abort('403', 'You are not authorized (Rep).');
+	}
+});
+
+Route::filter('Editor', function(){
+	if (!Auth::user()->hasRole('Superadmin'))
+	{
+		return App::abort('403', 'You are not authorized (Editor).');
+	}
+});
+
+Route::filter('Admin', function(){
+	if (!Auth::user()->hasRole('Superadmin'))
+	{
+		return App::abort('403', 'You are not authorized (Admin).');
+	}
+});
+
+Route::filter('superadmin', function(){
+	if (!Auth::user()->hasRole('Superadmin'))
+	{
+		return App::abort('403', 'You are not authorized (other).');
+	}
 });
 
 /*

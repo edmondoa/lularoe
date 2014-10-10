@@ -7,8 +7,14 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
+	/**
+	 * The database table used by the model.
+	 *
+	 * @var string
+	 */
+	protected $table = 'users';
 	public $timestamps = false;
-	//public $eighteenyearsago = date('Y-m-d',strtotime('18 years ago'));
+
 	public static $rules = [
 		'email' => 'required|unique:users,email',
 		'first_name' => 'required|alpha',
@@ -50,12 +56,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsTo('Role');
 	}
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'users';
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -77,5 +77,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public function getRememberTokenName()
 	{
 		return 'remember_token';
+	}
+	public function hasRole($key) {
+	    if($this->role->name === $key){
+	    	return true;
+	    }
+	    return false;
+	    foreach($this->roles as $role){
+	        if($role->name === $key)
+			{
+				return true;
+			}
+		}
+	    return false;
 	}
 }

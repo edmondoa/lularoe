@@ -1,5 +1,5 @@
 <?php
-
+use SociallyMobile\Payments\USAEpayment;
 class PreRegisterController extends \BaseController {
 
 
@@ -11,9 +11,7 @@ class PreRegisterController extends \BaseController {
 	 */
 	public function create($public_id)
 	{
-		$sponsor = User::where('public_id','=',$public_id)->first();
-		// echo"<pre>"; print_r($sponsor); echo"</pre>";
-		// exit;
+		$sponsor = User::where('public_id',$public_id)->first();
 		if(isset($sponsor->id))
 		{
 			return View::make('pre-register.create',compact('sponsor'));
@@ -75,12 +73,13 @@ class PreRegisterController extends \BaseController {
 				"state" => $data['state'],
 				"zip" => $data['zip']
 			), //address object or add later
-			"software" => "BOX.EVENTS", 
+			"software" => "", 
 			//"recurring_billing" => array(), //recurring billing object or add later
 			"details" => array(
-				"amount" => $data['amount'],  //  ***Required*** integer
+				//"amount" => $data['amount'],  //  ***Required*** integer
+				"amount" => 100.00,  //  ***Required*** integer
 				"comments" => "",  // text
-				"description" => '',  // text 
+				"description" => 'Pre-registration',  // text 
 			), 
 			"credit_card_data" => array(
 				"type" => 'CreditCard',

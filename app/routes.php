@@ -10,20 +10,62 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+##############################################################################################
+# Session Control
+##############################################################################################
+Route::get('login',array('as' => 'login','uses' => 'SessionController@create'));
+Route::get('logout',array('as' => 'logout','uses' => 'SessionController@destroy'));
+Route::get('sign-up/{code}',array('as' => 'sign-up','uses' => 'UserController@create'));
+Route::resource('sessions','SessionController',['only' => ['create','destroy','store']]);
 
+##############################################################################################
+# Home Page
+##############################################################################################
 Route::get('/', function()
 {
 	return View::make('hello');
 });
-Route::group(array('domain' => '{account}.myapp.com'), function()
+
+##############################################################################################
+// Protected Routes
+##############################################################################################
+Route::group(array('before' => 'auth'), function()
 {
+	##############################################################################################
+	# Superadmin only routes
+	##############################################################################################
+	Route::group(array('before' => 'superadmin'), function(){
 
-    Route::get('user/{id}', function($account, $id)
-    {
-        //
-    });
+	});
+	##############################################################################################
+	# Admin only routes
+	##############################################################################################
+	Route::group(array('before' => 'admin'), function(){
 
+	});
+	##############################################################################################
+	# Superadmin only routes
+	##############################################################################################
+	Route::group(array('before' => 'editor'), function(){
+
+	});
+	##############################################################################################
+	# Superadmin only routes
+	##############################################################################################
+	Route::group(array('before' => 'rep'), function(){
+
+	});
+	##############################################################################################
+	# Superadmin only routes
+	##############################################################################################
+	Route::group(array('before' => 'customer'), function(){
+
+	});
 });
+##############################################################################################
+# Public Routes
+##############################################################################################
+
 // dashboard
 Route::get('dashboard', 'DashboardController@index');
 
@@ -78,15 +120,13 @@ Route::resource('payment', 'PaymentController');
 Route::resource('payments', 'PaymentController');
 Route::get('pre-register/{public_id}', 'PreRegisterController@create');
 Route::resource('pre-register', 'PreRegisterController',['only' => ['create','store']]);
+Route::resource('productCategory', 'ProductCategoryController');
 
-//Sessions controller
-Route::get('login',array('as' => 'login','uses' => 'SessionController@create'));
-Route::get('logout',array('as' => 'logout','uses' => 'SessionController@destroy'));
-Route::get('sign-up/{code}',array('as' => 'sign-up','uses' => 'UserController@create'));
-Route::resource('sessions','SessionController',['only' => ['create','destroy','store']]);
+##############################################################################################
+# Testing and etc.
+##############################################################################################
 
 Route::get('test', function(){
-	return App::environment();
+	return ;
 });
-Route::resource('productCategory', 'ProductCategoryController');
 
