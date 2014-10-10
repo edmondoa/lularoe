@@ -74,8 +74,9 @@ Route::group(array('before' => 'auth'), function()
 
 Route::group(['before' => 'force.ssl'], function()
 {
-    Route::get('pre-register/{public_id}', 'PreRegisterController@create');
-	Route::resource('pre-register', 'PreRegisterController',['only' => ['create','store']]);
+	Route::get('join', 'PreRegisterController@sponsor');
+	Route::get('join/{public_id}', 'PreRegisterController@create');
+	Route::resource('join', 'PreRegisterController',['only' => ['create','store']]);
 });
 
 // dashboard
@@ -130,9 +131,7 @@ Route::resource('smsRecipient', 'SmsRecipientController');
 Route::resource('smsRecipients', 'SmsRecipientController');
 Route::resource('payment', 'PaymentsController');
 Route::resource('payments', 'PaymentsController');
-Route::get('pre-register', 'PreRegisterController@sponsor');
-//Route::get('pre-register/{public_id}', ['before' => 'force.ssl', 'PreRegisterController@create']);
-Route::get('PreRegisterController@redirect', 'PreRegisterController@redirect');
+
 Route::resource('productCategory', 'ProductCategoryController');
 
 ##############################################################################################
@@ -142,5 +141,3 @@ Route::resource('productCategory', 'ProductCategoryController');
 Route::get('test', function(){
 	return Config::get('site.preregistration_fee');
 });
-
-

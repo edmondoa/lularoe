@@ -9,7 +9,7 @@ class PreRegisterController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function create($public_id)
+	public function create($public_id = '')
 	{
 		$sponsor = User::where('public_id',$public_id)->first();
 		if(isset($sponsor->id))
@@ -42,7 +42,7 @@ class PreRegisterController extends \BaseController {
 	public function redirect()
 	{
 		$sponsor_id = Input::only('sponsor_id');
-		return Redirect::route('pre-register/' . $sponsor_id);
+		return Redirect::route('join/' . $sponsor_id);
 	}
 
 	/**

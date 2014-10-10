@@ -3,7 +3,7 @@ form { display:inline-block; }
 
 /* main-header */
 html, body { overflow-x: hidden; }
-#logo { position:relative; top:-5px; }
+#logo { position:relative; top:-7px; }
 
 /* body */
 body { padding-top: 70px; }

@@ -7,13 +7,13 @@ class AddressesTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 20; $i++) {
 			$address = array(
 				'address_1' => $faker->word,
 				'address_2' => $faker->word,
 				'city' => $faker->city,
 				'state' => $faker->state,
-				'addressable_id' => $faker->randomDigitNotNull,
+				'addressable_id' => $i,
 				'zip' => $faker->randomDigitNotNull,
 				'disabled' => $faker->boolean,
 			);

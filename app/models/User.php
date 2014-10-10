@@ -41,8 +41,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;
 
-	public function addresses() {
-		return $this -> morphMany('Address', 'addressable');
+	// public function addresses() {
+		// return $this -> morphMany('Address', 'addressable');
+	// }
+	
+	public function address() {
+		return $this -> hasMany('Address', 'addressable_id', 'id');
 	}
 	
 	public function sponsor() {
@@ -50,7 +54,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 	
 	public function children() {
-		return $this -> hasMany('User', 'id', 'sponsor_id');
+		return $this -> hasMany('User', 'sponsor_id', 'id');
 	}
 
 	public function role() {
