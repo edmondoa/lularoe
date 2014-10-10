@@ -18,11 +18,10 @@ class CreateUsersTable extends Migration
 			$table->string('gender',2);
 			$table->string('key');
 			$table->date('dob');
-			$table->string('phone');
-			$table->bigInteger('phone');
+			$table->string('phone',15);
 			$table->integer('role_id');
 			$table->integer('sponsor_id')->nullable();
-			$table->integer('mobile_plan_id');
+			$table->integer('mobile_plan_id')->nullable();
 			$table->decimal('min_commission',6,2);
 			$table->boolean('disabled');
 			$table->timestamps();
