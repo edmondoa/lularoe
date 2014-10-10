@@ -37,4 +37,17 @@ $(document).ready(function() {
        $('form').attr('action', $(this).val() + '/0'); 
     });
     
+    // jQUery UI
+    
+    var today = new Date();
+    var firstYear = today.getFullYear() - 18;
+    $('.dateonlypicker').datepicker({
+        controlType: 'select',
+        changeMonth: true,
+        changeYear: true,
+        yearRange: '1900:' + firstYear,
+        dateFormat: 'yy-mm-dd',
+        //timeFormat: 'hh:mm tt'
+    });
+    
 });

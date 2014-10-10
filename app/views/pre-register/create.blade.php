@@ -49,8 +49,8 @@
 		</div>
 	    
 	    <div class="form-group">
-		    <?php $name = 'dob' ?>
-			@include('_helpers.dob')
+		    {{ Form::label('dob', 'Date of Birth') }}
+	        {{ Form::text('dob', Input::old('dob'), array('class' => 'dateonlypicker form-control')) }}
 	    </div>
 	    
 	    <div class="form-group">
@@ -75,13 +75,18 @@
 	    
 	    <div class="form-group">
 	        {{ Form::label('state', 'State') }}
-	        {{ Form::select('state',State::lists('full_name', 'abbr'), null, array('class' => 'selectpicker')) }}
+	        <br>
+	        {{ Form::select('state',State::lists('full_name', 'abbr')) }}
 	    </div>
 	    
 	    <div class="form-group">
 	        {{ Form::label('zip', 'Zip') }}
 	        {{ Form::text('zip', Input::old('zip'), array('class' => 'form-control')) }}
 	    </div>
+	    <br>
+	<div class="alert alert-success">Preluanch Membership Fee: $100</div>
+
+	    
 	<div class="form-group">
 		{{ Form::label('name_on_card','* Name on Card') }}
 		{{ Form::text('name_on_card',null, array('class' => 'form-control')) }}
@@ -95,7 +100,7 @@
 	<div class="form-group">
 		{{ Form::label('expires_year','* Expires') }}
 		<br>
-		<select name="expires_month" class="selectpicker">
+		<select name="expires_month">
 			<?php
 				for ($y = 1; $y <= 12; $y ++) {
 					if ($y < 10) $y = "0" . $y;
@@ -103,7 +108,7 @@
 				}
 			?>
 		</select>
-		<select name="expires_year" class="selectpicker">
+		<select name="expires_year">
 			<?php
 				$y = date('Y');
 				$x = $y + 10;
