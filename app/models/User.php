@@ -19,7 +19,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'email' => 'required|unique:users,email',
 		'first_name' => 'required|alpha',
 		'last_name' => 'required|alpha',
-		'phone' => 'required|numeric|digits:10',
+		'phone' => 'required',
 		'gender' => 'required|in:M,F',
 		'dob' => 'required|date',
 		'sponsor_id' => 'required'
@@ -45,9 +45,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		// return $this -> morphMany('Address', 'addressable');
 	// }
 	
-	public function addresses()
+	public function address()
 	{
-		return $this->morphMany('Address', 'addressable');
+		return $this->hasMany('Address', 'addressable_id', 'id');
 	}
 	
 	public function sponsor() {

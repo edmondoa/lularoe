@@ -32,16 +32,17 @@
 		        </tr>
 		        
 		        <tr>
-		            <th>DOB:</th>
-		            <td>{{ $user->dob }}</td>
-		        </tr>
-		        
-		        <tr>
 		            <th>Phone:</th>
 		            <td>{{ $user->phone }}</td>
 		        </tr>
 		        
-				@if (Auth::user()->hasRole(['Admin','Superadmin']))       
+				@if (Auth::user()->hasRole(['Admin','Superadmin']))
+				
+		        <tr>
+		            <th>DOB:</th>
+		            <td>{{ $user->dob }}</td>
+		        </tr>
+				  
 		        <tr>
 		            <th>Role Id:</th>
 		            <td>{{ $user->role_id }}</td>
