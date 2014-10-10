@@ -135,11 +135,19 @@ class PreRegisterController extends \BaseController {
 			$data['dob'] = date('Y-m-d',strtotime($data['dob']));
 			$data['password'] = \Hash::make($data['password']);
 			$user = User::create($data);
-			//echo"<pre>"; print_r($user); echo"</pre>";
-			//exit;
-			//$payment->expose($data);
-			// clean up our data
-			//exit;
+
+			//now the address
+			$address = [
+				'address_1'=>$data['address_1'],
+				'address_2'=>$data['address_2'],
+				'city'=>$data['city'],
+				'state'=>$data['state'],
+				'zip'=>$data['zip'],
+
+			];
+			$address = Address::create($address);
+			$user->addresses()->save($address);
+
 			$data['transaction_id'] = $payment->transaction_id;
 			$data['details'] = '';
 			$data['tender'] = 'Credit Card';
@@ -152,7 +160,7 @@ class PreRegisterController extends \BaseController {
 			$role = Role::where('name','Rep')->first();
 			//echo"<pre>"; print_r($role); echo"</pre>";
 			$user->role()->associate($role);
-
+			$user->save();
 			//exit('we got to here');
 		}
 		else
@@ -165,8 +173,9 @@ class PreRegisterController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 		//User::create($data);
+		exit;
 		Auth::loginUsingId($user->id);
-		return Redirect::route('/dashboard');
+		return Redirect::to('/dashboard');
 	}
 
 	/**

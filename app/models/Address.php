@@ -2,8 +2,13 @@
 
 class Address extends \Eloquent
 {
-    protected $table = 'addresses';
+	protected $table = 'addresses';
 	protected $fillable = array('address_1','address_2','city','state','addressable_id','zip','disabled');
+
+	public function addressable()
+	{
+		return $this->morphTo();
+	}
 
 
 }
