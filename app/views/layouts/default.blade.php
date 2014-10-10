@@ -20,6 +20,7 @@
 	{{ HTML::style('css/theme.css') }}
 	{{ HTML::style('packages/bootstrap-select/bootstrap-select.min.css') }}
 	{{ HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css') }}
+	{{ HTML::style('packages/jquery-ui-1.10.4.custom.min.css') }}
 </head>
 <body>
 <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
@@ -95,7 +96,7 @@
 <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 {{ HTML::script('/packages/bootstrap-select/bootstrap-select.min.js') }}
-{{ HTML::script('jquery-ui-1.10.4.custom.min.js') }}
+{{ HTML::script('packages/jquery-ui-1.10.4.custom.min.js') }}
 {{ HTML::script('js/functions.js') }}
 <script src="/js/controllers/datepickerController.js"></script>
 <!--[javascript]-->

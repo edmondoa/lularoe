@@ -28,17 +28,18 @@ Route::get('/',['as'=>'home', function()
 }]);
 
 
-// dashboard
-Route::get('dashboard', 'DashboardController@index');
-// users
-Route::resource('user', 'UserController');
-Route::resource('users', 'UserController');
-
 ##############################################################################################
 // Protected Routes
 ##############################################################################################
 Route::group(array('before' => 'auth'), function()
 {
+	
+	// dashboard
+	Route::get('dashboard', 'DashboardController@index');
+	// users
+	Route::resource('user', 'UserController');
+	Route::resource('users', 'UserController');
+	
 	##############################################################################################
 	# Superadmin only routes
 	##############################################################################################
