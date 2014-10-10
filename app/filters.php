@@ -56,28 +56,28 @@ Route::filter('auth.basic', function()
 });
 
 Route::filter('customer', function(){
-	if (!Auth::user()->hasRole('Cuspomer'))
+	if (!Auth::user()->hasRole('Customer'))
 	{
 		return App::abort('403', 'You are not authorized (Customer).');
 	}
 });
 
-Route::filter('Rep', function(){
-	if (!Auth::user()->hasRole('Superadmin'))
+Route::filter('rep', function(){
+	if (!Auth::user()->hasRole('Rep'))
 	{
 		return App::abort('403', 'You are not authorized (Rep).');
 	}
 });
 
-Route::filter('Editor', function(){
-	if (!Auth::user()->hasRole('Superadmin'))
+Route::filter('editor', function(){
+	if (!Auth::user()->hasRole('Editor'))
 	{
 		return App::abort('403', 'You are not authorized (Editor).');
 	}
 });
 
-Route::filter('Admin', function(){
-	if (!Auth::user()->hasRole('Superadmin'))
+Route::filter('admin', function(){
+	if (!Auth::user()->hasRole('Admin'))
 	{
 		return App::abort('403', 'You are not authorized (Admin).');
 	}
