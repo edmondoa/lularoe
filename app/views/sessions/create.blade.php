@@ -12,7 +12,7 @@
 		{{ Form::close() }}
 		<br>
 		<br>
-		<p>Don't have an account? <a href='/users/create'>Sign up!</a></p>
+		<p>Don't have an account? <a href='/join'>Sign up!</a></p>
 	</div>
 </div>
 @stop
