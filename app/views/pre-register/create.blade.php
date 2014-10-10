@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div class="row">
-	<div class="col col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+	<div class="col col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12">
 		<h2>Sign Up</h2>
 	    {{ Form::open(array('action' => 'PreRegisterController@store', 'class' => 'full')) }}
         {{ Form::hidden('sponsor_id', $sponsor->id) }}

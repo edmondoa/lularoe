@@ -1,10 +1,10 @@
 <?php 
-
 class UsersTableSeeder extends DatabaseSeeder 
 {
 
 	public function run()
 	{
+		Eloquent::unguard();
 		$faker = $this->getFaker();
 		for($i = 1; $i <= 10; $i++) {
 			$users = array(
@@ -22,6 +22,7 @@ class UsersTableSeeder extends DatabaseSeeder
 				'min_commission' => $faker->randomDigitNotNull,
 				'disabled' => $faker->boolean,
 			);
+			User::create($users);
 		}
 		User::create([
 			'first_name' => $faker->firstName,
