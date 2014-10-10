@@ -28,6 +28,12 @@ Route::get('/',['as'=>'home', function()
 }]);
 
 
+// dashboard
+Route::get('dashboard', 'DashboardController@index');
+// users
+Route::resource('user', 'UserController');
+Route::resource('users', 'UserController');
+
 ##############################################################################################
 // Protected Routes
 ##############################################################################################
@@ -43,8 +49,6 @@ Route::group(array('before' => 'auth'), function()
 	# Admin only routes
 	##############################################################################################
 	Route::group(array('before' => 'admin'), function(){
-		Route::resource('user', 'UserController');
-		Route::resource('users', 'UserController');
 		Route::post('user/disable/{id}', 'UserController@disable');
 		Route::post('user/enable/{id}', 'UserController@enable');
 		Route::delete('user/delete/{id}', 'UserController@delete');
@@ -106,11 +110,7 @@ Route::group(array('before' => 'auth'), function()
 	# Rep only routes
 	##############################################################################################
 	Route::group(array('before' => 'rep'), function(){
-		// dashboard
-		Route::get('rep/dashboard', 'DashboardController@index');
-		// Users
-		Route::resource('rep/user', 'UserController');
-		Route::resource('rep/users', 'UserController');
+
 	});
 	##############################################################################################
 	# Customer only routes

@@ -38,7 +38,7 @@
 			@if (!Auth::check())
 				<li><a href="/login">Log In</a></li>
 			@else
-				<li><a href="{{ action('DashboardController@index') }}">Dashboard</a></li>
+				<li><a href="/dashboard">Dashboard</a></li>
 				<li><a href="/logout">Log Out</a></li>
 			@endif
 			<!-- <li class="active"><a href="#">Home</a></li>
@@ -95,6 +95,7 @@
 <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 {{ HTML::script('/packages/bootstrap-select/bootstrap-select.min.js') }}
+{{ HTML::script('jquery-ui-1.10.4.custom.min.js') }}
 {{ HTML::script('js/functions.js') }}
 <script src="/js/controllers/DatepickerController.js"></script>
 <!--[javascript]-->

@@ -3,7 +3,8 @@
 <div class="row">
 	<div style="margin-left:15px;">
 		<h1>Welcome, {{ $user->first_name }}</h1>
-		<p>Copy and paste the following link and send it to anyone whom you'd like to join your team:</p>
+		<div class="alert alert-success inline-block">Copy and paste the following link and send it to anyone whom you'd like to join your team:</div>
+		<br>
 		<pre class="inline-block"><a href="{{ url() }}/join/{{ $user->public_id }}">{{ url() }}/join/{{ $user->public_id }}</a></strong></pre>
 	</div>
 	<div class="col col-md-6">
@@ -20,7 +21,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td><a href="{{ action('HomeController@getIndex', $sponsor->id) }}">{{ $sponsor->first_name }} {{ $sponsor->last_name }}</a></td>
+							<td><a href="users/{{ $sponsor->id }}">{{ $sponsor->first_name }} {{ $sponsor->last_name }}</a></td>
 							<td>{{ $sponsor->phone }}</td>
 							<td>{{ $sponsor->email }}</td>
 						</tr>
@@ -42,7 +43,7 @@
 					<tbody>
 						@foreach ($children as $child)
 						<tr>
-							<td><a href="{{ action('HomeController@getIndex', $sponsor->id) }}">{{ $child->first_name }} {{ $child->last_name }}</a></td>
+							<td><a href="users/{{ $child->id }}">{{ $child->first_name }} {{ $child->last_name }}</a></td>
 							<td>{{ $child->phone }}</td>
 							<td>{{ $child->email }}</td>
 						</tr>

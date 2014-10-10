@@ -15,6 +15,7 @@ footer { padding: 30px 0; }
 .auto { width:auto; }
 .full { width:100%; }
 .inline-block { display:inline-block; }
+.tiny { font-size:7pt; display:block; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }

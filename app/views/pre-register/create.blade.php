@@ -21,6 +21,7 @@
 	    <div class="form-group">
 	        {{ Form::label('email', 'Email') }}
 	        {{ Form::text('email', Input::old('email'), array('class' => 'form-control')) }}
+	        <small>You will use this email to log in.</small>
 	    </div>
 	    
 	    <div class="form-group">
@@ -36,7 +37,7 @@
 	    <div class="form-group">
 	        {{ Form::label('public_id', 'Public ID') }}
 	        {{ Form::text('public_id', Input::old('public_id'), array('class' => 'form-control')) }}
-	        <small>Example for John Doe: "jdoe"</small>
+	        <small>This will be used in the URL of your public website. Example for John Doe: "jdoe"</small>
 	    </div>
 	    
 		<div class="form-group">
@@ -74,7 +75,7 @@
 	    
 	    <div class="form-group">
 	        {{ Form::label('state', 'State') }}
-	        {{ Form::select('state',State::lists('full_name', 'abbr'), array('class' => 'form-control')) }}
+	        {{ Form::select('state',State::lists('full_name', 'abbr'), null, array('class' => 'selectpicker')) }}
 	    </div>
 	    
 	    <div class="form-group">
@@ -93,6 +94,7 @@
 
 	<div class="form-group">
 		{{ Form::label('expires_year','* Expires') }}
+		<br>
 		<select name="expires_month" class="selectpicker">
 			<?php
 				for ($y = 1; $y <= 12; $y ++) {
@@ -123,6 +125,10 @@
 			&nbsp;I agree to the <a target="_blank" href="http://sociallymobile.com/terms-conditions/">terms and conditions</a>.
 		</label>
 	</div>
+	<div style="position:relative; top:-10px;">
+		<small class="tiny">October 1, 2014 - December 31, 2014 is considered "Beta Launch Pad" wherein you can enroll for as little as $100. The $100 is fully refundable by sending an email to cancellations@sociallymobile.com. No commissions are being paid during this Beta Launch phase. 100% of the $100 collected in Beta will be credited toward their fees in January.</small>
+	</div>
+	<br>
    
 	    {{ Form::submit('Sign Up', array('class' => 'btn btn-success')) }}
 	
