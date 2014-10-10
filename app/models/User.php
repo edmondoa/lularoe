@@ -45,8 +45,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		// return $this -> morphMany('Address', 'addressable');
 	// }
 	
-	public function address() {
-		return $this -> hasMany('Address', 'addressable_id', 'id');
+	public function addresses()
+	{
+		return $this->morphMany('Address', 'addressable');
 	}
 	
 	public function sponsor() {
