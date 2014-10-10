@@ -130,6 +130,6 @@ Route::resource('productCategory', 'ProductCategoryController');
 ##############################################################################################
 
 Route::get('test', function(){
-	return ;
+	return Auth::user()->role->name;
 });
 
