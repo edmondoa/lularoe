@@ -68,6 +68,16 @@ Route::group(array('before' => 'auth'), function()
 # Public Routes
 ##############################################################################################
 
+##############################################################################################
+# Secure Routes
+##############################################################################################
+
+Route::group(['before' => 'force.ssl'], function()
+{
+    Route::get('pre-register/{public_id}', 'PreRegisterController@create');
+	Route::resource('pre-register', 'PreRegisterController',['only' => ['create','store']]);
+});
+
 // dashboard
 Route::get('dashboard', 'DashboardController@index');
 
@@ -121,9 +131,8 @@ Route::resource('smsRecipients', 'SmsRecipientController');
 Route::resource('payment', 'PaymentsController');
 Route::resource('payments', 'PaymentsController');
 Route::get('pre-register', 'PreRegisterController@sponsor');
-Route::get('pre-register/{public_id}', 'PreRegisterController@create');
+//Route::get('pre-register/{public_id}', ['before' => 'force.ssl', 'PreRegisterController@create']);
 Route::get('PreRegisterController@redirect', 'PreRegisterController@redirect');
-Route::resource('pre-register', 'PreRegisterController',['only' => ['create','store']]);
 Route::resource('productCategory', 'ProductCategoryController');
 
 ##############################################################################################
