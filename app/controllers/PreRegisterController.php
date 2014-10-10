@@ -46,6 +46,8 @@ class PreRegisterController extends \BaseController {
 		$rules['refund_policy'] = 'required|accepted';
 		$rules['agree'] = 'required|accepted';
 		$rules['password'] = 'required|confirmed|digits_between:8,32';
+		$rules['public_id'] = 'required|unique:users,public_id';
+		$rules['email'] = 'required|unique:users,email';
 
 		$validator = Validator::make($data = Input::all(), $rules);
 		echo"<pre>"; print_r($data); echo"</pre>";
@@ -91,7 +93,8 @@ class PreRegisterController extends \BaseController {
 			), //credit card payment object or add later
 			//"check_data" => array(), //e-check payment object or add later
 		);
-
+		echo"<pre>"; print_r($params); echo"</pre>";
+		exit;
 		$payment = new USAEpayment();
 		//exit;
 		$payment->create_request($params);
@@ -104,6 +107,7 @@ class PreRegisterController extends \BaseController {
 		//exit;
 		if($payment->send_request())
 		{
+			$data['dob'] = date('Y-m-d',strtotime($data['dob']));
 			$user = User::create($data);
 			//$payment->expose($data);
 			// clean up our data
