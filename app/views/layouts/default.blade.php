@@ -38,7 +38,7 @@
 			@if (!Auth::check())
 				<li><a href="/login">Log In</a></li>
 			@else
-				<li><a href="/dashboard">Dashboard</a></li>
+				<li><a href="{{ action('DashboardController@index') }}">Dashboard</a></li>
 				<li><a href="/logout">Log Out</a></li>
 			@endif
 			<!-- <li class="active"><a href="#">Home</a></li>

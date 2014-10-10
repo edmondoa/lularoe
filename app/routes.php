@@ -107,7 +107,10 @@ Route::group(array('before' => 'auth'), function()
 	##############################################################################################
 	Route::group(array('before' => 'rep'), function(){
 		// dashboard
-		Route::get('dashboard', 'DashboardController@index');
+		Route::get('rep/dashboard', 'DashboardController@index');
+		// Users
+		Route::resource('rep/user', 'UserController');
+		Route::resource('rep/users', 'UserController');
 	});
 	##############################################################################################
 	# Customer only routes
