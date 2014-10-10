@@ -4,7 +4,7 @@
 	<div style="margin-left:15px;">
 		<h1>Welcome, {{ $user->first_name }}</h1>
 		<p>Copy and paste the following link and send it to anyone whom you'd like to join your team:</p>
-		<pre class="inline-block"><a href="{{ url() }}/sign-up?sponsor={{ $user->id }}">{{ url() }}/sign-up?sponsor={{ $user->id }}</a></strong></pre>
+		<pre class="inline-block"><a href="{{ url() }}/join/{{ $user->public_id }}">{{ url() }}/join/{{ $user->public_id }}</a></strong></pre>
 	</div>
 	<div class="col col-md-6">
 		@if (isset($sponsor))
@@ -20,7 +20,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td>{{ $sponsor->first_name }} {{ $sponsor->last_name }}</td>
+							<td><a href="users/{{ $sponsor->id }}">{{ $sponsor->first_name }} {{ $sponsor->last_name }}</a></td>
 							<td>{{ $sponsor->phone }}</td>
 							<td>{{ $sponsor->email }}</td>
 						</tr>

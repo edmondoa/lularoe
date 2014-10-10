@@ -66,7 +66,8 @@ class UserController extends \BaseController
 	public function show($id)
 	{
         $user = $this->user->find($id);
-        $this->layout->content = \View::make('user.show')->with('user', $user);
+		$address = User::find($id)->address;
+        $this->layout->content = \View::make('user.show', compact('user', 'address'));
 	}
 
 	public function edit($id)

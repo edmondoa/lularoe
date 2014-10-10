@@ -117,12 +117,12 @@ Route::resource('emailRecipient', 'EmailRecipientController');
 Route::resource('emailRecipients', 'EmailRecipientController');
 Route::resource('smsRecipient', 'SmsRecipientController');
 Route::resource('smsRecipients', 'SmsRecipientController');
-Route::resource('payment', 'PaymentController');
-Route::resource('payments', 'PaymentController');
-Route::get('pre-register', 'PreRegisterController@sponsor');
-Route::get('pre-register/{public_id}', 'PreRegisterController@create');
+Route::resource('payment', 'PaymentsController');
+Route::resource('payments', 'PaymentsController');
+Route::get('join', 'PreRegisterController@sponsor');
+Route::get('join/{public_id}', 'PreRegisterController@create');
 Route::get('PreRegisterController@redirect', 'PreRegisterController@redirect');
-Route::resource('pre-register', 'PreRegisterController',['only' => ['create','store']]);
+Route::resource('join', 'PreRegisterController',['only' => ['create','store']]);
 Route::resource('productCategory', 'ProductCategoryController');
 
 ##############################################################################################

@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
 			$table->string('gender',2);
 			$table->string('key');
 			$table->date('dob');
-			$table->integer('phone');
+			$table->string('phone');
 			$table->integer('role_id');
 			$table->integer('sponsor_id')->nullable();
 			$table->integer('mobile_plan_id');

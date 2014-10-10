@@ -38,6 +38,7 @@
 			@if (!Auth::check())
 				<li><a href="/login">Log In</a></li>
 			@else
+				<li><a href="/dashboard">Dashboard</a></li>
 				<li><a href="/logout">Log Out</a></li>
 			@endif
 			<!-- <li class="active"><a href="#">Home</a></li>
@@ -61,8 +62,8 @@
 				<!-- <a href="{{ url('images') }}" class="list-group-item">Images</a> -->
 				<!-- <a href="{{ url('levels') }}" class="list-group-item">Levels</a> -->
 				<!-- <a href="{{ url('pages') }}" class="list-group-item">Pages</a> -->
-				<a href="{{ url('payments') }}" class="list-group-item">Payments</a>
-				<a href="{{ url('products') }}" class="list-group-item">Products</a>
+				<!-- <a href="{{ url('payments') }}" class="list-group-item">Payments</a> -->
+				<!-- <a href="{{ url('products') }}" class="list-group-item">Products</a> -->
 				<!-- <a href="{{ url('profiles') }}" class="list-group-item">Profiles</a> -->
 				<!-- <a href="{{ url('ranks') }}" class="list-group-item">Ranks</a> -->
 				<!-- <a href="{{ url('reviews') }}" class="list-group-item">Reviews</a> -->
