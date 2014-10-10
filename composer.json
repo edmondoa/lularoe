@@ -39,5 +39,6 @@
 	"require-dev": {
 		"way/generators": "2.*",
 		"jrenton/laravel-scaffold": "dev-master"
+
 	}
 }
