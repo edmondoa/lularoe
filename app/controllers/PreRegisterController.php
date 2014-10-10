@@ -61,8 +61,8 @@ class PreRegisterController extends \BaseController {
 		$rules['state'] = 'required|size:2';
 		$rules['zip'] = ['required','numeric','regex:/(^\d{5}$)|(^\d{5}-\d{4}$)/'];
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
-		$rules['card_number'] = 'required|numeric';
-		$rules['security'] = 'required|numeric';
+		$rules['card_number'] = 'required|numeric|digits_between:13,17';
+		$rules['security'] = 'required|numeric|digits_between:3,4';
 		$rules['expires_year'] = 'required|digits:4';
 		$rules['expires_month'] = 'required|digits:2';
 		//$rules['refund_policy'] = 'required|accepted';
@@ -80,7 +80,8 @@ class PreRegisterController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
-		
+		$data['amount'] = Config::get('site.preregistration_fee');
+		$data['details'] = "Pre-registration";
 		$params = array(
 			"command" => "sale",
 			"type" => 'CreditCard', //Name of the account holder.
@@ -101,9 +102,9 @@ class PreRegisterController extends \BaseController {
 			//"recurring_billing" => array(), //recurring billing object or add later
 			"details" => array(
 				//"amount" => $data['amount'],  //  ***Required*** integer
-				"amount" => 100.00,  //  ***Required*** integer
+				"amount" => $data['amount'],  //  ***Required*** integer
 				"comments" => "",  // text
-				"description" => 'Pre-registration',  // text 
+				"description" => $data['details'],  // text 
 			), 
 			"credit_card_data" => array(
 				"type" => 'CreditCard',
@@ -130,13 +131,16 @@ class PreRegisterController extends \BaseController {
 		if($payment->send_request())
 		{
 			$data['dob'] = date('Y-m-d',strtotime($data['dob']));
+			$data['password'] = \Hash::make($data['password']);
 			$user = User::create($data);
+			//echo"<pre>"; print_r($user); echo"</pre>";
+			//exit;
 			//$payment->expose($data);
 			// clean up our data
 			//exit;
 			$data['transaction_id'] = $payment->transaction_id;
 			$data['details'] = '';
-			$data['tender'] = 'CreditCard';
+			$data['tender'] = 'Credit Card';
 			$new_payment = Payment::create($data);
 			
 			$new_payment->user()->associate($user);
@@ -145,13 +149,22 @@ class PreRegisterController extends \BaseController {
 
 			$role = Role::where('name','Rep')->first();
 			//echo"<pre>"; print_r($role); echo"</pre>";
-		    $user->role()->associate($role);
+			$user->role()->associate($role);
 
 			//exit('we got to here');
-	    }
+		}
+		else
+		{
+			$errors = $payment->errors_public;
+			foreach($errors as $key => $error)
+			{
+				$validator->getMessageBag()->add($key, $error);
+			}
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
 		//User::create($data);
-
-		//return Redirect::route('pre-register.index');
+		Auth::loginUsingId($user->id);
+		return Redirect::route('/dashboard');
 	}
 
 	/**
