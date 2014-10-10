@@ -20,7 +20,7 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td><a href="users/{{ $sponsor->id }}">{{ $sponsor->first_name }} {{ $sponsor->last_name }}</a></td>
+							<td><a href="{{ action('HomeController@getIndex', $sponsor->id) }}">{{ $sponsor->first_name }} {{ $sponsor->last_name }}</a></td>
 							<td>{{ $sponsor->phone }}</td>
 							<td>{{ $sponsor->email }}</td>
 						</tr>
@@ -42,7 +42,7 @@
 					<tbody>
 						@foreach ($children as $child)
 						<tr>
-							<td><a href="users/{{ $child->id }}">{{ $child->first_name }} {{ $child->last_name }}</a></td>
+							<td><a href="{{ action('HomeController@getIndex', $sponsor->id) }}">{{ $child->first_name }} {{ $child->last_name }}</a></td>
 							<td>{{ $child->phone }}</td>
 							<td>{{ $child->email }}</td>
 						</tr>
