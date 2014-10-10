@@ -49,9 +49,9 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'sociallymobile',
-			'username'  => 'mlm_user',
-			'password'  => '12345678',
+			'database'  => 'soc_mob',
+			'username'  => 'soc_mob',
+			'password'  => '7U8$SAV*NEjuB$T%',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
