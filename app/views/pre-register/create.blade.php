@@ -107,7 +107,7 @@
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('expires_year','* Security Code') }}
+		{{ Form::label('security','* Security Code') }}
 		{{ Form::text('security', null, array('class' => 'form-control', 'style' => 'width:50px')) }}
 	</div>
 

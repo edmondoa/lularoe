@@ -1,5 +1,5 @@
 <?php
-use Eventz\Payments\USAEpayment;
+use SociallyMobile\Payments\USAEpayment;
 class PaymentController extends \BaseController {
 
 	/**

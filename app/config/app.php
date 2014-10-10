@@ -121,8 +121,9 @@ return array(
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
-		'Way\Generators\GeneratorsServiceProvider',
-		'Jrenton\LaravelScaffold\LaravelScaffoldServiceProvider'
+		//'Way\Generators\GeneratorsServiceProvider',
+		//'Jrenton\LaravelScaffold\LaravelScaffoldServiceProvider',
+		'SociallyMobile\Twilio\TwilioServiceProvider'
 
 	),
 
@@ -190,6 +191,8 @@ return array(
 		'URL'             => 'Illuminate\Support\Facades\URL',
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
+		'Twilio'		  => 'SociallyMobile\Twilio\TwilioFacade',
+
 
 	),
 
