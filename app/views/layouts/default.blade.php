@@ -49,7 +49,8 @@
 </div><!-- /.navbar -->
 <div class="container">
 	<div class="row row-offcanvas row-offcanvas-right">
- 		@if (Auth::check())
+		{{ Auth::user()->role_id }}
+ 		@if (Auth::check() && (Auth::user()->role_id >= 4))
  		<div class="col-xs-6 col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
 			<div class="list-group">
 				<!-- <a href="{{ url('addresses') }}" class="list-group-item">Addresses</a> -->
@@ -91,6 +92,7 @@
 {{ HTML::script('/js/jquery1.js') }}
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
 <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 {{ HTML::script('/packages/bootstrap-select/bootstrap-select.min.js') }}
 {{ HTML::script('js/functions.js') }}
 <script src="/js/controllers/DatepickerController.js"></script>
