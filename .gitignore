@@ -11,3 +11,4 @@ Thumbs.db
 *.pyo
 /app/config/jake_local
 /public/server_config
+/.htaccess
