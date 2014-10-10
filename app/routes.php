@@ -43,6 +43,57 @@ Route::group(array('before' => 'auth'), function()
 	# Admin only routes
 	##############################################################################################
 	Route::group(array('before' => 'admin'), function(){
+		Route::resource('user', 'UserController');
+		Route::resource('users', 'UserController');
+		Route::post('user/disable/{id}', 'UserController@disable');
+		Route::post('user/enable/{id}', 'UserController@enable');
+		Route::delete('user/delete/{id}', 'UserController@delete');
+		Route::resource('address', 'AddresseController');
+		Route::resource('addresses', 'AddresseController');
+		Route::resource('level', 'LevelController');
+		Route::resource('levels', 'LevelController');
+		Route::resource('role', 'RoleController');
+		Route::resource('roles', 'RoleController');
+		Route::resource('rank', 'RankController');
+		Route::resource('ranks', 'RankController');
+		Route::resource('userRank', 'UserRankController');
+		Route::resource('userRanks', 'UserRankController');
+		Route::resource('profile', 'ProfileController');
+		Route::resource('profiles', 'ProfileController');
+		Route::resource('product', 'ProductController');
+		Route::resource('products', 'ProductController');
+		Route::resource('cart', 'CartController');
+		Route::resource('carts', 'CartController');
+		Route::resource('userProduct', 'UserProductController');
+		Route::resource('userProducts', 'UserProductController');
+		Route::resource('review', 'ReviewController');
+		Route::resource('reviews', 'ReviewController');
+		Route::resource('mobilePlan', 'MobilePlanController');
+		Route::resource('mobilePlans', 'MobilePlanController');
+		Route::resource('bonus', 'BonuseController');
+		Route::resource('bonuses', 'BonuseController');
+		Route::resource('commission', 'CommissionController');
+		Route::resource('commissions', 'CommissionController');
+		Route::resource('page', 'PageController');
+		Route::resource('pages', 'PageController');
+		Route::resource('content', 'ContentController');
+		Route::resource('contents', 'ContentController');
+		Route::resource('image', 'ImageController');
+		Route::resource('images', 'ImageController');
+		Route::resource('sale', 'SaleController');
+		Route::resource('sales', 'SaleController');
+		Route::resource('emailMessage', 'EmailMessageController');
+		Route::resource('emailMessages', 'EmailMessageController');
+		Route::resource('smsMessage', 'SmsMessageController');
+		Route::resource('smsMessages', 'SmsMessageController');
+		Route::resource('emailRecipient', 'EmailRecipientController');
+		Route::resource('emailRecipients', 'EmailRecipientController');
+		Route::resource('smsRecipient', 'SmsRecipientController');
+		Route::resource('smsRecipients', 'SmsRecipientController');
+		Route::resource('payment', 'PaymentsController');
+		Route::resource('payments', 'PaymentsController');
+
+		Route::resource('productCategory', 'ProductCategoryController');
 
 	});
 	##############################################################################################
@@ -55,7 +106,8 @@ Route::group(array('before' => 'auth'), function()
 	# Rep only routes
 	##############################################################################################
 	Route::group(array('before' => 'rep'), function(){
-
+		// dashboard
+		Route::get('dashboard', 'DashboardController@index');
 	});
 	##############################################################################################
 	# Customer only routes
@@ -68,70 +120,23 @@ Route::group(array('before' => 'auth'), function()
 # Public Routes
 ##############################################################################################
 
-// dashboard
-Route::get('dashboard', 'DashboardController@index');
+##############################################################################################
+# Secure Routes
+##############################################################################################
 
-Route::resource('user', 'UserController');
-Route::resource('users', 'UserController');
-Route::post('user/disable/{id}', 'UserController@disable');
-Route::post('user/enable/{id}', 'UserController@enable');
-Route::delete('user/delete/{id}', 'UserController@delete');
-Route::resource('address', 'AddresseController');
-Route::resource('addresses', 'AddresseController');
-Route::resource('level', 'LevelController');
-Route::resource('levels', 'LevelController');
-Route::resource('role', 'RoleController');
-Route::resource('roles', 'RoleController');
-Route::resource('rank', 'RankController');
-Route::resource('ranks', 'RankController');
-Route::resource('userRank', 'UserRankController');
-Route::resource('userRanks', 'UserRankController');
-Route::resource('profile', 'ProfileController');
-Route::resource('profiles', 'ProfileController');
-Route::resource('product', 'ProductController');
-Route::resource('products', 'ProductController');
-Route::resource('cart', 'CartController');
-Route::resource('carts', 'CartController');
-Route::resource('userProduct', 'UserProductController');
-Route::resource('userProducts', 'UserProductController');
-Route::resource('review', 'ReviewController');
-Route::resource('reviews', 'ReviewController');
-Route::resource('mobilePlan', 'MobilePlanController');
-Route::resource('mobilePlans', 'MobilePlanController');
-Route::resource('bonus', 'BonuseController');
-Route::resource('bonuses', 'BonuseController');
-Route::resource('commission', 'CommissionController');
-Route::resource('commissions', 'CommissionController');
-Route::resource('page', 'PageController');
-Route::resource('pages', 'PageController');
-Route::resource('content', 'ContentController');
-Route::resource('contents', 'ContentController');
-Route::resource('image', 'ImageController');
-Route::resource('images', 'ImageController');
-Route::resource('sale', 'SaleController');
-Route::resource('sales', 'SaleController');
-Route::resource('emailMessage', 'EmailMessageController');
-Route::resource('emailMessages', 'EmailMessageController');
-Route::resource('smsMessage', 'SmsMessageController');
-Route::resource('smsMessages', 'SmsMessageController');
-Route::resource('emailRecipient', 'EmailRecipientController');
-Route::resource('emailRecipients', 'EmailRecipientController');
-Route::resource('smsRecipient', 'SmsRecipientController');
-Route::resource('smsRecipients', 'SmsRecipientController');
-Route::resource('payment', 'PaymentsController');
-Route::resource('payments', 'PaymentsController');
-Route::get('join', 'PreRegisterController@sponsor');
-Route::get('join/{public_id}', 'PreRegisterController@create');
-Route::get('PreRegisterController@redirect', 'PreRegisterController@redirect');
-Route::resource('join', 'PreRegisterController',['only' => ['create','store']]);
-Route::resource('productCategory', 'ProductCategoryController');
+Route::group(['before' => 'force.ssl'], function()
+{
+	//Route::get('join', 'PreRegisterController@sponsor');
+	Route::get('join/{public_id}', 'PreRegisterController@create');
+	Route::get('join', 'PreRegisterController@create');
+	Route::post('find-sponsor', 'PreRegisterController@redirect');
+	Route::resource('join', 'PreRegisterController',['only' => ['create','store']]);
+});
 
 ##############################################################################################
 # Testing and etc.
 ##############################################################################################
 
 Route::get('test', function(){
-	return Config::get('site.preregistration_fee');
+	return;  //Config::get('site.preregistration_fee');
 });
-
-

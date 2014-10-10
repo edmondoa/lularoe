@@ -92,6 +92,22 @@ Route::filter('superadmin', function(){
 
 /*
 |--------------------------------------------------------------------------
+| Force Https requests
+|--------------------------------------------------------------------------
+*/
+ 
+Route::filter('force.ssl', function()
+{
+	if( ! Request::secure() && App::environment() === 'production') // only use this for production
+	{
+		return Redirect::secure(Request::getRequestUri());
+	}
+ 
+});
+
+
+/*
+|--------------------------------------------------------------------------
 | Guest Filter
 |--------------------------------------------------------------------------
 |
