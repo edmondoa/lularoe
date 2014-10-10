@@ -25,13 +25,13 @@ class DatabaseSeeder extends Seeder {
 
 		// $this->call('UserTableSeeder');
 		$this->call('UsersTableSeeder');
-		$this->call('AddressesTableSeeder');
+		//$this->call('AddressesTableSeeder');
 		//$this->call('LevelsTableSeeder');
-		$this->call('RolesTableSeeder');
+		//$this->call('RolesTableSeeder');
 		//$this->call('RanksTableSeeder');
 		//$this->call('UserRanksTableSeeder');
 		//$this->call('ProfilesTableSeeder');
-		$this->call('ProductsTableSeeder');
+		//$this->call('ProductsTableSeeder');
 		//$this->call('CartsTableSeeder');
 		//$this->call('UserProductsTableSeeder');
 		//$this->call('ReviewsTableSeeder');
@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder {
 		//$this->call('PaymentsTableSeeder');
 		//$this->call('UsersTableSeederTest');
 
-		$this->call('ProductCategoriesTableSeeder');
+		//$this->call('ProductCategoriesTableSeeder');
 	}
 
 }

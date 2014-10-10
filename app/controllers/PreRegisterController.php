@@ -18,9 +18,31 @@ class PreRegisterController extends \BaseController {
 		}
 		else
 		{
-			return 'Unknown Sponsor';
+			return View::make('pre-register.sponsor')->with('error', 'Missing or incorrect sponsor ID');
 		}
 		//return View::make('pre-register.create');
+	}
+
+	/**
+	 * Go to sponsor form if no sponsor_id is in the URL
+	 *
+	 * @return Response
+	 */
+	public function sponsor()
+	{
+		return View::make('pre-register.sponsor');
+	}
+
+
+	/**
+	 * Redirect to create form upon entering sponsor_id
+	 *
+	 * @return Response
+	 */
+	public function redirect()
+	{
+		$sponsor_id = Input::only('sponsor_id');
+		return Redirect::route('pre-register/' . $sponsor_id);
 	}
 
 	/**

@@ -21,10 +21,11 @@ Route::resource('sessions','SessionController',['only' => ['create','destroy','s
 ##############################################################################################
 # Home Page
 ##############################################################################################
-Route::get('/', function()
+Route::get('/',['as'=>'home', function()
 {
-	return View::make('hello');
-});
+	return View::make('sessions.create');
+}]);
+
 
 ##############################################################################################
 // Protected Routes
@@ -118,7 +119,9 @@ Route::resource('smsRecipient', 'SmsRecipientController');
 Route::resource('smsRecipients', 'SmsRecipientController');
 Route::resource('payment', 'PaymentController');
 Route::resource('payments', 'PaymentController');
+Route::get('pre-register', 'PreRegisterController@sponsor');
 Route::get('pre-register/{public_id}', 'PreRegisterController@create');
+Route::get('PreRegisterController@redirect', 'PreRegisterController@redirect');
 Route::resource('pre-register', 'PreRegisterController',['only' => ['create','store']]);
 Route::resource('productCategory', 'ProductCategoryController');
 
