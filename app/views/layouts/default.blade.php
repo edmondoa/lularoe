@@ -97,7 +97,7 @@
 {{ HTML::script('/packages/bootstrap-select/bootstrap-select.min.js') }}
 {{ HTML::script('jquery-ui-1.10.4.custom.min.js') }}
 {{ HTML::script('js/functions.js') }}
-<script src="/js/controllers/DatepickerController.js"></script>
+<script src="/js/controllers/datepickerController.js"></script>
 <!--[javascript]-->
 </body>
 </html>
