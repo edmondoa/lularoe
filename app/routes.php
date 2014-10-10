@@ -131,6 +131,7 @@ Route::resource('productCategory', 'ProductCategoryController');
 ##############################################################################################
 
 Route::get('test', function(){
-	return Auth::user()->role->name;
+	return Config::get('site.preregistration_fee');
 });
+
 
