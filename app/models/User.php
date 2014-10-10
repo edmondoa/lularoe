@@ -34,13 +34,20 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;
 
+	public function addresses() {
+		return $this -> morphMany('Address', 'addressable');
+	}
+	
 	public function sponsor() {
 		return $this -> belongsTo('User', 'sponsor_id', 'id');
-		//$this -> morphMany('Address', 'addressable');
 	}
 	
 	public function children() {
-		return $this -> hasMany('User', 'sponsor_id', 'id');
+		return $this -> hasMany('User', 'id', 'sponsor_id');
+	}
+
+	public function role() {
+		return $this->belongsTo('Role');
 	}
 
 	/**
@@ -59,16 +66,16 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function getRememberToken()
 	{
-	return $this->remember_token;
+		return $this->remember_token;
 	}
 
 	public function setRememberToken($value)
 	{
-	$this->remember_token = $value;
+		$this->remember_token = $value;
 	}
 
 	public function getRememberTokenName()
 	{
-	return 'remember_token';
+		return 'remember_token';
 	}
 }

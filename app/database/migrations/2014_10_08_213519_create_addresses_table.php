@@ -12,13 +12,12 @@ class CreateAddressesTable extends Migration
 			$table->increments('id');
 			$table->string('address_1');
 			$table->string('address_2');
-			$table->string('city');
-			$table->string('state');
-			$table->integer('addressable_id');
-			$table->integer('zip');
+			$table->string('city',35);
+			$table->string('state',2);
+			$table->morphs('addressable');
+			$table->string('zip',10);
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

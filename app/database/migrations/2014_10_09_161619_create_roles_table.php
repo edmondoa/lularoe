@@ -12,8 +12,7 @@ class CreateRolesTable extends Migration
 			$table->increments('id');
 			$table->string('name');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

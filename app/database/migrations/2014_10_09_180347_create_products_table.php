@@ -13,11 +13,10 @@ class CreateProductsTable extends Migration
 			$table->string('name');
 			$table->text('blurb');
 			$table->text('description');
-			$table->integer('price');
+			$table->decimal('price',10,2);
 			$table->integer('quantity');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

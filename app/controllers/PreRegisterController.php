@@ -62,18 +62,18 @@ class PreRegisterController extends \BaseController {
 		$params = array(
 			"command" => "sale",
 			"type" => 'CreditCard', //Name of the account holder.
-			"account_holder" => $data." ".$user->last_name, //Name of the account holder.
-			"customer_id" => $user->id,
+			"account_holder" => $data['first_name']." ".$data['last_name'], //Name of the account holder.
+			//"customer_id" => $user->id,
 			"billing_address" => array(
-				"first_name" => $user->first_name,
-				"last_name" => $user->last_name,
-				"email" => $user->email,
+				"first_name" => $data['first_name'],
+				"last_name" => $data['last_name'],
+				"email" => $data['email'],
 				//"company" => "",
-				"street_1" => $address['address'],
-				"street_2" => $address['address2'],
-				"city" => $address['city'],
-				"state" => $address['state'],
-				"zip" => $address['zip']
+				"street_1" => $data['address_1'],
+				"street_2" => $data['address_2'],
+				"city" => $data['city'],
+				"state" => $data['state'],
+				"zip" => $data['zip']
 			), //address object or add later
 			"software" => "BOX.EVENTS", 
 			//"recurring_billing" => array(), //recurring billing object or add later
@@ -87,8 +87,8 @@ class PreRegisterController extends \BaseController {
 				"card_number" => $data['card_number'],
 				"card_code" => $data['security'],
 				"card_exp" => $data['expires_month'].$data['expires_year'],
-				"card_street" => $address['address'],
-				"card_zip" => $address['zip'],
+				"card_street" => $data['address_1'],
+				"card_zip" => $data['zip'],
 			), //credit card payment object or add later
 			//"check_data" => array(), //e-check payment object or add later
 		);
@@ -105,6 +105,7 @@ class PreRegisterController extends \BaseController {
 		//exit;
 		if($payment->send_request())
 		{
+			$user = User::create($data);
 			//$payment->expose($data);
 			// clean up our data
 			//exit;
@@ -112,45 +113,14 @@ class PreRegisterController extends \BaseController {
 			$data['details'] = '';
 			$data['tender'] = 'CreditCard';
 			$new_payment = Payment::create($data);
-			$new_payment->event()->associate($event);
-			$new_payment->user()->associate(Auth::user());
+			
+			$new_payment->user()->associate($user);
+			//associate the payment to the new user
 			$new_payment->save();
-			//now check for a new team
-			if(($data['team_captain'] == 'on')&&(!empty($data['team_name'])))
-			{
-				//create the new team
-				//$captain = 
-				$team = Team::create([
-					'team_name' => $data['team_name']
-				]);
-				$team->captain()->associate(Auth::user());
-				$team->event()->associate($event);
-				$team->save();
-				$new_payment->team()->associate($team);
-				$team->members()->attach(Auth::user());
-			}
-			elseif(!empty($data['team_id']))
-			{
-				$team = Team::find($data['team_id']);
-				$new_payment->team()->associate($team);
-				$team->members()->attach(Auth::user());
-			}
 
-			//now if division is set assciate it to a division
-			if(!empty($data['division_id']))
-			{
-				$division = Division::find($data['division_id']);
-				$new_payment->division()->associate($division);
-			}
-			if(!empty($data['shirt_id']))
-			{
-				$shirt = Shirt::find($data['shirt_id']);
-				$new_payment->shirts()->associate($shirt);
-			}
-			$new_payment->save();
-			$role = Role::where('name','Athlete')->first();
+			$role = Role::where('name','Rep')->first();
 			//echo"<pre>"; print_r($role); echo"</pre>";
-		    $event->roles()->attach(Auth::user(),array('role_id' => $role->id));
+		    $user->role()->associate($role);
 
 			//exit('we got to here');
 	    }
