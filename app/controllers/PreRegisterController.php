@@ -41,8 +41,9 @@ class PreRegisterController extends \BaseController {
 	 */
 	public function redirect()
 	{
-		$sponsor_id = Input::only('sponsor_id');
-		return Redirect::route('join/' . $sponsor_id);
+		$data = Input::all();
+		$sponsor_id = $data['sponsor_id'];
+		return Redirect::to('join/' . $sponsor_id);
 	}
 
 	/**
