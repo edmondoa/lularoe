@@ -147,6 +147,7 @@ class PreRegisterController extends \BaseController {
 			];
 			$address = Address::create($address);
 			$user->addresses()->save($address);
+			//$user->addresses()->save($address);
 
 			$data['transaction_id'] = $payment->transaction_id;
 			$data['details'] = '';
