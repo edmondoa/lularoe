@@ -35,7 +35,7 @@ Route::group(array('before' => 'auth'), function()
 {
 	
 	// dashboard
-	Route::get('dashboard', 'DashboardController@index');
+	Route::get('dashboard',['as'=>'dashboard','uses'=> 'DashboardController@index']);
 	// users
 	Route::resource('user', 'UserController');
 	Route::resource('users', 'UserController');
@@ -142,5 +142,6 @@ Route::group(['before' => 'force.ssl'], function()
 ##############################################################################################
 
 Route::get('test', function(){
+	return Redirect::to('/dashboard');
 	return;  //Config::get('site.preregistration_fee');
 });

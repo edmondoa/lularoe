@@ -152,7 +152,7 @@ class PreRegisterController extends \BaseController {
 			$role = Role::where('name','Rep')->first();
 			//echo"<pre>"; print_r($role); echo"</pre>";
 			$user->role()->associate($role);
-
+			$user->save();
 			//exit('we got to here');
 		}
 		else
@@ -166,7 +166,7 @@ class PreRegisterController extends \BaseController {
 		}
 		//User::create($data);
 		Auth::loginUsingId($user->id);
-		return Redirect::route('/dashboard');
+		return Redirect::to('/dashboard');
 	}
 
 	/**
