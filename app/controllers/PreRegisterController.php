@@ -43,16 +43,16 @@ class PreRegisterController extends \BaseController {
 		$rules['security'] = 'required|numeric';
 		$rules['expires_year'] = 'required|digits:4';
 		$rules['expires_month'] = 'required|digits:2';
-		$rules['refund_policy'] = 'required|accepted';
+		//$rules['refund_policy'] = 'required|accepted';
 		$rules['agree'] = 'required|accepted';
 		$rules['password'] = 'required|confirmed|digits_between:8,32';
 		$rules['public_id'] = 'required|unique:users,public_id';
 		$rules['email'] = 'required|unique:users,email';
 
 		$validator = Validator::make($data = Input::all(), $rules);
-		echo"<pre>"; print_r($data); echo"</pre>";
-		echo"<pre>"; print_r('passed muster'); echo"</pre>";
-		exit;
+		//echo"<pre>"; print_r($data); echo"</pre>";
+		//echo"<pre>"; print_r('passed muster'); echo"</pre>";
+		//exit;
 
 		if ($validator->fails())
 		{
