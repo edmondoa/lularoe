@@ -14,6 +14,11 @@ class CreateRolesTable extends Migration
 			$table->boolean('disabled');
 			$table->timestamps();
 		});
+		Role::create(["name"=>"Customer"]);
+		Role::create(["name"=>"Rep"]);
+		Role::create(["name"=>"Editor"]);
+		Role::create(["name"=>"Admin"]);
+		Role::create(["name"=>"Superadmin"]);
 	}
 
 	public function down()

@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
 			$table->string('gender',2);
 			$table->string('key');
 			$table->date('dob');
-			$table->integer('phone');
+			$table->bigInteger('phone');
 			$table->integer('role_id');
 			$table->integer('sponsor_id')->nullable();
 			$table->integer('mobile_plan_id');
@@ -27,6 +27,24 @@ class CreateUsersTable extends Migration
 			$table->timestamps();
 			$table->rememberToken();
 		});
+
+		$user = User::create([
+			'id' => 0,
+			'first_name' => "SociallyMobile",
+			'last_name' => 'Frontline',
+			'email' => 'muckitymuck@example.com',
+			'password' => \Hash::make('Fr3@k0z0id'),
+			'key' => '',
+			'phone' => '',
+			'dob' => '1969-12-31',
+			'role_id' => 5,
+			'sponsor_id' => null,
+			'mobile_plan_id' => null,
+			'min_commission' => 0,
+			'disabled' => false,
+			'public_id' => "SocMobFrontline"
+		]);
+		DB::update(DB::raw('UPDATE users SET id=0 WHERE id='.$user->id));
 	}
 
 	public function down()

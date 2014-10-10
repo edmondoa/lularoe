@@ -10,6 +10,7 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+use SociallyMobile\Payments\USAEpayment;
 ##############################################################################################
 # Session Control
 ##############################################################################################
@@ -117,8 +118,8 @@ Route::resource('emailRecipient', 'EmailRecipientController');
 Route::resource('emailRecipients', 'EmailRecipientController');
 Route::resource('smsRecipient', 'SmsRecipientController');
 Route::resource('smsRecipients', 'SmsRecipientController');
-Route::resource('payment', 'PaymentController');
-Route::resource('payments', 'PaymentController');
+Route::resource('payment', 'PaymentsController');
+Route::resource('payments', 'PaymentsController');
 Route::get('pre-register', 'PreRegisterController@sponsor');
 Route::get('pre-register/{public_id}', 'PreRegisterController@create');
 Route::get('PreRegisterController@redirect', 'PreRegisterController@redirect');
@@ -130,6 +131,7 @@ Route::resource('productCategory', 'ProductCategoryController');
 ##############################################################################################
 
 Route::get('test', function(){
-	return Auth::user()->role->name;
+	return Config::get('site.preregistration_fee');
 });
+
 
