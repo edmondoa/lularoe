@@ -96,7 +96,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 {{ HTML::script('/packages/bootstrap-select/bootstrap-select.min.js') }}
 {{ HTML::script('js/functions.js') }}
-<script src="/js/controllers/DatepickerController.js"></script>
+<script src="/js/controllers/datepickerController.js"></script>
 <!--[javascript]-->
 </body>
 </html>
