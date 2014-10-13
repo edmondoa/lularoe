@@ -42,7 +42,7 @@ class CreateUsersTable extends Migration
 			'mobile_plan_id' => null,
 			'min_commission' => 0,
 			'disabled' => false,
-			'public_id' => "SocMobFrontline"
+			'public_id' => "theconversation"
 		]);
 		DB::update(DB::raw('UPDATE users SET id=0 WHERE id='.$user->id));
 	}
