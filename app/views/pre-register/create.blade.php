@@ -131,7 +131,7 @@
 		</label>
 	</div>
 	<div style="position:relative; top:-10px;">
-		<small class="tiny">October 1, 2014 - December 31, 2014 is considered "Beta Launch Pad" wherein you can enroll for as little as $100. The $100 is fully refundable by sending an email to cancellations@sociallymobile.com. No commissions are being paid during this Beta Launch phase. 100% of the $100 collected in Beta will be credited toward their fees in January.</small>
+		<small class="tiny">October 14, 2014 - December 31, 2014 is considered "Beta Launch Pad" wherein you can enroll for as little as $100. The $100 is fully refundable by sending an email to cancellations@sociallymobile.com. No commissions are being paid during this Beta Launch phase. 100% of the $100 collected in Beta will be credited toward your fees in January.</small>
 	</div>
 	<br>
    
