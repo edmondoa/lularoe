@@ -33,7 +33,7 @@ $(document).ready(function() {
     
     // change method of index form
     $('select.actions').change(function() {
-       $('form').attr('action', $(this).val() + '/0'); 
+       $('form').attr('action', $(this).val()); 
     });
     
     // jQUery UI

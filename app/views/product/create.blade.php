@@ -1,3 +1,4 @@
+@extends('layouts.default')
 @section('content')
 <div class="row">
     <h2>New Product</h2>

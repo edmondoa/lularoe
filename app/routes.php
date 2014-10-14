@@ -55,17 +55,15 @@ Route::group(array('before' => 'auth'), function()
 	##############################################################################################
 	Route::group(array('before' => 'Admin'), function(){
 		// users
-		Route::post('user/disable/{id}', 'UserController@disable');
-		Route::post('user/enable/{id}', 'UserController@enable');
-		Route::delete('user/delete/{id}', 'UserController@destroy');
-		//products
-		Route::post('product/disable/{id}', 'ProductController@disable');
-		Route::post('product/enable/{id}', 'ProductController@enable');
-		Route::post('product/delete/{id}', 'ProductController@destroy');
+		Route::post('user/disable', 'UserController@disable');
+		Route::post('user/enable', 'UserController@enable');
+		Route::post('user/delete', 'UserController@delete');
 		
-		Route::post('user/disable/{id}', 'UserController@disable');
-		Route::post('user/enable/{id}', 'UserController@enable');
-		Route::delete('user/delete/{id}', 'UserController@delete');
+		//products
+		Route::post('product/disable', 'ProductController@disable');
+		Route::post('product/enable', 'ProductController@enable');
+		Route::post('product/delete', 'ProductController@delete');
+		
 		Route::resource('address', 'AddresseController');
 		Route::resource('addresses', 'AddresseController');
 		Route::resource('level', 'LevelController');

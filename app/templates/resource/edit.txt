@@ -1,3 +1,4 @@
+@extends('layouts.default')
 @section('content')
 <div class="row">
 	<a href="{{ URL::previous() }}">&lsaquo; Back</a>

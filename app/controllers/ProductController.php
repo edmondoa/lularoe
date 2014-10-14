@@ -1,111 +1,160 @@
-<?php 
+<?php
 
-class ProductController extends \BaseController
-{
-	protected $product;
-	
+class productController extends \BaseController {
+
 	// data only
 	public function getAllProducts(){
 		return Product::all();
 	}
 
-	public function __construct(Product $product)
-	{
-		$this->product = $product;
-	}
-
+	/**
+	 * Display a listing of products
+	 *
+	 * @return Response
+	 */
 	public function index()
 	{
-    	$products = $this->product->all();
-        $this->layout->content = \View::make('product.index', compact('products'));
+		$products = Product::all();
+
+		return View::make('product.index', compact('products'));
 	}
 
+	/**
+	 * Show the form for creating a new product
+	 *
+	 * @return Response
+	 */
 	public function create()
 	{
-        $this->layout->content = \View::make('product.create');
+		return View::make('product.create');
 	}
 
+	/**
+	 * Store a newly created product in storage.
+	 *
+	 * @return Response
+	 */
 	public function store()
 	{
-        $this->product->store(\Input::only('name','blurb','description','price','quantity','category_id','disabled'));
-        return \Redirect::route('product.index');
+		$validator = Validator::make($data = Input::all(), Product::$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		Product::create($data);
+
+		return Redirect::route('product.index')->with('message', 'Product created.');
 	}
 
+	/**
+	 * Display the specified product.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function show($id)
 	{
-        $product = $this->product->find($id);
-        $this->layout->content = \View::make('product.show')->with('product', $product);
+		$product = Product::findOrFail($id);
+
+		return View::make('product.show', compact('product'));
 	}
 
+	/**
+	 * Show the form for editing the specified product.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function edit($id)
 	{
-        $product = $this->product->find($id);
-        $this->layout->content = \View::make('product.edit')->with('product', $product);
+		$product = Product::find($id);
+
+		return View::make('product.edit', compact('product'));
 	}
 
+	/**
+	 * Update the specified product in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function update($id)
 	{
-        $this->product->find($id)->update(\Input::only('name','blurb','description','price','quantity','category_id','disabled'));
-        return \Redirect::route('product.show', $id);
+		$product = Product::findOrFail($id);
+
+		$validator = Validator::make($data = Input::all(), Product::$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		$product->update($data);
+
+		return Redirect::route('products.index')->with('message', 'Product updated.');
 	}
 
+	/**
+	 * Remove the specified product from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function destroy($id)
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->product->destroy($id);
-			}
-			return \Redirect::route('product.index');
+		Product::destroy($id);
+
+		return Redirect::route('product.index')->with('message', 'Product deleted.');
+	}
+	
+	/**
+	 * Remove products.
+	 */
+	public function delete()
+	{
+		foreach (Input::get('ids') as $id) {
+			Product::destroy($id);
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', 'Products deleted.');
 		}
 		else {
-	        $this->product->destroy($id);
-	        return \Redirect::route('product.index');
+			return Redirect::route('product.index')->with('message', 'Product deleted.');
 		}
 	}
-		
-	public function disable($id)
+	
+	/**
+	 * Diable products.
+	 */
+	public function disable()
 	{
-		//if ($id == 0) {
-			// echo '<pre>'; print_r(Input::only('ids')); echo '</pre>';
-			// exit;
-			foreach (Input::get('ids') as $id) {
-				Product::find($id)->update(['disabled' => 1]);	
-				//echo $id;
-				// exit;
-				//DB::update('update products set disabled = 1 where id = ' . $id . '');
-				// $this->product->where('id', $id)->update(['disabled' => 1]);
-			}
-			return \Redirect::route('product.index')->with('message', 'Products disabled.');
-		// }
-		// else {
-	        // $this->product->where('id', $id)->update(array('disabled' => 1));
-	        // return \Redirect::route('product.index')->with('message', 'Product disabled.');;
-		// }
+		foreach (Input::get('ids') as $id) {
+			Product::find($id)->update(['disabled' => 1]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', 'Products disabled.');
+		}
+		else {
+			return Redirect::route('product.show', $id)->with('message', 'Product disabled.');
+		}
 	}
 	
-	public function enable($id)
+	/**
+	 * Enable products.
+	 */
+	public function enable()
 	{
-		// echo '<pre>'; print_r(Input::all()); echo '</pre>';
-		// exit;
-		//if ($id == 0) {
-			foreach (Input::get('ids') as $id) {
-				// echo $id[0];
-				// exit;
-				// DB::update('update products set disabled = 0 where id = ?', array($id));
-				// $this->product->where('id', '=', $id)->update(['disabled' => 0]);
-				Product::find($id)->update(['disabled' => 0]);
-				// $product->disabled = 0;
-				// $product->save();
-				// echo '<pre>'; print_r($product); echo '</pre>';
-			}
-			// exit;
-			
-			return \Redirect::route('product.index')->with('message', 'Products enabled.');;
-		// }
-		// else {
-	        // $this->product->where('id', $id)->update(array('disabled' => NULL));
-	        // return \Redirect::route('product.index')->with('message', 'Product enabled.');;
-		// }
+		foreach (Input::get('ids') as $id) {
+			Product::find($id)->update(['disabled' => 0]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', 'Products enabled.');
+		}
+		else {
+			return Redirect::route('product.show', $id)->with('message', 'Product enabled.');
+		}
 	}
-	
+
 }

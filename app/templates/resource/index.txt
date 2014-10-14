@@ -2,15 +2,15 @@
 @section('content')
 <div class="row" ng-controller="[Models]Controller">
 	<h1>All [Models]</h1>
-	{{ Form::open(array('url' => '[models]/' . 0, 'method' => 'POST')) }}
+	{{ Form::open(array('url' => '[model]/disable', 'method' => 'POST')) }}
 		<div class="pull-left">
-			<a class="btn btn-success pull-left margin-right-1" title="New" href="{{ url('[model]/create') }}"><i class="fa fa-pencil"></i></a>
+			<a class="btn btn-success pull-left margin-right-1" title="New" href="{{ url('[model]/create') }}"><i class="fa fa-plus"></i></a>
 			<div class="pull-left">
 			    <div class="input-group">
 			        <select class="form-control selectpicker actions">
 				    	<option value="[model]/disable" selected>Disable</option>
-				    	<option value="[model]/enable" selected>Enable</option>
-				    	<option value="[model]/delete" selected>Delete</option>
+				    	<option value="[model]/enable">Enable</option>
+				    	<option value="[model]/delete">Delete</option>
 			        </select>
 			        <div class="input-group-btn">
 			        	<button class="btn btn-default applyAction" disabled><i class="fa fa-check"></i></button>
@@ -29,7 +29,7 @@
 			</div>
 		</div>
 		<div class="clear"></div>
-	    <table class="table">
+	    <table class="table table-striped">
 	        <thead>
 	        	<tr>
 	        		<th><input type="checkbox"></th>

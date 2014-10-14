@@ -1,6 +1,11 @@
 <?php
 
-class [models]Controller extends \BaseController {
+class [model]Controller extends \BaseController {
+
+	// data only
+	public function getAll[Models](){
+		return [Model]::all();
+	}
 
 	/**
 	 * Display a listing of [models]
@@ -11,7 +16,7 @@ class [models]Controller extends \BaseController {
 	{
 		$[models] = [Model]::all();
 
-		return View::make('[models].index', compact('[models]'));
+		return View::make('[model].index', compact('[models]'));
 	}
 
 	/**
@@ -21,7 +26,7 @@ class [models]Controller extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('[models].create');
+		return View::make('[model].create');
 	}
 
 	/**
@@ -40,7 +45,7 @@ class [models]Controller extends \BaseController {
 
 		[Model]::create($data);
 
-		return Redirect::route('[models].index');
+		return Redirect::route('[model].index')->with('message', '[Model] created.');
 	}
 
 	/**
@@ -53,7 +58,7 @@ class [models]Controller extends \BaseController {
 	{
 		$[model] = [Model]::findOrFail($id);
 
-		return View::make('[models].show', compact('[model]'));
+		return View::make('[model].show', compact('[model]'));
 	}
 
 	/**
@@ -66,7 +71,7 @@ class [models]Controller extends \BaseController {
 	{
 		$[model] = [Model]::find($id);
 
-		return View::make('[models].edit', compact('[model]'));
+		return View::make('[model].edit', compact('[model]'));
 	}
 
 	/**
@@ -88,7 +93,7 @@ class [models]Controller extends \BaseController {
 
 		$[model]->update($data);
 
-		return Redirect::route('[models].index');
+		return Redirect::route('[models].index')->with('message', '[Model] updated.');
 	}
 
 	/**
@@ -101,57 +106,54 @@ class [models]Controller extends \BaseController {
 	{
 		[Model]::destroy($id);
 
-		return Redirect::route('[models].index');
+		return Redirect::route('[model].index')->with('message', '[Model] deleted.');
 	}
 	
 	/**
 	 * Remove [models].
 	 */
-	public function delete($id)
+	public function delete()
 	{
-		if ($id == 0) {
-			foreach (Input::get('ids') as $id) {
-				$this->[model]->destroy($id);
-			}
-			return \Redirect::route('[model].index')->with('message', '[Models] deleted.');;
+		foreach (Input::get('ids') as $id) {
+			[Model]::destroy($id);
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', '[Models] deleted.');
 		}
 		else {
-	        $this->[model]->destroy($id);
-	        return \Redirect::route('[model].index')->with('message', '[Model] deleted.');;
+			return Redirect::route('product.index')->with('message', '[Model] deleted.');
 		}
 	}
 	
 	/**
 	 * Diable [models].
 	 */
-	public function disable($id)
+	public function disable()
 	{
-		if ($id == 0) {
-			foreach (Input::get('ids') as $id) {
-				Product::find($id)->update(['disabled' => 1]);	
-			}
-			return \Redirect::route('product.index')->with('message', '[Models] disabled.');
+		foreach (Input::get('ids') as $id) {
+			[Model]::find($id)->update(['disabled' => 1]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', '[Models] disabled.');
 		}
 		else {
-	        $this->product->where('id', $id)->update(array('disabled' => 1));
-	        return \Redirect::route('product.index')->with('message', '[Model] disabled.');;
+			return Redirect::route('product.show', $ids[0])->with('message', '[Model] disabled.');
 		}
 	}
 	
 	/**
 	 * Enable [models].
 	 */
-	public function enable($id)
+	public function enable()
 	{
-		if ($id == 0) {
-			foreach (Input::get('ids') as $id) {
-				Product::find($id)->update(['disabled' => 1]);	
-			}
-			return \Redirect::route('product.index')->with('message', '[Models] enabled.');
+		foreach (Input::get('ids') as $id) {
+			[Model]::find($id)->update(['disabled' => 0]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', '[Models] enabled.');
 		}
 		else {
-	        $this->product->where('id', $id)->update(array('disabled' => 1));
-	        return \Redirect::route('product.index')->with('message', '[Model] enabled.');;
+			return Redirect::route('product.show', $ids[0])->with('message', '[Model] enabled.');
 		}
 	}
 

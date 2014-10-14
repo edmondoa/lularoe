@@ -1,13 +1,25 @@
+@extends('layouts.default')
 @section('content')
 <div class="row">
 	<a href="{{ URL::previous() }}">&lsaquo; Back</a>
 </div>
 <div class="row">
     <h1>Viewing [model]</h1>
-    <a class="btn btn-primary" href="{{ url('[model]/'.$[model]->id .'/edit') }}">Edit</a>
-    {{ Form::open(array('url' => '[model]/' . $[model]->id, 'method' => 'DELETE')) }}
-    {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
-    {{ Form::close() }}
+    <div class="btn-group">
+	    <a class="btn btn-default" href="{{ url('[model]/'.$[model]->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
+	    @if ($[model]->disabled == 0)
+		    {{ Form::open(array('url' => '[model]/' . $[model]->id, 'method' => 'DISABLE')) }}
+		    	<button class="btn btn-default active" title="Click to Disable"><i class="fa fa-eye"></i></button>
+		    {{ Form::close() }}
+		@else
+		    {{ Form::open(array('url' => '[model]/' . $[model]->id, 'method' => 'ENABLE')) }}
+		    	<button class="btn btn-default" title="Click to Enable"><i class="fa fa-eye"></i></button>
+		    {{ Form::close() }}
+		@endif
+	    {{ Form::open(array('url' => '[model]/' . $[model]->id, 'method' => 'DELETE')) }}
+	    	<button class="btn btn-default" title="Delete"><i class="fa fa-trash"></i></button>
+	    {{ Form::close() }}
+	</div>
 </div>
 <div class="row">
     <table class="table">
