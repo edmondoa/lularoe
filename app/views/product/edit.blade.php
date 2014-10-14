@@ -35,6 +35,11 @@
     </div>
     
     <div class="form-group">
+        {{ Form::label('category_id', 'Category Id') }}
+        {{ Form::text('category_id', null, array('class' => 'form-control')) }}
+    </div>
+    
+    <div class="form-group">
         {{ Form::label('disabled', 'Disabled') }}
         {{ Form::text('disabled', null, array('class' => 'form-control')) }}
     </div>

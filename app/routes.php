@@ -39,17 +39,30 @@ Route::group(array('before' => 'auth'), function()
 	// users
 	Route::resource('user', 'UserController');
 	Route::resource('users', 'UserController');
+	// products
+	Route::resource('product', 'ProductController');
+	Route::resource('products', 'ProductController');
+	Route::get('api/all-products', 'ProductController@getAllProducts');
 	
 	##############################################################################################
 	# Superadmin only routes
 	##############################################################################################
-	Route::group(array('before' => 'superadmin'), function(){
+	Route::group(array('before' => 'Superadmin'), function(){
 
 	});
 	##############################################################################################
 	# Admin only routes
 	##############################################################################################
-	Route::group(array('before' => 'admin'), function(){
+	Route::group(array('before' => 'Admin'), function(){
+		// users
+		Route::post('user/disable/{id}', 'UserController@disable');
+		Route::post('user/enable/{id}', 'UserController@enable');
+		Route::delete('user/delete/{id}', 'UserController@destroy');
+		//products
+		Route::post('product/disable/{id}', 'ProductController@disable');
+		Route::post('product/enable/{id}', 'ProductController@enable');
+		Route::post('product/delete/{id}', 'ProductController@destroy');
+		
 		Route::post('user/disable/{id}', 'UserController@disable');
 		Route::post('user/enable/{id}', 'UserController@enable');
 		Route::delete('user/delete/{id}', 'UserController@delete');
@@ -65,8 +78,6 @@ Route::group(array('before' => 'auth'), function()
 		Route::resource('userRanks', 'UserRankController');
 		Route::resource('profile', 'ProfileController');
 		Route::resource('profiles', 'ProfileController');
-		Route::resource('product', 'ProductController');
-		Route::resource('products', 'ProductController');
 		Route::resource('cart', 'CartController');
 		Route::resource('carts', 'CartController');
 		Route::resource('userProduct', 'UserProductController');
@@ -104,19 +115,19 @@ Route::group(array('before' => 'auth'), function()
 	##############################################################################################
 	# Editor only routes
 	##############################################################################################
-	Route::group(array('before' => 'editor'), function(){
+	Route::group(array('before' => 'Editor'), function() {
 
 	});
 	##############################################################################################
 	# Rep only routes
 	##############################################################################################
-	Route::group(array('before' => 'rep'), function(){
+	Route::group(array('before' => 'Rep'), function() {
 
 	});
 	##############################################################################################
 	# Customer only routes
 	##############################################################################################
-	Route::group(array('before' => 'customer'), function(){
+	Route::group(array('before' => 'Customer'), function() {
 
 	});
 });

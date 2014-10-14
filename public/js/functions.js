@@ -33,7 +33,6 @@ $(document).ready(function() {
     
     // change method of index form
     $('select.actions').change(function() {
-        alert('change');
        $('form').attr('action', $(this).val() + '/0'); 
     });
     

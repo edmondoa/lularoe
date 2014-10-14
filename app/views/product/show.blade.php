@@ -38,6 +38,11 @@
         </tr>
         
         <tr>
+            <th>Category Id:</th>
+            <td>{{ $product->category_id }}</td>
+        </tr>
+        
+        <tr>
             <th>Disabled:</th>
             <td>{{ $product->disabled }}</td>
         </tr>
