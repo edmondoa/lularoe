@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="ui.bootstrap.demo">
+<html>
 <head>
 	<meta charset="utf-8">
 	<meta name="description" content="">
@@ -116,5 +116,8 @@
 {{ HTML::script('js/functions.js') }}
 <script src="/js/controllers/datepickerController.js"></script>
 <!--[javascript]-->
+@section('scripts')
+@show
+<script src="/packages/dirpagination/dirPagination.js"></script>
 </body>
 </html>

@@ -137,7 +137,7 @@ class productController extends \BaseController {
 			return Redirect::route('product.index')->with('message', 'Products disabled.');
 		}
 		else {
-			return Redirect::route('product.show', $id)->with('message', 'Product disabled.');
+			return Redirect::route('product.show', $ids[0])->with('message', 'Product disabled.');
 		}
 	}
 	
@@ -153,7 +153,7 @@ class productController extends \BaseController {
 			return Redirect::route('product.index')->with('message', 'Products enabled.');
 		}
 		else {
-			return Redirect::route('product.show', $id)->with('message', 'Product enabled.');
+			return Redirect::route('product.show', $ids[0])->with('message', 'Product enabled.');
 		}
 	}
 

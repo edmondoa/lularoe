@@ -18,6 +18,13 @@ footer { padding: 30px 0; }
 .tiny { font-size:7pt; display:block; }
 .clear { clear:both; }
 .margin-right-1 { margin-right:.5em; }
+.margin-right-2 { margin-right:1em; }
+.itemsPerPage { max-width:80px; }
+.display-table { display:table; }
+.display-table-cell { display:table-cell; }
+.no-top { margin-top:0; }
+.no-bottom { margin-top:0; }
+.currentPage { position:relative; top:7px; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }

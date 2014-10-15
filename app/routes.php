@@ -11,6 +11,7 @@
 |
 */
 use SociallyMobile\Payments\USAEpayment;
+
 ##############################################################################################
 # Session Control
 ##############################################################################################
@@ -150,7 +151,6 @@ Route::group(['before' => 'force.ssl'], function()
 # Testing and etc.
 ##############################################################################################
 
-Route::get('test', function(){
-	return Redirect::to('/dashboard');
-	return;  //Config::get('site.preregistration_fee');
+Route::get('test', function() {
+	return View::make('test');
 });
