@@ -1,26 +1,74 @@
+@extends('layouts.default')
 @section('content')
-	<div class="row">
-	    <h1>All [Models]</h1>
-	    <a class="btn btn-success" href="{{ url('[model]/create') }}">New</a>
-	</div>
-	<div class="row">
+<div class="row" ng-controller="[Models]Controller">
+	<h1>All [Models]</h1>
+	{{ Form::open(array('url' => '[models]/' . 0, 'method' => 'POST')) }}
+		<div class="pull-left">
+			<a class="btn btn-success pull-left margin-right-1" title="New" href="{{ url('[model]/create') }}"><i class="fa fa-pencil"></i></a>
+			<div class="pull-left">
+			    <div class="input-group">
+			        <select class="form-control selectpicker actions">
+				    	<option value="[model]/disable" selected>Disable</option>
+				    	<option value="[model]/enable" selected>Enable</option>
+				    	<option value="[model]/delete" selected>Delete</option>
+			        </select>
+			        <div class="input-group-btn">
+			        	<button class="btn btn-default applyAction" disabled><i class="fa fa-check"></i></button>
+			        </div>
+			    </div>
+			</div>
+		</div>
+		<div class="pull-right">
+			<div class="input-group">
+			    <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
+			    <span class="input-group-btn">
+			        <button class="btn btn-default" type="button">
+			            <i class="fa fa-search"></i>
+			        </button>
+			    </span>
+			</div>
+		</div>
+		<div class="clear"></div>
 	    <table class="table">
 	        <thead>
-	            [repeat]
-	            <th>[Property]</th>
-	            [/repeat]
+	        	<tr>
+	        		<th><input type="checkbox"></th>
+	        		[repeat]<th>[formatted_property]</th>[/repeat]
+	        	</tr>
 	        </thead>
 	        <tbody>
-	            @foreach($[models] as $[model])
-		           <tr>
-	                    [repeat]
-	                    <td>
-	                        <a href="{{ url('[model]/details/'.$[model]->id) }}">{{ $[model]->[property] }}</a>
-	                    </td>
-	                    [/repeat]
-		           </tr>
-	        	@endforeach
+		        <tr ng-repeat="[model] in [models] | filter:search | orderBy : 'created_at':reverse">
+		            <td ng-click="checkbox()"><input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.[model]_id')"></td>
+		            [repeat]
+		            <td>
+		                <a href="/[models]/@include('_helpers.[model]_id')"><span ng-bind="[model].[property]"></span></a>
+		            </td>
+		            [/repeat]
+		        </tr>
 	        </tbody>
 	    </table>
-	</div>
+    {{ Form::close() }}
+</div>
+<script>
+
+	// AngularJS controller
+	function [Models]Controller($scope, $http) {
+		$http.get('/api/all-[models]').success(function([models]) {
+		
+			$scope.[models] = [models];
+			
+			// bulk action checkboxes
+			$scope.checkbox = function() {
+				var checked = false;
+				$('.bulk-check').each(function() {
+					if ($(this).is(":checked")) checked = true;
+				});
+				if (checked == true) $('.applyAction').removeAttr('disabled');
+				else $('.applyAction').attr('disabled', 'disabled');
+			};
+			
+		});	
+	}
+
+</script>
 @stop

@@ -5,28 +5,20 @@ class ProductsTableSeeder extends DatabaseSeeder
 
 	public function run()
 	{
+		$faker = $this->getFaker();
 
-		$product = array(
-			'name' => 'Unlimited Talk & Text | 1G Data',
-			'price' => 40,
-			'category_id' => 1
-		);
-		Product::create($product);
-		
-		$product = array(
-			'name' => 'Unlimited Talk & Text | 3G Data',
-			'price' => 50,
-			'category_id' => 1
-		);
-		Product::create($product);
-		
-		$product = array(
-			'name' => 'Unlimited Talk & Text | 5G Data',
-			'price' => 60,
-			'category_id' => 1
-		);
-		Product::create($product);
-		
+		for($i = 1; $i <= 10; $i++) {
+			$product = array(
+				'name' => $faker->name,
+				'blurb' => $faker->text,
+				'description' => $faker->text,
+				'price' => $faker->randomDigitNotNull,
+				'quantity' => $faker->randomDigitNotNull,
+				'category_id' => $faker->randomDigitNotNull,
+				'disabled' => $faker->boolean,
+			);
+			Product::create($product);
+		}
 	}
 
 }

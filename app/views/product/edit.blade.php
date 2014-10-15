@@ -1,3 +1,4 @@
+@extends('layouts.default')
 @section('content')
 <div class="row">
 	<a href="{{ URL::previous() }}">&lsaquo; Back</a>
@@ -32,6 +33,11 @@
     <div class="form-group">
         {{ Form::label('quantity', 'Quantity') }}
         {{ Form::text('quantity', null, array('class' => 'form-control')) }}
+    </div>
+    
+    <div class="form-group">
+        {{ Form::label('category_id', 'Category Id') }}
+        {{ Form::text('category_id', null, array('class' => 'form-control')) }}
     </div>
     
     <div class="form-group">

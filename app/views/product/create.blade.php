@@ -1,3 +1,4 @@
+@extends('layouts.default')
 @section('content')
 <div class="row">
     <h2>New Product</h2>
@@ -29,6 +30,11 @@
     <div class="form-group">
         {{ Form::label('quantity', 'Quantity') }}
         {{ Form::text('quantity', Input::old('quantity'), array('class' => 'form-control')) }}
+    </div>
+    
+    <div class="form-group">
+        {{ Form::label('category_id', 'Category Id') }}
+        {{ Form::text('category_id', Input::old('category_id'), array('class' => 'form-control')) }}
     </div>
     
     <div class="form-group">

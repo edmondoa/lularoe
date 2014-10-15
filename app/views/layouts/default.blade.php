@@ -21,6 +21,22 @@
 	{{ HTML::style('packages/bootstrap-select/bootstrap-select.min.css') }}
 	{{ HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css') }}
 	{{ HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css') }}
+	<script>
+	
+		// This is only for JavaScript that doesn't work in the footer
+		
+	    // disable enter key submit for certain forms
+	    function disableEnterKey(e)
+	    {
+	         var key;     
+	         if(window.event)
+	              key = window.event.keyCode; //IE
+	         else
+	              key = e.which; //firefox     
+	         return (key != 13);
+	    }
+	    
+	</script>
 </head>
 <body>
 <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
@@ -64,13 +80,13 @@
 				<!-- <a href="{{ url('levels') }}" class="list-group-item">Levels</a> -->
 				<!-- <a href="{{ url('pages') }}" class="list-group-item">Pages</a> -->
 				<!-- <a href="{{ url('payments') }}" class="list-group-item">Payments</a> -->
-				<!-- <a href="{{ url('products') }}" class="list-group-item">Products</a> -->
+				<a href="{{ url('products') }}" class="list-group-item"><i class="fa fa-mobile-phone"></i> &nbsp;Products</a>
 				<!-- <a href="{{ url('profiles') }}" class="list-group-item">Profiles</a> -->
 				<!-- <a href="{{ url('ranks') }}" class="list-group-item">Ranks</a> -->
 				<!-- <a href="{{ url('reviews') }}" class="list-group-item">Reviews</a> -->
 				<!-- <a href="{{ url('roles') }}" class="list-group-item">Roles</a> -->
 				<!-- <a href="{{ url('sales') }}" class="list-group-item">Sales</a> -->
-				<a href="{{ url('users') }}" class="list-group-item">Users</a>
+				<a href="{{ url('users') }}" class="list-group-item"><i class="fa fa-user"></i> Users</a>
 				<!-- <a href="{{ url('userProducts') }}" class="list-group-item">UserProducts</a> -->
 				<!-- <a href="{{ url('userRanks') }}" class="list-group-item">UserRanks</a> -->
 				<!-- <a href="{{ url('smsMessages') }}" class="list-group-item">SmsMessages</a> -->

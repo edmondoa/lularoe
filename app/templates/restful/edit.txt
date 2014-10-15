@@ -1,16 +1,17 @@
+@extends('layouts.default')
 @section('content')
 <div class="row">
-	<a href='[model]'>lsaquo; All [models]</a> 
+	<a href="{{ URL::previous() }}">&lsaquo; Back</a>
 </div>
 <div class="row">
-    <h2>Edit [Model]</h2>
+    <h2>Edit [model]</h2>
 </div>
 <div class="row">
-    {{ Form::model($[model], array('url' => '[model]/update/'.$[model]->id, 'method' => 'PUT')) }}
+    {{ Form::model($[model], array('route' => array('[model].update', $[model]->id), 'method' => 'PUT')) }}
 
     [repeat]
     <div class="form-group">
-        {{ Form::label('[property]', '[Property]') }}
+        {{ Form::label('[property]', '[formatted_property]') }}
         {{ Form::text('[property]', null, array('class' => 'form-control')) }}
     </div>
     [/repeat]
@@ -20,3 +21,4 @@
     {{Form::close()}}
 </div>
 @stop
+
