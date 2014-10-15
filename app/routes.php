@@ -142,6 +142,7 @@ Route::group(['before' => 'force.ssl'], function()
 ##############################################################################################
 
 Route::get('test', function(){
-	return Redirect::to('/dashboard');
-	return;  //Config::get('site.preregistration_fee');
+	//$response = Twilio::message('8014274607','This is a test message: trying out facades in SociallyMobile.');
+	return Commission::organize_hierarchy();
+	return ;  //Config::get('site.preregistration_fee');
 });
