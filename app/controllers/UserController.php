@@ -1,25 +1,39 @@
-<?php 
+<?php
 
-class UserController extends \BaseController
-{
-	protected $user;
+class userController extends \BaseController {
 
-	public function __construct(User $user)
-	{
-		$this->user = $user;
+	// data only
+	public function getAllUsers(){
+		return User::all();
 	}
 
+	/**
+	 * Display a listing of users
+	 *
+	 * @return Response
+	 */
 	public function index()
 	{
-    	$users = $this->user->all();
-        $this->layout->content = \View::make('user.index', compact('users'));
+		$users = User::all();
+
+		return View::make('user.index', compact('users'));
 	}
 
+	/**
+	 * Show the form for creating a new user
+	 *
+	 * @return Response
+	 */
 	public function create()
 	{
-        $this->layout->content = \View::make('user.create');
+		return View::make('user.create');
 	}
 
+	/**
+	 * Store a newly created user in storage.
+	 *
+	 * @return Response
+	 */
 	public function store()
 	{
 		$data = Input::all();
@@ -60,82 +74,113 @@ class UserController extends \BaseController
 		return Redirect::to('payment.create');
 	}
 
+	/**
+	 * Display the specified user.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function show($id)
 	{
-        $user = User::find($id);
-        //echo"<pre>"; print_r($user); echo"</pre>";
-        //exit;
-		$address = User::find($id)->addresses()->first();
-		//echo"<pre>"; print_r($address); echo"</pre>";
-        $this->layout->content = \View::make('user.show', compact('user', 'address'));
+		$user = User::findOrFail($id);
+
+		return View::make('user.show', compact('user'));
 	}
 
+	/**
+	 * Show the form for editing the specified user.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function edit($id)
 	{
-        $user = $this->user->find($id);
-        $this->layout->content = \View::make('user.edit')->with('user', $user);
+		$user = User::find($id);
+
+		return View::make('user.edit', compact('user'));
 	}
 
+	/**
+	 * Update the specified user in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function update($id)
 	{
-        $this->user->find($id)->update(\Input::only('first_name','last_name','email','password','gender','key','code','dob','phone','role_id','sponsor_id','mobile_plan_id','min_commission','disabled'));
-        return \Redirect::route('user.show', $id);
+		$user = User::findOrFail($id);
+
+		$validator = Validator::make($data = Input::all(), User::$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		$user->update($data);
+
+		return Redirect::route('users.show')->with('message', 'User updated.');
 	}
 
+	/**
+	 * Remove the specified user from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function destroy($id)
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->user->destroy($id);
-			}
-			return \Redirect::route('user.index');
-		}
-		else {
-	        $this->user->destroy($id);
-	        return \Redirect::route('user.index');
-		}
+		User::destroy($id);
+
+		return Redirect::route('user.index')->with('message', 'User deleted.');
 	}
 	
-	public function delete($id)
+	/**
+	 * Remove users.
+	 */
+	public function delete()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->user->destroy($id);
-			}
-			return \Redirect::route('user.index')->with('message', 'Users deleted.');;
+		foreach (Input::get('ids') as $id) {
+			User::destroy($id);
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', 'Users deleted.');
 		}
 		else {
-	        $this->user->destroy($id);
-	        return \Redirect::route('user.index')->with('message', 'User deleted.');;
+			return Redirect::back()->with('message', 'User deleted.');
 		}
 	}
 	
-	public function disable($id)
+	/**
+	 * Diable users.
+	 */
+	public function disable()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->user->where('id', $id)->update(array('disabled' => 1));
-			}
-			return \Redirect::route('user.index')->with('message', 'Users disabled.');
+		foreach (Input::get('ids') as $id) {
+			User::find($id)->update(['disabled' => 1]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', 'Users disabled.');
 		}
 		else {
-	        $this->user->where('id', $id)->update(array('disabled' => 1));
-	        return \Redirect::route('user.index')->with('message', 'User disabled.');;
+			return Redirect::back()->with('message', 'User disabled.');
 		}
 	}
 	
-	public function enable($id)
+	/**
+	 * Enable users.
+	 */
+	public function enable()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->user->where('id', $id)->update(array('disabled' => NULL));
-			}
-			return \Redirect::route('user.index')->with('message', 'Users enabled.');;
+		foreach (Input::get('ids') as $id) {
+			User::find($id)->update(['disabled' => 0]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', 'Users enabled.');
 		}
 		else {
-	        $this->user->where('id', $id)->update(array('disabled' => NULL));
-	        return \Redirect::route('user.index')->with('message', 'User enabled.');;
+			return Redirect::back()->with('message', 'User enabled.');
 		}
 	}
-	
+
 }

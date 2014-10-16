@@ -2,17 +2,17 @@
 @section('content')
 <div class="row">
 	<div class="col col-md-12">
-		<a href="{{ URL::previous() }}">&lsaquo; Back</a>
+		<a href="[model].index">&lsaquo; Back</a>
 	    <h1 class="no-top">Viewing [model]</h1>
 	    <div class="btn-group">
 		    <a class="btn btn-default" href="{{ url('[model]/'.$[model]->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 		    @if ($[model]->disabled == 0)
 			    {{ Form::open(array('url' => '[model]/' . $[model]->id, 'method' => 'DISABLE', 'class' => 'btn btn-default')) }}
-			    	<button class="btn btn-default" title="Click to Disable"><i class="fa fa-eye"></i></button>
+			    	<button class="btn btn-default" title="[Model] is enabled. Click to Disable"><i class="fa fa-eye"></i></button>
 			    {{ Form::close() }}
 			@else
 			    {{ Form::open(array('url' => '[model]/' . $[model]->id, 'method' => 'ENABLE', 'class' => 'btn btn-default')) }}
-			    	<button class="btn btn-default" title="Click to Enable"><i class="fa fa-eye"></i></button>
+			    	<button class="btn btn-default" title="[Model] is disabled. Click to Enable"><i class="fa fa-eye"></i></button>
 			    {{ Form::close() }}
 			@endif
 		    {{ Form::open(array('url' => '[model]/' . $[model]->id, 'method' => 'DELETE', 'class' => 'btn btn-default')) }}

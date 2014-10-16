@@ -1,0 +1,1 @@
+{{ productCategory.id }}

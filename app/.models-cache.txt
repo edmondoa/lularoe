@@ -1,2 +1,2 @@
 resource = false
-Product string( name ) text( blurb description ) integer( price quantity category_id ) boolean( disabled )
+Address string( address_1 address_2 city state ) integer( addressable_id zip ) boolean( disabled )

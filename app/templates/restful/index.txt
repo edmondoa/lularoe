@@ -57,8 +57,8 @@
 	                            	<input type="checkbox">
 	                            </th>
                             	[repeat]
-                            	<th ng-click="orderByField='name'; reverseSort = !reverseSort">[formatted_property]
-                            		<span class='link' href='#'>[formatted_property]
+                            	<th ng-click="orderByField='[property]'; reverseSort = !reverseSort">[formatted_property]
+                            		<span class='link' href='#'>
                             			<span ng-show="orderByField == '[property]'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>

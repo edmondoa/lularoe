@@ -93,7 +93,7 @@ class productController extends \BaseController {
 
 		$product->update($data);
 
-		return Redirect::route('products.index')->with('message', 'Product updated.');
+		return Redirect::route('products.show')->with('message', 'Product updated.');
 	}
 
 	/**
@@ -121,7 +121,7 @@ class productController extends \BaseController {
 			return Redirect::route('product.index')->with('message', 'Products deleted.');
 		}
 		else {
-			return Redirect::route('product.index')->with('message', 'Product deleted.');
+			return Redirect::back()->with('message', 'Product deleted.');
 		}
 	}
 	
@@ -137,7 +137,7 @@ class productController extends \BaseController {
 			return Redirect::route('product.index')->with('message', 'Products disabled.');
 		}
 		else {
-			return Redirect::route('product.show', $ids[0])->with('message', 'Product disabled.');
+			return Redirect::back()->with('message', 'Product disabled.');
 		}
 	}
 	
@@ -153,7 +153,7 @@ class productController extends \BaseController {
 			return Redirect::route('product.index')->with('message', 'Products enabled.');
 		}
 		else {
-			return Redirect::route('product.show', $ids[0])->with('message', 'Product enabled.');
+			return Redirect::back()->with('message', 'Product enabled.');
 		}
 	}
 

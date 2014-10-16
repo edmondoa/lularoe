@@ -2,6 +2,7 @@
 @section('content')
 <div class="row">
 	<div class="col col-md-12">
+		<a class="breadcrumbs" href="/[models]">&lsaquo; Back</a>
 	    <h1 class="no-top">New [Model]</h1>
 	    {{ Form::open(array('url' => '[model]')) }}
 	

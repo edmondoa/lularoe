@@ -71,6 +71,8 @@ class CreateStatesTable extends Migration {
 		State::create(['abbr'=>'WV','full_name'=>"West Virginia"]); 
 		State::create(['abbr'=>'WI','full_name'=>"Wisconsin"]); 
 		State::create(['abbr'=>'WY','full_name'=>"Wyoming"]);
+		State::create(['abbr'=>'PR','full_name'=>"Puerto Rico"]); 
+		State::create(['abbr'=>'VI','full_name'=>"US Virgin Islands"]); 
 	}
 
 
