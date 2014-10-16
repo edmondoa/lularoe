@@ -84,7 +84,7 @@
 	        {{ Form::text('zip', Input::old('zip'), array('class' => 'form-control')) }}
 	    </div>
 	    <br>
-	<div class="alert alert-success">Preluanch Membership Fee: $100</div>
+	<div class="alert alert-success">Prelaunch Membership Fee: $100</div>
 
 	    
 	<div class="form-group">
