@@ -1,6 +1,6 @@
 <?php namespace SociallyMobile\Commission;
 
-//use \User;
+use \User;
 
 class Commission extends \BaseController {
 
@@ -9,7 +9,7 @@ class Commission extends \BaseController {
 	}
 	
 	public function organize_hierarchy(){
-		$reps = \User::all();
+		$reps = User::take(1000)->get();
 		foreach($reps as $rep)
 		{
 			if ($rep->sponsor_id == 0) continue; //skip frontline
