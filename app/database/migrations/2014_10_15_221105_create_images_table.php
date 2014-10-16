@@ -13,8 +13,7 @@ class CreateImagesTable extends Migration
 			$table->string('type');
 			$table->string('url');
 			$table->string('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

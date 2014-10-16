@@ -17,8 +17,7 @@ class CreateProductsTable extends Migration
 			$table->integer('quantity');
 			$table->integer('category_id');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

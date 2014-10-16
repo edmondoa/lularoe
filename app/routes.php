@@ -168,5 +168,5 @@ Route::group(['before' => 'force.ssl'], function() {
 ##############################################################################################
 
 Route::get('test', function() {
-	return Commission::organize_hierarchy();
+	return Commission::get_down(2001,0);
 });

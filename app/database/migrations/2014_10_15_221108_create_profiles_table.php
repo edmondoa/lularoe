@@ -19,8 +19,7 @@ class CreateProfilesTable extends Migration
 			$table->boolean('receive_downline_email');
 			$table->boolean('receive_downline_sms');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 
