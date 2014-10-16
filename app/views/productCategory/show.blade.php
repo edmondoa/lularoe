@@ -1,27 +1,47 @@
+@extends('layouts.default')
 @section('content')
 <div class="row">
-	<a href="{{ URL::previous() }}">&lsaquo; Back</a>
-</div>
-<div class="row">
-    <h1>Viewing productCategory</h1>
-    <a class="btn btn-primary" href="{{ url('productCategory/'.$productCategory->id .'/edit') }}">Edit</a>
-    {{ Form::open(array('url' => 'productCategory/' . $productCategory->id, 'method' => 'DELETE')) }}
-    {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
-    {{ Form::close() }}
-</div>
-<div class="row">
-    <table class="table">
-        
-        <tr>
-            <th>Name:</th>
-            <td>{{ $productCategory->name }}</td>
-        </tr>
-        
-        <tr>
-            <th>Disabled:</th>
-            <td>{{ $productCategory->disabled }}</td>
-        </tr>
-        
-    </table>
+	<div class="col col-md-12">
+		<a class="breadcrumbs" href="/productCategories">&lsaquo; Back</a>
+	    <h1 class="no-top">Viewing productCategory</h1>
+	    <div class="btn-group">
+		    <a class="btn btn-default" href="{{ url('productCategory/'.$productCategory->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
+		    @if ($productCategory->disabled == 0)
+			    {{ Form::open(array('url' => 'productCategory/disable', 'method' => 'DISABLE')) }}
+			    	<input type="hidden" name="ids[]" value="{{ $productCategory->id }}">
+			    	<button class="btn btn-default active" title="Currently enabled. Click to disable.">
+			    		<i class="fa fa-eye"></i>
+			    	</button>
+			    {{ Form::close() }}
+			@else
+			    {{ Form::open(array('url' => 'productCategory/enable', 'method' => 'ENABLE')) }}
+			    	<input type="hidden" name="ids[]" value="{{ $productCategory->id }}">
+			    	<button class="btn btn-default" title="Currently disabled. Click to enable.">
+			    		<i class="fa fa-eye"></i>
+			    	</button>
+			    {{ Form::close() }}
+			@endif
+		    {{ Form::open(array('url' => 'productCategories/' . $productCategory->id, 'method' => 'DELETE')) }}
+		    	<button class="btn btn-default" title="Delete">
+		    		<i class="fa fa-trash" title="Delete"></i>
+		    	</button>
+		    {{ Form::close() }}
+		</div>
+		<br>
+		<br>
+	    <table class="table">
+	        
+	        <tr>
+	            <th>Name:</th>
+	            <td>{{ $productCategory->name }}</td>
+	        </tr>
+	        
+	        <tr>
+	            <th>Disabled:</th>
+	            <td>{{ $productCategory->disabled }}</td>
+	        </tr>
+	        
+	    </table>
+    </div>
 </div>
 @stop

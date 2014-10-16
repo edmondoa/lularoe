@@ -35,6 +35,8 @@ footer { padding: 30px 0; }
 .table { width:auto; }
 .panel table { width:100%; }
 .ui-datepicker-year, .ui-datepicker-month { color:black; font-weight:100; }
+.btn-group > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; }
+.btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
 
 /* global classes */
 .full { width:100%; }

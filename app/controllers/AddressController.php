@@ -1,103 +1,160 @@
-<?php 
+<?php
 
-class AddressController extends \BaseController
-{
-	protected $address;
+class addressController extends \BaseController {
 
-	public function __construct(Address $address)
-	{
-		$this->address = $address;
+	// data only
+	public function getAllAddresses(){
+		return Address::all();
 	}
 
+	/**
+	 * Display a listing of addresses
+	 *
+	 * @return Response
+	 */
 	public function index()
 	{
-    	$addresses = $this->address->all();
-        $this->layout->content = \View::make('address.index', compact('addresses'));
+		$addresses = Address::all();
+
+		return View::make('address.index', compact('addresses'));
 	}
 
+	/**
+	 * Show the form for creating a new address
+	 *
+	 * @return Response
+	 */
 	public function create()
 	{
-        $this->layout->content = \View::make('address.create');
+		return View::make('address.create');
 	}
 
+	/**
+	 * Store a newly created address in storage.
+	 *
+	 * @return Response
+	 */
 	public function store()
 	{
-        $this->address->store(\Input::only('address_1','address_2','city','state','addressable_id','zip','disabled'));
-        return \Redirect::route('address.index');
+		$validator = Validator::make($data = Input::all(), Address::$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		Address::create($data);
+
+		return Redirect::route('address.index')->with('message', 'Address created.');
 	}
 
+	/**
+	 * Display the specified address.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function show($id)
 	{
-        $address = $this->address->find($id);
-        $this->layout->content = \View::make('address.show')->with('address', $address);
+		$address = Address::findOrFail($id);
+
+		return View::make('address.show', compact('address'));
 	}
 
+	/**
+	 * Show the form for editing the specified address.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function edit($id)
 	{
-        $address = $this->address->find($id);
-        $this->layout->content = \View::make('address.edit')->with('address', $address);
+		$address = Address::find($id);
+
+		return View::make('address.edit', compact('address'));
 	}
 
+	/**
+	 * Update the specified address in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function update($id)
 	{
-        $this->address->find($id)->update(\Input::only('address_1','address_2','city','state','addressable_id','zip','disabled'));
-        return \Redirect::route('address.show', $id);
+		$address = Address::findOrFail($id);
+
+		$validator = Validator::make($data = Input::all(), Address::$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		$address->update($data);
+
+		return Redirect::route('addresses.show')->with('message', 'Address updated.');
 	}
 
+	/**
+	 * Remove the specified address from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function destroy($id)
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->address->destroy($id);
-			}
-			return \Redirect::route('address.index');
-		}
-		else {
-	        $this->address->destroy($id);
-	        return \Redirect::route('address.index');
-		}
+		Address::destroy($id);
+
+		return Redirect::route('address.index')->with('message', 'Address deleted.');
 	}
 	
-	public function delete($id)
+	/**
+	 * Remove addresses.
+	 */
+	public function delete()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->address->destroy($id);
-			}
-			return \Redirect::route('address.index')->with('message', 'Addresses deleted.');;
+		foreach (Input::get('ids') as $id) {
+			Address::destroy($id);
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', 'Addresses deleted.');
 		}
 		else {
-	        $this->address->destroy($id);
-	        return \Redirect::route('address.index')->with('message', 'Address deleted.');;
+			return Redirect::back()->with('message', 'Address deleted.');
 		}
 	}
 	
-	public function disable($id)
+	/**
+	 * Diable addresses.
+	 */
+	public function disable()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->address->where('id', $id)->update(array('disabled' => 1));
-			}
-			return \Redirect::route('address.index')->with('message', 'Addresses disabled.');
+		foreach (Input::get('ids') as $id) {
+			Address::find($id)->update(['disabled' => 1]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', 'Addresses disabled.');
 		}
 		else {
-	        $this->address->where('id', $id)->update(array('disabled' => 1));
-	        return \Redirect::route('address.index')->with('message', 'Address disabled.');;
+			return Redirect::back()->with('message', 'Address disabled.');
 		}
 	}
 	
-	public function enable($id)
+	/**
+	 * Enable addresses.
+	 */
+	public function enable()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->address->where('id', $id)->update(array('disabled' => NULL));
-			}
-			return \Redirect::route('address.index')->with('message', 'Addresses enabled.');;
+		foreach (Input::get('ids') as $id) {
+			Address::find($id)->update(['disabled' => 0]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('product.index')->with('message', 'Addresses enabled.');
 		}
 		else {
-	        $this->address->where('id', $id)->update(array('disabled' => NULL));
-	        return \Redirect::route('address.index')->with('message', 'Address enabled.');;
+			return Redirect::back()->with('message', 'Address enabled.');
 		}
 	}
-	
+
 }

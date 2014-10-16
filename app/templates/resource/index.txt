@@ -57,8 +57,8 @@
 	                            	<input type="checkbox">
 	                            </th>
                             	[repeat]
-                            	<th ng-click="orderByField='name'; reverseSort = !reverseSort">[formatted_property]
-                            		<span class='link' href='#'>[formatted_property]
+                            	<th ng-click="orderByField='[property]'; reverseSort = !reverseSort">[formatted_property]
+                            		<span class='link' href='#'>
                             			<span ng-show="orderByField == '[property]'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -100,19 +100,7 @@
 	function [Model]Controller($scope, $http) {
 	
 		$http.get('/api/all-[models]').success(function([models]) {
-			
 			$scope.[models] = [models];
-			
-			// bulk action checkboxes
-			$scope.checkbox = function() {
-				var checked = false;
-				$('.bulk-check').each(function() {
-				if ($(this).is(":checked")) checked = true;
-				});
-				if (checked == true) $('.applyAction').removeAttr('disabled');
-				else $('.applyAction').attr('disabled', 'disabled');
-			};
-		
 		});
 		
 		$scope.currentPage = 1;
@@ -122,6 +110,7 @@
 		$scope.pageChangeHandler = function(num) {
 			console.log('meals page changed to ' + num);
 		};
+		
 	}
 	
 	function OtherController($scope) {

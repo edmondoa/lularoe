@@ -1,2 +1,3 @@
 resource = false
-Product string( name ) text( blurb description ) integer( price quantity category_id ) boolean( disabled )
+Payment integer( user_id transaction_id amount ) string( tender ) text( details ) boolean( disabled )
+Commission integer( user_id amount ) text( description ) boolean( disabled )

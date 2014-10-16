@@ -58,7 +58,7 @@
 	                            </th>
                             	
                             	<th ng-click="orderByField='name'; reverseSort = !reverseSort">Name
-                            		<span class='link' href='#'>Name
+                            		<span class='link' href='#'>
                             			<span ng-show="orderByField == 'name'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -66,8 +66,8 @@
                             		</span>
                         		</th>
                         		
-                            	<th ng-click="orderByField='name'; reverseSort = !reverseSort">Blurb
-                            		<span class='link' href='#'>Blurb
+                            	<th ng-click="orderByField='blurb'; reverseSort = !reverseSort">Blurb
+                            		<span class='link' href='#'>
                             			<span ng-show="orderByField == 'blurb'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -75,8 +75,8 @@
                             		</span>
                         		</th>
                         		
-                            	<th ng-click="orderByField='name'; reverseSort = !reverseSort">Description
-                            		<span class='link' href='#'>Description
+                            	<th ng-click="orderByField='description'; reverseSort = !reverseSort">Description
+                            		<span class='link' href='#'>
                             			<span ng-show="orderByField == 'description'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -84,8 +84,8 @@
                             		</span>
                         		</th>
                         		
-                            	<th ng-click="orderByField='name'; reverseSort = !reverseSort">Price
-                            		<span class='link' href='#'>Price
+                            	<th ng-click="orderByField='price'; reverseSort = !reverseSort">Price
+                            		<span class='link' href='#'>
                             			<span ng-show="orderByField == 'price'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -93,8 +93,8 @@
                             		</span>
                         		</th>
                         		
-                            	<th ng-click="orderByField='name'; reverseSort = !reverseSort">Quantity
-                            		<span class='link' href='#'>Quantity
+                            	<th ng-click="orderByField='quantity'; reverseSort = !reverseSort">Quantity
+                            		<span class='link' href='#'>
                             			<span ng-show="orderByField == 'quantity'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -102,8 +102,8 @@
                             		</span>
                         		</th>
                         		
-                            	<th ng-click="orderByField='name'; reverseSort = !reverseSort">Category Id
-                            		<span class='link' href='#'>Category Id
+                            	<th ng-click="orderByField='category_id'; reverseSort = !reverseSort">Category Id
+                            		<span class='link' href='#'>
                             			<span ng-show="orderByField == 'category_id'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -111,8 +111,8 @@
                             		</span>
                         		</th>
                         		
-                            	<th ng-click="orderByField='name'; reverseSort = !reverseSort">Disabled
-                            		<span class='link' href='#'>Disabled
+                            	<th ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
+                            		<span class='link' href='#'>
                             			<span ng-show="orderByField == 'disabled'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -178,19 +178,7 @@
 	function ProductController($scope, $http) {
 	
 		$http.get('/api/all-products').success(function(products) {
-			
 			$scope.products = products;
-			
-			// bulk action checkboxes
-			$scope.checkbox = function() {
-				var checked = false;
-				$('.bulk-check').each(function() {
-				if ($(this).is(":checked")) checked = true;
-				});
-				if (checked == true) $('.applyAction').removeAttr('disabled');
-				else $('.applyAction').attr('disabled', 'disabled');
-			};
-		
 		});
 		
 		$scope.currentPage = 1;
