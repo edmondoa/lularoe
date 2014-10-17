@@ -2,9 +2,19 @@
 
 class levelController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllLevels(){
-		return Level::all();
+		$levels = Level::all();
+		foreach ($levels as $level)
+		{
+			if (strtotime($level['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$level['new'] = 1;
+			}
+		}
+		return $levels;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class levelController extends \BaseController {
 
 		Level::create($data);
 
-		return Redirect::route('level.index')->with('message', 'Level created.');
+		return Redirect::route('levels.index')->with('message', 'Level created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class levelController extends \BaseController {
 
 		$level->update($data);
 
-		return Redirect::route('levels.show')->with('message', 'Level updated.');
+		return Redirect::route('levels.show', $id)->with('message', 'Level updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class levelController extends \BaseController {
 	{
 		Level::destroy($id);
 
-		return Redirect::route('level.index')->with('message', 'Level deleted.');
+		return Redirect::route('levels.index')->with('message', 'Level deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class levelController extends \BaseController {
 			Level::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Levels deleted.');
+			return Redirect::route('levels.index')->with('message', 'Levels deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Level deleted.');
@@ -134,7 +144,7 @@ class levelController extends \BaseController {
 			Level::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Levels disabled.');
+			return Redirect::route('levels.index')->with('message', 'Levels disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Level disabled.');
@@ -150,7 +160,7 @@ class levelController extends \BaseController {
 			Level::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Levels enabled.');
+			return Redirect::route('levels.index')->with('message', 'Levels enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Level enabled.');

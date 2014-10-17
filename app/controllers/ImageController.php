@@ -2,9 +2,19 @@
 
 class imageController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllImages(){
-		return Image::all();
+		$images = Image::all();
+		foreach ($images as $image)
+		{
+			if (strtotime($image['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$image['new'] = 1;
+			}
+		}
+		return $images;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class imageController extends \BaseController {
 
 		Image::create($data);
 
-		return Redirect::route('image.index')->with('message', 'Image created.');
+		return Redirect::route('images.index')->with('message', 'Image created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class imageController extends \BaseController {
 
 		$image->update($data);
 
-		return Redirect::route('images.show')->with('message', 'Image updated.');
+		return Redirect::route('images.show', $id)->with('message', 'Image updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class imageController extends \BaseController {
 	{
 		Image::destroy($id);
 
-		return Redirect::route('image.index')->with('message', 'Image deleted.');
+		return Redirect::route('images.index')->with('message', 'Image deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class imageController extends \BaseController {
 			Image::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Images deleted.');
+			return Redirect::route('images.index')->with('message', 'Images deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Image deleted.');
@@ -134,7 +144,7 @@ class imageController extends \BaseController {
 			Image::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Images disabled.');
+			return Redirect::route('images.index')->with('message', 'Images disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Image disabled.');
@@ -150,7 +160,7 @@ class imageController extends \BaseController {
 			Image::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Images enabled.');
+			return Redirect::route('images.index')->with('message', 'Images enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Image enabled.');

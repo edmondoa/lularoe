@@ -2,9 +2,19 @@
 
 class reviewController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllReviews(){
-		return Review::all();
+		$reviews = Review::all();
+		foreach ($reviews as $review)
+		{
+			if (strtotime($review['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$review['new'] = 1;
+			}
+		}
+		return $reviews;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class reviewController extends \BaseController {
 
 		Review::create($data);
 
-		return Redirect::route('review.index')->with('message', 'Review created.');
+		return Redirect::route('reviews.index')->with('message', 'Review created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class reviewController extends \BaseController {
 
 		$review->update($data);
 
-		return Redirect::route('reviews.show')->with('message', 'Review updated.');
+		return Redirect::route('reviews.show', $id)->with('message', 'Review updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class reviewController extends \BaseController {
 	{
 		Review::destroy($id);
 
-		return Redirect::route('review.index')->with('message', 'Review deleted.');
+		return Redirect::route('reviews.index')->with('message', 'Review deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class reviewController extends \BaseController {
 			Review::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Reviews deleted.');
+			return Redirect::route('reviews.index')->with('message', 'Reviews deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Review deleted.');
@@ -134,7 +144,7 @@ class reviewController extends \BaseController {
 			Review::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Reviews disabled.');
+			return Redirect::route('reviews.index')->with('message', 'Reviews disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Review disabled.');
@@ -150,7 +160,7 @@ class reviewController extends \BaseController {
 			Review::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Reviews enabled.');
+			return Redirect::route('reviews.index')->with('message', 'Reviews enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Review enabled.');

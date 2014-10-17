@@ -1,53 +1,55 @@
 @extends('layouts.default')
 @section('content')
-<div ng-app="app">
-    {{ Form::open(array('url' => 'page/disable', 'method' => 'POST')) }}
+<div ng-app="app" class="index">
+    {{ Form::open(array('url' => 'pages/disable', 'method' => 'POST')) }}
 	    <div ng-controller="PageController" class="my-controller">
-	        <div class="row">
-	            <div class="col col-md-8">
-	                <h1 class="no-top">All Pages</h1>
-	            </div>
-	            <div class="col col-md-4">
-	                <div class="pull-right">
-	                    <div class="input-group">
-	                        <span class="input-group-addon">Count</span>
-	                        <input type="number" min="1" class="form-control itemsPerPage" ng-model="pageSize">
-	                    </div>
-	                </div>
-	                <h4 class="pull-right no-top currentPage margin-right-1">Page <span ng-bind="currentPage"></span></h4>
-	            </div>
-	        </div><!-- row -->
-	        <div class="row">
-	            <div class="col col-md-12">
-	                <div class="pull-left">
-	                    <a class="btn btn-success pull-left margin-right-1" title="New" href="{{ url('page/create') }}"><i class="fa fa-plus"></i></a>
-	                    <div class="pull-left">
-	                        <div class="input-group">
-	                            <select class="form-control selectpicker actions">
-	                                <option value="page/disable" selected>Disable</option>
-	                                <option value="page/enable">Enable</option>
-	                                <option value="page/delete">Delete</option>
-	                            </select>
-	                            <div class="input-group-btn">
-	                                <button class="btn btn-default applyAction" disabled>
-	                                    <i class="fa fa-check"></i>
-	                                </button>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-	                <div class="pull-right">
-	                    <div class="input-group">
-	                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
-	                        <span class="input-group-btn">
-	                            <button class="btn btn-default" type="button">
-	                                <i class="fa fa-search"></i>
-	                            </button>
-	                        </span>
-	                    </div>
-	                </div>
-	            </div><!-- col -->
-	        </div><!-- row -->
+	    	<div class="page-actions">
+		        <div class="row">
+		            <div class="col col-md-8">
+		                <h1 class="no-top">All Pages</h1>
+		            </div>
+		            <div class="col col-md-4">
+		                <div class="pull-right">
+		                    <div class="input-group">
+		                        <span class="input-group-addon">Count</span>
+		                        <input type="number" min="1" class="form-control itemsPerPage" ng-model="pageSize">
+		                    </div>
+		                </div>
+		                <h4 class="pull-right no-top currentPage margin-right-1">Page <span ng-bind="currentPage"></span></h4>
+		            </div>
+		        </div><!-- row -->
+		        <div class="row">
+		            <div class="col col-md-12">
+		                <div class="pull-left">
+		                    <a class="btn btn-success pull-left margin-right-1" title="New" href="{{ url('pages/create') }}"><i class="fa fa-plus"></i></a>
+		                    <div class="pull-left">
+		                        <div class="input-group">
+		                            <select class="form-control selectpicker actions">
+		                                <option value="pages/disable" selected>Disable</option>
+		                                <option value="pages/enable">Enable</option>
+		                                <option value="pages/delete">Delete</option>
+		                            </select>
+		                            <div class="input-group-btn">
+		                                <button class="btn btn-default applyAction" disabled>
+		                                    <i class="fa fa-check"></i>
+		                                </button>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		                <div class="pull-right">
+		                    <div class="input-group">
+		                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
+		                        <span class="input-group-btn">
+		                            <button class="btn btn-default" type="button">
+		                                <i class="fa fa-search"></i>
+		                            </button>
+		                        </span>
+		                    </div>
+		                </div>
+		            </div><!-- col -->
+		        </div><!-- row -->
+		    </div><!-- page-actions -->
 	        <div class="row">
 	            <div class="col col-md-12">
 	                <table class="table">
@@ -57,8 +59,8 @@
 	                            	<input type="checkbox">
 	                            </th>
                             	
-                            	<th ng-click="orderByField='title'; reverseSort = !reverseSort">Title
-                            		<span class='link' href='#'>
+                            	<th class="link" ng-click="orderByField='title'; reverseSort = !reverseSort">Title
+                            		<span>
                             			<span ng-show="orderByField == 'title'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -66,8 +68,8 @@
                             		</span>
                         		</th>
                         		
-                            	<th ng-click="orderByField='url'; reverseSort = !reverseSort">Url
-                            		<span class='link' href='#'>
+                            	<th class="link" ng-click="orderByField='url'; reverseSort = !reverseSort">Url
+                            		<span>
                             			<span ng-show="orderByField == 'url'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -75,8 +77,8 @@
                             		</span>
                         		</th>
                         		
-                            	<th ng-click="orderByField='type'; reverseSort = !reverseSort">Type
-                            		<span class='link' href='#'>
+                            	<th class="link" ng-click="orderByField='type'; reverseSort = !reverseSort">Type
+                            		<span>
                             			<span ng-show="orderByField == 'type'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -84,8 +86,8 @@
                             		</span>
                         		</th>
                         		
-                            	<th ng-click="orderByField='body'; reverseSort = !reverseSort">Body
-                            		<span class='link' href='#'>
+                            	<th class="link" ng-click="orderByField='body'; reverseSort = !reverseSort">Body
+                            		<span>
                             			<span ng-show="orderByField == 'body'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -93,8 +95,8 @@
                             		</span>
                         		</th>
                         		
-                            	<th ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
-                            		<span class='link' href='#'>
+                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
+                            		<span>
                             			<span ng-show="orderByField == 'disabled'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
@@ -102,10 +104,18 @@
                             		</span>
                         		</th>
                         		
+                            	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
+                            		<span>
+                            			<span ng-show="orderByField == 'updated_at'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr dir-paginate-start="page in pages | filter:search | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="page in pages | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.page_id')">
 	                            </td>
@@ -130,6 +140,9 @@
 					                <a href="/pages/@include('_helpers.page_id')"><span ng-bind="page.disabled"></span></a>
 					            </td>
 					            
+					            <td>
+					            	<a href="/pages/@include('_helpers.page_id')"><span ng-bind="page.updated_at"></span></a>
+					            </td>
 	                        </tr>
 	                        <tr dir-paginate-end></tr>
 	                    </tbody>
@@ -153,6 +166,9 @@
 	
 		$http.get('/api/all-pages').success(function(pages) {
 			$scope.pages = pages;
+			
+			@include('_helpers.bulk_action_checkboxes')
+			
 		});
 		
 		$scope.currentPage = 1;

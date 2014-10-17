@@ -2,9 +2,19 @@
 
 class emailMessageController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllEmailMessages(){
-		return EmailMessage::all();
+		$emailMessages = EmailMessage::all();
+		foreach ($emailMessages as $emailMessage)
+		{
+			if (strtotime($emailMessage['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$emailMessage['new'] = 1;
+			}
+		}
+		return $emailMessages;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class emailMessageController extends \BaseController {
 
 		EmailMessage::create($data);
 
-		return Redirect::route('emailMessage.index')->with('message', 'EmailMessage created.');
+		return Redirect::route('emailMessages.index')->with('message', 'EmailMessage created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class emailMessageController extends \BaseController {
 
 		$emailMessage->update($data);
 
-		return Redirect::route('emailMessages.show')->with('message', 'EmailMessage updated.');
+		return Redirect::route('emailMessages.show', $id)->with('message', 'EmailMessage updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class emailMessageController extends \BaseController {
 	{
 		EmailMessage::destroy($id);
 
-		return Redirect::route('emailMessage.index')->with('message', 'EmailMessage deleted.');
+		return Redirect::route('emailMessages.index')->with('message', 'EmailMessage deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class emailMessageController extends \BaseController {
 			EmailMessage::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'EmailMessages deleted.');
+			return Redirect::route('emailMessages.index')->with('message', 'EmailMessages deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'EmailMessage deleted.');
@@ -134,7 +144,7 @@ class emailMessageController extends \BaseController {
 			EmailMessage::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'EmailMessages disabled.');
+			return Redirect::route('emailMessages.index')->with('message', 'EmailMessages disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'EmailMessage disabled.');
@@ -150,7 +160,7 @@ class emailMessageController extends \BaseController {
 			EmailMessage::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'EmailMessages enabled.');
+			return Redirect::route('emailMessages.index')->with('message', 'EmailMessages enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'EmailMessage enabled.');

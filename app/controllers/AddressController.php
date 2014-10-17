@@ -2,9 +2,19 @@
 
 class addressController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllAddresses(){
-		return Address::all();
+		$addresses = Address::all();
+		foreach ($addresses as $address)
+		{
+			if (strtotime($address['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$address['new'] = 1;
+			}
+		}
+		return $addresses;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class addressController extends \BaseController {
 
 		Address::create($data);
 
-		return Redirect::route('address.index')->with('message', 'Address created.');
+		return Redirect::route('addresses.index')->with('message', 'Address created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class addressController extends \BaseController {
 
 		$address->update($data);
 
-		return Redirect::route('addresses.show')->with('message', 'Address updated.');
+		return Redirect::route('addresses.show', $id)->with('message', 'Address updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class addressController extends \BaseController {
 	{
 		Address::destroy($id);
 
-		return Redirect::route('address.index')->with('message', 'Address deleted.');
+		return Redirect::route('addresses.index')->with('message', 'Address deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class addressController extends \BaseController {
 			Address::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Addresses deleted.');
+			return Redirect::route('addresses.index')->with('message', 'Addresses deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Address deleted.');
@@ -134,7 +144,7 @@ class addressController extends \BaseController {
 			Address::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Addresses disabled.');
+			return Redirect::route('addresses.index')->with('message', 'Addresses disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Address disabled.');
@@ -150,7 +160,7 @@ class addressController extends \BaseController {
 			Address::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Addresses enabled.');
+			return Redirect::route('addresses.index')->with('message', 'Addresses enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Address enabled.');

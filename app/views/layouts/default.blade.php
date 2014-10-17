@@ -91,16 +91,18 @@
 				<a href="{{ url('userRanks') }}" class="list-group-item">UserRanks</a>
 				<a href="{{ url('smsMessages') }}" class="list-group-item">SmsMessages</a>
  			</div>
-		</div><!--/span-->
+		</div><!-- col -->
 	 	@endif
 		<div class="col-xs-12 col-sm-9 col-md-10">
 			<div class="row">
-				@include('_helpers.errors')
-				@include('_helpers.message')
+				<div class="col col-md-12">
+					@include('_helpers.errors')
+					@include('_helpers.message')
+				</div>
 			</div>
 			@section('content')
 			@show
- 		</div><!--/span-->
+ 		</div><!-- col -->
 	</div><!--/row-->
 	<hr>
 	<footer>

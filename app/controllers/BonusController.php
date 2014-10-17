@@ -2,9 +2,19 @@
 
 class bonusController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllBonuses(){
-		return Bonus::all();
+		$bonuses = Bonus::all();
+		foreach ($bonuses as $bonus)
+		{
+			if (strtotime($bonus['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$bonus['new'] = 1;
+			}
+		}
+		return $bonuses;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class bonusController extends \BaseController {
 
 		Bonus::create($data);
 
-		return Redirect::route('bonus.index')->with('message', 'Bonus created.');
+		return Redirect::route('bonuses.index')->with('message', 'Bonus created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class bonusController extends \BaseController {
 
 		$bonus->update($data);
 
-		return Redirect::route('bonuses.show')->with('message', 'Bonus updated.');
+		return Redirect::route('bonuses.show', $id)->with('message', 'Bonus updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class bonusController extends \BaseController {
 	{
 		Bonus::destroy($id);
 
-		return Redirect::route('bonus.index')->with('message', 'Bonus deleted.');
+		return Redirect::route('bonuses.index')->with('message', 'Bonus deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class bonusController extends \BaseController {
 			Bonus::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Bonuses deleted.');
+			return Redirect::route('bonuses.index')->with('message', 'Bonuses deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Bonus deleted.');
@@ -134,7 +144,7 @@ class bonusController extends \BaseController {
 			Bonus::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Bonuses disabled.');
+			return Redirect::route('bonuses.index')->with('message', 'Bonuses disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Bonus disabled.');
@@ -150,7 +160,7 @@ class bonusController extends \BaseController {
 			Bonus::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Bonuses enabled.');
+			return Redirect::route('bonuses.index')->with('message', 'Bonuses enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Bonus enabled.');

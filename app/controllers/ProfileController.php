@@ -2,9 +2,19 @@
 
 class profileController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllProfiles(){
-		return Profile::all();
+		$profiles = Profile::all();
+		foreach ($profiles as $profile)
+		{
+			if (strtotime($profile['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$profile['new'] = 1;
+			}
+		}
+		return $profiles;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class profileController extends \BaseController {
 
 		Profile::create($data);
 
-		return Redirect::route('profile.index')->with('message', 'Profile created.');
+		return Redirect::route('profiles.index')->with('message', 'Profile created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class profileController extends \BaseController {
 
 		$profile->update($data);
 
-		return Redirect::route('profiles.show')->with('message', 'Profile updated.');
+		return Redirect::route('profiles.show', $id)->with('message', 'Profile updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class profileController extends \BaseController {
 	{
 		Profile::destroy($id);
 
-		return Redirect::route('profile.index')->with('message', 'Profile deleted.');
+		return Redirect::route('profiles.index')->with('message', 'Profile deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class profileController extends \BaseController {
 			Profile::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Profiles deleted.');
+			return Redirect::route('profiles.index')->with('message', 'Profiles deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Profile deleted.');
@@ -134,7 +144,7 @@ class profileController extends \BaseController {
 			Profile::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Profiles disabled.');
+			return Redirect::route('profiles.index')->with('message', 'Profiles disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Profile disabled.');
@@ -150,7 +160,7 @@ class profileController extends \BaseController {
 			Profile::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Profiles enabled.');
+			return Redirect::route('profiles.index')->with('message', 'Profiles enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Profile enabled.');

@@ -2,9 +2,19 @@
 
 class userRankController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllUserRanks(){
-		return UserRank::all();
+		$userRanks = UserRank::all();
+		foreach ($userRanks as $userRank)
+		{
+			if (strtotime($userRank['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$userRank['new'] = 1;
+			}
+		}
+		return $userRanks;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class userRankController extends \BaseController {
 
 		UserRank::create($data);
 
-		return Redirect::route('userRank.index')->with('message', 'UserRank created.');
+		return Redirect::route('userRanks.index')->with('message', 'UserRank created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class userRankController extends \BaseController {
 
 		$userRank->update($data);
 
-		return Redirect::route('userRanks.show')->with('message', 'UserRank updated.');
+		return Redirect::route('userRanks.show', $id)->with('message', 'UserRank updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class userRankController extends \BaseController {
 	{
 		UserRank::destroy($id);
 
-		return Redirect::route('userRank.index')->with('message', 'UserRank deleted.');
+		return Redirect::route('userRanks.index')->with('message', 'UserRank deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class userRankController extends \BaseController {
 			UserRank::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'UserRanks deleted.');
+			return Redirect::route('userRanks.index')->with('message', 'UserRanks deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'UserRank deleted.');
@@ -134,7 +144,7 @@ class userRankController extends \BaseController {
 			UserRank::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'UserRanks disabled.');
+			return Redirect::route('userRanks.index')->with('message', 'UserRanks disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'UserRank disabled.');
@@ -150,7 +160,7 @@ class userRankController extends \BaseController {
 			UserRank::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'UserRanks enabled.');
+			return Redirect::route('userRanks.index')->with('message', 'UserRanks enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'UserRank enabled.');
