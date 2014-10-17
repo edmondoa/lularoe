@@ -76,7 +76,7 @@
 	    <div class="form-group">
 	        {{ Form::label('state', 'State') }}
 	        <br>
-	        {{ Form::select('state',State::lists('full_name', 'abbr')) }}
+	        {{ Form::select('state',State::orderBy('full_name')->lists('full_name', 'abbr')) }}
 	    </div>
 	    
 	    <div class="form-group">
@@ -84,7 +84,7 @@
 	        {{ Form::text('zip', Input::old('zip'), array('class' => 'form-control')) }}
 	    </div>
 	    <br>
-	<div class="alert alert-success">Preluanch Membership Fee: $100</div>
+	<div class="alert alert-success">Prelaunch Membership Fee: $100</div>
 
 	    
 	<div class="form-group">
