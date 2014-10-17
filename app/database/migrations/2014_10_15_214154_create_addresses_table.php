@@ -17,8 +17,7 @@ class CreateAddressesTable extends Migration
 			$table->integer('addressable_id');
 			$table->integer('zip');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

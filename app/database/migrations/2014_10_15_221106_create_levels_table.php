@@ -14,8 +14,7 @@ class CreateLevelsTable extends Migration
 			$table->integer('ancestor_id');
 			$table->integer('level');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

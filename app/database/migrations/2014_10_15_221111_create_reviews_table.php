@@ -14,8 +14,7 @@ class CreateReviewsTable extends Migration
 			$table->integer('rating');
 			$table->text('comment');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

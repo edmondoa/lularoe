@@ -36,7 +36,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'gender',
 		'dob',
 		'public_id',
-		'role_id'
+		'role_id',
+		'key',
+		'disabled',
+		'created_at',
+		'updated_at'
 	];
 
 	use UserTrait, RemindableTrait;

@@ -13,8 +13,7 @@ class CreateUserRanksTable extends Migration
 			$table->integer('user_id');
 			$table->integer('rank_id');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

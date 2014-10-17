@@ -14,8 +14,7 @@ class CreateBonusesTable extends Migration
 			$table->boolean('eight_in_eight');
 			$table->boolean('twelve_in_twelve');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

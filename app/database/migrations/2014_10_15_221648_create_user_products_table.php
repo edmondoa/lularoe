@@ -12,8 +12,7 @@ class CreateUserProductsTable extends Migration
 			$table->increments('id');
 			$table->integer('product_id');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

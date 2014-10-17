@@ -15,8 +15,7 @@ class CreateSalesTable extends Migration
 			$table->integer('sponsor_id');
 			$table->integer('quantity');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 

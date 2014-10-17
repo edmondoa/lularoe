@@ -15,8 +15,7 @@ class CreatePagesTable extends Migration
 			$table->string('type');
 			$table->text('body');
 			$table->boolean('disabled');
-			$table->timestamp('created_at');
-			$table->timestamp('updated_at');
+			$table->timestamps();
 		});
 	}
 
