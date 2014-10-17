@@ -47,14 +47,19 @@ class Commission extends \BaseController {
 		}
 	}
 	
-	public function get_down($rep_id,$level){
+	public function get_levels_down($rep_id,$level,$ancestors){
 		$frontline = \User::find($rep_id)->children;
+		echo"<pre>"; print_r($ancestors); echo"</pre>"; 
 		$level ++;
 		foreach($frontline as $rep)
 		{
 			//echo"<pre>"; print_r($rep->toArray()); echo"</pre>";
+			//$user = Level::firstOrNew(array('user_id' => $rep->id,'ancestor_id',));
+			//$user->foo = Input::get('foo');
+			//$user->save();
 			echo $rep->first_name." ".$rep->last_name."(".$level.")<br />";
-			$this->get_down($rep->id,$level);
+			$ancestors[] = ['name'=>$rep->first_name." ".$rep->last_name,'id'=>$rep->id,'level'=>$level];
+			$this->get_levels_down($rep->id,$level,$ancestors);
 		}
 		return $level;
 		//return 'Testing:'.$string;
