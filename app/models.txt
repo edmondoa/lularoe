@@ -1,2 +1,3 @@
 resource = false
-User string( first_name last_name email password gender key remember_token public_id phone ) date( dob ) integer( role_id sponsor_id mobile_plan_id min_commission ) boolean( disabled )
+Payment integer( user_id transaction_id amount ) string( tender ) text( details ) boolean( disabled )
+Commission integer( user_id amount ) text( description ) boolean( disabled )

@@ -12,15 +12,15 @@ class TwilioServiceProvider extends ServiceProvider {
 */
 protected $defer = true;
 
-    /**
+/**
 * Boot Method
 */
-    public function boot()
-    {
-        $this->package('duezee/twilio');
-    }
+public function boot()
+{
+    //$this->package('SociallyMobile/twilio');
+}
 
-    /**
+/**
 * Register the service provider.
 *
 * @return void
@@ -56,7 +56,7 @@ public function register()
 */
 public function provides()
 {
-return array('twilio');
+    return array('twilio');
 }
 
 }

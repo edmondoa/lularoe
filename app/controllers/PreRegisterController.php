@@ -12,7 +12,7 @@ class PreRegisterController extends \BaseController {
 	public function create($public_id = '')
 	{
 		if (empty($public_id)) return View::make('pre-register.sponsor');
-		$sponsor = User::where('public_id',$public_id)->first();
+		$sponsor = User::where('public_id',$public_id)->where('disabled',0)->first();
 		if(isset($sponsor->id))
 		{
 			return View::make('pre-register.create',compact('sponsor'));

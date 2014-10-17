@@ -1,3 +1,11 @@
+/* REFERENCE */
+/*
+#017dc5 - Standard Blue
+#0d3c6d - Dark Blue (shade from lower half of the icon)
+#7f7f7f - Grey
+#303030 - Black/Dark Grey
+*/
+
 /* html */
 form { display:inline-block; }
 
@@ -16,6 +24,15 @@ footer { padding: 30px 0; }
 .full { width:100%; }
 .inline-block { display:inline-block; }
 .tiny { font-size:7pt; display:block; }
+.clear { clear:both; }
+.margin-right-1 { margin-right:.5em; }
+.margin-right-2 { margin-right:1em; }
+.itemsPerPage { max-width:80px; }
+.display-table { display:table; }
+.display-table-cell { display:table-cell; }
+.no-top { margin-top:0; }
+.no-bottom { margin-top:0; }
+.currentPage { position:relative; top:7px; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
@@ -26,6 +43,8 @@ footer { padding: 30px 0; }
 .table { width:auto; }
 .panel table { width:100%; }
 .ui-datepicker-year, .ui-datepicker-month { color:black; font-weight:100; }
+.btn-group > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; }
+.btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
 
 /* global classes */
 .full { width:100%; }

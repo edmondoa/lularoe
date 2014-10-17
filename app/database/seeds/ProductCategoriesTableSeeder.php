@@ -5,13 +5,15 @@ class ProductCategoriesTableSeeder extends DatabaseSeeder
 
 	public function run()
 	{
+		$faker = $this->getFaker();
 
-		$productCategory = array(
-			'id' => 1,
-			'name' => 'Mobile Plans',
-		);
-		ProductCategory::create($productCategory);
-		
+		for($i = 1; $i <= 10; $i++) {
+			$productCategory = array(
+				'name' => $faker->name,
+				'disabled' => $faker->boolean,
+			);
+			ProductCategory::create($productCategory);
+		}
 	}
 
 }
