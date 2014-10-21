@@ -1,5 +1,6 @@
  		@if (Auth::check() && (Auth::user()->hasRole(['Admin','Superadmin'])))
  			<div class="list-group" id="main-menu">
+ 				<a href="{{ url('dashboard') }}" class="list-group-item"><i class="fa fa-dashboard"></i> Dashboard</a>
 				<a href="{{ url('addresses') }}" class="list-group-item"><i class="fa fa-home"></i> Addresses</a>
 				<a href="{{ url('bonuses') }}" class="list-group-item"><i class="fa fa-certificate"></i> Bonuses</a>
 				<a href="{{ url('carts') }}" class="list-group-item"><i class="fa fa-shopping-cart"></i> Cart</a>

@@ -1,6 +1,6 @@
 <?php 
 
-class UserRanksTableSeeder extends DatabaseSeeder 
+class RankUserTableSeeder extends DatabaseSeeder 
 {
 
 	public function run()
@@ -8,12 +8,12 @@ class UserRanksTableSeeder extends DatabaseSeeder
 		$faker = $this->getFaker();
 
 		for($i = 1; $i <= 10; $i++) {
-			$userRank = array(
+			$rankUser = array(
 				'user_id' => $faker->randomDigitNotNull,
 				'rank_id' => $faker->randomDigitNotNull,
 				'disabled' => $faker->boolean,
 			);
-			UserRank::create($userRank);
+			RankUser::create($rankUser);
 		}
 	}
 
