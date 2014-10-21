@@ -3,12 +3,12 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateRankUserTable extends Migration 
+class CreateUserRanksTable extends Migration 
 {
 
 	public function up()
 	{
-		Schema::create('rank_user', function(Blueprint $table) {
+		Schema::create('user_ranks', function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('user_id');
 			$table->integer('rank_id');
@@ -19,7 +19,7 @@ class CreateRankUserTable extends Migration
 
 	public function down()
 	{
-		Schema::dropIfExists('rank_user');
+		Schema::dropIfExists('user_ranks');
 	}
 
 }

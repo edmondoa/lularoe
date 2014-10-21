@@ -16,7 +16,7 @@ Sale integer( product_id, user_id, sponsor_id, quantity ) boolean( disabled )
 Sms_message integer( sender_id recipient_id ) text( body ) boolean( disabled )
 User string( public_id first_name last_name email password gender key ) date( dob ) integer( phone role_id sponsor_id mobile_plan_id min_commission ) boolean( disabled )
 User_product integer( product_id ) boolean( disabled )
-Rank_user integer( user_id rank_id ) boolean( disabled )
+User_rank integer( user_id rank_id ) boolean( disabled )
 
 Commission integer( user_id amount ) text( description ) boolean( disabled )
 Payment integer( user_id transaction_id amount ) string( tender ) text( details ) boolean( disabled )

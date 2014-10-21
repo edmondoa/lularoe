@@ -8,25 +8,15 @@
 			<a class="navbar-brand" id="logo" href="http://sociallymobile.com"><img src="/img/socially-mobile-logo.png" width="175" alt="Socially Mobile"></a>
 		</div>
 		<div class="collapse navbar-collapse">
-			@if (!Auth::check())
-				<ul class="nav navbar-nav">
+			<ul class="nav navbar-nav">
+				@if (!Auth::check())
 					<li><a href="/login">Log In</a></li>
-				</ul>
-			@else
-	            <ul class="nav navbar-nav navbar-right">
-	                <li class="dropdown">
-	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-	                        @if (isset(Auth::user()->first_name))
-	                            {{ Auth::user()->first_name }}
-	                        @else
-	                            {{ Auth::user()->person->first }} {{ Auth::user()->person->last }}
-	                        @endif
-	                        <b class="caret"></b>&nbsp;&nbsp;&nbsp;
-	                    </a>
-	                    <ul class="dropdown-menu">
-	                        <li><a href="{{ route('logout')}}"><span class="fa fa-sign-out"></span> &nbsp;Log Out</a></li>
-	                    </ul>
-	                </li>
-	            </ul>
-			@endif
+				@else
+					<li><a href="/dashboard">Dashboard</a></li>
+					<li><a href="/logout">Log Out</a></li>
+				@endif
+				<!-- <li class="active"><a href="#">Home</a></li>
+				<li><a href="#about">About</a></li>
+				<li><a href="#contact">Contact</a></li> -->
+			</ul>
 		</div><!-- /.nav-collapse -->

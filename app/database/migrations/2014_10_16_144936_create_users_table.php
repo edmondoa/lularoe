@@ -21,7 +21,6 @@ class CreateUsersTable extends Migration
 			$table->date('dob');
 			$table->string('phone',15);
 			$table->integer('role_id');
-			$table->integer('rank_id');
 			$table->integer('mobile_plan_id')->nullable();
 			$table->decimal('min_commission',6,2);
 			$table->boolean('disabled');

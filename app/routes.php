@@ -240,6 +240,5 @@ Route::group(['before' => 'force.ssl'], function() {
 ##############################################################################################
 
 Route::get('test', function() {
-	return User::find(14)->ranks;
-	exit;
+	return Commission::get_levels_down(2001,0,[]);
 });

@@ -1,6 +1,6 @@
 <?php
 
-class RankUser extends \Eloquent
+class UserRank extends \Eloquent
 {
 
  // Add your validation rules here
@@ -9,7 +9,7 @@ class RankUser extends \Eloquent
  ];
 
  // Don't forget to fill this array    
- protected $table = 'rank_user';
+ protected $table = 'user_ranks';
 	protected $fillable = array('user_id','rank_id','disabled');
 
 

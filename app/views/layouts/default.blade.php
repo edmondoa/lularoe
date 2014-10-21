@@ -16,10 +16,10 @@
 		</div>
 		@section('content')
 		@show
-		<hr>
-		<footer>
-			<p>&copy; SociallyMobile {{ date('Y') }}</p>
-		</footer>
 	</div><!--/col-->
 </div><!--/row-->
+<hr>
+<footer>
+	<p>&copy; SociallyMobile 2014</p>
+</footer>
 @include('layouts.footer')
