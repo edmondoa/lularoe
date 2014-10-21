@@ -59,6 +59,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 	
 	public function children() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id');
+	}
+
+	public function descendants() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id');
+	}
+
+	public function frontline() {
 		return $this -> hasMany('User', 'sponsor_id', 'id');
 	}
 
@@ -66,6 +74,25 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsTo('Role');
 	}
 
+	public function descendantsCountRelation()
+    {
+        return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->first();
+    }
+
+	public function frontlineCountRelation()
+    {
+        return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->first();
+    }
+
+	public function getFrontLineCountAttribute() {
+		return $this->frontlineCountRelation()->count;
+	}
+
+	public function getDescendantCountAttribute() {
+		return $this->descendantsCountRelation()->count;
+	}
+
+	protected $appends = array('descendant_count','front_line_count');
 
 	/**
 	 * The attributes excluded from the model's JSON form.

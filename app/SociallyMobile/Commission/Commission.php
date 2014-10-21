@@ -1,9 +1,10 @@
 <?php namespace SociallyMobile\Commission;
 
 use \User;
+use \Level;
 
 class Commission extends \BaseController {
-
+	public $level_count;
 	public function test($string){
 		return 'Testing:'.$string;
 	}
@@ -23,19 +24,43 @@ class Commission extends \BaseController {
 		//return 'Testing:'.$string;
 	}
 	
-	public function count_up($sponsor_id,$level){
+	public function count_up($sponsor_id,$level = 0){
 		$sponsor = \User::find($sponsor_id);
-		$level ++;
-		if($sponsor->sponsor_id != 0)
+		if((isset($sponsor->id))&&($sponsor->sponsor_id != 0))
 		{
-			//echo "->".$sponsor->first_name." ".$sponsor->last_name."(".$level.") ";
-			$this->count_up($sponsor->sponsor_id,$level);
+			return $this->count_up($sponsor->sponsor_id,$level+1); //nest the call until we get to the frontline
 		}
 		else
 		{
 			return $level;
 		}
-		//return 'Testing:'.$string;
+	}
+	
+	public function level_up($sponsor_id,$level = 0,$from_id=null){
+		$sponsor = \User::find($sponsor_id);
+		if(is_null($from_id)) $from_id = $sponsor_id;
+		if((isset($sponsor->id))&&($sponsor->sponsor_id != 0))
+		{
+			//echo "Original:".$from_id." | ".$sponsor->first_name." ".$sponsor->last_name." - level: ".$level."<br />\r\n";
+			if($sponsor_id != $from_id)
+			{
+				$level_data = ['ancestor_id'=>$sponsor->id,'user_id'=>$from_id,'level'=>$level];
+				//echo"<pre>"; print_r($level_data); echo"</pre>";
+				$new_level = Level::updateOrCreate($level_data);
+			}
+			return $this->level_up($sponsor->sponsor_id,$level+1,$from_id); //nest the call until we get to the frontline
+		}
+		else
+		{
+			//echo "Original:".$from_id." | Frontline:".$sponsor->first_name." ".$sponsor->last_name." - level: ".$level."<br />\r\n";
+			if($sponsor_id != $from_id)
+			{
+				$level_data = ['ancestor_id'=>$sponsor->id,'user_id'=>$from_id,'level'=>$level];
+				//echo"<pre>"; print_r($level_data); echo"</pre>";
+				$new_level = Level::updateOrCreate($level_data);
+			}
+			return true;
+		}
 	}
 	
 	public function count_down($rep_id,$level){
@@ -47,7 +72,7 @@ class Commission extends \BaseController {
 		}
 	}
 	
-	public function get_levels_down($rep_id,$level,$ancestors){
+	public function get_levels_down($rep_id,$level){
 		$frontline = \User::find($rep_id)->children;
 		echo"<pre>"; print_r($ancestors); echo"</pre>"; 
 		$level ++;
@@ -60,6 +85,17 @@ class Commission extends \BaseController {
 			echo $rep->first_name." ".$rep->last_name."(".$level.")<br />";
 			$ancestors[] = ['name'=>$rep->first_name." ".$rep->last_name,'id'=>$rep->id,'level'=>$level];
 			$this->get_levels_down($rep->id,$level,$ancestors);
+		}
+		return $level;
+		//return 'Testing:'.$string;
+	}
+
+	public function set_levels_down($rep_id,$level){
+		$frontline = User::find($rep_id)->frontline;
+		foreach($frontline as $rep)
+		{
+			$this->level_up($rep->id);
+			$this->set_levels_down($rep->id,$level+1);
 		}
 		return $level;
 		//return 'Testing:'.$string;
