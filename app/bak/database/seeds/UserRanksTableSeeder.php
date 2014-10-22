@@ -7,7 +7,7 @@ class UserRanksTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 15; $i++) {
 			$userRank = array(
 				'user_id' => $faker->randomDigitNotNull,
 				'rank_id' => $faker->randomDigitNotNull,

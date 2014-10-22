@@ -7,7 +7,7 @@ class LevelsTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 15; $i++) {
 			$level = array(
 				'user_id' => $faker->randomDigitNotNull,
 				'ancestor_id' => $faker->randomDigitNotNull,

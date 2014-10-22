@@ -7,7 +7,7 @@ class SmsMessagesTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 15; $i++) {
 			$smsMessage = array(
 				'sender_id' => $faker->randomDigitNotNull,
 				'recipient_id' => $faker->randomDigitNotNull,

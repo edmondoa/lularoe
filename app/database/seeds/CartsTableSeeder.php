@@ -7,7 +7,7 @@ class CartsTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 15; $i++) {
 			$cart = array(
 				'product_id' => $faker->randomDigitNotNull,
 				'disabled' => $faker->boolean,

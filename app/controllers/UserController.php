@@ -124,7 +124,9 @@ class userController extends \BaseController {
 	public function show($id)
 	{
 		$user = User::findOrFail($id);
-
+		// $addresses = DB::table('addresses')->where('addressable_id', $id)->first();
+		$addresses = User::find($id)->addresses()->take(1);
+		
 		return View::make('user.show', compact('user'));
 	}
 

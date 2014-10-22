@@ -7,7 +7,7 @@ class ReviewsTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 15; $i++) {
 			$review = array(
 				'product_id' => $faker->randomDigitNotNull,
 				'rating' => $faker->randomDigitNotNull,
