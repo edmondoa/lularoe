@@ -6,7 +6,7 @@ class UsersTableSeeder extends DatabaseSeeder
 	{
 		Eloquent::unguard();
 		$faker = $this->getFaker();
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 15; $i++) {
 			$users = array(
 				'first_name' => $faker->firstName,
 				'last_name' => $faker->lastName,
@@ -25,7 +25,7 @@ class UsersTableSeeder extends DatabaseSeeder
 			User::create($users);
 		}
 		User::create([
-			'id' => 11,
+			'id' => 2011,
 			'first_name' => $faker->firstName,
 			'last_name' => $faker->lastName,
 			'email' => 'customer@example.com',
@@ -42,7 +42,7 @@ class UsersTableSeeder extends DatabaseSeeder
 			'public_id' => $faker->word
 		]);
 		User::create([
-			'id' => 12,
+			'id' => 2012,
 			'first_name' => $faker->firstName,
 			'last_name' => $faker->lastName,
 			'email' => 'rep@example.com',
@@ -59,7 +59,7 @@ class UsersTableSeeder extends DatabaseSeeder
 			'public_id' => 'delectus'
 		]);
 		User::create([
-			'id' => 13,
+			'id' => 2013,
 			'first_name' => $faker->firstName,
 			'last_name' => $faker->lastName,
 			'email' => 'editor@example.com',
@@ -76,7 +76,7 @@ class UsersTableSeeder extends DatabaseSeeder
 			'public_id' => $faker->word
 		]);
 		User::create([
-			'id' => 14,
+			'id' => 2014,
 			'first_name' => $faker->firstName,
 			'last_name' => $faker->lastName,
 			'email' => 'admin@example.com',
@@ -93,7 +93,7 @@ class UsersTableSeeder extends DatabaseSeeder
 			'public_id' => $faker->word
 		]);
 		User::create([
-			'id' => 15,
+			'id' => 2015,
 			'first_name' => $faker->firstName,
 			'last_name' => $faker->lastName,
 			'email' => 'superadmin@example.com',
@@ -110,7 +110,7 @@ class UsersTableSeeder extends DatabaseSeeder
 			'public_id' => $faker->word
 		]);
 		User::create([
-			'id' => 16,
+			'id' => 2016,
 			'first_name' => 'Steve',
 			'last_name' => 'Gashler',
 			'email' => 'sgashler@controlpad.com',
@@ -127,7 +127,7 @@ class UsersTableSeeder extends DatabaseSeeder
 			'public_id' => $faker->word
 		]);
 		User::create([
-			'id' => 17,
+			'id' => 2017,
 			'first_name' => 'Jake',
 			'last_name' => 'Barlow',
 			'email' => 'jbarlow@controlpad.com',

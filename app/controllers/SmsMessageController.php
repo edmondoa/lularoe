@@ -2,9 +2,19 @@
 
 class smsMessageController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllSmsMessages(){
-		return SmsMessage::all();
+		$smsMessages = SmsMessage::all();
+		foreach ($smsMessages as $smsMessage)
+		{
+			if (strtotime($smsMessage['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$smsMessage['new'] = 1;
+			}
+		}
+		return $smsMessages;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class smsMessageController extends \BaseController {
 
 		SmsMessage::create($data);
 
-		return Redirect::route('smsMessage.index')->with('message', 'SmsMessage created.');
+		return Redirect::route('smsMessages.index')->with('message', 'SmsMessage created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class smsMessageController extends \BaseController {
 
 		$smsMessage->update($data);
 
-		return Redirect::route('smsMessages.show')->with('message', 'SmsMessage updated.');
+		return Redirect::route('smsMessages.show', $id)->with('message', 'SmsMessage updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class smsMessageController extends \BaseController {
 	{
 		SmsMessage::destroy($id);
 
-		return Redirect::route('smsMessage.index')->with('message', 'SmsMessage deleted.');
+		return Redirect::route('smsMessages.index')->with('message', 'SmsMessage deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class smsMessageController extends \BaseController {
 			SmsMessage::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'SmsMessages deleted.');
+			return Redirect::route('smsMessages.index')->with('message', 'SmsMessages deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'SmsMessage deleted.');
@@ -134,7 +144,7 @@ class smsMessageController extends \BaseController {
 			SmsMessage::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'SmsMessages disabled.');
+			return Redirect::route('smsMessages.index')->with('message', 'SmsMessages disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'SmsMessage disabled.');
@@ -150,7 +160,7 @@ class smsMessageController extends \BaseController {
 			SmsMessage::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'SmsMessages enabled.');
+			return Redirect::route('smsMessages.index')->with('message', 'SmsMessages enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'SmsMessage enabled.');

@@ -45,10 +45,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;
 
-	// public function addresses() {
-		// return $this -> morphMany('Address', 'addressable');
-	// }
-	
 	public function addresses()
 	{
 		return $this->morphMany('Address', 'addressable');
@@ -66,7 +62,24 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsTo('Role');
 	}
 
-
+	public function ranks() {
+		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->withPivot('created_at');
+	}
+	
+	public function currentRank() {
+		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->first();
+	}
+	
+	public function getRankNameAttribute() {
+		return $this->currentRank()->name;
+	}
+	
+	public function getRankIdAttribute() {
+		return $this->currentRank()->id;
+	}
+	
+	protected $appends = array(/*'descendant_count','front_line_count',*/'rank_name', 'rank_id');
+	
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *

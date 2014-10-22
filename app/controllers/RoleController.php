@@ -2,9 +2,19 @@
 
 class roleController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllRoles(){
-		return Role::all();
+		$roles = Role::all();
+		foreach ($roles as $role)
+		{
+			if (strtotime($role['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$role['new'] = 1;
+			}
+		}
+		return $roles;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class roleController extends \BaseController {
 
 		Role::create($data);
 
-		return Redirect::route('role.index')->with('message', 'Role created.');
+		return Redirect::route('roles.index')->with('message', 'Role created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class roleController extends \BaseController {
 
 		$role->update($data);
 
-		return Redirect::route('roles.show')->with('message', 'Role updated.');
+		return Redirect::route('roles.show', $id)->with('message', 'Role updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class roleController extends \BaseController {
 	{
 		Role::destroy($id);
 
-		return Redirect::route('role.index')->with('message', 'Role deleted.');
+		return Redirect::route('roles.index')->with('message', 'Role deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class roleController extends \BaseController {
 			Role::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Roles deleted.');
+			return Redirect::route('roles.index')->with('message', 'Roles deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Role deleted.');
@@ -134,7 +144,7 @@ class roleController extends \BaseController {
 			Role::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Roles disabled.');
+			return Redirect::route('roles.index')->with('message', 'Roles disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Role disabled.');
@@ -150,7 +160,7 @@ class roleController extends \BaseController {
 			Role::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Roles enabled.');
+			return Redirect::route('roles.index')->with('message', 'Roles enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Role enabled.');

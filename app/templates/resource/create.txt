@@ -1,21 +1,25 @@
 @extends('layouts.default')
 @section('content')
-<div class="row">
-	<div class="col col-md-12">
-		<a class="breadcrumbs" href="/[models]">&lsaquo; Back</a>
-	    <h1 class="no-top">New [Model]</h1>
-	    {{ Form::open(array('url' => '[model]')) }}
+<div class="create">
+	<div class="row">
+		<div class="col col-md-12">
+			<div class="breadcrumbs">
+				<a href="/[models]">&lsaquo; Back</a>
+			</div>
+		    <h1 class="no-top">New [Model]</h1>
+		    {{ Form::open(array('url' => '[models]')) }}
+		
+			    [repeat]
+			    <div class="form-group">
+			        {{ Form::label('[property]', '[formatted_property]') }}
+			        {{ Form::text('[property]', Input::old('[property]'), array('class' => 'form-control')) }}
+			    </div>
+			    [/repeat]
+		
+			    {{ Form::submit('Add [Model]', array('class' => 'btn btn-success')) }}
 	
-		    [repeat]
-		    <div class="form-group">
-		        {{ Form::label('[property]', '[formatted_property]') }}
-		        {{ Form::text('[property]', Input::old('[property]'), array('class' => 'form-control')) }}
-		    </div>
-		    [/repeat]
-	
-		    {{ Form::submit('Add [Model]', array('class' => 'btn btn-success')) }}
-
-	    {{ Form::close() }}
-    </div>
+		    {{ Form::close() }}
+	    </div>
+	</div>
 </div>
 @stop

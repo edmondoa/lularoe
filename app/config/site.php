@@ -12,6 +12,7 @@ return [
 	|
 	*/
 
-	'preregistration_fee' => 100.00
+	'preregistration_fee' => 100.00,
+	'new_time_frame' => 86400 // 1 day, /*604800*/ // 1 week
 
 ];

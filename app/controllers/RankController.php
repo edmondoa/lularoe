@@ -2,9 +2,19 @@
 
 class rankController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllRanks(){
-		return Rank::all();
+		$ranks = Rank::all();
+		foreach ($ranks as $rank)
+		{
+			if (strtotime($rank['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$rank['new'] = 1;
+			}
+		}
+		return $ranks;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class rankController extends \BaseController {
 
 		Rank::create($data);
 
-		return Redirect::route('rank.index')->with('message', 'Rank created.');
+		return Redirect::route('ranks.index')->with('message', 'Rank created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class rankController extends \BaseController {
 
 		$rank->update($data);
 
-		return Redirect::route('ranks.show')->with('message', 'Rank updated.');
+		return Redirect::route('ranks.show', $id)->with('message', 'Rank updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class rankController extends \BaseController {
 	{
 		Rank::destroy($id);
 
-		return Redirect::route('rank.index')->with('message', 'Rank deleted.');
+		return Redirect::route('ranks.index')->with('message', 'Rank deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class rankController extends \BaseController {
 			Rank::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Ranks deleted.');
+			return Redirect::route('ranks.index')->with('message', 'Ranks deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Rank deleted.');
@@ -134,7 +144,7 @@ class rankController extends \BaseController {
 			Rank::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Ranks disabled.');
+			return Redirect::route('ranks.index')->with('message', 'Ranks disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Rank disabled.');
@@ -150,7 +160,7 @@ class rankController extends \BaseController {
 			Rank::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Ranks enabled.');
+			return Redirect::route('ranks.index')->with('message', 'Ranks enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Rank enabled.');
