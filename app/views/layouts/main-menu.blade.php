@@ -1,7 +1,7 @@
  			<div class="list-group" id="main-menu">
  				@if (Auth::user()->hasRole(['Rep']))
  					<a href="{{ url('dashboard') }}" class="list-group-item"><i class="fa fa-dashboard"></i> Dashboard</a>
- 					<a href="{{ url('team', Auth::user()->id) }}" class="list-group-item"><i class="fa fa-home"></i> Team</a>
+ 					<a href="{{ url('downline', Auth::user()->id) }}" class="list-group-item"><i class="fa fa-home"></i> Team</a>
  				@endif
  				@if (Auth::user()->hasRole(['Superadmin','Admin']))
 					<a href="{{ url('addresses') }}" class="list-group-item"><i class="fa fa-home"></i> Addresses</a>

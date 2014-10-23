@@ -36,7 +36,7 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@index']);
 
 	// genealogy
-	Route::get('/team/{id}', 'GenealogyController@team');
+	Route::get('/downline/{id}', 'GenealogyController@downline');
 
 	// API
 	Route::get('api/all-addresses', 'AddressController@getAllAddresses');

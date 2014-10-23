@@ -12,11 +12,10 @@ class GenealogyController extends \BaseController
 		
 	}
 	
-	public function team()
+	public function downline($id)
 	{
-		$id = Auth::user()->id;
-		$users = User::find($id)->children;
-		return View::make('genealogy.team', compact('users'));
+		$user = User::findOrFail($id);
+		return View::make('genealogy.downline', compact('user'));
 	}
 
 }

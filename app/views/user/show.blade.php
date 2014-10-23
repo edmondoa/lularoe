@@ -2,9 +2,7 @@
 @section('content')
 <div class="show">
 	<div class="row page-actions">
-		<div class="breadcrumbs">
-			<a href="/users">&lsaquo; Back</a>
-		</div>
+		@include('_helpers.breadcrumbs')
 		<h1>{{ $user->first_name }} {{ $user->last_name }}</h1>
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		    <div class="btn-group">

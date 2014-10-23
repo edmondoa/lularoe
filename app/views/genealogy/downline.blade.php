@@ -6,7 +6,11 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col col-md-8">
-		                <h1 class="no-top">Your Team</h1>
+		            	@if ($user->id == Auth::user()->id)
+		            		<h1 class="no-top">Your Direct Downline</h1>
+		            	@else
+		                	<h1 class="no-top">{{ $user->first_name }} {{ $user->last_name }}'s Direct Downline</h1>
+		            	@endif
 		            </div>
 		            <div class="col col-md-4">
 		                <div class="pull-right">
@@ -75,19 +79,19 @@
                             			</span>
                             		</span>
                         		</th>
-                        		
-                            	<th class="link" ng-click="orderByField='email'; reverseSort = !reverseSort">Email
+                        	
+                            	<th class="link" ng-click="orderByField='gender'; reverseSort = !reverseSort">Gender
                             		<span>
-                            			<span ng-show="orderByField == 'email'">
+                            			<span ng-show="orderByField == 'gender'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='gender'; reverseSort = !reverseSort">Gender
+                            	<th class="link" ng-click="orderByField='email'; reverseSort = !reverseSort">Email
                             		<span>
-                            			<span ng-show="orderByField == 'gender'">
+                            			<span ng-show="orderByField == 'email'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
@@ -112,14 +116,7 @@
                             		</span>
                         		</th>
 
-                            	<th class="link" ng-click="orderByField='public_id'; reverseSort = !reverseSort">Site
-                            		<span>
-                            			<span ng-show="orderByField == 'public_id'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
+                            	<th>Actions</th>
 
 	                        </tr>
 	                    </thead>
@@ -128,31 +125,35 @@
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.user_id')">
 	                            </td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.first_name"></span></a>
+	                            
+	                            <td>
+					                <span ng-bind="user.first_name"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.last_name"></span></a>
+					                <span ng-bind="user.last_name"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.email"></span></a>
+					                <span ng-bind="user.gender"></span>
 					            </td>
-					      
+					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.gender"></span></a>
+					                <span ng-bind="user.email"></span>
 					            </td>
 					            		            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.phone"></span></a>
+					                <span ng-bind="user.phone"></span>
 					            </td>
 					            
 					            <td>
-					            	<a href="/users/@include('_helpers.user_id')"><span ng-bind="user.rank_name"></span> (Rank <span ng-bind="user.rank_id"></span>)</a>
+					            	<span ng-bind="user.rank_name"></span> (Rank <span ng-bind="user.rank_id"></span>)
 					            </td>
 					            
 					            <td>
-					            	<a href="/users/@include('_helpers.user_id')">{{ url() }}/<span ng-bind="user.public_id"></span> (Rank <span ng-bind="user.rank_id"></span>)</a>
+					            	<a href="/users/@include('_helpers.user_id')"><i class="fa fa-eye" title="Details"></i></a> &nbsp;
+					            	<a href="{{ url() }}/@include('_helpers.user_id')"><i class="fa fa-globe" title="Public Site"></i></a> &nbsp;
+					            	<a href="/downline/@include('_helpers.user_id')"><i class="fa fa-sitemap" title="Downline"></i></a>
 					            </td>
 					            
 	                        </tr>
@@ -176,7 +177,7 @@
 	
 	function UserController($scope, $http) {
 	
-		$http.get('/api/immediate-downline/{{ Auth::user()->id }}').success(function(users) {
+		$http.get('/api/immediate-downline/{{ $user->id }}').success(function(users) {
 			$scope.users = users;
 			console.log($scope.users);
 			@include('_helpers.bulk_action_checkboxes')
