@@ -243,7 +243,22 @@ Route::group(['before' => 'force.ssl'], function() {
 # Testing and etc.
 ##############################################################################################
 
-Route::get('/test/{id}', function($id) {
-	return DB::table('users')->where('sponsor_id', $id)->get();
-	// return User::find($id)->children()->get();
+Route::get('test', function() {
+
+	return User::find(2001)->toArray();
+	//$result[] = count(User::find(2001)->children);
+	//$result[] = count(User::find(2878)->children);
+	//$result[] = count(User::find(3407)->children);
+	//$result[] = count(User::find(3966)->children);
+	//return $result;
+	//return Commission::set_levels_down(2878,1);
+	//return Commission::set_levels_down(3407,1);
+	//return Commission::set_levels_down(3966,1);
+	//return Commission::set_levels_down(3966,1);
+	//return Commission::set_levels_down(2001,1);
+	//$level = Commission::count_up(2014);
+	//$level = Commission::level_up(2014);
+	echo"<pre>"; print_r($level); echo"</pre>";
+	exit;
+	return dd($level);
 });

@@ -55,6 +55,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 	
 	public function children() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id');
+	}
+
+	public function descendants() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id');
+	}
+
+	public function frontline() {
 		return $this -> hasMany('User', 'sponsor_id', 'id');
 	}
 
@@ -70,6 +78,24 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->first();
 	}
 	
+	public function descendantsCountRelation()
+    {
+        return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->first();
+    }
+
+	public function frontlineCountRelation()
+    {
+        return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->first();
+    }
+
+	public function getFrontLineCountAttribute() {
+		return $this->frontlineCountRelation()->count;
+	}
+
+	public function getDescendantCountAttribute() {
+		return $this->descendantsCountRelation()->count;
+	}
+
 	public function getRankNameAttribute() {
 		return $this->currentRank()->name;
 	}
@@ -78,8 +104,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->currentRank()->id;
 	}
 	
-	protected $appends = array(/*'descendant_count','front_line_count',*/'rank_name', 'rank_id');
-	
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id');
+
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
