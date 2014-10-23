@@ -93,19 +93,27 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     }
 
 	public function getFrontLineCountAttribute() {
-		return $this->frontlineCountRelation()->count;
+		return (isset($this->frontlineCountRelation()->count))?$this->frontlineCountRelation()->count:0;
 	}
 
 	public function getDescendantCountAttribute() {
-		return $this->descendantsCountRelation()->count;
+		return (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
 	}
 
 	public function getRankNameAttribute() {
-		return $this->currentRank()->name;
+		if(isset($this->currentRank()->name))
+		{
+			return $this->currentRank()->name;
+		}
+		return false;
 	}
 	
 	public function getRankIdAttribute() {
-		return $this->currentRank()->id;
+		if(isset($this->currentRank()->id))
+		{
+			return $this->currentRank()->id;
+		}
+		return false;
 	}
 	
 	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id');

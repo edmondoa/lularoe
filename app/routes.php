@@ -240,8 +240,8 @@ Route::group(['before' => 'force.ssl'], function() {
 ##############################################################################################
 
 Route::get('test', function() {
-
-	return User::find(2001)->toArray();
+	//return \Hash::make('purpleMonkey123');
+	return User::find(2001)->descendants;//
 	//$result[] = count(User::find(2001)->children);
 	//$result[] = count(User::find(2878)->children);
 	//$result[] = count(User::find(3407)->children);
