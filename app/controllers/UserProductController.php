@@ -2,9 +2,19 @@
 
 class userProductController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllUserProducts(){
-		return UserProduct::all();
+		$userProducts = UserProduct::all();
+		foreach ($userProducts as $userProduct)
+		{
+			if (strtotime($userProduct['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$userProduct['new'] = 1;
+			}
+		}
+		return $userProducts;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class userProductController extends \BaseController {
 
 		UserProduct::create($data);
 
-		return Redirect::route('userProduct.index')->with('message', 'UserProduct created.');
+		return Redirect::route('userProducts.index')->with('message', 'UserProduct created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class userProductController extends \BaseController {
 
 		$userProduct->update($data);
 
-		return Redirect::route('userProducts.show')->with('message', 'UserProduct updated.');
+		return Redirect::route('userProducts.show', $id)->with('message', 'UserProduct updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class userProductController extends \BaseController {
 	{
 		UserProduct::destroy($id);
 
-		return Redirect::route('userProduct.index')->with('message', 'UserProduct deleted.');
+		return Redirect::route('userProducts.index')->with('message', 'UserProduct deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class userProductController extends \BaseController {
 			UserProduct::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'UserProducts deleted.');
+			return Redirect::route('userProducts.index')->with('message', 'UserProducts deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'UserProduct deleted.');
@@ -134,7 +144,7 @@ class userProductController extends \BaseController {
 			UserProduct::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'UserProducts disabled.');
+			return Redirect::route('userProducts.index')->with('message', 'UserProducts disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'UserProduct disabled.');
@@ -150,7 +160,7 @@ class userProductController extends \BaseController {
 			UserProduct::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'UserProducts enabled.');
+			return Redirect::route('userProducts.index')->with('message', 'UserProducts enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'UserProduct enabled.');

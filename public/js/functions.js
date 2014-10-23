@@ -49,4 +49,11 @@ $(document).ready(function() {
         //timeFormat: 'hh:mm tt'
     });
     
+    // highlight active page in main-menu
+    $('#main-menu a').each(function() {
+       if ($(this).attr('href') == url) {
+           $(this).addClass('active');
+       }
+    });
+    
 });

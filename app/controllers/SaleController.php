@@ -2,9 +2,19 @@
 
 class saleController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllSales(){
-		return Sale::all();
+		$sales = Sale::all();
+		foreach ($sales as $sale)
+		{
+			if (strtotime($sale['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$sale['new'] = 1;
+			}
+		}
+		return $sales;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class saleController extends \BaseController {
 
 		Sale::create($data);
 
-		return Redirect::route('sale.index')->with('message', 'Sale created.');
+		return Redirect::route('sales.index')->with('message', 'Sale created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class saleController extends \BaseController {
 
 		$sale->update($data);
 
-		return Redirect::route('sales.show')->with('message', 'Sale updated.');
+		return Redirect::route('sales.show', $id)->with('message', 'Sale updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class saleController extends \BaseController {
 	{
 		Sale::destroy($id);
 
-		return Redirect::route('sale.index')->with('message', 'Sale deleted.');
+		return Redirect::route('sales.index')->with('message', 'Sale deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class saleController extends \BaseController {
 			Sale::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Sales deleted.');
+			return Redirect::route('sales.index')->with('message', 'Sales deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Sale deleted.');
@@ -134,7 +144,7 @@ class saleController extends \BaseController {
 			Sale::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Sales disabled.');
+			return Redirect::route('sales.index')->with('message', 'Sales disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Sale disabled.');
@@ -150,7 +160,7 @@ class saleController extends \BaseController {
 			Sale::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Sales enabled.');
+			return Redirect::route('sales.index')->with('message', 'Sales enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Sale enabled.');

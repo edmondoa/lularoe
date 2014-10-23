@@ -2,9 +2,19 @@
 
 class pageController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllPages(){
-		return Page::all();
+		$pages = Page::all();
+		foreach ($pages as $page)
+		{
+			if (strtotime($page['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$page['new'] = 1;
+			}
+		}
+		return $pages;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class pageController extends \BaseController {
 
 		Page::create($data);
 
-		return Redirect::route('page.index')->with('message', 'Page created.');
+		return Redirect::route('pages.index')->with('message', 'Page created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class pageController extends \BaseController {
 
 		$page->update($data);
 
-		return Redirect::route('pages.show')->with('message', 'Page updated.');
+		return Redirect::route('pages.show', $id)->with('message', 'Page updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class pageController extends \BaseController {
 	{
 		Page::destroy($id);
 
-		return Redirect::route('page.index')->with('message', 'Page deleted.');
+		return Redirect::route('pages.index')->with('message', 'Page deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class pageController extends \BaseController {
 			Page::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Pages deleted.');
+			return Redirect::route('pages.index')->with('message', 'Pages deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Page deleted.');
@@ -134,7 +144,7 @@ class pageController extends \BaseController {
 			Page::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Pages disabled.');
+			return Redirect::route('pages.index')->with('message', 'Pages disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Page disabled.');
@@ -150,7 +160,7 @@ class pageController extends \BaseController {
 			Page::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Pages enabled.');
+			return Redirect::route('pages.index')->with('message', 'Pages enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Page enabled.');

@@ -2,9 +2,19 @@
 
 class cartController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllCarts(){
-		return Cart::all();
+		$carts = Cart::all();
+		foreach ($carts as $cart)
+		{
+			if (strtotime($cart['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$cart['new'] = 1;
+			}
+		}
+		return $carts;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class cartController extends \BaseController {
 
 		Cart::create($data);
 
-		return Redirect::route('cart.index')->with('message', 'Cart created.');
+		return Redirect::route('carts.index')->with('message', 'Cart created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class cartController extends \BaseController {
 
 		$cart->update($data);
 
-		return Redirect::route('carts.show')->with('message', 'Cart updated.');
+		return Redirect::route('carts.show', $id)->with('message', 'Cart updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class cartController extends \BaseController {
 	{
 		Cart::destroy($id);
 
-		return Redirect::route('cart.index')->with('message', 'Cart deleted.');
+		return Redirect::route('carts.index')->with('message', 'Cart deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class cartController extends \BaseController {
 			Cart::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Carts deleted.');
+			return Redirect::route('carts.index')->with('message', 'Carts deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Cart deleted.');
@@ -134,7 +144,7 @@ class cartController extends \BaseController {
 			Cart::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Carts disabled.');
+			return Redirect::route('carts.index')->with('message', 'Carts disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Cart disabled.');
@@ -150,7 +160,7 @@ class cartController extends \BaseController {
 			Cart::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Carts enabled.');
+			return Redirect::route('carts.index')->with('message', 'Carts enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Cart enabled.');

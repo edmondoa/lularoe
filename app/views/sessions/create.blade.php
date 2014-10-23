@@ -1,7 +1,7 @@
-@extends('layouts.default')
+@extends('layouts.centered')
 @section('content')
 <div class="row">
-	<div class="col col-md-4">
+	<div class="col col-md-3 col-sm-4">
 		{{ Form::open(array('route' => 'sessions.store')) }}
 	    <h1>Log In</h1>
 		{{ Form::text('email', null, array('class' => 'form-control', 'placeholder' => 'Email Address')) }}

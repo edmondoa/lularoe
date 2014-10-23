@@ -2,9 +2,19 @@
 
 class userController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllUsers(){
-		return User::all();
+		$users = User::all();
+		foreach ($users as $user)
+		{
+			if (strtotime($user['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$user['new'] = 1;
+			}
+		}
+		return $users;
 	}
 
 	/**
@@ -62,6 +72,8 @@ class userController extends \BaseController {
 		}
 		$data['password'] = Hash::make($data['password']);
 		$user = User::create($data);
+		
+		// store address
 	    $address = Address::create([
 	    	'address'=>$data['address_1'],
 	    	'address2'=>$data['address_2'],
@@ -70,8 +82,37 @@ class userController extends \BaseController {
 	    	'zip'=>$data['zip'],
 	    	]);
 		$user->addresses()->save($address);
+		
+        // process and store image
+        if (Input::file('image')) {
+            // upload and link to image
+            $filename = '';
+            if (Input::hasFile('image')) {
+                $file = Input::file('image');
+                $destinationPath = public_path() . '/img/avatars/';
+                $extension = $file->getClientOriginalExtension();
+                $filename = str_random(20) . '.' . $extension;
+                $uploadSuccess   = $file->move($destinationPath, $filename);
+    
+                // open an image file
+                $img = Image::make('img/avatars/' . $filename);
+    
+                // now you are able to resize the instance
+                $img->fit(50, 50);
+    
+                // finally we save the image as a new image
+                $img->save('img/avatars/' . $filename);
+    
+                $data['image'] = $filename;
+            }
+        }
+        else if ($data['icon'] != '') {
+            $data['image'] = 'icons/' . $data['icon'] . '.png';
+        }
+		
+		// log in new user
 		Auth::loginUsingId($user->id);
-		return Redirect::to('payment.create');
+		return Redirect::to('users.index');
 	}
 
 	/**
@@ -119,7 +160,7 @@ class userController extends \BaseController {
 
 		$user->update($data);
 
-		return Redirect::route('users.show')->with('message', 'User updated.');
+		return Redirect::route('users.show', $id)->with('message', 'User updated.');
 	}
 
 	/**
@@ -132,7 +173,7 @@ class userController extends \BaseController {
 	{
 		User::destroy($id);
 
-		return Redirect::route('user.index')->with('message', 'User deleted.');
+		return Redirect::route('users.index')->with('message', 'User deleted.');
 	}
 	
 	/**
@@ -144,7 +185,7 @@ class userController extends \BaseController {
 			User::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Users deleted.');
+			return Redirect::route('users.index')->with('message', 'Users deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'User deleted.');
@@ -160,7 +201,7 @@ class userController extends \BaseController {
 			User::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Users disabled.');
+			return Redirect::route('users.index')->with('message', 'Users disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'User disabled.');
@@ -176,7 +217,7 @@ class userController extends \BaseController {
 			User::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Users enabled.');
+			return Redirect::route('users.index')->with('message', 'Users enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'User enabled.');

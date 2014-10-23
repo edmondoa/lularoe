@@ -2,9 +2,19 @@
 
 class [model]Controller extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAll[Models](){
-		return [Model]::all();
+		$[models] = [Model]::all();
+		foreach ($[models] as $[model])
+		{
+			if (strtotime($[model]['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$[model]['new'] = 1;
+			}
+		}
+		return $[models];
 	}
 
 	/**
@@ -45,7 +55,7 @@ class [model]Controller extends \BaseController {
 
 		[Model]::create($data);
 
-		return Redirect::route('[model].index')->with('message', '[Model] created.');
+		return Redirect::route('[models].index')->with('message', '[Model] created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class [model]Controller extends \BaseController {
 
 		$[model]->update($data);
 
-		return Redirect::route('[models].show')->with('message', '[Model] updated.');
+		return Redirect::route('[models].show', $id)->with('message', '[Model] updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class [model]Controller extends \BaseController {
 	{
 		[Model]::destroy($id);
 
-		return Redirect::route('[model].index')->with('message', '[Model] deleted.');
+		return Redirect::route('[models].index')->with('message', '[Model] deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class [model]Controller extends \BaseController {
 			[Model]::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', '[Models] deleted.');
+			return Redirect::route('[models].index')->with('message', '[Models] deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', '[Model] deleted.');
@@ -134,7 +144,7 @@ class [model]Controller extends \BaseController {
 			[Model]::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', '[Models] disabled.');
+			return Redirect::route('[models].index')->with('message', '[Models] disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', '[Model] disabled.');
@@ -150,7 +160,7 @@ class [model]Controller extends \BaseController {
 			[Model]::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', '[Models] enabled.');
+			return Redirect::route('[models].index')->with('message', '[Models] enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', '[Model] enabled.');

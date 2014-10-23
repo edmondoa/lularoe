@@ -2,9 +2,19 @@
 
 class productCategoryController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllProductCategories(){
-		return ProductCategory::all();
+		$productCategories = ProductCategory::all();
+		foreach ($productCategories as $productCategory)
+		{
+			if (strtotime($productCategory['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$productCategory['new'] = 1;
+			}
+		}
+		return $productCategories;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class productCategoryController extends \BaseController {
 
 		ProductCategory::create($data);
 
-		return Redirect::route('productCategory.index')->with('message', 'ProductCategory created.');
+		return Redirect::route('productCategories.index')->with('message', 'ProductCategory created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class productCategoryController extends \BaseController {
 
 		$productCategory->update($data);
 
-		return Redirect::route('productCategories.show')->with('message', 'ProductCategory updated.');
+		return Redirect::route('productCategories.show', $id)->with('message', 'ProductCategory updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class productCategoryController extends \BaseController {
 	{
 		ProductCategory::destroy($id);
 
-		return Redirect::route('productCategory.index')->with('message', 'ProductCategory deleted.');
+		return Redirect::route('productCategories.index')->with('message', 'ProductCategory deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class productCategoryController extends \BaseController {
 			ProductCategory::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'ProductCategories deleted.');
+			return Redirect::route('productCategories.index')->with('message', 'ProductCategories deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'ProductCategory deleted.');
@@ -134,7 +144,7 @@ class productCategoryController extends \BaseController {
 			ProductCategory::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'ProductCategories disabled.');
+			return Redirect::route('productCategories.index')->with('message', 'ProductCategories disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'ProductCategory disabled.');
@@ -150,7 +160,7 @@ class productCategoryController extends \BaseController {
 			ProductCategory::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'ProductCategories enabled.');
+			return Redirect::route('productCategories.index')->with('message', 'ProductCategories enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'ProductCategory enabled.');

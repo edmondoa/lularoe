@@ -2,9 +2,19 @@
 
 class productController extends \BaseController {
 
-	// data only
+	/**
+	 * Data only
+	 */
 	public function getAllProducts(){
-		return Product::all();
+		$products = Product::all();
+		foreach ($products as $product)
+		{
+			if (strtotime($product['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$product['new'] = 1;
+			}
+		}
+		return $products;
 	}
 
 	/**
@@ -45,7 +55,7 @@ class productController extends \BaseController {
 
 		Product::create($data);
 
-		return Redirect::route('product.index')->with('message', 'Product created.');
+		return Redirect::route('products.index')->with('message', 'Product created.');
 	}
 
 	/**
@@ -93,7 +103,7 @@ class productController extends \BaseController {
 
 		$product->update($data);
 
-		return Redirect::route('products.show')->with('message', 'Product updated.');
+		return Redirect::route('products.show', $id)->with('message', 'Product updated.');
 	}
 
 	/**
@@ -106,7 +116,7 @@ class productController extends \BaseController {
 	{
 		Product::destroy($id);
 
-		return Redirect::route('product.index')->with('message', 'Product deleted.');
+		return Redirect::route('products.index')->with('message', 'Product deleted.');
 	}
 	
 	/**
@@ -118,7 +128,7 @@ class productController extends \BaseController {
 			Product::destroy($id);
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Products deleted.');
+			return Redirect::route('products.index')->with('message', 'Products deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Product deleted.');
@@ -134,7 +144,7 @@ class productController extends \BaseController {
 			Product::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Products disabled.');
+			return Redirect::route('products.index')->with('message', 'Products disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Product disabled.');
@@ -150,7 +160,7 @@ class productController extends \BaseController {
 			Product::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('product.index')->with('message', 'Products enabled.');
+			return Redirect::route('products.index')->with('message', 'Products enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'Product enabled.');

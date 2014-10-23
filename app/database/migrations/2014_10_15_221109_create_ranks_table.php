@@ -14,6 +14,19 @@ class CreateRanksTable extends Migration
 			$table->boolean('disabled');
 			$table->timestamps();
 		});
+		Rank::create(["name"=>"ISM"]);
+		Rank::create(["name"=>"Partner"]);
+		Rank::create(["name"=>"Promoter"]);
+		Rank::create(["name"=>"Executive"]);
+		Rank::create(["name"=>"Silver"]);
+		Rank::create(["name"=>"Gold"]);
+		Rank::create(["name"=>"Round Table"]);
+		Rank::create(["name"=>"Platinum"]);
+		Rank::create(["name"=>"Diamond"]);
+		Rank::create(["name"=>"Black Diamond"]);
+		Rank::create(["name"=>"White Diamond"]);
+		Rank::create(["name"=>"Blue Diamond"]);
+		Rank::create(["name"=>"Crowne Diamond"]);
 	}
 
 	public function down()
