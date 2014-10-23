@@ -35,6 +35,9 @@ Route::group(array('before' => 'auth'), function() {
 	// dashboard
 	Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@index']);
 
+	// genealogy
+	Route::get('/downline/{id}', 'GenealogyController@downline');
+
 	// API
 	Route::get('api/all-addresses', 'AddressController@getAllAddresses');
 	Route::get('api/all-bonuses', 'BonusController@getAllBonuses');
@@ -55,6 +58,7 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('api/all-users', 'UserController@getAllUsers');
 	Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 	Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
+	Route::get('api/immediate-downline/{id}', 'GenealogyController@getImmediateDownline');
 
 	##############################################################################################
 	# Superadmin only routes

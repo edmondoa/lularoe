@@ -7,7 +7,7 @@ class EmailMessagesTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 15; $i++) {
 			$emailMessage = array(
 				'sender_id' => $faker->randomDigitNotNull,
 				'recipient_id' => $faker->randomDigitNotNull,

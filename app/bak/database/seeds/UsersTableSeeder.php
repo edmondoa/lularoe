@@ -6,7 +6,7 @@ class UsersTableSeeder extends DatabaseSeeder
 	{
 		Eloquent::unguard();
 		$faker = $this->getFaker();
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 15; $i++) {
 			$users = array(
 				'first_name' => $faker->firstName,
 				'last_name' => $faker->lastName,

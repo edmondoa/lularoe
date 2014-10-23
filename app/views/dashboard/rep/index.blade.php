@@ -1,14 +1,14 @@
 @extends('layouts.default')
 @section('content')
 <div class="row">
-	<div style="margin-left:15px;">
+	<div class="col col-md-12">
 		<h1>Welcome, {{ $user->first_name }}</h1>
 		<div class="alert alert-success inline-block">
 			Copy and paste the following link and send it to anyone whom you'd like to join your team:<br>
 			<a href="{{ url() }}/join/{{ $user->public_id }}">{{ url() }}/join/{{ $user->public_id }}</a>
 		</div>
 	</div>
-	<div class="col col-md-4 col-sm-6">
+	<div class="col col-md-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h2 class="panel-title">Your Info</h2>
@@ -27,10 +27,10 @@
 					<td>{{ $user->id }}</td>
 				</tr>
 				@if (isset($sponsor))
-				<tr>
-					<th>Your Sponsor:</th>
-					<td><a href="users/{{ $sponsor->id }}">{{ $sponsor->first_name }} {{ $sponsor->last_name }}</a></td>
-				</tr>
+					<tr>
+						<th>Your Sponsor:</th>
+						<td><a href="users/{{ $sponsor->id }}">{{ $sponsor->first_name }} {{ $sponsor->last_name }}</a></td>
+					</tr>
 				@endif
 			</table>
 		</div><!-- panel -->
@@ -45,40 +45,36 @@
 				</thead>
 				<tbody>
 					@foreach ($ranks as $rank)
-					<tr>
-						<th>{{ $rank->pivot->created_at }}</th>
-						<td>{{ $rank->name }} (Rank {{ $rank->id }})</td>
-					</tr>
+						<tr>
+							<th>{{ $rank->pivot->created_at }}</th>
+							<td>{{ $rank->name }} (Rank {{ $rank->id }})</td>
+						</tr>
 					@endforeach
 				</tbody>
 			</table>
 		</div><!-- panel -->
 	</div><!-- col -->
-	<div class="col col-md-8 col-sm-6">
+	<div class="col col-md-6">
 		@if (isset($children))
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h2 class="panel-title">Your Team</h2>
 				</div>
 				<table class="table table-striped">
-					<thead>
-						<th>Name</th>
-						<th>Phone</th>
-						<th>Email</th>
-					</thead>
-					<tbody>
-						@foreach ($children as $child)
-						<tr>
-							<td><a href="users/{{ $child->id }}">{{ $child->first_name }} {{ $child->last_name }}</a></td>
-							<td>{{ $child->phone }}</td>
-							<td>{{ $child->email }}</td>
-						</tr>
-						@endforeach
-					</tbody>
+					<tr>
+						<th>Members in Direct Downline</th>
+						<td></td>
+					</tr>
+					<tr>
+						<th>Members in Entire Team</th>
+						<td></td>
+					</tr>
 				</table>
+				<div class="panel-body">
+					<a class="btn btn-primary" href="/downline/{{ $user->id }}">Manage Team</a>
+				</div>
 			</div><!-- panel -->
 		@endif
 	</div><!-- col -->
-
-</div>
+</div><!-- row -->
 @stop

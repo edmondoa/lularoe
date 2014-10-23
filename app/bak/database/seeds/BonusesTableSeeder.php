@@ -7,7 +7,7 @@ class BonusesTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 15; $i++) {
 			$bonus = array(
 				'user_id' => $faker->randomDigitNotNull,
 				'eight_in_eight' => $faker->boolean,

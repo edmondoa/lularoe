@@ -7,13 +7,16 @@ class RankUserTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 10; $i++) {
-			$rankUser = array(
-				'user_id' => $faker->randomDigitNotNull,
-				'rank_id' => $faker->randomDigitNotNull,
-				'disabled' => $faker->boolean,
-			);
-			RankUser::create($rankUser);
+		for($i = 1; $i <= 15; $i++) {
+			for ($x = 1; $x !== 0; $x = rand(0,5))
+			{
+				$rankUser = array(
+					'user_id' => $i + 2000,
+					'rank_id' => $faker->randomDigitNotNull,
+					'disabled' => $faker->boolean,
+				);
+				RankUser::create($rankUser);
+			}
 		}
 	}
 

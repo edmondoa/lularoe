@@ -14,6 +14,7 @@ class CreateAddressesTable extends Migration
 			$table->string('address_2');
 			$table->string('city');
 			$table->string('state');
+			$table->string('addressable_type');
 			$table->integer('addressable_id');
 			$table->integer('zip');
 			$table->boolean('disabled');

@@ -7,7 +7,7 @@ class RanksTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 10; $i++) {
+		for($i = 1; $i <= 15; $i++) {
 			$rank = array(
 				'name' => $faker->name,
 				'disabled' => $faker->boolean,

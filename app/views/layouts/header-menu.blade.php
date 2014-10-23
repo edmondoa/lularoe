@@ -9,18 +9,14 @@
 		</div>
 		<div class="collapse navbar-collapse">
 			@if (!Auth::check())
-				<ul class="nav navbar-nav">
+				<ul class="nav navbar-nav navbar-right">
 					<li><a href="/login">Log In</a></li>
 				</ul>
 			@else
 	            <ul class="nav navbar-nav navbar-right">
 	                <li class="dropdown">
 	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-	                        @if (isset(Auth::user()->first_name))
-	                            {{ Auth::user()->first_name }}
-	                        @else
-	                            {{ Auth::user()->person->first }} {{ Auth::user()->person->last }}
-	                        @endif
+	                        {{ Auth::user()->first_name }}
 	                        <b class="caret"></b>&nbsp;&nbsp;&nbsp;
 	                    </a>
 	                    <ul class="dropdown-menu">
