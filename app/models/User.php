@@ -112,7 +112,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return false;
 	}
 	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id');
+
+	public function getNewRecordAttribute() {
+		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
+	}
+	
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id','new_record');
 
 	/**
 	 * The attributes excluded from the model's JSON form.

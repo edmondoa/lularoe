@@ -21,5 +21,10 @@ class Address extends \Eloquent
 		return $this->morphTo();
 	}
 
+	public function getNewRecordAttribute() {
+		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
+	}
+	
+	protected $appends = array('new_record');
 
 }

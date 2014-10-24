@@ -245,12 +245,15 @@ Route::group(['before' => 'force.ssl'], function() {
 
 Route::get('test', function() {
 	//return \Hash::make('purpleMonkey123');
-	return User::find(2001)->descendants;//
+	return Address::all();
+	return User::find(2001)->frontline;//
 	//$result[] = count(User::find(2001)->children);
 	//$result[] = count(User::find(2878)->children);
 	//$result[] = count(User::find(3407)->children);
 	//$result[] = count(User::find(3966)->children);
 	//return $result;
+	
+	//return Commission::set_levels_down(2001,1);
 	//return Commission::set_levels_down(2878,1);
 	//return Commission::set_levels_down(3407,1);
 	//return Commission::set_levels_down(3966,1);

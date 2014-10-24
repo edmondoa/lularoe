@@ -5,16 +5,8 @@ class addressController extends \BaseController {
 	/**
 	 * Data only
 	 */
-	public function getAllAddresses(){
-		$addresses = Address::all();
-		foreach ($addresses as $address)
-		{
-			if (strtotime($address['created_at']) >= (time() - Config::get('site.new_time_frame') ))
-			{
-				$address['new'] = 1;
-			}
-		}
-		return $addresses;
+	public function getAllRecords(){
+		return Address::all();
 	}
 
 	/**
