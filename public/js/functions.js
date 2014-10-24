@@ -50,10 +50,12 @@ $(document).ready(function() {
     });
     
     // highlight active page in main-menu
+    path = path.split('/');
     $('#main-menu a').each(function() {
-       if ($(this).attr('href') == url) {
-           $(this).addClass('active');
-       }
+        href = $(this).attr('href').split('/');
+        if (href[1] == path[0]) {
+            $(this).addClass('active');
+        }
     });
     
 });

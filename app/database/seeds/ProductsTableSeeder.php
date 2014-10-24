@@ -7,7 +7,7 @@ class ProductsTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 15; $i++) {
+		for($i = 1; $i <= 20; $i++) {
 			$product = array(
 				'name' => $faker->name,
 				'blurb' => $faker->text,

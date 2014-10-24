@@ -7,7 +7,7 @@ class UserProductsTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 15; $i++) {
+		for($i = 1; $i <= 20; $i++) {
 			$userProduct = array(
 				'product_id' => $faker->randomDigitNotNull,
 				'disabled' => $faker->boolean,

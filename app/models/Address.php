@@ -14,7 +14,7 @@ class Address extends \Eloquent
 	];
 	
 	protected $table = 'addresses';
-	protected $fillable = array('address_1','address_2','city','state','addressable_id','zip','disabled');
+	protected $fillable = array('address_1','address_2','city','state','addressable_id','zip','addressable_type','disabled');
 
 	public function addressable()
 	{

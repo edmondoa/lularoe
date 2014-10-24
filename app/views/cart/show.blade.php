@@ -2,9 +2,7 @@
 @section('content')
 <div class="show">
 	<div class="row page-actions">
-		<div class="breadcrumbs">
-			<a href="/carts">&lsaquo; Back</a>
-		</div>
+		@include('_helpers.breadcrumbs')
 		<h1 class="no-top">Viewing cart</h1>
 	    <div class="btn-group">
 		    <a class="btn btn-default" href="{{ url('carts/'.$cart->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>

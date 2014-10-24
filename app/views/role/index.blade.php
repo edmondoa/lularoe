@@ -21,7 +21,7 @@
 		        <div class="row">
 		            <div class="col col-md-12">
 		                <div class="pull-left">
-		                    <a class="btn btn-success pull-left margin-right-1" title="New" href="{{ url('roles/create') }}"><i class="fa fa-plus"></i></a>
+		                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('roles/create') }}"><i class="fa fa-plus"></i></a>
 		                    <div class="pull-left">
 		                        <div class="input-group">
 		                            <select class="form-control selectpicker actions">

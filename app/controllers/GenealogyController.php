@@ -7,9 +7,7 @@ class GenealogyController extends \BaseController
 	 * Data only
 	 */
 	public function getImmediateDownline($id) {
-		// return User::find($id)->children()->get();
-		return DB::table('users')->where('sponsor_id', $id)->get();
-		
+		return User::find($id)->frontline;
 	}
 	
 	public function downline($id)

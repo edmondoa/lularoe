@@ -92,28 +92,27 @@
 			</div><!-- panel -->
 		</div><!-- col -->
 		<div class="col col-md-6 col-sm-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h2 div class="panel-title">Address</h2>
-				</div>
-			    @if(isset($address))
-			    <table class="table table-striped">
-			        <tr>
-			            <td>{{ $address->address_1 }}</td>
-			        </tr>
-			        
-			        @if (!empty($address->address_2))
+			@foreach ($addresses as $address)
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h2 div class="panel-title">Address</h2>
+					</div>
+				    <table class="table table-striped">
 				        <tr>
-				            <td>{{ $address->address_2 }}</td>
+				            <td>{{ $address->address_1 }}</td>
 				        </tr>
-			        @endif
-			        <tr>
-			            <td>{{ $address->city }}, {{ $address->state }} {{ $address->zip }}</td>
-			        </tr>
-			        
-			    </table>
-			    @endif
-			</div><!-- panel -->
+				        
+				        @if (!empty($address->address_2))
+					        <tr>
+					            <td>{{ $address->address_2 }}</td>
+					        </tr>
+				        @endif
+				        <tr>
+				            <td>{{ $address->city }}, {{ $address->state }} {{ $address->zip }}</td>
+				        </tr>
+				    </table>
+				</div><!-- panel -->
+			@endforeach
 		</div><!-- row -->
 	</div><!-- row -->
 @stop

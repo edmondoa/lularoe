@@ -7,7 +7,7 @@ class PagesTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 15; $i++) {
+		for($i = 1; $i <= 20; $i++) {
 			$page = array(
 				'title' => $faker->word,
 				'url' => $faker->url,

@@ -2,9 +2,7 @@
 @section('content')
 <div class="show">
 	<div class="row page-actions">
-		<div class="breadcrumbs">
-			<a href="/roles">&lsaquo; Back</a>
-		</div>
+		@include('_helpers.breadcrumbs')
 		<h1 class="no-top">Viewing role</h1>
 	    <div class="btn-group">
 		    <a class="btn btn-default" href="{{ url('roles/'.$role->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>

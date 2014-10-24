@@ -52,7 +52,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
     border-top-right-radius: 0px !important;
     border-bottom-right-radius: 0px !important;
 }
-.show .table, .edit .table { width:auto !important; }
+.show .col > .table, .edit .col > .table { width:auto !important; }
 .create form, .edit form { display:inline-block; }
 .panel table { width:100%; }
 .ui-datepicker-year, .ui-datepicker-month { color:black; font-weight:100; }

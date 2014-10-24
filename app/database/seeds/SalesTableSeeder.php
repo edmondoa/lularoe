@@ -7,7 +7,7 @@ class SalesTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 15; $i++) {
+		for($i = 1; $i <= 20; $i++) {
 			$sale = array(
 				'product_id' => $faker->randomDigitNotNull,
 				'user_id' => $i + 2000,

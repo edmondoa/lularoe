@@ -19,7 +19,7 @@ class PreRegisterController extends \BaseController {
 		}
 		else
 		{
-			return View::make('pre-register.sponsor')->with('danger_message', 'Missing or incorrect sponsor ID');
+			return View::make('pre-register.sponsor')->with('message_danger', 'Missing or incorrect sponsor ID');
 		}
 		//return View::make('pre-register.create');
 	}

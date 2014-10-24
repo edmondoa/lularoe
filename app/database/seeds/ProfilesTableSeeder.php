@@ -7,7 +7,7 @@ class ProfilesTableSeeder extends DatabaseSeeder
 	{
 		$faker = $this->getFaker();
 
-		for($i = 1; $i <= 15; $i++) {
+		for($i = 1; $i <= 20; $i++) {
 			$profile = array(
 				'public_name' => $faker->word,
 				'public_content' => $faker->text,

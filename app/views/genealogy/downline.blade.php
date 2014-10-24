@@ -6,6 +6,11 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col col-md-8">
+		            	@if (isset($user->sponsor_id))
+		            		<div class="breadcrumbs">
+		            			<a href="/downline/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
+		            		</div>
+		            	@endif
 		            	@if ($user->id == Auth::user()->id)
 		            		<h1 class="no-top">Your Direct Downline</h1>
 		            	@else
@@ -25,7 +30,6 @@
 		        <div class="row">
 		            <div class="col col-md-12">
 		                <div class="pull-left">
-		                    <a class="btn btn-success pull-left margin-right-1" title="New" href="{{ url('users/create') }}"><i class="fa fa-plus"></i></a>
 		                    <div class="pull-left">
 		                        <div class="input-group">
 		                            <select class="form-control selectpicker actions">
@@ -61,17 +65,8 @@
 	                            <th>
 	                            	<input type="checkbox">
 	                            </th>
-                            	                     		
-                            	<th class="link" ng-click="orderByField='first_name'; reverseSort = !reverseSort">First Name
-                            		<span>
-                            			<span ng-show="orderByField == 'first_name'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-                        		
-                            	<th class="link" ng-click="orderByField='last_name'; reverseSort = !reverseSort">Last Name
+                            	                     			
+                            	<th class="link" ng-click="orderByField='last_name'; reverseSort = !reverseSort">Name
                             		<span>
                             			<span ng-show="orderByField == 'last_name'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -115,6 +110,24 @@
                             			</span>
                             		</span>
                         		</th>
+                        		
+                            	<th class="link" ng-click="orderByField='front_line_count'; reverseSort = !reverseSort">Direct Downline
+                            		<span>
+                            			<span ng-show="orderByField == 'rank_id'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
+                        		
+                            	<th class="link" ng-click="orderByField='descendant_count'; reverseSort = !reverseSort">Total Downline
+                            		<span>
+                            			<span ng-show="orderByField == 'rank_id'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
 
                             	<th>Actions</th>
 
@@ -127,11 +140,7 @@
 	                            </td>
 	                            
 	                            <td>
-					                <span ng-bind="user.first_name"></span>
-					            </td>
-					            
-					            <td>
-					                <span ng-bind="user.last_name"></span>
+					                <span ng-bind="user.last_name"></span>, <span ng-bind="user.first_name"></span>
 					            </td>
 					            
 					            <td>
@@ -147,7 +156,15 @@
 					            </td>
 					            
 					            <td>
-					            	<span ng-bind="user.rank_name"></span> (Rank <span ng-bind="user.rank_id"></span>)
+					            	<span ng-bind="user.rank_name"></span> <span ng-bind="user.rank_name"></span> (<span ng-bind="user.rank_id"></span>)
+					            </td>
+					            
+					            <td>
+					            	<span ng-bind="user.front_line_count"></span>
+					            </td>
+					            
+					            <td>
+					            	<span ng-bind="user.descendant_count"></span>
 					            </td>
 					            
 					            <td>

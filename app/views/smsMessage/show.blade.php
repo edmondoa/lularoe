@@ -2,9 +2,7 @@
 @section('content')
 <div class="show">
 	<div class="row page-actions">
-		<div class="breadcrumbs">
-			<a href="/smsMessages">&lsaquo; Back</a>
-		</div>
+		@include('_helpers.breadcrumbs')
 		<h1 class="no-top">Viewing smsMessage</h1>
 	    <div class="btn-group">
 		    <a class="btn btn-default" href="{{ url('smsMessages/'.$smsMessage->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>

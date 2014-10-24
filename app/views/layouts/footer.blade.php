@@ -7,7 +7,7 @@
 <script>
 	
 	// convert PHP variables to JavaScript
-	var url = '{{ Request::url() }}';
+	var path = '{{ Request::path() }}';
 	
 </script>
 {{ HTML::script('js/functions.js') }}

@@ -63,11 +63,11 @@
 				<table class="table table-striped">
 					<tr>
 						<th>Members in Direct Downline</th>
-						<td></td>
+						<td>{{ $user->descendant_count }}</td>
 					</tr>
 					<tr>
 						<th>Members in Entire Team</th>
-						<td></td>
+						<td>{{ $user->front_line_count }}</td>
 					</tr>
 				</table>
 				<div class="panel-body">
