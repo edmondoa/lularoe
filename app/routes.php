@@ -258,25 +258,10 @@ Route::get('test-steve/{id}', function($id) {
 });
 
 Route::get('test', function() {
-	Mail::send('emails.test', array('message_body' => 'Hey, what the hell'), function($message)
+	$frontline = User::find(0)->frontline;
+	foreach(User::find(0)->frontline as $rep)
 	{
-	    $message->from(\Config::get('site.default_from_email'), \Config::get('site.default_from_name'));
-	    $message->to('jbarlow@controlpad.com', 'Jake Barlow')->subject('Welcome, you are a stud!');
-	});
-	return;
-	//return User::find(2001)->frontline;
-	//$result[] = count(User::find(2001)->children);
-	//$result[] = count(User::find(2878)->children);
-	//$result[] = count(User::find(3407)->children);
-	//$result[] = count(User::find(3966)->children);
-	//return $result;
-	
-	//return Commission::set_levels_down(2001,1);
-	//return Commission::set_levels_down(2878,1);
-	//return Commission::set_levels_down(3407,1);
-	//return Commission::set_levels_down(3966,1);
-	//return Commission::set_levels_down(3966,1);
-	//return Commission::set_levels_down(2001,1);
-	//$level = Commission::count_up(2014);
+		Commission::set_levels_down($rep->id,1);
+	}
 
 });
