@@ -11,6 +11,8 @@
 		<button class='btn btn-success'>Log In</button>
 		{{ Form::close() }}
 		<br>
+		<p>Forgot your password? <a href='/password/remind'>Reset it!</a></p>
+		<br>
 		<br>
 		<p>Don't have an account? <a href='/join'>Sign up!</a></p>
 	</div>
