@@ -2,19 +2,19 @@
 @section('content')
 <div ng-app="app" class="index">
     {{ Form::open(array('url' => 'users/disable', 'method' => 'POST')) }}
-	    <div ng-controller="UserController" class="my-controller">
+	    <div ng-controller="DownlineController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col col-md-8">
 		            	@if (isset($user->sponsor_id))
 		            		<div class="breadcrumbs">
-		            			<a href="/downline/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
+		            			<a href="/downline/all/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
 		            		</div>
 		            	@endif
 		            	@if ($user->id == Auth::user()->id)
-		            		<h1 class="no-top">Your Direct Downline</h1>
+		            		<h1 class="no-top">Your Entire Downline</h1>
 		            	@else
-		                	<h1 class="no-top">{{ $user->first_name }} {{ $user->last_name }}'s Direct Downline</h1>
+		                	<h1 class="no-top">{{ $user->first_name }} {{ $user->last_name }}'s Entire Downline</h1>
 		            	@endif
 		            </div>
 		            <div class="col col-md-4">
@@ -129,8 +129,6 @@
                             		</span>
                         		</th>
 
-                            	<th>Actions</th>
-
 	                        </tr>
 	                    </thead>
 	                    <tbody>
@@ -140,7 +138,7 @@
 	                            </td>
 	                            
 	                            <td>
-					                <span ng-bind="user.last_name"></span>, <span ng-bind="user.first_name"></span>
+					                <a href="/users/@include('_helpers.user_id')" title="View Details"><span ng-bind="user.last_name"></span>, <span ng-bind="user.first_name"></span></a>
 					            </td>
 					            
 					            <td>
@@ -156,21 +154,15 @@
 					            </td>
 					            
 					            <td>
-					            	<span ng-bind="user.rank_name"></span> <span ng-bind="user.rank_name"></span> (<span ng-bind="user.rank_id"></span>)
+					            	<span ng-bind="user.rank_name"></span> (<span ng-bind="user.rank_id"></span>)
 					            </td>
 					            
 					            <td>
-					            	<span ng-bind="user.front_line_count"></span>
+					            	<a href="/direct-downline/@include('_helpers.user_id')" title="View Direct Downline"><span ng-bind="user.front_line_count"></span></a>
 					            </td>
 					            
 					            <td>
-					            	<span ng-bind="user.descendant_count"></span>
-					            </td>
-					            
-					            <td>
-					            	<a href="/users/@include('_helpers.user_id')"><i class="fa fa-eye" title="Details"></i></a> &nbsp;
-					            	<a href="{{ url() }}/@include('_helpers.user_id')"><i class="fa fa-globe" title="Public Site"></i></a> &nbsp;
-					            	<a href="/downline/@include('_helpers.user_id')"><i class="fa fa-sitemap" title="Downline"></i></a>
+					            	<a href="/all-downline/@include('_helpers.user_id')" title="View All Downline"><span ng-bind="user.descendant_count"></span></a>
 					            </td>
 					            
 	                        </tr>
@@ -192,9 +184,9 @@
 
 	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 	
-	function UserController($scope, $http) {
+	function DownlineController($scope, $http) {
 	
-		$http.get('/api/immediate-downline/{{ $user->id }}').success(function(users) {
+		$http.get('/api/all-downline/{{ $user->id }}').success(function(users) {
 			$scope.users = users;
 			console.log($scope.users);
 			@include('_helpers.bulk_action_checkboxes')

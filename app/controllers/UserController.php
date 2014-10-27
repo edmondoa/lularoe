@@ -25,7 +25,6 @@ class userController extends \BaseController {
 	public function index()
 	{
 		$users = User::all();
-
 		return View::make('user.index', compact('users'));
 	}
 

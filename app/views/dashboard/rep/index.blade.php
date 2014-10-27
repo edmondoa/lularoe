@@ -34,25 +34,27 @@
 				@endif
 			</table>
 		</div><!-- panel -->
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h2 class="panel-title">Rank Advancement History</h2>
-			</div>
-			<table class="table table-striped">
-				<thead>
-					<th>Date</th>
-					<th>Rank</th>
-				</thead>
-				<tbody>
-					@foreach ($ranks as $rank)
-						<tr>
-							<th>{{ $rank->pivot->created_at }}</th>
-							<td>{{ $rank->name }} (Rank {{ $rank->id }})</td>
-						</tr>
-					@endforeach
-				</tbody>
-			</table>
-		</div><!-- panel -->
+		@if (count($ranks) > 1)
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2 class="panel-title">Rank Advancement History</h2>
+				</div>
+				<table class="table table-striped">
+					<thead>
+						<th>Date</th>
+						<th>Rank</th>
+					</thead>
+					<tbody>
+						@foreach ($ranks as $rank)
+							<tr>
+								<th>{{ $rank->pivot->created_at }}</th>
+								<td>{{ $rank->name }} (Rank {{ $rank->id }})</td>
+							</tr>
+						@endforeach
+					</tbody>
+				</table>
+			</div><!-- panel -->
+		@endif
 	</div><!-- col -->
 	<div class="col col-md-6">
 		@if (isset($children))

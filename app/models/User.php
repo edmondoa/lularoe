@@ -47,7 +47,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function addresses()
 	{
-		return $this->morphMany('Address', 'addressable');
+		return $this->hasMany('Address', 'addressable_id', 'id');
 	}
 
 	public function sponsor() {
@@ -112,12 +112,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return false;
 	}
 	
+	public function getRoleNameAttribute() {
+		if(isset($this->role()->name))
+		{
+			return $this->role()->name;
+		}
+		return false;
+	}
 
 	public function getNewRecordAttribute() {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
 	}
 	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id','new_record');
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record');
 
 	/**
 	 * The attributes excluded from the model's JSON form.
