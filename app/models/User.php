@@ -113,9 +113,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 	
 	public function getRoleNameAttribute() {
-		if(isset($this->role()->name))
+		if(isset($this->role->name))
 		{
-			return $this->role()->name;
+			return $this->role->name;
 		}
 		return false;
 	}

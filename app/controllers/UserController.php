@@ -25,6 +25,11 @@ class userController extends \BaseController {
 	public function index()
 	{
 		$users = User::all();
+		// foreach ($users as $user) {
+			// $role = User::find($user->id)->role;
+			// echo '<pre>'; print_r($role); '</pre>';
+			// exit;
+		// }
 		return View::make('user.index', compact('users'));
 	}
 

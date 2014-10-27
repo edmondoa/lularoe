@@ -166,7 +166,7 @@
 	                            </td>
 								
 					            <!-- <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.public_id"></span></a>
+					                <span ng-bind="user.public_id"></span>
 					            </td> -->
 					            
 					            <td>
@@ -174,35 +174,35 @@
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.gender"></span></a>
+					                <span ng-bind="user.gender"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.dob"></span></a>
+					                <span ng-bind="user.dob"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.phone"></span></a>
+					                <span ng-bind="user.phone"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.role_name"></span></a>
+					                <span ng-bind="user.role_name"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.rank_name"></span> (<span ng-bind="user.rank_id"></span>)</a>
+					                <span ng-bind="user.rank_name"></span> (<span ng-bind="user.rank_id"></span>)
 					            </td>
 					            
 					            <!-- <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.mobile_plan_id"></span></a>
+					                <span ng-bind="user.mobile_plan_id"></span>
 					            </td> -->
 					            
 					            <!-- <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.disabled"></span></a>
+					                <span ng-bind="user.disabled"></span>
 					            </td> -->
 					            
 					            <td>
-					            	<a href="/users/@include('_helpers.user_id')"><span ng-bind="user.updated_at"></span></a>
+					            	<span ng-bind="user.updated_at"></span>
 					            </td>
 	                        </tr>
 	                        <tr dir-paginate-end></tr>

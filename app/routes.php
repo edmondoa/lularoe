@@ -251,9 +251,8 @@ Route::group(['before' => 'force.ssl'], function() {
 # Testing and etc.
 ##############################################################################################
 
-Route::get('test-steve/{id}', function($id) {
-	$users = User::find($id)->descendants;
-	echo"<pre>"; print_r($users->toArray()); echo"</pre>";
+Route::get('test-steve', function() {
+	return Auth::user()->role->name;
 	exit;
 });
 
