@@ -244,9 +244,7 @@ Route::group(['before' => 'force.ssl'], function() {
 ##############################################################################################
 
 Route::get('test', function() {
-	//return \Hash::make('purpleMonkey123');
-	return Address::all();
-	return User::find(2001)->frontline;//
+	return User::find(2001)->frontline;
 	//$result[] = count(User::find(2001)->children);
 	//$result[] = count(User::find(2878)->children);
 	//$result[] = count(User::find(3407)->children);
@@ -260,8 +258,5 @@ Route::get('test', function() {
 	//return Commission::set_levels_down(3966,1);
 	//return Commission::set_levels_down(2001,1);
 	//$level = Commission::count_up(2014);
-	//$level = Commission::level_up(2014);
-	echo"<pre>"; print_r($level); echo"</pre>";
-	exit;
-	return dd($level);
+
 });
