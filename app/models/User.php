@@ -22,7 +22,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'phone' => 'required',
 		'gender' => 'required|in:M,F',
 		'dob' => 'required|date',
-		'sponsor_id' => 'required'
+		'sponsor_id' => 'required',
+		'password' => 'confirmed'
 	];
 
 	// Don't forget to fill this array

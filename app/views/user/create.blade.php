@@ -11,7 +11,7 @@
 		
 			    
 			    <div class="form-group">
-			        {{ Form::label('public_id', 'Public Id') }}
+			        {{ Form::label('public_id', 'Public ID') }}
 			        {{ Form::text('public_id', Input::old('public_id'), array('class' => 'form-control')) }}
 			    </div>
 			    
@@ -36,6 +36,11 @@
 			    </div>
 			    
 			    <div class="form-group">
+			        {{ Form::label('password_confirm', 'Confirm Password') }}
+			        {{ Form::password('password_confirmation', array('class' => 'form-control')) }}
+			    </div>
+			    
+			    <div class="form-group">
 			        {{ Form::label('gender', 'Gender') }}
 			        {{ Form::text('gender', Input::old('gender'), array('class' => 'form-control')) }}
 			    </div>
@@ -46,8 +51,8 @@
 			    </div>
 			    
 			    <div class="form-group">
-			        {{ Form::label('dob', 'Dob') }}
-			        {{ Form::text('dob', Input::old('dob'), array('class' => 'form-control')) }}
+			        {{ Form::label('dob', 'DOB') }}
+			        {{ Form::text('dob', Input::old('dob'), array('class' => 'form-control dateonlypicker')) }}
 			    </div>
 			    
 			    <div class="form-group">

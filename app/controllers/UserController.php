@@ -154,9 +154,9 @@ class userController extends \BaseController {
 	public function update($id)
 	{
 		$user = User::findOrFail($id);
-
-		$validator = Validator::make($data = Input::all(), User::$rules);
-
+		$rules = User::$rules;
+		$rules['email'] = 'unique:users,email,' . $user->id;
+		$validator = Validator::make($data = Input::all(), $rules);
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();

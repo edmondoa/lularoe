@@ -6,15 +6,13 @@
 			<div class="breadcrumbs">
 				<a href="/users">&lsaquo; Back</a>
 			</div>
-		    <h1>Edit user</h1>
+			@if (Auth::user()->id == $user->id)
+				<h1>Edit Profile</h1>
+			@else
+		    	<h1>Edit {{ $user->first_name }} {{ $user->last_name }}</h1>
+		    @endif
 		    {{ Form::model($user, array('route' => array('users.update', $user->id), 'method' => 'PUT')) }}
 		
-		    
-		    <div class="form-group">
-		        {{ Form::label('public_id', 'Public Id') }}
-		        {{ Form::text('public_id', null, array('class' => 'form-control')) }}
-		    </div>
-		    
 		    <div class="form-group">
 		        {{ Form::label('first_name', 'First Name') }}
 		        {{ Form::text('first_name', null, array('class' => 'form-control')) }}
@@ -26,13 +24,23 @@
 		    </div>
 		    
 		    <div class="form-group">
+		        {{ Form::label('public_id', 'Public Id') }}
+		        {{ Form::text('public_id', null, array('class' => 'form-control')) }}
+		    </div>
+		    
+		    <div class="form-group">
 		        {{ Form::label('email', 'Email') }}
 		        {{ Form::text('email', null, array('class' => 'form-control')) }}
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('password', 'Password') }}
-		        {{ Form::text('password', null, array('class' => 'form-control')) }}
+		        {{ Form::label('password', 'New Password') }}
+		        {{ Form::password('password', array('class' => 'form-control')) }}
+		    </div>
+		    
+		    <div class="form-group">
+		        {{ Form::label('password_confirm', 'Confirm New Password') }}
+		        {{ Form::password('password_confirmation', array('class' => 'form-control')) }}
 		    </div>
 		    
 		    <div class="form-group">
@@ -46,8 +54,8 @@
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('dob', 'Dob') }}
-		        {{ Form::text('dob', null, array('class' => 'form-control')) }}
+		        {{ Form::label('dob', 'DOB') }}
+		        {{ Form::text('dob', null, array('class' => 'form-control dateonlypicker')) }}
 		    </div>
 		    
 		    <div class="form-group">
