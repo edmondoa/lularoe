@@ -161,7 +161,7 @@ class userController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
-
+		$data['password'] = Hash::make($data['password']);
 		$user->update($data);
 
 		return Redirect::route('users.show', $id)->with('message', 'User updated.');

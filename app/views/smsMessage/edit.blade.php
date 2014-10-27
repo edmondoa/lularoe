@@ -3,9 +3,7 @@
 <div class="edit">
 	<div class="row">
 		<div class="col col-md-12">
-			<div class="breadcrumbs">
-				<a href="/smsMessages">&lsaquo; Back</a>
-			</div>
+			@include('_helpers.breadcrumbs')
 		    <h1>Edit smsMessage</h1>
 		    {{ Form::model($smsMessage, array('route' => array('smsMessages.update', $smsMessage->id), 'method' => 'PUT')) }}
 		
@@ -31,7 +29,7 @@
 		    </div>
 		    
 		
-		    {{ Form::submit('Update SmsMessage', array('class' => 'btn btn-success')) }}
+		    {{ Form::submit('Update SmsMessage', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>

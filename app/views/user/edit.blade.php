@@ -3,9 +3,7 @@
 <div class="edit">
 	<div class="row">
 		<div class="col col-md-12">
-			<div class="breadcrumbs">
-				<a href="/users">&lsaquo; Back</a>
-			</div>
+			@include('_helpers.breadcrumbs')
 			@if (Auth::user()->id == $user->id)
 				<h1>Edit Profile</h1>
 			@else
@@ -34,25 +32,28 @@
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('password', 'New Password') }}
+		        {{ Form::label('password', 'Password') }}
 		        {{ Form::password('password', array('class' => 'form-control')) }}
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('password_confirm', 'Confirm New Password') }}
+		        {{ Form::label('password_confirm', 'Confirm Password') }}
 		        {{ Form::password('password_confirmation', array('class' => 'form-control')) }}
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('gender', 'Gender') }}
-		        {{ Form::text('gender', null, array('class' => 'form-control')) }}
+	    		{{ Form::label('gender', 'Gender') }}<br>
+	    		{{ Form::select('gender', array(
+			    	'M' => 'Male',
+			    	'F' => 'Female',
+			    ), null, array('class' => 'selectpicker')) }}
 		    </div>
 		    
-		    <div class="form-group">
+		    <!-- <div class="form-group">
 		        {{ Form::label('key', 'Key') }}
 		        {{ Form::text('key', null, array('class' => 'form-control')) }}
-		    </div>
-		    
+		    </div> -->
+		   
 		    <div class="form-group">
 		        {{ Form::label('dob', 'DOB') }}
 		        {{ Form::text('dob', null, array('class' => 'form-control dateonlypicker')) }}
@@ -63,33 +64,39 @@
 		        {{ Form::text('phone', null, array('class' => 'form-control')) }}
 		    </div>
 		    
-		    <div class="form-group">
-		        {{ Form::label('role_id', 'Role Id') }}
-		        {{ Form::text('role_id', null, array('class' => 'form-control')) }}
-		    </div>
+		    @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		    	<div class="form-group">
+		    		{{ Form::label('roled_id', 'Role') }}<br>
+		    		{{ Form::select('role_id', array(
+				    	'1' => 'Customer',
+				    	'2' => 'Rep',
+				    	'3' => 'Editor',
+				    	'4' => 'Admin'
+				    ), null, array('class' => 'selectpicker')) }}
+			    </div>
 		    
-		    <div class="form-group">
-		        {{ Form::label('sponsor_id', 'Sponsor Id') }}
-		        {{ Form::text('sponsor_id', null, array('class' => 'form-control')) }}
-		    </div>
-		    
-		    <div class="form-group">
-		        {{ Form::label('mobile_plan_id', 'Mobile Plan Id') }}
-		        {{ Form::text('mobile_plan_id', null, array('class' => 'form-control')) }}
-		    </div>
-		    
-		    <div class="form-group">
-		        {{ Form::label('min_commission', 'Min Commission') }}
-		        {{ Form::text('min_commission', null, array('class' => 'form-control')) }}
-		    </div>
-		    
-		    <div class="form-group">
-		        {{ Form::label('disabled', 'Disabled') }}
-		        {{ Form::text('disabled', null, array('class' => 'form-control')) }}
-		    </div>
-		    
+			    <div class="form-group">
+			        {{ Form::label('sponsor_id', 'Sponsor Id') }}
+			        {{ Form::text('sponsor_id', null, array('class' => 'form-control')) }}
+			    </div>
+			    
+			    <div class="form-group">
+			        {{ Form::label('mobile_plan_id', 'Mobile Plan Id') }}
+			        {{ Form::text('mobile_plan_id', null, array('class' => 'form-control')) }}
+			    </div>
+			    
+			    <div class="form-group">
+			        {{ Form::label('min_commission', 'Min Commission') }}
+			        {{ Form::text('min_commission', null, array('class' => 'form-control')) }}
+			    </div>
+			    
+			    <div class="form-group">
+			        {{ Form::label('disabled', 'Disabled') }}
+			        {{ Form::text('disabled', null, array('class' => 'form-control')) }}
+			    </div>
+			@endif		    
 		
-		    {{ Form::submit('Update User', array('class' => 'btn btn-success')) }}
+		    {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>

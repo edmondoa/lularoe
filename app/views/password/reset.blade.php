@@ -6,8 +6,8 @@
 		{{ Form::text('email')}}
 		{{ Form::label('password','Password')}}
 		{{ Form::password('password')}}
-		{{ Form::label('password_confirm','Enter it again')}}
-		{{ Form::password('password_confirm')}}
+		{{ Form::label('password_confirmation','Enter it again')}}
+		{{ Form::password('password_confirmation')}}
 		{{ Form::submit('Reset my Password')}}
 	{{ Form::close()}}
 

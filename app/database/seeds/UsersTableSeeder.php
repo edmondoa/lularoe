@@ -16,7 +16,7 @@ class UsersTableSeeder extends DatabaseSeeder
 				'phone' => $faker->numerify($string = '##########'),
 				'dob' => $faker->date,
 				'phone' => $faker->randomDigitNotNull,
-				'role_id' => $faker->randomDigitNotNull,
+				'role_id' => $faker->numberBetween($min = 1, $max = 4),
 				'sponsor_id' => $faker->numberBetween($min = 2001, $max = 2017),
 				'mobile_plan_id' => $faker->randomDigitNotNull,
 				'min_commission' => $faker->randomDigitNotNull,

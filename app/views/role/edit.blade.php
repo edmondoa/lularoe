@@ -3,9 +3,7 @@
 <div class="edit">
 	<div class="row">
 		<div class="col col-md-12">
-			<div class="breadcrumbs">
-				<a href="/roles">&lsaquo; Back</a>
-			</div>
+			@include('_helpers.breadcrumbs')
 		    <h1>Edit role</h1>
 		    {{ Form::model($role, array('route' => array('roles.update', $role->id), 'method' => 'PUT')) }}
 		
@@ -21,7 +19,7 @@
 		    </div>
 		    
 		
-		    {{ Form::submit('Update Role', array('class' => 'btn btn-success')) }}
+		    {{ Form::submit('Update Role', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>
