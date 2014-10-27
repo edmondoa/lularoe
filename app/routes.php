@@ -19,7 +19,7 @@ Route::get('login', array('as' => 'login', 'uses' => 'SessionController@create')
 Route::get('logout', array('as' => 'logout', 'uses' => 'SessionController@destroy'));
 Route::get('sign-up/{code}', array('as' => 'sign-up', 'uses' => 'UserController@create'));
 Route::resource('sessions', 'SessionController', ['only' => ['create', 'destroy', 'store']]);
-
+Route::controller('password', 'RemindersController');
 ##############################################################################################
 # Home Page
 ##############################################################################################
@@ -258,7 +258,13 @@ Route::get('test-steve/{id}', function($id) {
 });
 
 Route::get('test', function() {
-	return User::find(2001)->frontline;
+	Mail::send('emails.test', array('message_body' => 'Hey, what the hell'), function($message)
+	{
+	    $message->from(\Config::get('site.default_from_email'), \Config::get('site.default_from_name'));
+	    $message->to('jbarlow@controlpad.com', 'Jake Barlow')->subject('Welcome, you are a stud!');
+	});
+	return;
+	//return User::find(2001)->frontline;
 	//$result[] = count(User::find(2001)->children);
 	//$result[] = count(User::find(2878)->children);
 	//$result[] = count(User::find(3407)->children);
