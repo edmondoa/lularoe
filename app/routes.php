@@ -23,9 +23,15 @@ Route::resource('sessions', 'SessionController', ['only' => ['create', 'destroy'
 ##############################################################################################
 # Home Page
 ##############################################################################################
-Route::get('/', ['as' => 'home', function() {
-	return View::make('sessions.create');
-}]);
+
+	Route::get('/', ['as' => 'home', function() {
+		if (Auth::check()) {
+			return Redirect::to('dashboard');
+		}
+		else {
+			return View::make('sessions.create');
+		}
+	}]);
 
 ##############################################################################################
 // Protected Routes
@@ -35,8 +41,9 @@ Route::group(array('before' => 'auth'), function() {
 	// dashboard
 	Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@index']);
 
-	// genealogy
-	Route::get('/downline/{id}', 'GenealogyController@downline');
+	// downline
+	Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
+	Route::get('/downline/all/{id}', 'DownlineController@allDownline');
 
 	// API
 	Route::get('api/all-addresses', 'AddressController@getAllAddresses');
@@ -58,7 +65,8 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('api/all-users', 'UserController@getAllUsers');
 	Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 	Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
-	Route::get('api/immediate-downline/{id}', 'GenealogyController@getImmediateDownline');
+	Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
+	Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
 
 	##############################################################################################
 	# Superadmin only routes
@@ -242,6 +250,12 @@ Route::group(['before' => 'force.ssl'], function() {
 ##############################################################################################
 # Testing and etc.
 ##############################################################################################
+
+Route::get('test-steve/{id}', function($id) {
+	$users = User::find($id)->descendants;
+	echo"<pre>"; print_r($users->toArray()); echo"</pre>";
+	exit;
+});
 
 Route::get('test', function() {
 	return User::find(2001)->frontline;

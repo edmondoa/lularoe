@@ -52,10 +52,14 @@ $(document).ready(function() {
     // highlight active page in main-menu
     path = path.split('/');
     $('#main-menu a').each(function() {
-        href = $(this).attr('href').split('/');
+        if ($(this)[0].hasAttribute('href') && $(this).attr('href') !== 'javascript:void(0)') href = $(this).attr('href').split('/');
+        else if ($(this)[0].hasAttribute('data-href')) href = $(this).attr('data-href').split('/');
         if (href[1] == path[0]) {
             $(this).addClass('active');
         }
     });
+    
+    // initialize bootstrap popovers
+    $("[data-toggle='popover']").popover({html:true, trigger:'click'});
     
 });
