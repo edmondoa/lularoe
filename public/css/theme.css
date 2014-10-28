@@ -75,7 +75,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
 #main-menu .popover a { border:none; display:block; margin-bottom:.5em; }
 #main-menu .popover a:last-child { margin-bottom:0; }
 #main-menu .popover a:hover { background:none !important; text-decoration:none; }
-
+.label .fa-times { cursor:pointer; }
 
 /* media queries*/
 @media(max-width:767px) {

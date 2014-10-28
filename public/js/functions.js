@@ -62,4 +62,9 @@ $(document).ready(function() {
     // initialize bootstrap popovers
     $("[data-toggle='popover']").popover({html:true, trigger:'click'});
     
+    // delete label
+    $('.form-group .label .fa-times').click(function() {
+       $(this).parent().remove(); 
+    });
+    
 });
