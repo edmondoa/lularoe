@@ -53,30 +53,37 @@ class BlastController extends \BaseController {
 		$not_textable = 0;
 		foreach($users as $user)
 		{
-			if($user->phone_sms =='no')
-			{
-				$not_textable ++;
-				continue;
-			}
-			if(!Eventz::check_for_mobile($user->phone))
+			//echo"<pre>"; print_r($user->toArray()); echo"</pre>";
+			//continue;
+			if(!SociallyMobile::check_for_mobile($user->phone))
 			{
 				if(empty($user->phone_sms))
 				{
-					$user->phone_sms = 'no';
+					$user->phone_sms = false;
 					$user->save();
 				}
 				$not_textable ++;
 				continue;
 			}
+			else
+			{
+				$user->phone_sms = true;
+				$user->save();
+			}
+			if(!$user->phone_sms)
+			{
+				$not_textable ++;
+				continue;
+			}
 			if(empty($user->phone_sms))
 			{
-				$user->phone_sms = 'yes';
+				$user->phone_sms = true;
 				$user->save();
 			}
 			//echo'<h2>This is a mobile number</h2>';
 			//echo"<p>Text sent to ".$user->phone."</p>";
 			$count ++;
-			continue;
+			//continue;
 			$response = Twilio::message($user->phone, $data['message']);
 			//if($response)
 			$data['direction'] = 'out';
@@ -88,10 +95,12 @@ class BlastController extends \BaseController {
 			$data['date_queued'] = date('Y-m-d H:i:s');
 
 			$sms = Smsmessage::create($data);
-			$sms->user()->associate($user);
+			$sms->recipient()->associate($user);
+			$sms->sender()->associate(Auth::user());
 			$sms->save();
 			sleep(1);
 		}
+		//echo"<pre>"; print_r($users->toArray()); echo"</pre>";
 		//exit;
 		return Redirect::back()->with('message','The text message was sent successfully to '.$count.' recipients. Unable to send message to '.$not_textable.' recipients because they have no textable phone on file.');
 
@@ -112,8 +121,6 @@ class BlastController extends \BaseController {
 	public function StoreMail()
 	{
 		$form_data = Input::all();
-		echo"<pre>"; print_r($form_data); echo"</pre>";
-		exit;
 		$rules = [
 			'user_ids' => 'required',
 			'body' => 'required',
@@ -127,6 +134,8 @@ class BlastController extends \BaseController {
 		}
 
 		$users = User::whereIn('id', $form_data['user_ids'])->get();
+		//echo"<pre>"; print_r($users->toArray()); echo"</pre>";
+		//exit;
 		$count = 0;
 		foreach($users as $user)
 		{

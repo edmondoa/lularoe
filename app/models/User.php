@@ -157,4 +157,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	    }
 	    return false;
 	}
+
+	public function hasRepInDownline($repId) {
+		if(!Auth::check()) return false;
+		$rep = $this->descendants()->where('levels.user_id',$repId)->first();
+		return ($rep)?true:false;
+	}
 }

@@ -12,6 +12,16 @@ class SmsMessage extends \Eloquent
 	protected $table = 'sms_messages';
 	protected $fillable = array('sender_id','recipient_id','body','disabled');
 
+	public function recipient()
+	{
+		return $this->belongsTo('User','recipient_id');
+	}
+
+	public function sender()
+	{
+		return $this->belongsTo('User','sender_id');
+	}
+
 	public function getNewRecordAttribute() {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
 	}

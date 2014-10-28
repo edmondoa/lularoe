@@ -271,6 +271,8 @@ Route::get('test-steve', function() {
 });
 
 Route::get('test', function() {
+	return dd(Auth::user()->hasRepInDownline(2878));
+	return;
 	$frontline = User::find(0)->frontline;
 	foreach(User::find(0)->frontline as $rep)
 	{
