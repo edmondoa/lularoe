@@ -112,6 +112,8 @@ class BlastController extends \BaseController {
 	public function StoreMail()
 	{
 		$form_data = Input::all();
+		echo"<pre>"; print_r($form_data); echo"</pre>";
+		exit;
 		$rules = [
 			'user_ids' => 'required',
 			'body' => 'required',
