@@ -53,6 +53,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
 .link:hover { text-decoration:underline !important; }
 .highlight { background:rgb(255,255,192); }
 .full { width:100%; }
+.center { text-align:center; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
