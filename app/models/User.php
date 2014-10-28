@@ -149,14 +149,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return 'remember_token';
 	}
 	public function hasRole($key) {
-	    // if((!Auth::check())||(!isset($this->role))) return false;
 	    if(!is_array($key)) return false;
-	    //echo"<pre>"; print_r($this->role); echo"</pre>";
 	    foreach($key as $role){
 		    if($this->role->name === $role){
 		    	return true;
 			}
 	    }
 	    return false;
+	}
+
+	public function hasRepInDownline($repId) {
+		if(!Auth::check()) return false;
+		$rep = $this->descendants()->where('levels.user_id',$repId)->first();
+		return ($rep)?true:false;
 	}
 }
