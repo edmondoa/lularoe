@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'users/disable', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
 	    <div ng-controller="DownlineController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
@@ -33,8 +33,8 @@
 		                    <div class="pull-left">
 		                        <div class="input-group">
 		                            <select class="form-control selectpicker actions">
-		                                <option value="users/enable">Send Email</option>
-		                                <option value="users/delete">Send Text (SMS)</option>
+		                                <option value="/users/email">Send Email</option>
+		                                <option value="/users/sms">Send Text (SMS)</option>
 		                            </select>
 		                            <div class="input-group-btn">
 		                                <button class="btn btn-default applyAction" disabled>
@@ -134,7 +134,7 @@
 	                    <tbody>
 	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
-	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.user_id')">
+	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
 	                            
 	                            <td>

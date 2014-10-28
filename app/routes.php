@@ -45,6 +45,22 @@ Route::group(array('before' => 'auth'), function() {
 	// downline
 	Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 	Route::get('/downline/all/{id}', 'DownlineController@allDownline');
+	
+	// users
+	Route::resource('users', 'UserController');
+	Route::post('users/disable', 'UserController@disable');
+	Route::post('users/email', 'BlastController@createMail');
+	Route::post('users/sms', 'BlastController@createSms');
+	
+	// blasts
+	Route::get('send_text/{phoneId}','SmsMessagesController@create');
+	Route::resource('send_text','SmsMessagesController');
+	Route::get('send_mail/{personId}','MailMessagesController@create');
+	Route::resource('send_mail/','MailMessagesController');
+	Route::get('blast_email',['as'=>'blast_email','uses'=>'BlastController@CreateMail']);
+	Route::post('blast_email',['uses'=>'BlastController@StoreMail']);
+	Route::get('blast_sms',['as'=>'blast_sms','uses'=>'BlastController@CreateSms']);
+	Route::post('blast_sms',['uses'=>'BlastController@StoreSms']);
 
 	// API
 	Route::get('api/all-addresses', 'AddressController@getAllAddresses');
@@ -193,12 +209,6 @@ Route::group(array('before' => 'auth'), function() {
 		Route::post('smsRecipients/disable', 'SmsRecipientController@disable');
 		Route::post('smsRecipients/enable', 'smsRecipientController@enable');
 		Route::post('smsRecipients/delete', 'smsRecipientController@delete');
-		
-		// users
-		Route::resource('users', 'UserController');
-		Route::post('users/disable', 'UserController@disable');
-		Route::post('users/enable', 'UserController@enable');
-		Route::post('users/delete', 'UserController@delete');
 		
 		// userProduct
 		Route::resource('userProducts', 'UserProductController');
