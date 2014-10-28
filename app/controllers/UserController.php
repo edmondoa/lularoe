@@ -25,6 +25,11 @@ class userController extends \BaseController {
 	public function index()
 	{
 		$users = User::all();
+		// foreach ($users as $user) {
+			// $role = User::find($user->id)->role;
+			// echo '<pre>'; print_r($role); '</pre>';
+			// exit;
+		// }
 		return View::make('user.index', compact('users'));
 	}
 
@@ -149,14 +154,14 @@ class userController extends \BaseController {
 	public function update($id)
 	{
 		$user = User::findOrFail($id);
-
-		$validator = Validator::make($data = Input::all(), User::$rules);
-
+		$rules = User::$rules;
+		$rules['email'] = 'unique:users,email,' . $user->id;
+		$validator = Validator::make($data = Input::all(), $rules);
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
-
+		$data['password'] = Hash::make($data['password']);
 		$user->update($data);
 
 		return Redirect::route('users.show', $id)->with('message', 'User updated.');

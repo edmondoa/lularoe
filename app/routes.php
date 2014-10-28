@@ -40,6 +40,7 @@ Route::group(array('before' => 'auth'), function() {
 
 	// dashboard
 	Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@index']);
+	Route::get('settings', 'DashboardController@settings');
 
 	// downline
 	Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
@@ -251,10 +252,12 @@ Route::group(['before' => 'force.ssl'], function() {
 # Testing and etc.
 ##############################################################################################
 
-Route::get('test-steve/{id}', function($id) {
-	$users = User::find($id)->descendants;
-	echo"<pre>"; print_r($users->toArray()); echo"</pre>";
-	exit;
+Route::get('test-steve', function() {
+	$frontline = User::find(0)->frontline;
+	 foreach(User::find(0)->frontline as $rep)
+	 {
+	  Commission::set_levels_down($rep->id,1);
+	 }
 });
 
 Route::get('test', function() {

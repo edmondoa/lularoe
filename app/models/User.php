@@ -22,7 +22,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'phone' => 'required',
 		'gender' => 'required|in:M,F',
 		'dob' => 'required|date',
-		'sponsor_id' => 'required'
+		'sponsor_id' => 'required',
+		'password' => 'confirmed'
 	];
 
 	// Don't forget to fill this array
@@ -113,9 +114,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 	
 	public function getRoleNameAttribute() {
-		if(isset($this->role()->name))
+		if(isset($this->role->name))
 		{
-			return $this->role()->name;
+			return $this->role->name;
 		}
 		return false;
 	}
@@ -148,7 +149,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return 'remember_token';
 	}
 	public function hasRole($key) {
-	    //if((!Auth::check())||(!isset($this->role))) return false;
+	    // if((!Auth::check())||(!isset($this->role))) return false;
 	    if(!is_array($key)) return false;
 	    //echo"<pre>"; print_r($this->role); echo"</pre>";
 	    foreach($key as $role){

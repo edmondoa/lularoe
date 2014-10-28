@@ -3,9 +3,7 @@
 <div class="edit">
 	<div class="row">
 		<div class="col col-md-12">
-			<div class="breadcrumbs">
-				<a href="/carts">&lsaquo; Back</a>
-			</div>
+			@include('_helpers.breadcrumbs')
 		    <h1>Edit cart</h1>
 		    {{ Form::model($cart, array('route' => array('carts.update', $cart->id), 'method' => 'PUT')) }}
 		
@@ -21,7 +19,7 @@
 		    </div>
 		    
 		
-		    {{ Form::submit('Update Cart', array('class' => 'btn btn-success')) }}
+		    {{ Form::submit('Update Cart', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>

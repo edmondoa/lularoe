@@ -95,7 +95,7 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='dob'; reverseSort = !reverseSort">Dob
+                            	<th class="link" ng-click="orderByField='dob'; reverseSort = !reverseSort">DOB
                             		<span>
                             			<span ng-show="orderByField == 'dob'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -149,6 +149,24 @@
                             		</span>
                         		</th> -->
                         		
+                            	<th class="link" ng-click="orderByField='front_line_count'; reverseSort = !reverseSort">Immediate Downline
+                            		<span>
+                            			<span ng-show="orderByField == 'rank_id'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
+                        		
+                            	<th class="link" ng-click="orderByField='descendant_count'; reverseSort = !reverseSort">Total Downline
+                            		<span>
+                            			<span ng-show="orderByField == 'rank_id'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
+                        		
                             	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
                             		<span>
                             			<span ng-show="orderByField == 'updated_at'">
@@ -157,6 +175,7 @@
                             			</span>
                             		</span>
                         		</th>
+                        		
 	                        </tr>
 	                    </thead>
 	                    <tbody>
@@ -166,7 +185,7 @@
 	                            </td>
 								
 					            <!-- <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.public_id"></span></a>
+					                <span ng-bind="user.public_id"></span>
 					            </td> -->
 					            
 					            <td>
@@ -174,36 +193,45 @@
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.gender"></span></a>
+					                <span ng-bind="user.gender"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.dob"></span></a>
+					                <span ng-bind="user.dob"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.phone"></span></a>
+					                <span ng-bind="user.phone"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.role_name"></span></a>
+					                <span ng-bind="user.role_name"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.rank_name"></span> (<span ng-bind="user.rank_id"></span>)</a>
+					                <span ng-bind="user.rank_name"></span> (<span ng-bind="user.rank_id"></span>)
 					            </td>
 					            
 					            <!-- <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.mobile_plan_id"></span></a>
+					                <span ng-bind="user.mobile_plan_id"></span>
 					            </td> -->
 					            
 					            <!-- <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.disabled"></span></a>
+					                <span ng-bind="user.disabled"></span>
 					            </td> -->
 					            
 					            <td>
-					            	<a href="/users/@include('_helpers.user_id')"><span ng-bind="user.updated_at"></span></a>
+					            	<a href="/downline/immediate/@include('_helpers.user_id')" title="View Immediate Downline"><span ng-bind="user.front_line_count"></span></a>
 					            </td>
+					            
+					            <td>
+					            	<a href="/downline/all/@include('_helpers.user_id')" title="View All Downline"><span ng-bind="user.descendant_count"></span></a>
+					            </td>
+					            
+					            <td>
+					            	<span ng-bind="user.updated_at"></span>
+					            </td>
+					            
 	                        </tr>
 	                        <tr dir-paginate-end></tr>
 	                    </tbody>

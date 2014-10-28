@@ -3,9 +3,7 @@
 <div class="edit">
 	<div class="row">
 		<div class="col col-md-12">
-			<div class="breadcrumbs">
-				<a href="/ranks">&lsaquo; Back</a>
-			</div>
+			@include('_helpers.breadcrumbs')
 		    <h1>Edit rank</h1>
 		    {{ Form::model($rank, array('route' => array('ranks.update', $rank->id), 'method' => 'PUT')) }}
 		
@@ -21,7 +19,7 @@
 		    </div>
 		    
 		
-		    {{ Form::submit('Update Rank', array('class' => 'btn btn-success')) }}
+		    {{ Form::submit('Update Rank', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>

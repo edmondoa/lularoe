@@ -9,7 +9,13 @@ class DashboardController extends \BaseController
 		$sponsor = User::find($user->id)->sponsor;
 		$children = User::find($user->id)->children;
 		$ranks = User::find($user->id)->ranks;
-		return View::make('dashboard.rep.index', compact('user', 'sponsor', 'children', 'ranks'));
+		return View::make('dashboard.rep', compact('user', 'sponsor', 'children', 'ranks'));
+	}
+	
+	public function settings()
+	{
+		$addresses = User::find(Auth::user()->id)->addresses;
+		return View::make('dashboard.settings', compact('addresses'));
 	}
 	
 }

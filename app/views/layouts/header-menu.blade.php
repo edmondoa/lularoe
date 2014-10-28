@@ -20,6 +20,7 @@
 	                        <b class="caret"></b>&nbsp;&nbsp;&nbsp;
 	                    </a>
 	                    <ul class="dropdown-menu">
+	                        <li><a href="/settings"><span class="fa fa-cog"></span> &nbsp;Settings</a></li>
 	                        <li><a href="{{ route('logout')}}"><span class="fa fa-sign-out"></span> &nbsp;Log Out</a></li>
 	                    </ul>
 	                </li>

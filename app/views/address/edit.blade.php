@@ -3,9 +3,7 @@
 <div class="edit">
 	<div class="row">
 		<div class="col col-md-12">
-			<div class="breadcrumbs">
-				<a href="/addresses">&lsaquo; Back</a>
-			</div>
+			@include('_helpers.breadcrumbs')
 		    <h1>Edit address</h1>
 		    {{ Form::model($address, array('route' => array('addresses.update', $address->id), 'method' => 'PUT')) }}
 		
@@ -40,13 +38,13 @@
 		        {{ Form::text('zip', null, array('class' => 'form-control')) }}
 		    </div>
 		    
-		    <div class="form-group">
+		    <!-- <div class="form-group">
 		        {{ Form::label('disabled', 'Disabled') }}
 		        {{ Form::text('disabled', null, array('class' => 'form-control')) }}
-		    </div>
+		    </div> -->
 		    
 		
-		    {{ Form::submit('Update Address', array('class' => 'btn btn-success')) }}
+		    {{ Form::submit('Update Address', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>

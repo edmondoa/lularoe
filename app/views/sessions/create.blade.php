@@ -8,7 +8,7 @@
 		<br>
 		{{ Form::password('password', array('class' => 'form-control', 'placeholder' => 'Password')) }}
 		<br>
-		<button class='btn btn-success'>Log In</button>
+		<button class='btn btn-primary'>Log In</button>
 		{{ Form::close() }}
 		<br>
 		<p>Forgot your password? <a href='/password/remind'>Reset it!</a></p>

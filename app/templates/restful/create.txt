@@ -3,9 +3,7 @@
 <div class="create">
 	<div class="row">
 		<div class="col col-md-12">
-			<div class="breadcrumbs">
-				<a href="/[models]">&lsaquo; Back</a>
-			</div>
+			@include('_helpers.breadcrumbs')
 		    <h1 class="no-top">New [Model]</h1>
 		    {{ Form::open(array('url' => '[models]')) }}
 		

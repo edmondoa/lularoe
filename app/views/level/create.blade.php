@@ -3,9 +3,7 @@
 <div class="create">
 	<div class="row">
 		<div class="col col-md-12">
-			<div class="breadcrumbs">
-				<a href="/levels">&lsaquo; Back</a>
-			</div>
+			@include('_helpers.breadcrumbs')
 		    <h1 class="no-top">New Level</h1>
 		    {{ Form::open(array('url' => 'levels')) }}
 		
@@ -31,7 +29,7 @@
 			    </div>
 			    
 		
-			    {{ Form::submit('Add Level', array('class' => 'btn btn-success')) }}
+			    {{ Form::submit('Add Level', array('class' => 'btn btn-primary')) }}
 	
 		    {{ Form::close() }}
 	    </div>

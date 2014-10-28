@@ -3,9 +3,7 @@
 <div class="edit">
 	<div class="row">
 		<div class="col col-md-12">
-			<div class="breadcrumbs">
-				<a href="/pages">&lsaquo; Back</a>
-			</div>
+			@include('_helpers.breadcrumbs')
 		    <h1>Edit page</h1>
 		    {{ Form::model($page, array('route' => array('pages.update', $page->id), 'method' => 'PUT')) }}
 		
@@ -36,7 +34,7 @@
 		    </div>
 		    
 		
-		    {{ Form::submit('Update Page', array('class' => 'btn btn-success')) }}
+		    {{ Form::submit('Update Page', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>
