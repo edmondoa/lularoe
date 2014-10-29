@@ -263,14 +263,10 @@ Route::group(['before' => 'force.ssl'], function() {
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	$frontline = User::find(0)->frontline;
-	 foreach(User::find(0)->frontline as $rep)
-	 {
-	  Commission::set_levels_down($rep->id,1);
-	 }
 });
 
 Route::get('test', function() {
+	return Hash::make('password2');
 	return dd(Auth::user()->hasRepInDownline(2878));
 	return;
 	$frontline = User::find(0)->frontline;
