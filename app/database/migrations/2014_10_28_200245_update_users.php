@@ -15,6 +15,7 @@ class UpdateUsers extends Migration {
 		Schema::table('users', function(Blueprint $table)
 		{
 			$table->boolean('phone_sms');
+			$table->integer('rank_id');
 		});
 	}
 

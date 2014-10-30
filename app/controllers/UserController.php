@@ -116,6 +116,7 @@ class userController extends \BaseController {
         }
 		
 		// log in new user
+		Event::fire('rep.create', array('rep_id' => $user->id));
 		Auth::loginUsingId($user->id);
 		return Redirect::to('users.index');
 	}

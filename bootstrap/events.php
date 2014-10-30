@@ -68,3 +68,8 @@ Event::listen('rep.commissions' , function($rep_id)
 			// count ++;
 			// if (rank > Executive)
 });
+// infinity income
+Event::listen('rep.create' , function($rep_id)
+{
+	return Commission::level_up($rep_id);
+});

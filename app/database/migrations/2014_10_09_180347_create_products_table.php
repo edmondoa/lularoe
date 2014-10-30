@@ -13,9 +13,8 @@ class CreateProductsTable extends Migration
 			$table->string('name');
 			$table->text('blurb');
 			$table->text('description');
-			$table->integer('price');
+			$table->decimal('price',10,2);
 			$table->integer('quantity');
-			$table->integer('category_id');
 			$table->boolean('disabled');
 			$table->timestamps();
 		});
