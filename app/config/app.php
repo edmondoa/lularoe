@@ -123,7 +123,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		//'Way\Generators\GeneratorsServiceProvider',
 		//'Jrenton\LaravelScaffold\LaravelScaffoldServiceProvider',
-		'SociallyMobile\Payments\PaymentsServiceProvider',
+		'SociallyMobile\Payments\PaymentServiceProvider',
 		'SociallyMobile\Twilio\TwilioServiceProvider',
 		'SociallyMobile\Commission\CommissionServiceProvider',
 
