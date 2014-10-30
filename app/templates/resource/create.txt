@@ -14,7 +14,7 @@
 			    </div>
 			    [/repeat]
 		
-			    {{ Form::submit('Add [Model]', array('class' => 'btn btn-success')) }}
+			    {{ Form::submit('Add [Model]', array('class' => 'btn btn-primary')) }}
 	
 		    {{ Form::close() }}
 	    </div>

@@ -71,7 +71,7 @@ class RemindersController extends Controller {
 				return Redirect::back()->with('message_danger', Lang::get($response));
 
 			case Password::PASSWORD_RESET:
-				return Redirect::to('/');
+				return Redirect::to('/')->with('message', 'You may now log in with your new password.');
 		}
 	}
 

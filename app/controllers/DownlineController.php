@@ -9,14 +9,18 @@ class DownlineController extends \BaseController
 	
 	public function immediateDownline($id)
 	{
-		$user = User::findOrFail($id);
-		return View::make('downline.immediate', compact('user'));
+		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id) {
+			$user = User::findOrFail($id);
+			return View::make('downline.immediate', compact('user'));
+		}
 	}
 	
 	public function allDownline($id)
 	{
-		$user = User::findOrFail($id);
-		return View::make('downline.all', compact('user'));
+		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id) {
+			$user = User::findOrFail($id);
+			return View::make('downline.all', compact('user'));
+		}
 	}
 
 }

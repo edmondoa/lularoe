@@ -173,7 +173,7 @@
 	                        <tr dir-paginate-end></tr>
 	                    </tbody>
 	                </table>
-	                <div ng-controller="OtherController" class="other-controller">
+	                @include('_helpers.loading')<div ng-controller="OtherController" class="other-controller">
 	                    <div class="text-center">
 	                        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
 	                    </div>

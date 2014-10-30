@@ -7,3 +7,5 @@
 				if (checked == true) $('.applyAction').removeAttr('disabled');
 				else $('.applyAction').attr('disabled', 'disabled');
 			};
+			
+			$('.loading').remove();

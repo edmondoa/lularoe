@@ -40,6 +40,10 @@ $(document).ready(function() {
     
     var today = new Date();
     var firstYear = today.getFullYear() - 18;
+    $('.datepicker').datetimepicker({
+        controlType: 'select',
+        timeFormat: 'hh:mm tt'
+    });
     $('.dateonlypicker').datepicker({
         controlType: 'select',
         changeMonth: true,

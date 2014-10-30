@@ -6,7 +6,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col col-md-8">
-		            	@if (isset($user->sponsor_id))
+		            	@if (Auth::user()->hasRepInDownline($user->id))
 		            		<div class="breadcrumbs">
 		            			<a href="/downline/immediate/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
 		            		</div>
@@ -169,7 +169,7 @@
 	                        <tr dir-paginate-end></tr>
 	                    </tbody>
 	                </table>
-	                <div ng-controller="OtherController" class="other-controller">
+	                @include('_helpers.loading')<div ng-controller="OtherController" class="other-controller">
 	                    <div class="text-center">
 	                        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
 	                    </div>
