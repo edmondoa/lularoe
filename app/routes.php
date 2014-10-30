@@ -266,7 +266,7 @@ Route::get('test-steve', function() {
 });
 
 Route::get('test', function() {
-	return Hash::make('password2');
+	//return Hash::make('password2');
 	return dd(Auth::user()->hasRepInDownline(2878));
 	return;
 	$frontline = User::find(0)->frontline;

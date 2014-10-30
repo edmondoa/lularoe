@@ -175,6 +175,7 @@ class PreRegisterController extends \BaseController {
 		}
 		//User::create($data);
 		//exit;
+		Event::fire('rep.create', array('rep_id' => $user->id));
 		Auth::loginUsingId($user->id);
 		return Redirect::to('/dashboard');
 	}
