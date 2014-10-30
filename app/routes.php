@@ -10,7 +10,7 @@
  | and give it the Closure to execute when that URI is requested.
  |
  */
-use SociallyMobile\Payments\USAEpayment;
+//use SociallyMobile\Payments\USAEpayment;
 
 ##############################################################################################
 # Session Control
@@ -258,6 +258,22 @@ Route::group(['before' => 'force.ssl'], function() {
 	Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
 });
 
+Route::get('populate-levels', function(){
+	$level_count = Level::all()->count();
+	if($level_count > 0)
+	{
+		return $level_count;
+	}
+	else
+	{
+		$frontline = User::find(0)->frontline;
+		foreach(User::find(0)->frontline as $rep)
+		{
+			Commission::set_levels_down($rep->id,1);
+		}
+	}
+
+});
 ##############################################################################################
 # Testing and etc.
 ##############################################################################################
