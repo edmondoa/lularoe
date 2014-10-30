@@ -2,12 +2,12 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class PaymentsServiceProvider extends ServiceProvider{
+class PaymentServiceProvider extends ServiceProvider{
 
 
 	public function register()
 	{
-		$this->app->bind('payment', 'SociallyMobile\Payments\Payments')
+		$this->app->bind('payment', 'SociallyMobile\Payments\Payments');
 	}
 }
 ?>
