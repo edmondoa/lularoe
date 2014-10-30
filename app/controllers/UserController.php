@@ -6,15 +6,17 @@ class userController extends \BaseController {
 	 * Data only
 	 */
 	public function getAllUsers(){
-		$users = User::all();
-		foreach ($users as $user)
-		{
-			if (strtotime($user['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			$users = User::all();
+			foreach ($users as $user)
 			{
-				$user['new'] = 1;
+				if (strtotime($user['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+				{
+					$user['new'] = 1;
+				}
 			}
+			return $users;
 		}
-		return $users;
 	}
 
 	/**
@@ -24,13 +26,10 @@ class userController extends \BaseController {
 	 */
 	public function index()
 	{
-		$users = User::all();
-		// foreach ($users as $user) {
-			// $role = User::find($user->id)->role;
-			// echo '<pre>'; print_r($role); '</pre>';
-			// exit;
-		// }
-		return View::make('user.index', compact('users'));
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			$users = User::all();
+			return View::make('user.index', compact('users'));
+		}
 	}
 
 	/**
@@ -40,7 +39,9 @@ class userController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('user.create');
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			return View::make('user.create');
+		}
 	}
 
 	/**
@@ -127,9 +128,11 @@ class userController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$user = User::findOrFail($id);
-		$addresses = User::find($id)->addresses;
-		return View::make('user.show', compact('user', 'addresses'));
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id || Auth::user()->hasRepInDownline($id)) {
+			$user = User::findOrFail($id);
+			$addresses = User::find($id)->addresses;
+			return View::make('user.show', compact('user', 'addresses'));
+		}
 	}
 
 	/**
@@ -140,9 +143,11 @@ class userController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$user = User::find($id);
-
-		return View::make('user.edit', compact('user'));
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
+			$user = User::find($id);
+			
+			return View::make('user.edit', compact('user'));
+		}
 	}
 
 	/**
@@ -153,18 +158,20 @@ class userController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$user = User::findOrFail($id);
-		$rules = User::$rules;
-		$rules['email'] = 'unique:users,email,' . $user->id;
-		$validator = Validator::make($data = Input::all(), $rules);
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
+			$user = User::findOrFail($id);
+			$rules = User::$rules;
+			$rules['email'] = 'unique:users,email,' . $user->id;
+			$validator = Validator::make($data = Input::all(), $rules);
+			if ($validator->fails())
+			{
+				return Redirect::back()->withErrors($validator)->withInput();
+			}
+			$data['password'] = Hash::make($data['password']);
+			$user->update($data);
+	
+			return Redirect::route('users.show', $id)->with('message', 'User updated.');
 		}
-		$data['password'] = Hash::make($data['password']);
-		$user->update($data);
-
-		return Redirect::route('users.show', $id)->with('message', 'User updated.');
 	}
 
 	/**
@@ -175,9 +182,11 @@ class userController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		User::destroy($id);
-
-		return Redirect::route('users.index')->with('message', 'User deleted.');
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			User::destroy($id);
+	
+			return Redirect::route('users.index')->with('message', 'User deleted.');
+		}
 	}
 	
 	/**
@@ -185,14 +194,16 @@ class userController extends \BaseController {
 	 */
 	public function delete()
 	{
-		foreach (Input::get('ids') as $id) {
-			User::destroy($id);
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('users.index')->with('message', 'Users deleted.');
-		}
-		else {
-			return Redirect::back()->with('message', 'User deleted.');
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			foreach (Input::get('ids') as $id) {
+				User::destroy($id);
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('users.index')->with('message', 'Users deleted.');
+			}
+			else {
+				return Redirect::back()->with('message', 'User deleted.');
+			}
 		}
 	}
 	
@@ -201,14 +212,16 @@ class userController extends \BaseController {
 	 */
 	public function disable()
 	{
-		foreach (Input::get('ids') as $id) {
-			User::find($id)->update(['disabled' => 1]);	
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('users.index')->with('message', 'Users disabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'User disabled.');
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			foreach (Input::get('ids') as $id) {
+				User::find($id)->update(['disabled' => 1]);	
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('users.index')->with('message', 'Users disabled.');
+			}
+			else {
+				return Redirect::back()->with('message', 'User disabled.');
+			}
 		}
 	}
 	
@@ -217,14 +230,16 @@ class userController extends \BaseController {
 	 */
 	public function enable()
 	{
-		foreach (Input::get('ids') as $id) {
-			User::find($id)->update(['disabled' => 0]);	
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('users.index')->with('message', 'Users enabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'User enabled.');
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			foreach (Input::get('ids') as $id) {
+				User::find($id)->update(['disabled' => 0]);	
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('users.index')->with('message', 'Users enabled.');
+			}
+			else {
+				return Redirect::back()->with('message', 'User enabled.');
+			}
 		}
 	}
 

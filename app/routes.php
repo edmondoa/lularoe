@@ -48,9 +48,15 @@ Route::group(array('before' => 'auth'), function() {
 	
 	// users
 	Route::resource('users', 'UserController');
-	Route::post('users/disable', 'UserController@disable');
 	Route::post('users/email', 'BlastController@createMail');
 	Route::post('users/sms', 'BlastController@createSms');
+	
+	// events
+	
+	Route::resource('events', 'UventController');
+	Route::post('events/disable', 'UventController@disable');
+	Route::post('events/enable', 'UventController@enable');
+	Route::post('events/delete', 'UventController@delete');
 	
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');
@@ -82,6 +88,8 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('api/all-users', 'UserController@getAllUsers');
 	Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 	Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
+	Route::get('api/all-events', 'DataOnlyController@getAllUvents');
+	Route::get('api/all-events-by-role', 'DataOnlyController@getAllUventsByRole');
 	Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 	Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
 
@@ -210,6 +218,11 @@ Route::group(array('before' => 'auth'), function() {
 		Route::post('smsRecipients/enable', 'smsRecipientController@enable');
 		Route::post('smsRecipients/delete', 'smsRecipientController@delete');
 		
+		// user
+		Route::post('users/disable', 'UserController@disable');
+		Route::post('users/enable', 'UserController@enable');
+		Route::post('users/delete', 'UserController@delete');
+		
 		// userProduct
 		Route::resource('userProducts', 'UserProductController');
 		Route::post('userProducts/disable', 'UserProductController@disable');
@@ -263,11 +276,13 @@ Route::group(['before' => 'force.ssl'], function() {
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	$frontline = User::find(0)->frontline;
-	 foreach(User::find(0)->frontline as $rep)
-	 {
-	  Commission::set_levels_down($rep->id,1);
-	 }
+ // $frontline = User::find(0)->frontline;
+ // foreach(User::find(0)->frontline as $rep)
+ // {
+  // Commission::set_levels_down($rep->id,1);
+ // }
+	// return Auth::user()->descendants->toArray();
+	return dd(Auth::user()->hasRepInDownline(2019));
 });
 
 Route::get('test', function() {

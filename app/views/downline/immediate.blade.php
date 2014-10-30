@@ -6,7 +6,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col col-md-8">
-		            	@if (isset($user->sponsor_id))
+		            	@if (Auth::user()->hasRepInDownline($user->id))
 		            		<div class="breadcrumbs">
 		            			<a href="/downline/immediate/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
 		            		</div>

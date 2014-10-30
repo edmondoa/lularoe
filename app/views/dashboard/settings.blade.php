@@ -10,7 +10,7 @@
 			<div class="list-group">
 				<a class="link list-group-item" href="/users/{{ Auth::user()->id }}/edit"><span class="fa fa-user"></span> Edit Profile</a>
 				@foreach ($addresses as $address)
-					<a class="link list-group-item" href="/addresses/{{ $address->id }}/edit"><span class="fa fa-home"></span> Edit {{ $address->label }} Address</a>
+					<a class="link list-group-item" href="/addresses/{{ $address->id }}/edit"><span class="fa fa-home"></span> Edit {{ $address->addressable_type }} Address</a>
 				@endforeach
 			</div>
 		</div>

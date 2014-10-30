@@ -1,7 +1,7 @@
 {{ HTML::script('/js/jquery1.js') }}
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
-<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+{{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
+{{ HTML::script('//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js') }}
+{{ HTML::script('https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js') }}
 {{ HTML::script('/packages/bootstrap-select/bootstrap-select.min.js') }}
 {{ HTML::script('packages/jquery-ui/jquery-ui-1.10.4.custom.min.js') }}
 <script>
@@ -11,10 +11,11 @@
 	
 </script>
 {{ HTML::script('js/functions.js') }}
-<script src="/js/controllers/datepickerController.js"></script>
+{{ HTML::script('/js/controllers/datepickerController.js') }}
+{{ HTML::script('/packages/jquery-ui/timepicker.js') }}
 <!--[javascript]-->
 @section('scripts')
 @show
-<script src="/packages/dirpagination/dirPagination.js"></script>
+{{ HTML::script('/packages/dirpagination/dirPagination.js') }}
 </body>
 </html>
