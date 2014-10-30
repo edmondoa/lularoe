@@ -129,7 +129,7 @@ class userController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id || Auth::user()->hasRepInDownline($id)) {
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id || Auth::user()->hasRepInDownline($id) || Auth::user()->sponsor_id == $id) {
 			$user = User::findOrFail($id);
 			$addresses = User::find($id)->addresses;
 			return View::make('user.show', compact('user', 'addresses'));

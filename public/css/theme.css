@@ -69,6 +69,7 @@ td.border { border-right:1px solid rgba(0,0,0,.1); }
 .show .col > .table, .edit .col > .table { width:auto !important; }
 /*.create form, .edit form { display:inline-block; }*/
 .panel table { width:100%; }
+.panel table tbody th { text-align:left; }
 .btn-group > form { display:inline-block; }
 .btn-group > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; }
 .btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
