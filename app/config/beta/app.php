@@ -122,10 +122,10 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		//'Way\Generators\GeneratorsServiceProvider',
-		'Jrenton\LaravelScaffold\LaravelScaffoldServiceProvider',
-		'SociallyMobile\Payments\PaymentsServiceProvider',
-		'SociallyMobile\Twilio\TwilioServiceProvider',
-		'SociallyMobile\Commission\CommissionServiceProvider',
+		//'Jrenton\LaravelScaffold\LaravelScaffoldServiceProvider',
+		//'SociallyMobile\Payments\PaymentsServiceProvider',
+		//'SociallyMobile\Twilio\TwilioServiceProvider',
+		//'SociallyMobile\Commission\CommissionServiceProvider',
 
 	),
 
