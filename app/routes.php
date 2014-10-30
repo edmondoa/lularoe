@@ -271,6 +271,7 @@ Route::get('populate-levels', function(){
 		{
 			Commission::set_levels_down($rep->id,1);
 		}
+		return "Populated Levels";
 	}
 
 });

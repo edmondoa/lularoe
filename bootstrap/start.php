@@ -26,7 +26,7 @@ $app = new Illuminate\Foundation\Application;
 
 $env = $app->detectEnvironment(function(){
 	//if the LARAVEL_ENV can be found, return it
-	return 'beta';
+	//return 'beta';
 	$haystack = getenv('LARAVEL_ENV');
 	if(!empty($haystack))
 	{
