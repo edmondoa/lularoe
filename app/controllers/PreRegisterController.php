@@ -72,7 +72,7 @@ class PreRegisterController extends \BaseController {
 		$rules['password'] = 'required|confirmed|digits_between:8,32';
 		$rules['public_id'] = 'required|unique:users,public_id';
 		$rules['email'] = 'required|unique:users,email';
-
+		$rules['sponsor_id'] = 'required';
 		$validator = Validator::make($data = Input::all(), $rules);
 		//echo"<pre>"; print_r($data); echo"</pre>";
 		//echo"<pre>"; print_r('passed muster'); echo"</pre>";

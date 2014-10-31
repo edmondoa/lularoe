@@ -159,6 +159,8 @@ class userController extends \BaseController {
 			$user = User::findOrFail($id);
 			$rules = User::$rules;
 			$rules['email'] = 'unique:users,email,' . $user->id;
+			$rules['password'] = 'sometimes|confirmed|digits_between:8,12';
+			//$rules['sponsor_id'] = 'required|digits';
 			$data = Input::all();
 			$data['phone'] = formatPhone($data['phone']);
 			$validator = Validator::make($data, $rules);
