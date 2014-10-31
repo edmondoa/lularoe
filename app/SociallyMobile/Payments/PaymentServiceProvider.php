@@ -7,7 +7,7 @@ class PaymentServiceProvider extends ServiceProvider{
 
 	public function register()
 	{
-		$this->app->bind('payment', 'SociallyMobile\Payments\Payments');
+		$this->app->bind('cmspayment', 'SociallyMobile\Payments\CMSPayment');
 	}
 }
 ?>
