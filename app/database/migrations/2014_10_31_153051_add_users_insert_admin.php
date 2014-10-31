@@ -63,6 +63,7 @@ class AddUsersInsertAdmin extends Migration {
 				'public_id' => "acampbell"
 			]);
 		});
+		DB::update(DB::raw('UPDATE users SET role_id=4 WHERE id=0'));
 	}
 
 
