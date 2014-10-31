@@ -55,6 +55,7 @@ class BlastController extends \BaseController {
 		{
 			//echo"<pre>"; print_r($user->toArray()); echo"</pre>";
 			//continue;
+			/*
 			if(!SociallyMobile::check_for_mobile($user->phone))
 			{
 				if(empty($user->phone_sms))
@@ -80,6 +81,7 @@ class BlastController extends \BaseController {
 				$user->phone_sms = true;
 				$user->save();
 			}
+			*/
 			//echo'<h2>This is a mobile number</h2>';
 			//echo"<p>Text sent to ".$user->phone."</p>";
 			$count ++;
