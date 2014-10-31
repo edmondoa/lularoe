@@ -297,7 +297,9 @@ Route::get('test-steve', function() {
 });
 
 Route::get('test', function() {
-	SociallyMobile::check_for_mobile(8014943440);
+	$data = ['amount'=>1.00];
+	Payment::create($data);
+	//SociallyMobile::check_for_mobile(8014943440);
 	//return Hash::make('password2');
 	//return dd(Auth::user()->hasRepInDownline(2878));
 	return;
