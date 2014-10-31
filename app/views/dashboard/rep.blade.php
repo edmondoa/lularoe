@@ -65,11 +65,11 @@
 				<table class="table table-striped">
 					<tr>
 						<th>Members in Direct Downline</th>
-						<td><a href="/downline/immediate/{{ $user->id }}">{{ $user->descendant_count }}</a></td>
+						<td><a href="/downline/immediate/{{ $user->id }}">{{ $user->front_line_count }}</a></td>
 					</tr>
 					<tr>
 						<th>Members in Entire Team</th>
-						<td><a href="/downline/all/{{ $user->id }}">{{ $user->front_line_count }}</a></td>
+						<td><a href="/downline/all/{{ $user->id }}">{{ $user->descendant_count }}</a></td>
 					</tr>
 				</table>
 			</div><!-- panel -->
