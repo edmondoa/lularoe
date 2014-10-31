@@ -31,7 +31,7 @@ class AddUsersInsertAdmin extends Migration {
 				'public_id' => "jbarlow"
 			]);
 			$user = User::create([
-				'id' => 1,
+				'id' => 2,
 				'first_name' => "Steve",
 				'last_name' => 'Gashler',
 				'email' => 'admin@controlpad.com',
@@ -47,7 +47,7 @@ class AddUsersInsertAdmin extends Migration {
 				'public_id' => "sgashler"
 			]);
 			$user = User::create([
-				'id' => 1,
+				'id' => 3,
 				'first_name' => "Adam",
 				'last_name' => 'Campbell',
 				'email' => 'sgashler@controlpad.com',
