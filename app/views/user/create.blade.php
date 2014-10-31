@@ -30,7 +30,7 @@
 			    
 			    <div class="form-group">
 			        {{ Form::label('password', 'Password') }}
-			        {{ Form::text('password', Input::old('password'), array('class' => 'form-control')) }}
+			        {{ Form::password('password', array('class' => 'form-control')) }}
 			    </div>
 			    
 			    <div class="form-group">
@@ -39,15 +39,13 @@
 			    </div>
 			    
 			    <div class="form-group">
-			        {{ Form::label('gender', 'Gender') }}
-			        {{ Form::text('gender', Input::old('gender'), array('class' => 'form-control')) }}
+		    		{{ Form::label('gender', 'Gender') }}<br>
+		    		{{ Form::select('gender', array(
+				    	'M' => 'Male',
+				    	'F' => 'Female',
+				    ), null, array('class' => 'selectpicker')) }}
 			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('key', 'Key') }}
-			        {{ Form::text('key', Input::old('key'), array('class' => 'form-control')) }}
-			    </div>
-			    
+			       
 			    <div class="form-group">
 			        {{ Form::label('dob', 'DOB') }}
 			        {{ Form::text('dob', Input::old('dob'), array('class' => 'form-control dateonlypicker')) }}
@@ -59,8 +57,13 @@
 			    </div>
 			    
 			    <div class="form-group">
-			        {{ Form::label('role_id', 'Role Id') }}
-			        {{ Form::text('role_id', Input::old('role_id'), array('class' => 'form-control')) }}
+		    		{{ Form::label('role_id', 'Role') }}<br>
+		    		{{ Form::select('gender', array(
+				    	'1' => 'Customer',
+				    	'2' => 'ISM',
+				    	'3' => 'Editor',
+				    	'4' => 'Admin'
+				    ), null, array('class' => 'selectpicker')) }}
 			    </div>
 			    
 			    <div class="form-group">
@@ -68,7 +71,7 @@
 			        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control')) }}
 			    </div>
 			    
-			    <div class="form-group">
+			    <!-- <div class="form-group">
 			        {{ Form::label('mobile_plan_id', 'Mobile Plan Id') }}
 			        {{ Form::text('mobile_plan_id', Input::old('mobile_plan_id'), array('class' => 'form-control')) }}
 			    </div>
@@ -81,8 +84,7 @@
 			    <div class="form-group">
 			        {{ Form::label('disabled', 'Disabled') }}
 			        {{ Form::text('disabled', Input::old('disabled'), array('class' => 'form-control')) }}
-			    </div>
-			    
+			    </div> -->
 		
 			    {{ Form::submit('Add User', array('class' => 'btn btn-primary')) }}
 	

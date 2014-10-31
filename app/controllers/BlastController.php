@@ -145,7 +145,7 @@ class BlastController extends \BaseController {
 			Mail::send('emails.standard', $data , function($body) use($user,$form_data)
 			{
 				$body->to($user->email, $user->first_name.' '.$user->last_name)->subject($form_data['subject_line']);
-				$body->from('no-reply@box.events', 'BOX.EVENTS');
+				$body->from(Auth::user()->email, Auth::user()->first_name . ' ' . Auth::user()->last_name);
 			});
 			$count ++;
 		}

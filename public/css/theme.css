@@ -36,7 +36,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
 /* global classes */
 .auto { width:auto; }
 .full { width:100%; }
-.inline-block { display:inline-block }
+.inline-block { display:inline-block !important; }
 .width-auto { width:auto; }
 .tiny { font-size:7pt; display:block; }
 .clear { clear:both; }
