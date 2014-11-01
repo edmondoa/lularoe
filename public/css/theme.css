@@ -36,7 +36,8 @@ footer { text-align:center; color:gray; font-size:8pt; }
 /* global classes */
 .auto { width:auto; }
 .full { width:100%; }
-.inline-block { display:inline-block; }
+.inline-block { display:inline-block }
+.width-auto { width:auto; }
 .tiny { font-size:7pt; display:block; }
 .clear { clear:both; }
 .margin-right-1 { margin-right:.5em; }
@@ -47,12 +48,17 @@ footer { text-align:center; color:gray; font-size:8pt; }
 .no-top { margin-top:0; }
 .no-bottom { margin-top:0; }
 .currentPage { position:relative; top:7px; }
-.page-actions { margin:1em 0; }
+.page-actions { margin:0 0 1em; }
 .breadcrumbs { display:block; margin-bottom:1em; }
 .link { cursor:pointer; color:#017dc5 !important; }
 .link:hover { text-decoration:underline !important; }
 .highlight { background:rgb(255,255,192); }
 .full { width:100%; }
+.center { text-align:center; }
+.boolean { text-align:center; border-left:1px solid rgba(0,0,0,.1); }
+td.border { border-right:1px solid rgba(0,0,0,.1); }
+.no-bullets { list-style:none; }
+.date-col { width:150px; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
@@ -61,9 +67,8 @@ footer { text-align:center; color:gray; font-size:8pt; }
     border-bottom-right-radius: 0px !important;
 }
 .show .col > .table, .edit .col > .table { width:auto !important; }
-.create form, .edit form { display:inline-block; }
+/*.create form, .edit form { display:inline-block; }*/
 .panel table { width:100%; }
-.ui-datepicker-year, .ui-datepicker-month { color:black; font-weight:100; }
 .btn-group > form { display:inline-block; }
 .btn-group > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; }
 .btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
@@ -76,10 +81,29 @@ footer { text-align:center; color:gray; font-size:8pt; }
 #main-menu .popover a:last-child { margin-bottom:0; }
 #main-menu .popover a:hover { background:none !important; text-decoration:none; }
 .label .fa-times { cursor:pointer; }
+.table tbody th { text-align:right; }
+
+/* jquery-ui overrides */
+select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight:100; }
+.ui-timepicker-div { padding:10px 10px 0; }
+.ui-timepicker-div select { padding:5px; }
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { float: left; clear:left; padding: 0 0 0 5px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 45%; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; padding: 0 5px 0 0; }
+.ui-timepicker-rtl dl dt{ float: right; clear: right; }
+.ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }
+.ui_tpicker_time_label, .ui_tpicker_time { display:none; }
+.ui-timepicker-div select { margin-bottom:0; }
 
 /* media queries*/
 @media(max-width:767px) {
     .hidable-xs { display:none; }
+    .date-col { width:auto; }
 }
 @media(max-width:991px) {
     .hidable-sm { display:none; }
@@ -89,7 +113,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
     #main-menu .text { display:none; }
 }
 @media(max-width:1199px) {
-    
+    .hidable-md { display:none; }
 }
 @media(min-width:1200px) {
     

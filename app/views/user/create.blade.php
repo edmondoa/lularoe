@@ -2,7 +2,7 @@
 @section('content')
 <div class="create">
 	<div class="row">
-		<div class="col col-md-12">
+		<div class="col col-lg-4 col-md-6">
 			@include('_helpers.breadcrumbs')
 		    <h1 class="no-top">New User</h1>
 		    {{ Form::open(array('url' => 'users')) }}

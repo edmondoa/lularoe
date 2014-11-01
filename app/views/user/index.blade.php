@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'users/disable', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
 	    <div ng-controller="UserController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
@@ -25,7 +25,9 @@
 		                    <div class="pull-left">
 		                        <div class="input-group">
 		                            <select class="form-control selectpicker actions">
-		                                <option value="users/disable" selected>Disable</option>
+		                                <option value="/users/email" selected>Send Email</option>
+		                                <option value="/users/sms">Send Text (SMS)</option>
+		                                <option value="users/disable">Disable</option>
 		                                <option value="users/enable">Enable</option>
 		                                <option value="users/delete">Delete</option>
 		                            </select>
@@ -236,6 +238,7 @@
 	                        <tr dir-paginate-end></tr>
 	                    </tbody>
 	                </table>
+					@include('_helpers.loading')
 	                <div ng-controller="OtherController" class="other-controller">
 	                    <div class="text-center">
 	                        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
@@ -257,7 +260,7 @@
 			$scope.users = users;
 			
 			@include('_helpers.bulk_action_checkboxes')
-			
+
 		});
 		
 		$scope.currentPage = 1;
@@ -267,6 +270,7 @@
 		$scope.pageChangeHandler = function(num) {
 			console.log('meals page changed to ' + num);
 		};
+	
 		
 	}
 	
@@ -274,6 +278,6 @@
 		$scope.pageChangeHandler = function(num) {
 		};
 	}
-
+	
 </script>
 @stop

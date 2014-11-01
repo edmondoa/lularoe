@@ -20,23 +20,25 @@
 		        </div><!-- row -->
 		        <div class="row">
 		            <div class="col col-md-12">
-		                <div class="pull-left">
-		                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('[models]/create') }}"><i class="fa fa-plus"></i></a>
-		                    <div class="pull-left">
-		                        <div class="input-group">
-		                            <select class="form-control selectpicker actions">
-		                                <option value="[models]/disable" selected>Disable</option>
-		                                <option value="[models]/enable">Enable</option>
-		                                <option value="[models]/delete">Delete</option>
-		                            </select>
-		                            <div class="input-group-btn">
-		                                <button class="btn btn-default applyAction" disabled>
-		                                    <i class="fa fa-check"></i>
-		                                </button>
-		                            </div>
-		                        </div>
-		                    </div>
-		                </div>
+		            	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+			                <div class="pull-left">
+			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('[models]/create') }}"><i class="fa fa-plus"></i></a>
+			                    <div class="pull-left">
+			                        <div class="input-group">
+			                            <select class="form-control selectpicker actions">
+			                                <option value="[models]/disable" selected>Disable</option>
+			                                <option value="[models]/enable">Enable</option>
+			                                <option value="[models]/delete">Delete</option>
+			                            </select>
+			                            <div class="input-group-btn">
+			                                <button class="btn btn-default applyAction" disabled>
+			                                    <i class="fa fa-check"></i>
+			                                </button>
+			                            </div>
+			                        </div>
+			                    </div>
+			                </div>
+			            @endif
 		                <div class="pull-right">
 		                    <div class="input-group">
 		                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
@@ -95,6 +97,7 @@
 	                        <tr dir-paginate-end></tr>
 	                    </tbody>
 	                </table>
+	                @include('_helpers.loading')
 	                <div ng-controller="OtherController" class="other-controller">
 	                    <div class="text-center">
 	                        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>

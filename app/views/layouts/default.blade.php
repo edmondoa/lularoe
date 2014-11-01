@@ -9,7 +9,7 @@
 	</div><!--/col-->
 	<div id="content">
 		<div class="row">
-			<div class="col col-md-6">
+			<div class="col col-md-12">
 				@include('_helpers.errors')
 				@include('_helpers.message')
 			</div>
