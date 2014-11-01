@@ -65,7 +65,7 @@ class MailMessagesController extends \BaseController {
 		    }
 		    else
 		    {
-		    	$message->from('no-reply@duezee.com', $merchant->name);
+		    	$message->from('no-reply@sociallymobile.com', $merchant->name);
 		    }
 		});
 		//exit;

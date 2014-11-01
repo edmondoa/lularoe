@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => 'no-reply@sociallymobile.com', 'name' => Config::get('default_from_name')),
+	'from' => array('address' => 'no-reply@sociallymobile.com', 'name' => Config::get('site.default_from_name')),
 
 	/*
 	|--------------------------------------------------------------------------
