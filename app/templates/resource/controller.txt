@@ -1,103 +1,170 @@
-<?php [namespace]
+<?php
 
-class [controller] extends \BaseController
-{
-	protected $[model];
+class [model]Controller extends \BaseController {
 
-	public function __construct([repositoryInterface] $[model])
-	{
-		$this->[model] = $[model];
+	/**
+	 * Data only
+	 */
+	public function getAll[Models](){
+		$[models] = [Model]::all();
+		foreach ($[models] as $[model])
+		{
+			if (strtotime($[model]['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$[model]['new'] = 1;
+			}
+		}
+		return $[models];
 	}
 
+	/**
+	 * Display a listing of [models]
+	 *
+	 * @return Response
+	 */
 	public function index()
 	{
-    	$[models] = $this->[model]->all();
-        $this->layout->content = \View::make('[model].index', compact('[models]'));
+		$[models] = [Model]::all();
+
+		return View::make('[model].index', compact('[models]'));
 	}
 
+	/**
+	 * Show the form for creating a new [model]
+	 *
+	 * @return Response
+	 */
 	public function create()
 	{
-        $this->layout->content = \View::make('[model].create');
+		return View::make('[model].create');
 	}
 
+	/**
+	 * Store a newly created [model] in storage.
+	 *
+	 * @return Response
+	 */
 	public function store()
 	{
-        $this->[model]->store(\Input::only([repeat]'[property]',[/repeat]));
-        return \Redirect::route('[model].index');
+		$validator = Validator::make($data = Input::all(), [Model]::$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		[Model]::create($data);
+
+		return Redirect::route('[models].index')->with('message', '[Model] created.');
 	}
 
+	/**
+	 * Display the specified [model].
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function show($id)
 	{
-        $[model] = $this->[model]->find($id);
-        $this->layout->content = \View::make('[model].show')->with('[model]', $[model]);
+		$[model] = [Model]::findOrFail($id);
+
+		return View::make('[model].show', compact('[model]'));
 	}
 
+	/**
+	 * Show the form for editing the specified [model].
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function edit($id)
 	{
-        $[model] = $this->[model]->find($id);
-        $this->layout->content = \View::make('[model].edit')->with('[model]', $[model]);
+		$[model] = [Model]::find($id);
+
+		return View::make('[model].edit', compact('[model]'));
 	}
 
+	/**
+	 * Update the specified [model] in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function update($id)
 	{
-        $this->[model]->find($id)->update(\Input::only([repeat]'[property]',[/repeat]));
-        return \Redirect::route('[model].show', $id);
+		$[model] = [Model]::findOrFail($id);
+
+		$validator = Validator::make($data = Input::all(), [Model]::$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		$[model]->update($data);
+
+		return Redirect::route('[models].show', $id)->with('message', '[Model] updated.');
 	}
 
+	/**
+	 * Remove the specified [model] from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function destroy($id)
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->[model]->destroy($id);
-			}
-			return \Redirect::route('[model].index');
-		}
-		else {
-	        $this->[model]->destroy($id);
-	        return \Redirect::route('[model].index');
-		}
+		[Model]::destroy($id);
+
+		return Redirect::route('[models].index')->with('message', '[Model] deleted.');
 	}
 	
-	public function delete($id)
+	/**
+	 * Remove [models].
+	 */
+	public function delete()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->[model]->destroy($id);
-			}
-			return \Redirect::route('[model].index')->with('message', '[Models] deleted.');;
+		foreach (Input::get('ids') as $id) {
+			[Model]::destroy($id);
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('[models].index')->with('message', '[Models] deleted.');
 		}
 		else {
-	        $this->[model]->destroy($id);
-	        return \Redirect::route('[model].index')->with('message', '[Model] deleted.');;
+			return Redirect::back()->with('message', '[Model] deleted.');
 		}
 	}
 	
-	public function disable($id)
+	/**
+	 * Diable [models].
+	 */
+	public function disable()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->[model]->where('id', $id)->update(array('disabled' => 1));
-			}
-			return \Redirect::route('[model].index')->with('message', '[Models] disabled.');
+		foreach (Input::get('ids') as $id) {
+			[Model]::find($id)->update(['disabled' => 1]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('[models].index')->with('message', '[Models] disabled.');
 		}
 		else {
-	        $this->[model]->where('id', $id)->update(array('disabled' => 1));
-	        return \Redirect::route('[model].index')->with('message', '[Model] disabled.');;
+			return Redirect::back()->with('message', '[Model] disabled.');
 		}
 	}
 	
-	public function enable($id)
+	/**
+	 * Enable [models].
+	 */
+	public function enable()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->[model]->where('id', $id)->update(array('disabled' => NULL));
-			}
-			return \Redirect::route('[model].index')->with('message', '[Models] enabled.');;
+		foreach (Input::get('ids') as $id) {
+			[Model]::find($id)->update(['disabled' => 0]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('[models].index')->with('message', '[Models] enabled.');
 		}
 		else {
-	        $this->[model]->where('id', $id)->update(array('disabled' => NULL));
-	        return \Redirect::route('[model].index')->with('message', '[Model] enabled.');;
+			return Redirect::back()->with('message', '[Model] enabled.');
 		}
 	}
-	
+
 }

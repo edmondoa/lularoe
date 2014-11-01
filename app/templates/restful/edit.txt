@@ -1,22 +1,24 @@
+@extends('layouts.default')
 @section('content')
-<div class="row">
-	<a href='[model]'>lsaquo; All [models]</a> 
-</div>
-<div class="row">
-    <h2>Edit [Model]</h2>
-</div>
-<div class="row">
-    {{ Form::model($[model], array('url' => '[model]/update/'.$[model]->id, 'method' => 'PUT')) }}
-
-    [repeat]
-    <div class="form-group">
-        {{ Form::label('[property]', '[Property]') }}
-        {{ Form::text('[property]', null, array('class' => 'form-control')) }}
-    </div>
-    [/repeat]
-
-    {{ Form::submit('Edit [Model]', array('class' => 'btn btn-success')) }}
-
-    {{Form::close()}}
+<div class="edit">
+	<div class="row">
+		<div class="col col-md-12">
+			@include('_helpers.breadcrumbs')
+		    <h1>Edit [model]</h1>
+		    {{ Form::model($[model], array('route' => array('[models].update', $[model]->id), 'method' => 'PUT')) }}
+		
+		    [repeat]
+		    <div class="form-group">
+		        {{ Form::label('[property]', '[formatted_property]') }}
+		        {{ Form::text('[property]', null, array('class' => 'form-control')) }}
+		    </div>
+		    [/repeat]
+		
+		    {{ Form::submit('Update [Model]', array('class' => 'btn btn-success')) }}
+		
+		    {{Form::close()}}
+		</div>
+	</div>
 </div>
 @stop
+

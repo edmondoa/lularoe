@@ -48,7 +48,7 @@ class SessionController extends \BaseController {
 		} 
 		else
 		{
-			return Redirect::back()->with('message', "Incorrect email or password.");
+			return Redirect::back()->with('message_danger', 'Incorrect email or password.');
 		}
 	}
 

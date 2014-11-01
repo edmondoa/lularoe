@@ -1,103 +1,170 @@
-<?php 
+<?php
 
-class RoleController extends \BaseController
-{
-	protected $role;
+class roleController extends \BaseController {
 
-	public function __construct(Role $role)
-	{
-		$this->role = $role;
+	/**
+	 * Data only
+	 */
+	public function getAllRoles(){
+		$roles = Role::all();
+		foreach ($roles as $role)
+		{
+			if (strtotime($role['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+			{
+				$role['new'] = 1;
+			}
+		}
+		return $roles;
 	}
 
+	/**
+	 * Display a listing of roles
+	 *
+	 * @return Response
+	 */
 	public function index()
 	{
-    	$roles = $this->role->all();
-        $this->layout->content = \View::make('role.index', compact('roles'));
+		$roles = Role::all();
+
+		return View::make('role.index', compact('roles'));
 	}
 
+	/**
+	 * Show the form for creating a new role
+	 *
+	 * @return Response
+	 */
 	public function create()
 	{
-        $this->layout->content = \View::make('role.create');
+		return View::make('role.create');
 	}
 
+	/**
+	 * Store a newly created role in storage.
+	 *
+	 * @return Response
+	 */
 	public function store()
 	{
-        $this->role->store(\Input::only('name','disabled'));
-        return \Redirect::route('role.index');
+		$validator = Validator::make($data = Input::all(), Role::$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		Role::create($data);
+
+		return Redirect::route('roles.index')->with('message', 'Role created.');
 	}
 
+	/**
+	 * Display the specified role.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function show($id)
 	{
-        $role = $this->role->find($id);
-        $this->layout->content = \View::make('role.show')->with('role', $role);
+		$role = Role::findOrFail($id);
+
+		return View::make('role.show', compact('role'));
 	}
 
+	/**
+	 * Show the form for editing the specified role.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function edit($id)
 	{
-        $role = $this->role->find($id);
-        $this->layout->content = \View::make('role.edit')->with('role', $role);
+		$role = Role::find($id);
+
+		return View::make('role.edit', compact('role'));
 	}
 
+	/**
+	 * Update the specified role in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function update($id)
 	{
-        $this->role->find($id)->update(\Input::only('name','disabled'));
-        return \Redirect::route('role.show', $id);
+		$role = Role::findOrFail($id);
+
+		$validator = Validator::make($data = Input::all(), Role::$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		$role->update($data);
+
+		return Redirect::route('roles.show', $id)->with('message', 'Role updated.');
 	}
 
+	/**
+	 * Remove the specified role from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function destroy($id)
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->role->destroy($id);
-			}
-			return \Redirect::route('role.index');
-		}
-		else {
-	        $this->role->destroy($id);
-	        return \Redirect::route('role.index');
-		}
+		Role::destroy($id);
+
+		return Redirect::route('roles.index')->with('message', 'Role deleted.');
 	}
 	
-	public function delete($id)
+	/**
+	 * Remove roles.
+	 */
+	public function delete()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->role->destroy($id);
-			}
-			return \Redirect::route('role.index')->with('message', 'Roles deleted.');;
+		foreach (Input::get('ids') as $id) {
+			Role::destroy($id);
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('roles.index')->with('message', 'Roles deleted.');
 		}
 		else {
-	        $this->role->destroy($id);
-	        return \Redirect::route('role.index')->with('message', 'Role deleted.');;
+			return Redirect::back()->with('message', 'Role deleted.');
 		}
 	}
 	
-	public function disable($id)
+	/**
+	 * Diable roles.
+	 */
+	public function disable()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->role->where('id', $id)->update(array('disabled' => 1));
-			}
-			return \Redirect::route('role.index')->with('message', 'Roles disabled.');
+		foreach (Input::get('ids') as $id) {
+			Role::find($id)->update(['disabled' => 1]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('roles.index')->with('message', 'Roles disabled.');
 		}
 		else {
-	        $this->role->where('id', $id)->update(array('disabled' => 1));
-	        return \Redirect::route('role.index')->with('message', 'Role disabled.');;
+			return Redirect::back()->with('message', 'Role disabled.');
 		}
 	}
 	
-	public function enable($id)
+	/**
+	 * Enable roles.
+	 */
+	public function enable()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->role->where('id', $id)->update(array('disabled' => NULL));
-			}
-			return \Redirect::route('role.index')->with('message', 'Roles enabled.');;
+		foreach (Input::get('ids') as $id) {
+			Role::find($id)->update(['disabled' => 0]);	
+		}
+		if (count(Input::get('ids')) > 1) {
+			return Redirect::route('roles.index')->with('message', 'Roles enabled.');
 		}
 		else {
-	        $this->role->where('id', $id)->update(array('disabled' => NULL));
-	        return \Redirect::route('role.index')->with('message', 'Role enabled.');;
+			return Redirect::back()->with('message', 'Role enabled.');
 		}
 	}
-	
+
 }

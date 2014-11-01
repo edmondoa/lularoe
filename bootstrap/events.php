@@ -1,39 +1,5 @@
 <?php
 
-function getDownlineVolume($rep_id)
-{
-	
-}
-	
-function getLevelOneVolume($rep_id)
-{
-	
-}
-
-function isQualifiedLine($rep_id)
-{
-	
-}
-	
-function hasLeadershipRequirements($rep_id, $requirements)
-{
-	
-}
-
-function assessPercentages($rep_id)
-{
-	
-}
-
-function countDownlineByLevel($rep_id)
-{
-	
-}
-
-function getAllDownline($rep_id)
-{
-	// returns rep objects with their level and rank
-}
 
 // bonusses
 Event::listen('reps.rank' , function($rep_id)
@@ -101,4 +67,9 @@ Event::listen('rep.commissions' , function($rep_id)
 		// foreach reps as rep
 			// count ++;
 			// if (rank > Executive)
+});
+// infinity income
+Event::listen('rep.create' , function($rep_id)
+{
+	return Commission::level_up($rep_id);
 });

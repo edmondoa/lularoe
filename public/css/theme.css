@@ -1,21 +1,64 @@
-/* html */
-form { display:inline-block; }
+/* REFERENCE */
+/*
+#017dc5 - Standard Blue
+#0d3c6d - Dark Blue (shade from lower half of the icon)
+#7f7f7f - Grey
+#303030 - Black/Dark Grey
+*/
 
 /* main-header */
 html, body { overflow-x: hidden; }
 #logo { position:relative; top:-2px; }
 
+/* layout */
+body { position:absolute; top:0; right:0; bottom:0; left:0; }
+#main { display:table; height:100%; width:100%; }
+#content { display:table-cell; padding:40px; }
+#content h1:first-of-type { margin-top:0; }
+
+
+/* sidebar */
+#sidebar { display:table-cell; background:black; width:205px; vertical-align:top; }
+body.layout-default #main-menu > a:first-child { border-top-left-radius:0; border-top-right-radius:0; }
+#main-menu a { background:rgb(32,32,32) !important; color:gray; border:1px solid black; }
+#main-menu a:hover { background:rgb(64,64,64) !important; color:white; }
+#main-menu a.active { background:#017dc5 !important; color:white; }
+
 /* body */
-body { padding-top: 70px; }
+.layout-centered { padding-top:70px; }
+.layout-default { padding-top:50px !important; }
+
+/* main content */
 
 /* main footer */
-footer { padding: 30px 0; }
+footer { text-align:center; color:gray; font-size:8pt; }
 
 /* global classes */
 .auto { width:auto; }
 .full { width:100%; }
-.inline-block { display:inline-block; }
+.inline-block { display:inline-block !important; }
+.width-auto { width:auto; }
 .tiny { font-size:7pt; display:block; }
+.clear { clear:both; }
+.margin-right-1 { margin-right:.5em; }
+.margin-right-2 { margin-right:1em; }
+.itemsPerPage { max-width:80px; }
+.display-table { display:table; }
+.display-table-cell { display:table-cell; }
+.no-top { margin-top:0; }
+.no-bottom { margin-top:0; }
+.currentPage { position:relative; top:7px; }
+.page-actions { margin:0 0 1em; }
+.breadcrumbs { display:block; margin-bottom:1em; }
+.link { cursor:pointer; color:#017dc5 !important; }
+.link:hover { text-decoration:underline !important; }
+.highlight { background:rgb(255,255,192); }
+.full { width:100%; }
+.center { text-align:center; }
+.boolean { text-align:center; border-left:1px solid rgba(0,0,0,.1); }
+td.border { border-right:1px solid rgba(0,0,0,.1); }
+.no-bullets { list-style:none; }
+.date-col { width:150px; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
@@ -23,9 +66,56 @@ footer { padding: 30px 0; }
     border-top-right-radius: 0px !important;
     border-bottom-right-radius: 0px !important;
 }
-.table { width:auto; }
+.show .col > .table, .edit .col > .table { width:auto !important; }
+/*.create form, .edit form { display:inline-block; }*/
 .panel table { width:100%; }
-.ui-datepicker-year, .ui-datepicker-month { color:black; font-weight:100; }
+.panel table tbody th { text-align:left; }
+.btn-group > form { display:inline-block; }
+.btn-group > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; }
+.btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
+.navbar-inverse {
+    background-image: linear-gradient(to bottom, #3C3C3C 0px, #303030 100%); background-repeat: repeat-x;
+}
+#main-menu .popover { background:#202020; box-shadow:none; }
+#main-menu .popover.right > .arrow:after { border-right-color:#202020; color:#202020; }
+#main-menu .popover a { border:none; display:block; margin-bottom:.5em; }
+#main-menu .popover a:last-child { margin-bottom:0; }
+#main-menu .popover a:hover { background:none !important; text-decoration:none; }
+.label .fa-times { cursor:pointer; }
+.table tbody th { text-align:right; }
 
-/* global classes */
-.full { width:100%; }
+/* jquery-ui overrides */
+select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight:100; }
+.ui-timepicker-div { padding:10px 10px 0; }
+.ui-timepicker-div select { padding:5px; }
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { float: left; clear:left; padding: 0 0 0 5px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 45%; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; padding: 0 5px 0 0; }
+.ui-timepicker-rtl dl dt{ float: right; clear: right; }
+.ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }
+.ui_tpicker_time_label, .ui_tpicker_time { display:none; }
+.ui-timepicker-div select { margin-bottom:0; }
+
+/* media queries*/
+@media(max-width:767px) {
+    .hidable-xs { display:none; }
+    .date-col { width:auto; }
+}
+@media(max-width:991px) {
+    .hidable-sm { display:none; }
+    #sidebar { width:auto; }
+    #content { padding:20px; }
+    #main-menu { text-align:center; }
+    #main-menu .text { display:none; }
+}
+@media(max-width:1199px) {
+    .hidable-md { display:none; }
+}
+@media(min-width:1200px) {
+    
+}

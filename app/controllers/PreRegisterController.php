@@ -1,5 +1,5 @@
 <?php
-use SociallyMobile\Payments\USAEpayment;
+use SociallyMobile\Payments\CMSPayment;
 class PreRegisterController extends \BaseController {
 
 
@@ -12,14 +12,14 @@ class PreRegisterController extends \BaseController {
 	public function create($public_id = '')
 	{
 		if (empty($public_id)) return View::make('pre-register.sponsor');
-		$sponsor = User::where('public_id',$public_id)->first();
+		$sponsor = User::where('public_id',$public_id)->where('disabled',0)->first();
 		if(isset($sponsor->id))
 		{
 			return View::make('pre-register.create',compact('sponsor'));
 		}
 		else
 		{
-			return View::make('pre-register.sponsor')->with('danger_message', 'Missing or incorrect sponsor ID');
+			return View::make('pre-register.sponsor')->with('message_danger', 'Missing or incorrect sponsor ID');
 		}
 		//return View::make('pre-register.create');
 	}
@@ -72,7 +72,7 @@ class PreRegisterController extends \BaseController {
 		$rules['password'] = 'required|confirmed|digits_between:8,32';
 		$rules['public_id'] = 'required|unique:users,public_id';
 		$rules['email'] = 'required|unique:users,email';
-
+		$rules['sponsor_id'] = 'required';
 		$validator = Validator::make($data = Input::all(), $rules);
 		//echo"<pre>"; print_r($data); echo"</pre>";
 		//echo"<pre>"; print_r('passed muster'); echo"</pre>";
@@ -120,17 +120,17 @@ class PreRegisterController extends \BaseController {
 		);
 		//echo"<pre>"; print_r($params); echo"</pre>";
 		//exit;
-		$payment = new USAEpayment();
+		$cmspayment = new CMSPayment();
 		//exit;
-		$payment->create_request($params);
+		$cmspayment->create_request($params);
 		//echo"<pre>"; print_r($data); echo"</pre>";
 		//echo"<pre>"; print_r($user); echo"</pre>";
 		//echo"<pre>"; print_r($address); echo"</pre>";
 		//echo"<pre>"; print_r($event); echo"</pre>";
-		//$payment->expose($data);
+		//$cmspayment->expose($data);
 		//exit;
 		//exit;
-		if($payment->send_request())
+		if($cmspayment->send_request())
 		{
 			$data['dob'] = date('Y-m-d',strtotime($data['dob']));
 			$data['password'] = \Hash::make($data['password']);
@@ -149,7 +149,7 @@ class PreRegisterController extends \BaseController {
 			$user->addresses()->save($address);
 			//$user->addresses()->save($address);
 
-			$data['transaction_id'] = $payment->transaction_id;
+			$data['transaction_id'] = $cmspayment->transaction_id;
 			$data['details'] = '';
 			$data['tender'] = 'Credit Card';
 			$new_payment = Payment::create($data);
@@ -166,7 +166,7 @@ class PreRegisterController extends \BaseController {
 		}
 		else
 		{
-			$errors = $payment->errors_public;
+			$errors = $cmspayment->errors_public;
 			foreach($errors as $key => $error)
 			{
 				$validator->getMessageBag()->add($key, $error);
@@ -175,6 +175,7 @@ class PreRegisterController extends \BaseController {
 		}
 		//User::create($data);
 		//exit;
+		Event::fire('rep.create', array('rep_id' => $user->id));
 		Auth::loginUsingId($user->id);
 		return Redirect::to('/dashboard');
 	}

@@ -1,2 +1,2 @@
 resource = false
-User string( first_name last_name email password gender key remember_token public_id phone ) date( dob ) integer( role_id sponsor_id mobile_plan_id min_commission ) boolean( disabled )
+Uvent string( name ) text( description ) date( date ) boolean( public customers reps editors admins disabled )

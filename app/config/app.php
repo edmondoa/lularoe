@@ -13,7 +13,7 @@ return array(
 	|
 	*/
 
-	'debug' => true,
+	'debug' => false,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -122,8 +122,10 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		//'Way\Generators\GeneratorsServiceProvider',
-		'Jrenton\LaravelScaffold\LaravelScaffoldServiceProvider',
-		'SociallyMobile\Twilio\TwilioServiceProvider'
+		//'Jrenton\LaravelScaffold\LaravelScaffoldServiceProvider',
+		'SociallyMobile\Payments\PaymentServiceProvider',
+		'SociallyMobile\Twilio\TwilioServiceProvider',
+		'SociallyMobile\Commission\CommissionServiceProvider',
 
 	),
 
@@ -191,7 +193,9 @@ return array(
 		'URL'             => 'Illuminate\Support\Facades\URL',
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
-		'Twilio'		  => 'SociallyMobile\Twilio\TwilioFacade',
+		'Twilio'		  => 'SociallyMobile\Facades\Twilio',
+		'CMSPayment'		  => 'SociallyMobile\Facades\Payment',
+		'Commission'		=> 'SociallyMobile\Facades\Commission',
 
 
 	),

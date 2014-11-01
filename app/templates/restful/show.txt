@@ -1,19 +1,44 @@
+@extends('layouts.default')
 @section('content')
-<div class="row">
-    <h1>Viewing [model]</h1>
-    <a class="btn btn-primary" href="{{ url('[model]/edit/'.$[model]->id) }}">Edit</a>
-    {{ Form::open(array('url' => '[model]/delete/' . $[model]->id, 'method' => 'DELETE')) }}
-    {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
-    {{ Form::close() }}
-</div>
-<div class="row">
-    <table class="table">
-    	[repeat]
-        <tr>
-        	<td>[Property]:</td> 
-        	<td>{{ $[model]->[property] }}</td>
-        </tr>     
-        [/repeat] 
-    </table>
+<div class="show">
+	<div class="row page-actions">
+		@include('_helpers.breadcrumbs')
+		<h1 class="no-top">Viewing [model]</h1>
+	    <div class="btn-group">
+		    <a class="btn btn-default" href="{{ url('[models]/'.$[model]->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
+		    @if ($[model]->disabled == 0)
+			    {{ Form::open(array('url' => '[models]/disable', 'method' => 'DISABLE')) }}
+			    	<input type="hidden" name="ids[]" value="{{ $[model]->id }}">
+			    	<button class="btn btn-default active" title="Currently enabled. Click to disable.">
+			    		<i class="fa fa-eye"></i>
+			    	</button>
+			    {{ Form::close() }}
+			@else
+			    {{ Form::open(array('url' => '[models]/enable', 'method' => 'ENABLE')) }}
+			    	<input type="hidden" name="ids[]" value="{{ $[model]->id }}">
+			    	<button class="btn btn-default" title="Currently disabled. Click to enable.">
+			    		<i class="fa fa-eye"></i>
+			    	</button>
+			    {{ Form::close() }}
+			@endif
+		    {{ Form::open(array('url' => '[models]/' . $[model]->id, 'method' => 'DELETE')) }}
+		    	<button class="btn btn-default" title="Delete">
+		    		<i class="fa fa-trash" title="Delete"></i>
+		    	</button>
+		    {{ Form::close() }}
+		</div>
+	</div><!-- row -->
+	<div class="row">
+		<div class="col col-md-12">
+		    <table class="table">
+		        [repeat]
+		        <tr>
+		            <th>[formatted_property]:</th>
+		            <td>{{ $[model]->[property] }}</td>
+		        </tr>
+		        [/repeat]
+		    </table>
+	    </div>
+	</div>
 </div>
 @stop

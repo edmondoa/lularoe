@@ -1,25 +1,54 @@
-<?php 
+<?php
 
-class UserController extends \BaseController
-{
-	protected $user;
+class userController extends \BaseController {
 
-	public function __construct(User $user)
-	{
-		$this->user = $user;
+	/**
+	 * Data only
+	 */
+	public function getAllUsers(){
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			$users = User::all();
+			foreach ($users as $user)
+			{
+				if (strtotime($user['created_at']) >= (time() - Config::get('site.new_time_frame') ))
+				{
+					$user['new'] = 1;
+				}
+			}
+			return $users;
+		}
 	}
 
+	/**
+	 * Display a listing of users
+	 *
+	 * @return Response
+	 */
 	public function index()
 	{
-    	$users = $this->user->all();
-        $this->layout->content = \View::make('user.index', compact('users'));
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			$users = User::all();
+			return View::make('user.index', compact('users'));
+		}
 	}
 
+	/**
+	 * Show the form for creating a new user
+	 *
+	 * @return Response
+	 */
 	public function create()
 	{
-        $this->layout->content = \View::make('user.create');
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			return View::make('user.create');
+		}
 	}
 
+	/**
+	 * Store a newly created user in storage.
+	 *
+	 * @return Response
+	 */
 	public function store()
 	{
 		$data = Input::all();
@@ -35,10 +64,6 @@ class UserController extends \BaseController
 		$rules['password'] = 'required|confirmed|digits_between:8,12';
 		$rules['sponsor_id'] = 'required|digits';
 		$check_sponsor_id = User::where('public_id', $data['sponsor_id']);
-		if ($check_sponsor_id == UNDEFINED) {
-			echo 'Invalid sponsor id';
-			exit;
-		}
 
 		$validator = Validator::make($data,$rules);
 
@@ -48,6 +73,8 @@ class UserController extends \BaseController
 		}
 		$data['password'] = Hash::make($data['password']);
 		$user = User::create($data);
+		
+		// store address
 	    $address = Address::create([
 	    	'address'=>$data['address_1'],
 	    	'address2'=>$data['address_2'],
@@ -56,86 +83,165 @@ class UserController extends \BaseController
 	    	'zip'=>$data['zip'],
 	    	]);
 		$user->addresses()->save($address);
+		
+        // process and store image
+        if (Input::file('image')) {
+            // upload and link to image
+            $filename = '';
+            if (Input::hasFile('image')) {
+                $file = Input::file('image');
+                $destinationPath = public_path() . '/img/avatars/';
+                $extension = $file->getClientOriginalExtension();
+                $filename = str_random(20) . '.' . $extension;
+                $uploadSuccess   = $file->move($destinationPath, $filename);
+    
+                // open an image file
+                $img = Image::make('img/avatars/' . $filename);
+    
+                // now you are able to resize the instance
+                $img->fit(50, 50);
+    
+                // finally we save the image as a new image
+                $img->save('img/avatars/' . $filename);
+    
+                $data['image'] = $filename;
+            }
+        }
+        else if ($data['icon'] != '') {
+            $data['image'] = 'icons/' . $data['icon'] . '.png';
+        }
+		
+		// log in new user
+		Event::fire('rep.create', array('rep_id' => $user->id));
 		Auth::loginUsingId($user->id);
-		return Redirect::to('payment.create');
+		return Redirect::to('users.index');
 	}
 
+	/**
+	 * Display the specified user.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function show($id)
 	{
-        $user = User::find($id);
-        //echo"<pre>"; print_r($user); echo"</pre>";
-        //exit;
-		$address = User::find($id)->addresses()->first();
-		//echo"<pre>"; print_r($address); echo"</pre>";
-        $this->layout->content = \View::make('user.show', compact('user', 'address'));
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id || Auth::user()->hasRepInDownline($id) || Auth::user()->sponsor_id == $id) {
+			$user = User::findOrFail($id);
+			$addresses = User::find($id)->addresses;
+			return View::make('user.show', compact('user', 'addresses'));
+		}
 	}
 
+	/**
+	 * Show the form for editing the specified user.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function edit($id)
 	{
-        $user = $this->user->find($id);
-        $this->layout->content = \View::make('user.edit')->with('user', $user);
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
+			$user = User::find($id);
+			
+			return View::make('user.edit', compact('user'));
+		}
 	}
 
+	/**
+	 * Update the specified user in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function update($id)
 	{
-        $this->user->find($id)->update(\Input::only('first_name','last_name','email','password','gender','key','code','dob','phone','role_id','sponsor_id','mobile_plan_id','min_commission','disabled'));
-        return \Redirect::route('user.show', $id);
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
+			$user = User::findOrFail($id);
+			$rules = User::$rules;
+			$rules['email'] = 'unique:users,email,' . $user->id;
+			$rules['password'] = 'sometimes|confirmed|digits_between:8,12';
+			//$rules['sponsor_id'] = 'required|digits';
+			$data = Input::all();
+			$data['phone'] = formatPhone($data['phone']);
+			$validator = Validator::make($data, $rules);
+			if ($validator->fails())
+			{
+				return Redirect::back()->withErrors($validator)->withInput();
+			}
+			$data['password'] = Hash::make($data['password']);
+			$user->update($data);
+	
+			return Redirect::route('users.show', $id)->with('message', 'User updated.');
+		}
 	}
 
+	/**
+	 * Remove the specified user from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
 	public function destroy($id)
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->user->destroy($id);
-			}
-			return \Redirect::route('user.index');
-		}
-		else {
-	        $this->user->destroy($id);
-	        return \Redirect::route('user.index');
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			User::destroy($id);
+	
+			return Redirect::route('users.index')->with('message', 'User deleted.');
 		}
 	}
 	
-	public function delete($id)
+	/**
+	 * Remove users.
+	 */
+	public function delete()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->user->destroy($id);
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			foreach (Input::get('ids') as $id) {
+				User::destroy($id);
 			}
-			return \Redirect::route('user.index')->with('message', 'Users deleted.');;
-		}
-		else {
-	        $this->user->destroy($id);
-	        return \Redirect::route('user.index')->with('message', 'User deleted.');;
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('users.index')->with('message', 'Users deleted.');
+			}
+			else {
+				return Redirect::back()->with('message', 'User deleted.');
+			}
 		}
 	}
 	
-	public function disable($id)
+	/**
+	 * Diable users.
+	 */
+	public function disable()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->user->where('id', $id)->update(array('disabled' => 1));
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			foreach (Input::get('ids') as $id) {
+				User::find($id)->update(['disabled' => 1]);	
 			}
-			return \Redirect::route('user.index')->with('message', 'Users disabled.');
-		}
-		else {
-	        $this->user->where('id', $id)->update(array('disabled' => 1));
-	        return \Redirect::route('user.index')->with('message', 'User disabled.');;
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('users.index')->with('message', 'Users disabled.');
+			}
+			else {
+				return Redirect::back()->with('message', 'User disabled.');
+			}
 		}
 	}
 	
-	public function enable($id)
+	/**
+	 * Enable users.
+	 */
+	public function enable()
 	{
-		if ($id == 0) {
-			foreach (Input::only('ids') as $id) {
-				$this->user->where('id', $id)->update(array('disabled' => NULL));
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			foreach (Input::get('ids') as $id) {
+				User::find($id)->update(['disabled' => 0]);	
 			}
-			return \Redirect::route('user.index')->with('message', 'Users enabled.');;
-		}
-		else {
-	        $this->user->where('id', $id)->update(array('disabled' => NULL));
-	        return \Redirect::route('user.index')->with('message', 'User enabled.');;
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('users.index')->with('message', 'Users enabled.');
+			}
+			else {
+				return Redirect::back()->with('message', 'User enabled.');
+			}
 		}
 	}
-	
+
 }

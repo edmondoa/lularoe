@@ -22,7 +22,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'phone' => 'required',
 		'gender' => 'required|in:M,F',
 		'dob' => 'required|date',
-		'sponsor_id' => 'required'
+		//'sponsor_id' => 'required',
+		//'password' => 'confirmed'
 	];
 
 	// Don't forget to fill this array
@@ -36,18 +37,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'gender',
 		'dob',
 		'public_id',
-		'role_id'
+		'role_id',
+		'key',
+		'disabled',
+		'created_at',
+		'updated_at'
 	];
 
 	use UserTrait, RemindableTrait;
 
-	// public function addresses() {
-		// return $this -> morphMany('Address', 'addressable');
-	// }
-	
 	public function addresses()
 	{
-		return $this->morphMany('Address', 'addressable');
+		return $this->hasMany('Address', 'addressable_id', 'id');
 	}
 
 	public function sponsor() {
@@ -55,6 +56,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 	
 	public function children() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id');
+	}
+
+	public function descendants() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id');
+	}
+
+	public function frontline() {
 		return $this -> hasMany('User', 'sponsor_id', 'id');
 	}
 
@@ -62,6 +71,61 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsTo('Role');
 	}
 
+	public function ranks() {
+		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->withPivot('created_at');
+	}
+	
+	public function currentRank() {
+		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->first();
+	}
+	
+	public function descendantsCountRelation()
+    {
+        return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->first();
+    }
+
+	public function frontlineCountRelation()
+    {
+        return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->first();
+    }
+
+	public function getFrontLineCountAttribute() {
+		return (isset($this->frontlineCountRelation()->count))?$this->frontlineCountRelation()->count:0;
+	}
+
+	public function getDescendantCountAttribute() {
+		return (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
+	}
+
+	public function getRankNameAttribute() {
+		if(isset($this->currentRank()->name))
+		{
+			return $this->currentRank()->name;
+		}
+		return false;
+	}
+	
+	public function getRankIdAttribute() {
+		if(isset($this->currentRank()->id))
+		{
+			return $this->currentRank()->id;
+		}
+		return false;
+	}
+	
+	public function getRoleNameAttribute() {
+		if(isset($this->role->name))
+		{
+			return $this->role->name;
+		}
+		return false;
+	}
+
+	public function getNewRecordAttribute() {
+		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
+	}
+	
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record');
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -92,5 +156,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			}
 	    }
 	    return false;
+	}
+
+	public function hasRepInDownline($repId) {
+		if(!Auth::check()) return false;
+		$rep = $this->descendants()->where('levels.user_id',$repId)->first();
+		return ($rep)?true:false;
 	}
 }

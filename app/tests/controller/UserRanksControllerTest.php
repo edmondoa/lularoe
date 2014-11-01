@@ -4,25 +4,25 @@ class UserRanksControllerTest extends \TestCase
 {
 	public function testIndex()
 	{
-		$this->call('GET', 'userRanks');
+		$this->call('GET', 'userRank');
         $this->assertResponseOk();
     }
 
     public function testShow()
     {
-        $this->call('GET', 'userRanks/1');
+        $this->call('GET', 'userRank/1');
         $this->assertResponseOk();
     }
 
     public function testCreate()
     {
-        $this->call('GET', 'userRanks/create');
+        $this->call('GET', 'userRank/create');
         $this->assertResponseOk();
     }
 
     public function testEdit()
     {
-        $this->call('GET', 'userRanks/1/edit');
+        $this->call('GET', 'userRank/1/edit');
         $this->assertResponseOk();
     }
 }
