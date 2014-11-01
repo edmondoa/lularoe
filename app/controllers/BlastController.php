@@ -55,6 +55,7 @@ class BlastController extends \BaseController {
 		{
 			//echo"<pre>"; print_r($user->toArray()); echo"</pre>";
 			//continue;
+			/*
 			if(!SociallyMobile::check_for_mobile($user->phone))
 			{
 				if(empty($user->phone_sms))
@@ -80,6 +81,7 @@ class BlastController extends \BaseController {
 				$user->phone_sms = true;
 				$user->save();
 			}
+			*/
 			//echo'<h2>This is a mobile number</h2>';
 			//echo"<p>Text sent to ".$user->phone."</p>";
 			$count ++;
@@ -145,7 +147,7 @@ class BlastController extends \BaseController {
 			Mail::send('emails.standard', $data , function($body) use($user,$form_data)
 			{
 				$body->to($user->email, $user->first_name.' '.$user->last_name)->subject($form_data['subject_line']);
-				$body->from('no-reply@box.events', 'BOX.EVENTS');
+				$body->from(Auth::user()->email, Auth::user()->first_name . ' ' . Auth::user()->last_name);
 			});
 			$count ++;
 		}

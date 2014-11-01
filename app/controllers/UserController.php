@@ -64,10 +64,6 @@ class userController extends \BaseController {
 		$rules['password'] = 'required|confirmed|digits_between:8,12';
 		$rules['sponsor_id'] = 'required|digits';
 		$check_sponsor_id = User::where('public_id', $data['sponsor_id']);
-		if ($check_sponsor_id == UNDEFINED) {
-			echo 'Invalid sponsor id';
-			exit;
-		}
 
 		$validator = Validator::make($data,$rules);
 
@@ -129,7 +125,7 @@ class userController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id || Auth::user()->hasRepInDownline($id)) {
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id || Auth::user()->hasRepInDownline($id) || Auth::user()->sponsor_id == $id) {
 			$user = User::findOrFail($id);
 			$addresses = User::find($id)->addresses;
 			return View::make('user.show', compact('user', 'addresses'));
@@ -163,7 +159,11 @@ class userController extends \BaseController {
 			$user = User::findOrFail($id);
 			$rules = User::$rules;
 			$rules['email'] = 'unique:users,email,' . $user->id;
-			$validator = Validator::make($data = Input::all(), $rules);
+			$rules['password'] = 'sometimes|confirmed|digits_between:8,12';
+			//$rules['sponsor_id'] = 'required|digits';
+			$data = Input::all();
+			$data['phone'] = formatPhone($data['phone']);
+			$validator = Validator::make($data, $rules);
 			if ($validator->fails())
 			{
 				return Redirect::back()->withErrors($validator)->withInput();

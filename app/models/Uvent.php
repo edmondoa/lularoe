@@ -19,22 +19,22 @@ class Uvent extends \Eloquent
 
 	public function getFormattedStartDateAttribute($value)
 	{
-		return date('m/d/Y',strtotime($this->attributes['date_start']));
+		return date('m/d/Y',$this->attributes['date_start']);
 	}
 	
 	public function getFormattedEndDateAttribute($value)
 	{
-		return date('m/d/Y',strtotime($this->attributes['date_end']));
+		return date('m/d/Y',$this->attributes['date_end']);
 	}
 	
 	public function getFormattedStartTimeAttribute($value)
 	{
-		return date('g:i A',strtotime($this->attributes['date_start']));
+		return date('g:i A',$this->attributes['date_start']);
 	}
 	
 	public function getFormattedEndTimeAttribute($value)
 	{
-		return date('g:i A',strtotime($this->attributes['date_end']));
+		return date('g:i A',$this->attributes['date_end']);
 	}
 	
 	public function getNewRecordAttribute() {

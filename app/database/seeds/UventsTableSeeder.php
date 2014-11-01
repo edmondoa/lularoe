@@ -15,7 +15,7 @@ class UventsTableSeeder extends DatabaseSeeder
 				'name' => $faker->name,
 				'description' => $faker->text,
 				'date_start' => $start_time,
-				'date_end' => $faker->numberBetween($min = $start_time, $max = $min_time + 86400),
+				'date_end' => $faker->numberBetween($min = $start_time, $max = $start_time + 86400),
 				'public' => $faker->boolean,
 				'customers' => $faker->boolean,
 				'reps' => $faker->boolean,
