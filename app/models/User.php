@@ -90,11 +90,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     }
 
 	public function getFrontLineCountAttribute() {
-		return (isset($this->frontlineCountRelation()->count))?$this->frontlineCountRelation()->count:0;
+		return (int) (isset($this->frontlineCountRelation()->count))?$this->frontlineCountRelation()->count:0;
 	}
 
 	public function getDescendantCountAttribute() {
-		return (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
+		return (int) (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
 	}
 
 	public function getRankNameAttribute() {
