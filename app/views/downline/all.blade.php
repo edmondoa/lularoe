@@ -1,12 +1,12 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'users/disable', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
 	    <div ng-controller="DownlineController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col col-md-8">
-		            	@if (isset($user->sponsor_id))
+		            	@if (Auth::user()->hasRepInDownline($user->id))
 		            		<div class="breadcrumbs">
 		            			<a href="/downline/all/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
 		            		</div>
@@ -33,8 +33,8 @@
 		                    <div class="pull-left">
 		                        <div class="input-group">
 		                            <select class="form-control selectpicker actions">
-		                                <option value="users/enable">Send Email</option>
-		                                <option value="users/delete">Send Text (SMS)</option>
+		                                <option value="/users/email">Send Email</option>
+		                                <option value="/users/sms">Send Text (SMS)</option>
 		                            </select>
 		                            <div class="input-group-btn">
 		                                <button class="btn btn-default applyAction" disabled>
@@ -111,7 +111,7 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='front_line_count'; reverseSort = !reverseSort">Direct Downline
+                            	<th class="link" ng-click="orderByField='front_line_count'; reverseSort = !reverseSort">Immediate Downline
                             		<span>
                             			<span ng-show="orderByField == 'rank_id'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -158,11 +158,11 @@
 					            </td>
 					            
 					            <td>
-					            	<a href="/direct-downline/@include('_helpers.user_id')" title="View Direct Downline"><span ng-bind="user.front_line_count"></span></a>
+					            	<a href="/downline/immediate/@include('_helpers.user_id')" title="View Direct Downline"><span ng-bind="user.front_line_count"></span></a>
 					            </td>
 					            
 					            <td>
-					            	<a href="/all-downline/@include('_helpers.user_id')" title="View All Downline"><span ng-bind="user.descendant_count"></span></a>
+					            	<a href="/downline/all/@include('_helpers.user_id')" title="View All Downline"><span ng-bind="user.descendant_count"></span></a>
 					            </td>
 					            
 	                        </tr>

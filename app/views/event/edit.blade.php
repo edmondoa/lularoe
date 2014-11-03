@@ -20,12 +20,12 @@
 			    
 			    <div class="form-group">
 			        {{ Form::label('date_start', 'Starting Time') }}
-			        {{ Form::text('date_start', null, array('class' => 'form-control datepicker width-auto')) }}
+			        {{ Form::text('date_start', $event->formatted_start_date . ' ' . $event->formatted_start_time, array('class' => 'form-control datepicker width-auto')) }}
 			    </div>
 			    
 			    <div class="form-group">
 			        {{ Form::label('date_end', 'Ending Time') }}
-			        {{ Form::text('date_end', null, array('class' => 'form-control datepicker width-auto')) }}
+			        {{ Form::text('date_end',  $event->formatted_end_date . ' ' . $event->formatted_end_time, array('class' => 'form-control datepicker width-auto')) }}
 			    </div>
 			    
 			    <div class="form-group">

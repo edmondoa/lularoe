@@ -9,6 +9,10 @@
 			@else
 		    	<h1>Edit {{ $user->first_name }} {{ $user->last_name }}</h1>
 		    @endif
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-3 col-md-4">
 		    {{ Form::model($user, array('route' => array('users.update', $user->id), 'method' => 'PUT')) }}
 		
 		    <div class="form-group">

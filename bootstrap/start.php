@@ -26,10 +26,11 @@ $app = new Illuminate\Foundation\Application;
 
 $env = $app->detectEnvironment(function(){
 	//if the LARAVEL_ENV can be found, return it
+	//return 'beta';
 	$haystack = getenv('LARAVEL_ENV');
 	if(!empty($haystack))
 	{
-		return $haystack;
+		//return $haystack;
 	}
 	//if not look in the hostname and map it to an environment
 	$environments = [
@@ -37,6 +38,7 @@ $env = $app->detectEnvironment(function(){
 		'Jake-PC'=>'jake_local', 
 		'Owner-PC'=>'steve_local',
 		'jakus1-MacBookPro'=>'jake_local',
+		'ip-172-31-23-154'=>'production',
 		'ip-172-31-23-215'=>'beta'
 	];
 	$default = 'local';

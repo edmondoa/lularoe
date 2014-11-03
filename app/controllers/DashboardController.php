@@ -9,7 +9,12 @@ class DashboardController extends \BaseController
 		$sponsor = User::find($user->id)->sponsor;
 		$children = User::find($user->id)->children;
 		$ranks = User::find($user->id)->ranks;
-		return View::make('dashboard.rep', compact('user', 'sponsor', 'children', 'ranks'));
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor', 'Rep'])) {
+			return View::make('dashboard.rep', compact('user', 'sponsor', 'children', 'ranks'));
+		}
+		// if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			// return View::make('dashboard.admin', compact('user', 'sponsor', 'children', 'ranks'));
+		// }
 	}
 	
 	public function settings()

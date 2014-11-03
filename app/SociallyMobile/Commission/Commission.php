@@ -110,6 +110,7 @@ class Commission extends \BaseController {
 		$frontline = User::find($rep_id)->frontline;
 		foreach($frontline as $rep)
 		{
+			set_time_limit(30);
 			$this->level_up($rep->id);
 			$this->set_levels_down($rep->id,$level+1);
 		}

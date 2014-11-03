@@ -6,7 +6,7 @@ ControlPad
 use SoapClient;
 use Config;
 
-class Payment extends SoapClient { 
+class CMSPayment extends SoapClient { 
 	
 	//Declare all the variables that we will need
 	public $success;

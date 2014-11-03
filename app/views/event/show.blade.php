@@ -44,15 +44,22 @@
 		            <td>{{ $event->description }}</td>
 		        </tr>
 		        
-		        <tr>
-		            <th>Starting Time:</th>
-		            <td>{{ $event->date_start }}</td>
-		        </tr>
-		        
-		        <tr>
-		            <th>Ending Time:</th>
-		            <td>{{ $event->date_end }}</td>
-		        </tr>
+		        @if ($event->formatted_start_date == $event->formatted_end_date)
+			        <tr>
+			            <th>Date/Time:</th>
+			            <td>{{ $event->formatted_start_date }}, {{ $event->formatted_start_time }} - {{ $event->formatted_end_time }}</td>
+			        </tr>
+		        @else
+			        <tr>
+			            <th>Starting Time:</th>
+			            <td>{{ $event->formatted_start_date }}, {{ $event->formatted_start_time }}</td>
+			        </tr>
+			        
+			        <tr>
+			            <th>Ending Time:</th>
+			            <td>{{ $event->formatted_end_date }}, {{ $event->formatted_end_time }}</td>
+			        </tr>
+		        @endif
 		        
 		        @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 

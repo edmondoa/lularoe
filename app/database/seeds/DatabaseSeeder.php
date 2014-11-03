@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('UsersTableSeeder');
 		$this->call('StatesTableSeeder');
 		$this->call('AddressesTableSeeder');
-		$this->call('LevelsTableSeeder');
+		//$this->call('LevelsTableSeeder');
 		$this->call('RolesTableSeeder');
 		$this->call('RanksTableSeeder');
 		$this->call('ProfilesTableSeeder');
@@ -46,10 +46,7 @@ class DatabaseSeeder extends Seeder {
 		// $this->call('PaymentsTableSeeder');
 		$this->call('RankUserTableSeeder');
 		$this->call('UsersTableSeederTest');
-
 		//$this->call('ProductCategoriesTableSeeder');
-		$this->call('EventsTableSeeder');
-		$this->call('CalendarsTableSeeder');
 		$this->call('UventsTableSeeder');
 	}
 
