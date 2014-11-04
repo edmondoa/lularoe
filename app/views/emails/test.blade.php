@@ -5,6 +5,6 @@
 	<title>Test Email</title>
 </head>
 <body>
-	{{ $message_body}}
+	
 </body>
 </html>
