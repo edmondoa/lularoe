@@ -3,12 +3,26 @@
  					<a href="/dashboard" class="list-group-item"><i class="fa fa-dashboard"></i> <span class="text">Dashboard</span></a>
  					<a href="javascript:void(0)" data-href="/downline" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/downline/immediate/{{ Auth::user()->id }}'><i class='fa fa-arrow-down'></i> Immediate Downline</a>
- 						<a href='/downline/all/{{ Auth::user()->id }}'><i class='fa fa-sitemap'></i> All Downline</a></div>
+ 						<a href='/downline/all/{{ Auth::user()->id }}'><i class='fa fa-users'></i> All Downline</a>
+ 						<a href='/downline/visualization/{{ Auth::user()->id }}'><i class='fa fa-sitemap'></i> Visualization</a>
  					">
- 						<i class="fa fa-sitemap"></i> <span class="text">Downline</span>
+ 						<i class="fa fa-sitemap"></i> 
+ 						<span class="text">
+ 							@if (Auth::user()->hasRole(['Rep']))
+ 								My 
+ 							@endif
+ 							Downline
+ 						</span>
  					</a>
  				@endif
  				@if (Auth::user()->hasRole(['Editor', 'Rep', 'Customer']))
+ 					<a href="javascript:void(0)" data-href="/downline" class='list-group-item' data-toggle="popover" data-content="
+ 						<a target='_blank' href='/a/{{ Auth::user()->public_id }}'><i class='fa fa-eye'></i> View Site</a>
+ 						<a href='/user-sites/{{ Auth::user()->id }}/edit'><i class='fa fa-pencil'></i> Edit Site</a>
+ 					">
+ 						<i class="fa fa-globe"></i> 
+ 						<span class="text">My Site</span>
+ 					</a>
  				 	<a href="/events" class="list-group-item"><i class="fa fa-calendar"></i> <span class="text">Events</span></a>
  				@endif
  				@if (Auth::user()->hasRole(['Superadmin','Admin']))

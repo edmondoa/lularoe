@@ -1,2 +1,2 @@
 resource = false
-Uvent string( name ) text( description ) date( date ) boolean( public customers reps editors admins disabled )
+User_site integer( user_id ) text( body )

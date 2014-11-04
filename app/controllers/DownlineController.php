@@ -23,4 +23,12 @@ class DownlineController extends \BaseController
 		}
 	}
 
+	public function visualization($id)
+	{
+		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id || Auth::user()->hasRole(array('Superadmin', 'Admin'))) {
+			$users = User::find($id)->descendants->toArray();
+			return View::make('downline.visualization', compact('users'));
+		}
+	}
+
 }

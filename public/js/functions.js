@@ -71,4 +71,12 @@ $(document).ready(function() {
        $(this).parent().remove(); 
     });
     
+    // initialize fraola WYSIWYG editor
+    $(function() {
+        $('.wysiwyg').editable({
+            inlineMode : false,
+            height: 300
+        });
+    });
+    
 });
