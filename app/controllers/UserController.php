@@ -7,7 +7,7 @@ class userController extends \BaseController {
 	 */
 	public function getAllUsers(){
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			$users = User::all();
+			return User::all();
 			foreach ($users as $user)
 			{
 				if (strtotime($user['created_at']) >= (time() - Config::get('site.new_time_frame') ))
