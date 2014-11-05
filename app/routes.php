@@ -21,7 +21,7 @@ Route::get('sign-up/{code}', array('as' => 'sign-up', 'uses' => 'UserController@
 Route::resource('sessions', 'SessionController', ['only' => ['create', 'destroy', 'store']]);
 Route::controller('password', 'RemindersController');
 ##############################################################################################
-# Home Page
+# Public Routes
 ##############################################################################################
 
 	Route::get('/', ['as' => 'home', function() {
@@ -32,6 +32,9 @@ Route::controller('password', 'RemindersController');
 			return View::make('sessions.create');
 		}
 	}]);
+	
+	// rep site
+	Route::get('/a/{public_id}', 'UserSiteController@show');
 
 ##############################################################################################
 // Protected Routes
@@ -45,14 +48,15 @@ Route::group(array('before' => 'auth'), function() {
 	// downline
 	Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 	Route::get('/downline/all/{id}', 'DownlineController@allDownline');
-	
+	Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
+
 	// users
 	Route::resource('users', 'UserController');
 	Route::post('users/email', 'BlastController@createMail');
 	Route::post('users/sms', 'BlastController@createSms');
-	
+
 	// events
-	
+
 	Route::resource('events', 'UventController');
 	Route::post('events/disable', 'UventController@disable');
 	Route::post('events/enable', 'UventController@enable');
@@ -93,7 +97,11 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 	Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
 
+
 	Route::controller('api','DataOnlyController');
+
+	// userSites
+	Route::resource('user-sites', 'UserSiteController');
 
 	##############################################################################################
 	# Superadmin only routes
@@ -236,6 +244,11 @@ Route::group(array('before' => 'auth'), function() {
 		Route::post('userRanks/disable', 'UserRankController@disable');
 		Route::post('userRanks/enable', 'UserRankController@enable');
 		Route::post('userRanks/delete', 'UserRankController@delete');
+		
+		// userSites
+		Route::post('userSites/disable', 'UserSiteController@disable');
+		Route::post('userSites/enable', 'UserSiteController@enable');
+		Route::post('userSites/delete', 'UserSiteController@delete');
 
 	});
 	##############################################################################################
@@ -295,7 +308,7 @@ Route::get('populate-levels', function(){
 ##############################################################################################
 
 Route::get('test-steve', function() {
-
+	echo Hash::make('password2');
 });
 
 Route::get('test', function() {

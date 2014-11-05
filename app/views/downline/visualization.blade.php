@@ -1,17 +1,4 @@
 @extends('layouts.default')
-@section('content')
-	<div class="row">
-		<div class="col col-md-12">
-			@include('breadcrumbs')
-			<h1>Downline Visualization</h1>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col col-md-12">
-			
-		</div>
-	</div>
-@stop
 @section('style')
 	<style>
 	
@@ -32,6 +19,21 @@
 	}
 	
 	</style>
+@stop
+@section('content')
+	<div class="row">
+		<div class="col col-md-12">
+			@include('_helpers.breadcrumbs')
+			<h1>Downline Visualization</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-md-12">
+			<?php
+				echo '<pre>'; print_r($users); echo '</pre>';
+			?>
+		</div>
+	</div>
 @stop
 @section('scripts')
 	<script src="http://d3js.org/d3.v3.min.js"></script>

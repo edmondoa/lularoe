@@ -11,6 +11,7 @@ Product string( name ) text( blurb description ) integer( price quantity categor
 Product_category string( name ) boolean( disabled )
 Profile string( public_name ) text( public_content ) boolean( receive_company_email receive_company_sms receive_upline_email receive_upline_sms receive_downline_email receive_downline_sms disabled )
 Rank string( name ) boolean( disabled )
+User_site integer( user_id ) text( body )
 Review integer( product_id rating ) text( comment ) boolean( disabled )
 Role string( name ) boolean( disabled )
 Sale integer( product_id, user_id, sponsor_id, quantity ) boolean( disabled )
