@@ -93,6 +93,8 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 	Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
 
+	Route::controller('api','DataOnlyController');
+
 	##############################################################################################
 	# Superadmin only routes
 	##############################################################################################
@@ -297,6 +299,7 @@ Route::get('test-steve', function() {
 });
 
 Route::get('test', function() {
-	return Config::get('mail.from');
+	//Commission::get_org_tree_2(2008);
+	return Commission::get_org_tree(2001);
 
 });

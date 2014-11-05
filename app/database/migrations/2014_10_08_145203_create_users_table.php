@@ -10,6 +10,7 @@ class CreateUsersTable extends Migration
 	{
 		Schema::create('users', function(Blueprint $table) {
 			$table->increments('id');
+			$table->integer('sponsor_id')->nullable();
 			$table->string('public_id',25);			
 			$table->string('first_name',50);
 			$table->string('last_name',50);
@@ -20,7 +21,6 @@ class CreateUsersTable extends Migration
 			$table->date('dob');
 			$table->string('phone',15);
 			$table->integer('role_id');
-			$table->integer('sponsor_id')->nullable();
 			$table->integer('mobile_plan_id')->nullable();
 			$table->decimal('min_commission',6,2);
 			$table->boolean('disabled');
