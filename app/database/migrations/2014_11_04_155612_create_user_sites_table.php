@@ -12,6 +12,7 @@ class CreateUserSitesTable extends Migration
 			$table->increments('id');
 			$table->integer('user_id');
 			$table->text('body');
+			$table->string('banner');
 			$table->timestamp('created_at');
 			$table->timestamp('updated_at');
 		});

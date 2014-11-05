@@ -189,7 +189,7 @@ class userController extends \BaseController {
 			return Redirect::route('users.index')->with('message', 'User deleted.');
 		}
 	}
-	
+
 	/**
 	 * Remove users.
 	 */
@@ -207,7 +207,7 @@ class userController extends \BaseController {
 			}
 		}
 	}
-	
+
 	/**
 	 * Diable users.
 	 */
@@ -225,7 +225,7 @@ class userController extends \BaseController {
 			}
 		}
 	}
-	
+
 	/**
 	 * Enable users.
 	 */

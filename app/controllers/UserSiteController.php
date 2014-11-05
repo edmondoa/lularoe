@@ -87,35 +87,39 @@ class userSiteController extends \BaseController {
 	public function update($id)
 	{
 		$userSite = UserSite::findOrFail($id);
-
+		$user = User::where('id', $userSite->user_id)->first();
 		$validator = Validator::make($data = Input::all(), UserSite::$rules);
+
+
 
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
-		// upload and link to image
-	    $filename = '';
-	    if (Input::hasFile('image')) {
-	        $file = Input::file('image');
-	        $destinationPath = public_path() . '/img/users/';
-			$extension = $file->getClientOriginalExtension();
-			$filename = str_random(20) . '.' . $extension;
-	        $uploadSuccess   = $file->move($destinationPath, $filename);
-
-			// open an image file
-			$img = Image::make('img/users/' . $filename);
-
-			// now you are able to resize the instance
-			$img->fit(659, 408);
-
-			// finally we save the image as a new image
-			$img->save('img/users/' . $filename);
-
-	    	$data['image'] = $filename;
-	    }
-
+        if (Input::file('image')) {
+            // upload and link to image
+            $filename = '';
+            if (Input::hasFile('image')) {
+                $file = Input::file('image');
+                $destinationPath = public_path() . '/img/users/';
+                $extension = $file->getClientOriginalExtension();
+                $filename = str_random(20) . '.' . $extension;
+                $uploadSuccess   = $file->move($destinationPath, $filename);
+    
+                // open an image file
+                $img = Image::make('img/users/' . $filename);
+    
+                // now you are able to resize the instance
+                $img->fit(100, 100);
+    
+                // finally we save the image as a new image
+                $img->save('img/users/' . $filename);
+    
+                $data['image'] = $filename;
+				DB::update('update users set image = "' . $data['image'] . '" where id = ' . $user->id);
+            }
+        }
 		$userSite->update($data);
 
 		return Redirect::back()->with('message', 'Site updated.');
