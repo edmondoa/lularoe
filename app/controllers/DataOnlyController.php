@@ -8,6 +8,20 @@ class DataOnlyController extends \BaseController
 	 */
 	 
 	// immediate downline
+	public function getFirstBranch() {
+		return;
+	}
+	
+	public function getAllBranches() {
+		return Commission::get_org_tree(Auth::user()->id);
+
+	}
+	
+	/*
+	 * Downline
+	 */
+	 
+	// immediate downline
 	public function getImmediateDownline($id) {
 		return User::find($id)->frontline;
 	}

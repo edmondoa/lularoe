@@ -5,6 +5,7 @@ use \Level;
 
 class Commission extends \BaseController {
 
+	public $tree = [];
 	/**
 	* 
 	*
@@ -98,6 +99,52 @@ class Commission extends \BaseController {
 			$this->get_levels_down($rep->id,$level);
 		}
 		return $level;
+	}
+
+	/**
+	* 
+	*
+	* @param  
+	* @return 
+	*/
+	public function get_org_tree($rep_id){
+		$frontline = User::find($rep_id)->frontline;
+		$children = [];
+		$count = 0;
+		foreach($frontline as $rep)
+		{
+			$count ++;
+			$child = [];
+			$child['name'] = $rep->first_name." ".$rep->last_name;
+			$child['children'] = $this->get_org_tree($rep->id);
+			if(!is_array($child['children']))
+			{
+				unset($child['children']);
+			}
+			$children[] = $child;
+		}
+		return (count($children) > 0)?$children:null;
+	}
+
+	/**
+	* 
+	*
+	* @param  
+	* @return 
+	*/
+	public function get_org_tree_2($rep_id){
+		$frontline = User::find($rep_id)->frontline;
+		//$level ++;
+		echo "<ul>";
+		foreach($frontline as $rep)
+		{
+			//echo"<pre>"; print_r($rep->toArray()); echo"</pre>";
+			echo "<li>".$rep->id." - ".$rep->first_name." ".$rep->last_name;
+			$this->get_org_tree_2($rep->id);
+			echo "</li>";
+		}
+		echo"</ul>";
+		//return;
 	}
 
 	/**
