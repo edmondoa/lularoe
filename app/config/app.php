@@ -126,7 +126,7 @@ return array(
 		'SociallyMobile\Payments\PaymentServiceProvider',
 		'SociallyMobile\Twilio\TwilioServiceProvider',
 		'SociallyMobile\Commission\CommissionServiceProvider',
-    	//'Intervention\Image\ImageServiceProvider'
+    	'Intervention\Image\ImageServiceProvider'
 
 
 	),
@@ -198,7 +198,7 @@ return array(
 		'Twilio'		  => 'SociallyMobile\Facades\Twilio',
 		'CMSPayment'		  => 'SociallyMobile\Facades\Payment',
 		'Commission'		=> 'SociallyMobile\Facades\Commission',
-		//'Image' 		  => 'Intervention\Image\Facades\Image'
+		'Image' 		  => 'Intervention\Image\Facades\Image'
 
 	),
 

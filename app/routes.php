@@ -96,6 +96,7 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('api/all-events-by-role', 'DataOnlyController@getAllUventsByRole');
 	Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 	Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+	Route::controller('api','DataOnlyController');
 
 	// userSites
 	Route::resource('user-sites', 'UserSiteController');
