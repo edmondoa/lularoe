@@ -5,13 +5,24 @@
 		<div class="col col-md-6">
 			@include('_helpers.breadcrumbs')
 		    <h1>Edit Site</h1>
-		    
-		    {{ Form::model($userSite, array('route' => array('user-sites.update', $userSite->id, 'files' => true), 'method' => 'PUT')) }}
+		    {{ Form::model($userSite, array('route' => array('user-sites.update', $userSite->id), 'method' => 'PUT', 'files' => true)) }}
 
 			    <!-- <div class="form-group">
 			        {{ Form::label('user_id', 'User Id') }}
 			        {{ Form::text('user_id', null, array('class' => 'form-control')) }}
 			    </div> -->
+			    
+			    <div class="form-group">
+					{{ Form::label('image','Your Picture') }}
+					{{ Form::file('image') }}
+					<small>Ideal Dimensions: 500 &times; 500 | Max File Size: 1M</small>
+			    </div>
+			    
+			    <div class="form-group">
+					{{ Form::label('banner','Your Banner') }}
+					{{ Form::file('banner') }}
+					<small>Ideal Dimensions: 940 &times; 240 | Max File Size: 1M</small>
+			    </div>
 			    
 			    <div class="form-group">
 			        <!-- {{ Form::label('body', 'Content') }} -->
