@@ -90,6 +90,24 @@ Route::filter('superadmin', function(){
 	}
 });
 
+##############################################################################################
+# replicated filter
+##############################################################################################
+Route::filter('rep-site', function($router)
+{
+    //dd($domain);
+    if (! User::where('public_id',$router->parameter('subdomain'))->first())
+    {
+        App::abort(404);
+        //dd($route->parameter('subdomain'));
+        //dd("can't find the damn thing");
+    }
+    else
+    {
+    	//return $site_owner;
+    }
+});
+
 /*
 |--------------------------------------------------------------------------
 | Force Https requests
