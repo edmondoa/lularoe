@@ -21,7 +21,12 @@
 			    <div class="form-group">
 					{{ Form::label('banner','Your Banner') }}
 					{{ Form::file('banner') }}
-					<small>Ideal Dimensions: 940 &times; 240 | Max File Size: 1M</small>
+					<small>Ideal Dimensions: 1170 &times; 340 | Max File Size: 1M</small>
+			    </div>
+			    
+			    <div class="form-group">
+			        {{ Form::label('title', 'Title') }}
+			        {{ Form::textarea('title', null, array('class' => 'form-control')) }}
 			    </div>
 			    
 			    <div class="form-group">
@@ -31,7 +36,7 @@
 
 			    {{ Form::submit('Update Site', array('class' => 'btn btn-primary')) }}
 		
-		    {{Form::close()}}
+		    {{ Form::close() }}
 		</div>
 	</div>
 </div>

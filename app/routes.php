@@ -36,6 +36,16 @@ Route::controller('password', 'RemindersController');
 	// rep site
 	Route::get('/a/{public_id}', 'UserSiteController@show');
 
+	// blasts
+	Route::get('send_text/{phoneId}','SmsMessagesController@create');
+	Route::resource('send_text','SmsMessagesController');
+	Route::get('send_mail/{personId}','MailMessagesController@create');
+	Route::resource('send_mail/','MailMessagesController');
+	Route::get('blast_email',['as'=>'blast_email','uses'=>'BlastController@CreateMail']);
+	Route::post('blast_email',['uses'=>'BlastController@StoreMail']);
+	Route::get('blast_sms',['as'=>'blast_sms','uses'=>'BlastController@CreateSms']);
+	Route::post('blast_sms',['uses'=>'BlastController@StoreSms']);
+
 ##############################################################################################
 // Protected Routes
 ##############################################################################################
@@ -61,16 +71,6 @@ Route::group(array('before' => 'auth'), function() {
 	Route::post('events/disable', 'UventController@disable');
 	Route::post('events/enable', 'UventController@enable');
 	Route::post('events/delete', 'UventController@delete');
-	
-	// blasts
-	Route::get('send_text/{phoneId}','SmsMessagesController@create');
-	Route::resource('send_text','SmsMessagesController');
-	Route::get('send_mail/{personId}','MailMessagesController@create');
-	Route::resource('send_mail/','MailMessagesController');
-	Route::get('blast_email',['as'=>'blast_email','uses'=>'BlastController@CreateMail']);
-	Route::post('blast_email',['uses'=>'BlastController@StoreMail']);
-	Route::get('blast_sms',['as'=>'blast_sms','uses'=>'BlastController@CreateSms']);
-	Route::post('blast_sms',['uses'=>'BlastController@StoreSms']);
 
 	// API
 	Route::get('api/all-addresses', 'AddressController@getAllAddresses');
