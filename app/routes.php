@@ -271,6 +271,21 @@ Route::group(array('before' => 'auth'), function() {
 	});
 });
 ##############################################################################################
+# Replicated Site Routes
+##############################################################################################
+Route::group(array('domain' => '{subdomain}.{domain}', 'before' => 'rep-site'), function($subdomain)
+{
+    //dd($domain);
+    
+    Route::get('new-test', function($subdomain)
+    {
+        $site_owner = User::where('public_id',$subdomain)->first();
+        return "this site belongs to: ".$site_owner->first_name." ".$site_owner->last_name;
+    });
+
+});
+
+##############################################################################################
 # Public Routes
 ##############################################################################################
 
@@ -313,6 +328,6 @@ Route::get('test-steve', function() {
 
 Route::get('test', function() {
 	//Commission::get_org_tree_2(2008);
-	return Commission::get_org_tree(2001);
+	//return Commission::get_org_tree(2001);
 
 });
