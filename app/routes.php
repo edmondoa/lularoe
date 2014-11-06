@@ -20,6 +20,23 @@ Route::get('logout', array('as' => 'logout', 'uses' => 'SessionController@destro
 Route::get('sign-up/{code}', array('as' => 'sign-up', 'uses' => 'UserController@create'));
 Route::resource('sessions', 'SessionController', ['only' => ['create', 'destroy', 'store']]);
 Route::controller('password', 'RemindersController');
+
+##############################################################################################
+# Replicated Site Routes
+##############################################################################################
+Route::group(array('domain' => '{subdomain}.{domain}', 'before' => 'rep-site'), function($subdomain)
+{
+    //dd($domain);
+    
+    Route::get('/', function($subdomain)
+    {
+		$user = User::where('public_id', $subdomain)->first();
+		$userSite = UserSite::where('user_id', $user->id)->first();
+		return View::make('userSite.show', compact('user', 'userSite'));
+    });
+
+});
+
 ##############################################################################################
 # Public Routes
 ##############################################################################################
@@ -270,20 +287,6 @@ Route::group(array('before' => 'auth'), function() {
 	Route::group(array('before' => 'Customer'), function() {
 
 	});
-});
-##############################################################################################
-# Replicated Site Routes
-##############################################################################################
-Route::group(array('domain' => '{subdomain}.{domain}', 'before' => 'rep-site'), function($subdomain)
-{
-    //dd($domain);
-    
-    Route::get('new-test', function($subdomain)
-    {
-        $site_owner = User::where('public_id',$subdomain)->first();
-        return "this site belongs to: ".$site_owner->first_name." ".$site_owner->last_name;
-    });
-
 });
 
 ##############################################################################################
