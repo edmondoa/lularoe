@@ -325,7 +325,8 @@ Route::get('populate-levels', function(){
 		$frontline = User::find(0)->frontline;
 		foreach(User::find(0)->frontline as $rep)
 		{
-			Commission::set_levels_down($rep->id,1);
+			set_time_limit(60);
+			Commission::set_levels_down($rep->id);
 		}
 		return "Populated Levels";
 	}
@@ -340,7 +341,24 @@ Route::get('test-steve', function() {
 });
 
 Route::get('test', function() {
-	//Commission::get_org_tree_2(2008);
-	//return Commission::get_org_tree(2001);
+	return User::find(0)->frontline;
+	foreach(User::find(0)->frontline as $rep)
+	{
+
+	}
+	return;
+	//return Commission::get_org_tree_2(0);
+	Commission::delete_levels_down(3048);
+	//Commission::set_levels_down(3048);
+	Commission::set_levels_down_reassign(3048);
+	return User::find(0)->descendants;
+	//return Commission::get_org_tree(2008);
+	return Level::where('user_id',2017)->get();
+	//
+	//
+	return User::find(3048)->descendants;
+	//return Commission::get_org_tree(2008);
+	return Commission::get_org_tree_2(0);
+	return Level::where('user_id',2017)->get();
 
 });
