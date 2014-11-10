@@ -32,7 +32,7 @@
  					">
  						<i class="fa fa-calendar"></i> <span class="text">Events</span>
  					</a>
- 					<a href="javascript:void(0)" data-href="/events" class='list-group-item' data-toggle="popover" data-content="
+ 					<a href="javascript:void(0)" data-href="/opportunities" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/opportunities'><i class='fa fa-check'></i> Current Opportunities</a>
  						<a href='/opportunities'><i class='fa fa-check'></i> Past Opportunities</a>
  						<a href='/opportunities/create'><i class='fa fa-plus'></i> New Opportunity</a>

@@ -10,7 +10,7 @@ class Opportunity extends \Eloquent
 
  // Don't forget to fill this array    
  protected $table = 'opportunities';
-	protected $fillable = array('title','body','include_form','public','customers','reps','deadline');
+	protected $fillable = array('title','body','include_form','public','customers','reps','deadline','disabled');
 
 	public function getNewRecordAttribute() {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
@@ -26,6 +26,11 @@ class Opportunity extends \Eloquent
 		return date('g:i A',$this->attributes['deadline']);
 	}
 
-	protected $appends = array('new_record','formatted_deadline_date','formatted_deadline_time');
+	public function getStatusAttribute($value)
+	{
+		return ($this->attributes['disabled'] == 0) ? 'Active' : 'Disabled';
+	}
+
+	protected $appends = array('new_record','formatted_deadline_date','formatted_deadline_time','status');
 
 }

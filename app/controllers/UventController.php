@@ -45,8 +45,8 @@ class uventController extends \BaseController {
 			}
 			
 			// format dates and times for database
-			$data['date_start'] = date('Y-m-d h:i:s', strtotime($data['date_start']));
-			$data['date_end'] = date('Y-m-d h:i:s', strtotime($data['date_end']));
+			$data['date_start'] = strtotime($data['date_start']);
+			$data['date_end'] = strtotime($data['date_end']);
 
 			// format checkbox values for database
 			$data['public'] = isset($data['public']) ? 1 : 0;
@@ -70,7 +70,6 @@ class uventController extends \BaseController {
 	public function show($id)
 	{
 		$event = Uvent::findOrFail($id);
-		$event->status = ($event->disabled == 0) ? 'Active' : 'Disabled';
 		return View::make('event.show', compact('event'));
 	}
 
@@ -108,8 +107,8 @@ class uventController extends \BaseController {
 			}
 			
 			// format dates and times for database
-			$data['date_start'] = date('Y-m-d h:i:s', strtotime($data['date_start']));
-			$data['date_end'] = date('Y-m-d h:i:s', strtotime($data['date_end']));
+			$data['date_start'] = strtotime($data['date_start']);
+			$data['date_end'] = strtotime($data['date_end']);
 
 			// format checkbox values for database
 			$data['public'] = isset($data['public']) ? 1 : 0;

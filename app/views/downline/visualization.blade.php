@@ -66,7 +66,7 @@
 	  .append("g")
 	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 	
-	d3.json("/json/new_3.json", function(error, flare) {
+	d3.json("/api/all-branches", function(error, flare) {
 		//JSON.stringify(flare).substr(1,JSON.stringify(flare).length-1);
 		console.log(flare);
 	  root = flare;

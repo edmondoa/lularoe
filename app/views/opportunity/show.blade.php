@@ -66,8 +66,36 @@
 		        
 		        <tr>
 		            <th>Deadline:</th>
-		            <td>{{ $opportunity->deadline }}</td>
+		            <td>{{ $opportunity->formatted_deadline_date }}, {{ $opportunity->formatted_deadline_time }}</td>
 		        </tr>
+		        
+		        @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+
+			        <tr>
+			            <th>Status:</th>
+			            <td>{{ $opportunity->status }}</td>
+			        </tr>
+			        
+			        <tr>
+			        	<th>Visibility:</th>
+			        	<td>
+			        		<table>
+			        			<tr>
+			        				<td>@if ($opportunity->public == 1)<i class="fa fa-check"></i>@endif</td>
+			        				<td>&nbsp;Public</td>
+			        			</tr>
+			        			<tr>
+			        				<td>@if ($opportunity->customers == 1)<i class="fa fa-check"></i>@endif</td>
+			        				<td>&nbsp;Customers</td>
+			        			</tr>
+			        			<tr>
+			        				<td>@if ($opportunity->reps == 1)<i class="fa fa-check"></i>@endif</td>
+			        				<td>&nbsp;ISM's</td>
+			        			</tr>
+			        		</table>
+			        	</td>
+			        </tr>
+		        @endif
 		        
 		    </table>
 	    </div>

@@ -52,7 +52,7 @@ class opportunityController extends \BaseController {
 		}
 
 		// format deadline for database
-		$data['deadline'] = date('Y-m-d h:i:s', strtotime($data['deadline']));
+		$data['deadline'] = strtotime($data['deadline']);
 
 		// format checkbox values for database
 		$data['include_form'] = isset($data['include_form']) ? 1 : 0;
@@ -109,11 +109,7 @@ class opportunityController extends \BaseController {
 		}
 
 		// format deadline for database
-		$data['deadline'] = date('Y-m-d h:i:s', strtotime($data['deadline']));
-		echo $data['deadline'];
-		exit;
-		
-		// format dates and times for database
+		$data['deadline'] = strtotime($data['deadline']);
 
 		// format checkbox values for database
 		$data['include_form'] = isset($data['include_form']) ? 1 : 0;

@@ -70,6 +70,15 @@
                             		</span>
                         		</th>
                         		
+                            	<th class="link" ng-click="orderByField='deadline'; reverseSort = !reverseSort">Deadline
+                            		<span>
+                            			<span ng-show="orderByField == 'deadline'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
+                        		
                             	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">Public
                             		<span>
                             			<span ng-show="orderByField == 'public'">
@@ -96,16 +105,16 @@
                             			</span>
                             		</span>
                         		</th>
-                        		
-                            	<th class="link" ng-click="orderByField='deadline'; reverseSort = !reverseSort">Deadline
+
+                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
                             		<span>
-                            			<span ng-show="orderByField == 'deadline'">
+                            			<span ng-show="orderByField == 'disabled'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
-                        		
+
                             	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
                             		<span>
                             			<span ng-show="orderByField == 'updated_at'">
@@ -127,19 +136,23 @@
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="opportunity.public"></span>
-					            </td>
-					            
-					            <td>
-					                <span ng-bind="opportunity.customers"></span>
-					            </td>
-					            
-					            <td>
-					                <span ng-bind="opportunity.reps"></span>
-					            </td>
-					            
-					            <td>
 					                <span ng-bind="opportunity.formatted_deadline_date"></span>
+					            </td>
+					            
+					            <td class="hidable-sm boolean border">
+					                <span ng-if="opportunity.public"><i class="fa fa-check"></i></span>
+					            </td>
+					            
+					            <td class="hidable-sm boolean border">
+					                <span ng-if="opportunity.customers"><i class="fa fa-check"></i></span>
+					            </td>
+					            
+					            <td class="hidable-sm boolean border">
+					                <span ng-if="opportunity.reps"><i class="fa fa-check"></i></span>
+					            </td>
+					            
+					            <td class="hidable-sm boolean border">
+					                <span ng-if="opportunity.disabled"><i class="fa fa-check"></i></span>
 					            </td>
 					            
 					            <td>

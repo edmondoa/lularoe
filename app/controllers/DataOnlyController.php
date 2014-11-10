@@ -13,7 +13,8 @@ class DataOnlyController extends \BaseController
 	}
 	
 	public function getAllBranches() {
-		if (Auth::check()) return Commission::get_org_tree(Auth::user()->id);
+		$result = Commission::get_org_tree(Auth::user()->id);
+		return json_encode($result, JSON_PRETTY_PRINT);
 	}
 	
 	/*

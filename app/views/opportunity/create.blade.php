@@ -27,7 +27,7 @@
 			        </label>
 			    </div>
 			    
-			    <h2>Availabel To:</h2>
+			    <h3>Visibility</h3>
 			    <div class="form-group">
 			        <label>
 			        	{{ Form::checkbox('public') }} Public

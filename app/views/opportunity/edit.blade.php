@@ -27,7 +27,7 @@
 			        </label>
 			    </div>
 			    
-			    <h2>Availabel To:</h2>
+			    <h3>Visibility</h3>
 			    <div class="form-group">
 			        <label>
 			        	{{ Form::checkbox('public') }} Public
@@ -44,7 +44,7 @@
 			    
 			    <div class="form-group">
 			        {{ Form::label('deadline', 'Deactivation Date') }}
-			        {{ Form::text('deadline', null, array('class' => 'form-control datepicker width-auto')) }}
+			        {{ Form::text('deadline', $opportunity->formatted_deadline_date . ', ' . $opportunity->formatted_deadline_time, array('class' => 'form-control datepicker width-auto')) }}
 			    </div>
 		    
 		
