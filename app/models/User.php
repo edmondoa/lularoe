@@ -71,6 +71,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public function role() {
 		return $this->belongsTo('Role');
 	}
+	
+	public function userSite() {
+		return $this->belongsTo('UserSite');
+	}
 
 	public function ranks() {
 		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->withPivot('created_at');
@@ -126,7 +130,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
 	}
 	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record');
+	public function getFormattedPhoneAttribute($value)
+	{
+		return substr($this->attributes['phone'], 0, 3)."-".substr($this->attributes['phone'], 3, 3)."-".substr($this->attributes['phone'],6);
+	}
+	
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone');
 
 	/**
 	 * The attributes excluded from the model's JSON form.

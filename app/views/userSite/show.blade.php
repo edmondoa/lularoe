@@ -11,8 +11,11 @@
 					<h1>{{ $user->first_name }} {{ $user->last_name }}</h1>
 					<small>Independent Social Marketer &nbsp;|&nbsp; Rank: {{ $user->rank_name }}</small>
 				</div>
-				<div class="pull-right">
+				<div class="pull-right align-right">
 					<a class="btn btn-primary" onclick="scrollTo('#contact-form')">Contact {{ $user->first_name }}</a>
+					@if ($userSite->display_phone == 1)
+						<div class="big margin-top-1"><i class="fa fa-mobile-phone"></i> {{ $user->formatted_phone }}</div>
+					@endif
 				</div>
 			</div>
 		</div>
@@ -23,23 +26,38 @@
 	<div class="row">
 	    <div class="col col-md-9">
 	        <div class="col col-md-12">
-	            {{ $userSite->body }}
+	        	@if (isset($userSite->body))
+	        		<h2 class="no-top">{{ $userSite->title }}</h2>
+	        	@endif
+	            @if (isset($userSite->body))
+		            {{ $userSite->body }}
+		        @endif
 	        </div>
 	
 	        <div class="col col-md-6" id="contact-form">
 	            <h2>Contact {{ $user->first_name }}</h2>
-	            {{ Form::open( array('action' => 'BlastController@StoreMail')) }}
+	            {{ Form::open(array('action' => 'send-contact-form')) }}
 	            
-					<input type='hidden' name='user_ids[]' value='{{ $user->id }}'>
+	            	<input type='hidden' name='user_id' value='{{ $user->id }}'>
+					
+		            <div class="form-group">
+		                {{ Form::label('name','*Name:')}}
+		                {{ Form::text('name', null, ['class'=>'form-control']) }}
+		            </div>
+		            
+		            <div class="form-group">
+		                {{ Form::label('email','*Email Address:')}}
+		                {{ Form::text('email', null, ['class'=>'form-control']) }}
+		            </div>
 					
 		            <div class="form-group">
 		                {{ Form::label('subject_line','*Subject:')}}
-		                {{ Form::text('subject_line',null,  $attributes = array('class'=>'form-control')) }}
+		                {{ Form::text('subject_line', null, $attributes = array('class'=>'form-control')) }}
 		            </div>
 		
 		            <div class="form-group">
 		                {{ Form::label('body','*Message:')}}
-		                {{ Form::textarea('body',null,  $attributes = array('class'=>'form-control')) }}
+		                {{ Form::textarea('body',null, $attributes = array('class'=>'form-control')) }}
 		            </div>
 		
 		            <div class="form-group">

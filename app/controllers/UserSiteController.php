@@ -53,6 +53,9 @@ class userSiteController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+		// format checkbox values for database
+		$data['display_phone'] = isset($data['display_phone']) ? 1 : 0;
+
 		UserSite::create($data);
 
 		return Redirect::route('userSite.index')->with('message', 'Site created.');
@@ -66,11 +69,10 @@ class userSiteController extends \BaseController {
 		
 		$userSite = UserSite::where('user_id', $user->id)->first();
 		if ($userSite->banner == '') $userSite->banner = '/img/users/default-banner.png';
-		else $user->image = '/img/users/banners/' . $userSite->banner;
-		
+		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
+
 		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(10)->get();
 
-		return View::make('userSite.show', compact('user', 'userSite', 'events'));
 	}
 
 	/**
@@ -97,12 +99,13 @@ class userSiteController extends \BaseController {
 		$user = User::where('id', $userSite->user_id)->first();
 		$validator = Validator::make($data = Input::all(), UserSite::$rules);
 
-
-
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
+
+		// format checkbox values for database
+		$data['display_phone'] = isset($data['display_phone']) ? 1 : 0;
 
 		// user avatar
         if (Input::file('image')) {
@@ -154,7 +157,7 @@ class userSiteController extends \BaseController {
 		
 		$userSite->update($data);
 
-		return Redirect::back()->with('message', 'Site updated. <a target="_blank" href="/a/' . $user->public_id . '">View site</a>.');
+		return Redirect::back()->with('message', 'Site updated. <a target="_blank" href="//' . $user->public_id . '.' . Config::get('site.domain') . '">View site</a>.');
 	}
 
 	/**

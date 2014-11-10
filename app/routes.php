@@ -31,8 +31,13 @@ Route::group(array('domain' => '{subdomain}.{domain}', 'before' => 'rep-site'), 
     Route::get('/', function($subdomain)
     {
 		$user = User::where('public_id', $subdomain)->first();
+		if ($user->image == '') $user->image = '/img/users/default-avatar.png';
+		else $user->image = '/img/users/avatars/' . $user->image;
 		$userSite = UserSite::where('user_id', $user->id)->first();
-		return View::make('userSite.show', compact('user', 'userSite'));
+		if ($userSite->banner == '') $userSite->banner = '/img/users/default-banner.png';
+		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
+		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(10)->get();
+		return View::make('userSite.show', compact('user', 'userSite', 'events'));
     });
 
 });
@@ -50,9 +55,6 @@ Route::group(array('domain' => '{subdomain}.{domain}', 'before' => 'rep-site'), 
 		}
 	}]);
 	
-	// rep site
-	Route::get('/a/{public_id}', 'UserSiteController@show');
-
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');
 	Route::resource('send_text','SmsMessagesController');
@@ -62,7 +64,10 @@ Route::group(array('domain' => '{subdomain}.{domain}', 'before' => 'rep-site'), 
 	Route::post('blast_email',['uses'=>'BlastController@StoreMail']);
 	Route::get('blast_sms',['as'=>'blast_sms','uses'=>'BlastController@CreateSms']);
 	Route::post('blast_sms',['uses'=>'BlastController@StoreSms']);
-
+	
+	// contact form
+	Route::post('send-contact-form',['as' => 'send-contact-form', 'uses' => 'ContactController@send']);
+	
 ##############################################################################################
 // Protected Routes
 ##############################################################################################
@@ -88,6 +93,11 @@ Route::group(array('before' => 'auth'), function() {
 	Route::post('events/disable', 'UventController@disable');
 	Route::post('events/enable', 'UventController@enable');
 	Route::post('events/delete', 'UventController@delete');
+	
+	Route::resource('opportunities', 'OpportunityController');
+	Route::post('opportunities/disable', 'OpportunityController@disable');
+	Route::post('opportunities/enable', 'OpportunityController@enable');
+	Route::post('opportunities/delete', 'OpportunityController@delete');	
 
 	// API
 	Route::get('api/all-addresses', 'AddressController@getAllAddresses');
@@ -96,6 +106,7 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('api/all-emailMessages', 'EmailMessageController@getAllEmailMessages');
 	Route::get('api/all-images', 'ImageController@getAllImages');
 	Route::get('api/all-levels', 'LevelController@getAllLevels');
+	Route::get('api/all-opportunities', 'OpportunityController@getAllOpportunities');
 	Route::get('api/all-pages', 'PageController@getAllPages');
 	Route::get('api/all-products', 'ProductController@getAllProducts');
 	Route::get('api/all-productCategories', 'ProductCategoryController@getAllProductCategories');
@@ -113,8 +124,6 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('api/all-events-by-role', 'DataOnlyController@getAllUventsByRole');
 	Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 	Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
-	Route::controller('api','DataOnlyController');
-
 
 	Route::controller('api','DataOnlyController');
 
@@ -327,7 +336,7 @@ Route::get('populate-levels', function(){
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	echo Hash::make('password2');
+	echo uri();
 });
 
 Route::get('test', function() {

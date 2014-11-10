@@ -16,8 +16,8 @@
  					</a>
  				@endif
  				@if (Auth::user()->hasRole(['Editor', 'Rep', 'Customer']))
- 					<a href="javascript:void(0)" data-href="/downline" class='list-group-item' data-toggle="popover" data-content="
- 						<a target='_blank' href='/a/{{ Auth::user()->public_id }}'><i class='fa fa-eye'></i> View Site</a>
+ 					<a href="javascript:void(0)" data-href="/user-sites" class='list-group-item' data-toggle="popover" data-content="
+ 						<a target='_blank' href='//{{ Auth::user()->public_id }}.{{ Config::get("site.domain") }}'><i class='fa fa-eye'></i> View Site</a>
  						<a href='/user-sites/{{ Auth::user()->id }}/edit'><i class='fa fa-pencil'></i> Edit Site</a>
  					">
  						<i class="fa fa-globe"></i> 
@@ -31,6 +31,13 @@
  						<a href='/events/create'><i class='fa fa-plus'></i> New Event</a>
  					">
  						<i class="fa fa-calendar"></i> <span class="text">Events</span>
+ 					</a>
+ 					<a href="javascript:void(0)" data-href="/events" class='list-group-item' data-toggle="popover" data-content="
+ 						<a href='/opportunities'><i class='fa fa-check'></i> Current Opportunities</a>
+ 						<a href='/opportunities'><i class='fa fa-check'></i> Past Opportunities</a>
+ 						<a href='/opportunities/create'><i class='fa fa-plus'></i> New Opportunity</a>
+ 					">
+ 						<i class="fa fa-check"></i> <span class="text">Opportunities</span>
  					</a>
 					<!-- <a href="/addresses" class="list-group-item"><i class="fa fa-home"></i> <span class="text">Addresses</span></a> -->
 					<!-- <a href="/bonuses" class="list-group-item"><i class="fa fa-certificate"></i> Bonuses</a> -->
@@ -57,5 +64,8 @@
  					<!-- <a href="/userProducts" class="list-group-item"><i class="fa fa-mobile-phone"></i> UserProducts</a> -->
 					<!-- <a href="/userRanks" class="list-group-item"><i class="fa fa-certificate"></i> UserRanks</a> -->
 					<!-- <a href="/smsMessages" class="list-group-item"><i class="fa fa-mobile-phone"></i> <span class="text">SmsMessages</span></a> -->
+				@endif
+				@if (Auth::user()->hasRole(['Rep','Customer']))
+					<a href="/opportunities" class="list-group-item"><i class="fa fa-check"></i> <span class="text">Opportunities</span></a>
 				@endif
  			</div>

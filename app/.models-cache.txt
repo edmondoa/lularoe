@@ -1,2 +1,2 @@
 resource = false
-User_site integer( user_id ) text( body )
+Opportunity string( title ) text( body ) boolean( include_form public customers reps ) integer( deadline )
