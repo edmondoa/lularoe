@@ -10,8 +10,17 @@ class uventController extends \BaseController {
 	 */
 	public function index()
 	{
-		$events = Uvent::all();
 		return View::make('event.index');
+	}
+	
+	/**
+	 * Display a listing of public uvents
+	 *
+	 * @return Response
+	 */
+	public function publicIndex()
+	{
+		return View::make('event.public_index');
 	}
 
 	/**
@@ -71,6 +80,18 @@ class uventController extends \BaseController {
 	{
 		$event = Uvent::findOrFail($id);
 		return View::make('event.show', compact('event'));
+	}
+
+	/**
+	 * Display the specified uvent.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function publicShow($id)
+	{
+		$event = Uvent::findOrFail($id);
+		return View::make('event.public_show', compact('event'));
 	}
 
 	/**

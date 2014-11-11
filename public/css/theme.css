@@ -27,7 +27,7 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
 .layout-centered { padding-top:70px; }
 .layout-default { padding-top:50px !important; }
 .layout-gray { padding-top:50px; background:rgb(235,235,235) !important; }
-.layout-gray #container { box-shadow:0 0 5px rgba(0,0,0,.25); background:white; margin-top:-30px; padding:50px 20px 20px 20px; margin-bottom:20px; }
+.layout-gray #container { box-shadow:0 0 5px rgba(0,0,0,.25); background:white; margin-top:-30px; padding:65px 40px 40px 40px; margin-bottom:20px; }
 
 /* main content */
 

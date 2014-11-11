@@ -53,7 +53,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function sponsor() {
-		return $this -> belongsTo('User', 'sponsor_id', 'id');
+		return $this -> belongsTo('User');
 	}
 	
 	public function children() {

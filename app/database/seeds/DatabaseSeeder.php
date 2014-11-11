@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('UventsTableSeeder');
 		$this->call('UserSitesTableSeeder');
 		$this->call('OpportunitiesTableSeeder');
+		$this->call('LeadsTableSeeder');
 	}
 
 }

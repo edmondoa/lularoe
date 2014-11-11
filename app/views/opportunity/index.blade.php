@@ -57,9 +57,11 @@
 	                <table class="table">
 	                    <thead>
 	                        <tr>
-	                            <th>
-	                            	<input type="checkbox">
-	                            </th>
+	                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		                            <th>
+		                            	<input type="checkbox">
+		                            </th>
+		                        @endif
                             	
                             	<th class="link" ng-click="orderByField='title'; reverseSort = !reverseSort">Title
                             		<span>
@@ -79,85 +81,95 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">Public
-                            		<span>
-                            			<span ng-show="orderByField == 'public'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-                        		
-                            	<th class="link" ng-click="orderByField='customers'; reverseSort = !reverseSort">Customers
-                            		<span>
-                            			<span ng-show="orderByField == 'customers'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-                        		
-                            	<th class="link" ng-click="orderByField='reps'; reverseSort = !reverseSort">Reps
-                            		<span>
-                            			<span ng-show="orderByField == 'reps'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-
-                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
-                            		<span>
-                            			<span ng-show="orderByField == 'disabled'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-
-                            	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
-                            		<span>
-                            			<span ng-show="orderByField == 'updated_at'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
+                        		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+	                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">Public
+	                            		<span>
+	                            			<span ng-show="orderByField == 'public'">
+		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+		                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+	                            			</span>
+	                            		</span>
+	                        		</th>
+	                        		
+	                            	<th class="link" ng-click="orderByField='customers'; reverseSort = !reverseSort">Customers
+	                            		<span>
+	                            			<span ng-show="orderByField == 'customers'">
+		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+		                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+	                            			</span>
+	                            		</span>
+	                        		</th>
+	                        		
+	                            	<th class="link" ng-click="orderByField='reps'; reverseSort = !reverseSort">Reps
+	                            		<span>
+	                            			<span ng-show="orderByField == 'reps'">
+		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+		                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+	                            			</span>
+	                            		</span>
+	                        		</th>
+	
+	                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
+	                            		<span>
+	                            			<span ng-show="orderByField == 'disabled'">
+		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+		                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+	                            			</span>
+	                            		</span>
+	                        		</th>
+	
+	                            	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
+	                            		<span>
+	                            			<span ng-show="orderByField == 'updated_at'">
+		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+		                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+	                            			</span>
+	                            		</span>
+	                        		</th>
+	                        	@endif
 	                        </tr>
 	                    </thead>
 	                    <tbody>
 	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="opportunity in opportunities | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
-	                            <td ng-click="checkbox()">
-	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.opportunity_id')">
-	                            </td>
+	                            @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		                            <td ng-click="checkbox()">
+		                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.opportunity_id')">
+		                            </td>
+	                            @endif
 								
 					            <td>
-					                <a href="/opportunities/@include('_helpers.opportunity_id')"><span ng-bind="opportunity.title"></span></a>
+					            	@if (Auth::user()->hasRole(['Superadmin','Admin']))
+					                	<a href="/opportunities/@include('_helpers.opportunity_id')"><span ng-bind="opportunity.title"></span></a>
+					            	@else
+					                	<a href="/opportunity/@include('_helpers.opportunity_id')"><span ng-bind="opportunity.title"></span></a>
+					            	@endif
 					            </td>
 					            
 					            <td>
 					                <span ng-bind="opportunity.formatted_deadline_date"></span>
 					            </td>
 					            
-					            <td class="hidable-sm boolean border">
-					                <span ng-if="opportunity.public"><i class="fa fa-check"></i></span>
-					            </td>
-					            
-					            <td class="hidable-sm boolean border">
-					                <span ng-if="opportunity.customers"><i class="fa fa-check"></i></span>
-					            </td>
-					            
-					            <td class="hidable-sm boolean border">
-					                <span ng-if="opportunity.reps"><i class="fa fa-check"></i></span>
-					            </td>
-					            
-					            <td class="hidable-sm boolean border">
-					                <span ng-if="opportunity.disabled"><i class="fa fa-check"></i></span>
-					            </td>
-					            
-					            <td>
-					            	<span ng-bind="opportunity.updated_at"></span>
-					            </td>
+					            @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+						            <td class="hidable-sm boolean border">
+						                <span ng-if="opportunity.public"><i class="fa fa-check"></i></span>
+						            </td>
+						            
+						            <td class="hidable-sm boolean border">
+						                <span ng-if="opportunity.customers"><i class="fa fa-check"></i></span>
+						            </td>
+						            
+						            <td class="hidable-sm boolean border">
+						                <span ng-if="opportunity.reps"><i class="fa fa-check"></i></span>
+						            </td>
+						            
+						            <td class="hidable-sm boolean border">
+						                <span ng-if="opportunity.disabled"><i class="fa fa-check"></i></span>
+						            </td>
+						            
+						            <td>
+						            	<span ng-bind="opportunity.updated_at"></span>
+						            </td>
+					            @endif
 	                        </tr>
 	                        <tr dir-paginate-end></tr>
 	                    </tbody>

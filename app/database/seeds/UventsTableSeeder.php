@@ -12,7 +12,7 @@ class UventsTableSeeder extends DatabaseSeeder
 			$max_time = time() + 2629743; // 1 month from today
 			$start_time = $faker->numberBetween($min = $min_time, $max = $max_time);
 			$uvent = array(
-				'name' => $faker->name,
+				'name' => $faker->sentence($nbWords = 6),
 				'description' => $faker->text,
 				'date_start' => $start_time,
 				'date_end' => $faker->numberBetween($min = $start_time, $max = $start_time + 86400),

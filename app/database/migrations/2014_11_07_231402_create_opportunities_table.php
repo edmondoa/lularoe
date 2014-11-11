@@ -16,7 +16,7 @@ class CreateOpportunitiesTable extends Migration
 			$table->boolean('public');
 			$table->boolean('customers');
 			$table->boolean('reps');
-			$table->integer('deadline');
+			$table->integer('deadline')->nullable();
 			$table->boolean('disabled');
 			$table->timestamp('created_at');
 			$table->timestamp('updated_at');

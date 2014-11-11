@@ -3,7 +3,7 @@
 <div class="show">
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
-		<h1 class="no-top">Viewing opportunity</h1>
+		<h1 class="no-top">{{ $opportunity->title }}</h1>
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		    <div class="btn-group">
 			    <a class="btn btn-default" href="{{ url('opportunities/'.$opportunity->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
@@ -28,54 +28,40 @@
 			    	</button>
 			    {{ Form::close() }}
 			</div>
+			<a target="_blank" href="/opportunity/{{ $opportunity->id }}" class="btn btn-primary"><i class="fa fa-globe"></i> View Opportunity</a>
 		@endif
 	</div><!-- row -->
 	<div class="row">
-		<div class="col col-md-12">
+		<div class="col col-md-6">
 		    <table class="table">
-		        
-		        <tr>
-		            <th>Title:</th>
-		            <td>{{ $opportunity->title }}</td>
-		        </tr>
-		        
-		        <tr>
-		            <th>Body:</th>
-		            <td>{{ $opportunity->body }}</td>
-		        </tr>
-		        
-		        <tr>
-		            <th>Include Form:</th>
-		            <td>{{ $opportunity->include_form }}</td>
-		        </tr>
-		        
-		        <tr>
-		            <th>Public:</th>
-		            <td>{{ $opportunity->public }}</td>
-		        </tr>
-		        
-		        <tr>
-		            <th>Customers:</th>
-		            <td>{{ $opportunity->customers }}</td>
-		        </tr>
-		        
-		        <tr>
-		            <th>Reps:</th>
-		            <td>{{ $opportunity->reps }}</td>
-		        </tr>
-		        
-		        <tr>
-		            <th>Deadline:</th>
-		            <td>{{ $opportunity->formatted_deadline_date }}, {{ $opportunity->formatted_deadline_time }}</td>
-		        </tr>
-		        
+		       
+		        @if ($opportunity->deadline != 0) 
+			        <tr>
+			            <th>Deadline:</th>
+			            <td>{{ $opportunity->formatted_deadline_date }}, {{ $opportunity->formatted_deadline_time }}</td>
+			        </tr>
+		        @endif
 		        @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 
 			        <tr>
 			            <th>Status:</th>
 			            <td>{{ $opportunity->status }}</td>
 			        </tr>
+			    @endif
+			    
+		        <tr>
+		            <th>Includes Form:</th>
+		            <td>
+		            	@if ($opportunity->include_form == 1)
+		            		<i class="fa fa-check"></i>
+			            @else
+			            	No
+			            @endif
+		           	</td>
+		        </tr>
 			        
+			    @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+			    
 			        <tr>
 			        	<th>Visibility:</th>
 			        	<td>

@@ -18,12 +18,12 @@ class Opportunity extends \Eloquent
 
 	public function getFormattedDeadlineDateAttribute($value)
 	{
-		return date('m/d/Y',$this->attributes['deadline']);
+		if ($this->deadline !== 0) return date('m/d/Y',$this->attributes['deadline']);
 	}
 	
 	public function getFormattedDeadlineTimeAttribute($value)
 	{
-		return date('g:i A',$this->attributes['deadline']);
+		if ($this->deadline !== 0) return date('g:i A',$this->attributes['deadline']);
 	}
 
 	public function getStatusAttribute($value)
@@ -32,5 +32,4 @@ class Opportunity extends \Eloquent
 	}
 
 	protected $appends = array('new_record','formatted_deadline_date','formatted_deadline_time','status');
-
 }

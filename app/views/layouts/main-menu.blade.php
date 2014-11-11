@@ -1,9 +1,9 @@
  			<div class="list-group" id="main-menu">
  				@if (Auth::user()->hasRole(['Superadmin','Admin','Rep']))
- 					<a href="/dashboard" class="list-group-item"><i class="fa fa-dashboard"></i> <span class="text">Dashboard</span></a>
+ 					<a title="Dashboard" href="/dashboard" class="list-group-item"><i class="fa fa-dashboard"></i> <span class="text">Dashboard</span></a>
  					<a href="javascript:void(0)" data-href="/downline" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/downline/immediate/{{ Auth::user()->id }}'><i class='fa fa-arrow-down'></i> Immediate Downline</a>
- 						<a href='/downline/all/{{ Auth::user()->id }}'><i class='fa fa-users'></i> All Downline</a>
+ 						<a href='/downline/all/{{ Auth::user()->id }}'><i class='fa fa-user'></i> All Downline</a>
  						<a href='/downline/visualization/{{ Auth::user()->id }}'><i class='fa fa-sitemap'></i> Visualization</a>
  					">
  						<i class="fa fa-sitemap"></i> 
@@ -15,6 +15,14 @@
  						</span>
  					</a>
  				@endif
+ 				@if (Auth::user()->hasRole(['Rep']))
+ 					<a href="javascript:void(0)" data-href="/leads" class='list-group-item' data-toggle="popover" data-content="
+ 						<a href='/leads'><i class='fa fa-users'></i> All Leads</a>
+ 						<a href='/leads/create'><i class='fa fa-plus'></i> New Lead</a>
+ 					">
+ 						<i class="fa fa-user"></i> <span class="text">My Leads</span>
+ 					</a>
+ 				@endif
  				@if (Auth::user()->hasRole(['Editor', 'Rep', 'Customer']))
  					<a href="javascript:void(0)" data-href="/user-sites" class='list-group-item' data-toggle="popover" data-content="
  						<a target='_blank' href='//{{ Auth::user()->public_id }}.{{ Config::get("site.domain") }}'><i class='fa fa-eye'></i> View Site</a>
@@ -23,14 +31,26 @@
  						<i class="fa fa-globe"></i> 
  						<span class="text">My Site</span>
  					</a>
- 				 	<a href="/events" class="list-group-item"><i class="fa fa-calendar"></i> <span class="text">Events</span></a>
+ 					<a href="javascript:void(0)" data-href="/events" class='list-group-item' data-toggle="popover" data-content="
+ 						<a target='_blank' href='/public-events'><i class='fa fa-globe'></i> Public Events Page</a>
+ 						<a href='/events'><i class='fa fa-calendar'></i> Upcoming Events for ISM's</a>
+ 					">
+	 					<i class="fa fa-calendar"></i> <span class="text">Events</span>
+	 				</a>
  				@endif
  				@if (Auth::user()->hasRole(['Superadmin','Admin']))
  					<a href="javascript:void(0)" data-href="/events" class='list-group-item' data-toggle="popover" data-content="
+ 						<a target='_blank' href='/public-events'><i class='fa fa-globe'></i> Public Events Page</a>
  						<a href='/events'><i class='fa fa-calendar'></i> Upcoming Events</a>
  						<a href='/events/create'><i class='fa fa-plus'></i> New Event</a>
  					">
  						<i class="fa fa-calendar"></i> <span class="text">Events</span>
+ 					</a>
+ 					<a href="javascript:void(0)" data-href="/leads" class='list-group-item' data-toggle="popover" data-content="
+ 						<a href='/leads'><i class='fa fa-users'></i> All Leads</a>
+ 						<a href='/leads/create'><i class='fa fa-plus'></i> New Lead</a>
+ 					">
+ 						<i class="fa fa-users"></i> <span class="text">Leads</span>
  					</a>
  					<a href="javascript:void(0)" data-href="/opportunities" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/opportunities'><i class='fa fa-check'></i> Current Opportunities</a>
@@ -54,7 +74,7 @@
 					<!-- <a href="/reviews" class="list-group-item"><i class="fa fa-comments"></i> Reviews</a> -->
 					<!-- <a href="/roles" class="list-group-item"><i class="fa fa-user"></i> Roles</a> -->
 					<!-- <a href="/sales" class="list-group-item"><i class="fa fa-dollar"></i> Sales</a> -->
- 					<a href='/users' class="list-group-item"><i class='fa fa-user'></i> Users</a>
+ 					<a title="Users" href='/users' class="list-group-item"><i class='fa fa-user'></i> <span class="text">Users</span></a>
  					<!-- <a href="javascript:void(0)" data-href="/users" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/users'><i class='fa fa-user'></i> All Users</a>
  						<a href='/users/create'><i class='fa fa-plus'></i> New User</a>
@@ -66,6 +86,6 @@
 					<!-- <a href="/smsMessages" class="list-group-item"><i class="fa fa-mobile-phone"></i> <span class="text">SmsMessages</span></a> -->
 				@endif
 				@if (Auth::user()->hasRole(['Rep','Customer']))
-					<a href="/opportunities" class="list-group-item"><i class="fa fa-check"></i> <span class="text">Opportunities</span></a>
+					<a title="Opportunities" href="/opportunities" class="list-group-item"><i class="fa fa-check"></i> <span class="text">Opportunities</span></a>
 				@endif
  			</div>

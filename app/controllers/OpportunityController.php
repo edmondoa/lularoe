@@ -34,7 +34,9 @@ class opportunityController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('opportunity.create');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			return View::make('opportunity.create');
+		}
 	}
 
 	/**
@@ -44,25 +46,27 @@ class opportunityController extends \BaseController {
 	 */
 	public function store()
 	{
-		$validator = Validator::make($data = Input::all(), Opportunity::$rules);
-
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			$validator = Validator::make($data = Input::all(), Opportunity::$rules);
+	
+			if ($validator->fails())
+			{
+				return Redirect::back()->withErrors($validator)->withInput();
+			}
+	
+			// format deadline for database
+			if (isset($data['deadline'])) $data['deadline'] = strtotime($data['deadline']);
+	
+			// format checkbox values for database
+			$data['include_form'] = isset($data['include_form']) ? 1 : 0;
+			$data['public'] = isset($data['public']) ? 1 : 0;
+			$data['customers'] = isset($data['customers']) ? 1 : 0;
+			$data['reps'] = isset($data['reps']) ? 1 : 0;
+	
+			Opportunity::create($data);
+	
+			return Redirect::route('opportunities.index')->with('message', 'Opportunity created.');
 		}
-
-		// format deadline for database
-		$data['deadline'] = strtotime($data['deadline']);
-
-		// format checkbox values for database
-		$data['include_form'] = isset($data['include_form']) ? 1 : 0;
-		$data['public'] = isset($data['public']) ? 1 : 0;
-		$data['customers'] = isset($data['customers']) ? 1 : 0;
-		$data['reps'] = isset($data['reps']) ? 1 : 0;
-
-		Opportunity::create($data);
-
-		return Redirect::route('opportunities.index')->with('message', 'Opportunity created.');
 	}
 
 	/**
@@ -73,9 +77,11 @@ class opportunityController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$opportunity = Opportunity::findOrFail($id);
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			$opportunity = Opportunity::findOrFail($id);
 
-		return View::make('opportunity.show', compact('opportunity'));
+			return View::make('opportunity.show', compact('opportunity'));
+		}
 	}
 
 	/**
@@ -86,9 +92,14 @@ class opportunityController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$opportunity = Opportunity::find($id);
-
-		return View::make('opportunity.edit', compact('opportunity'));
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			$opportunity = Opportunity::find($id);
+			if ($opportunity->deadline != 0) {
+				$deadline = $opportunity->formatted_deadline_date . ', ' . $opportunity->formatted_deadline_time;
+			}
+			else $deadline = '';
+			return View::make('opportunity.edit', compact('opportunity', 'deadline'));
+		}
 	}
 
 	/**
@@ -99,27 +110,29 @@ class opportunityController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$opportunity = Opportunity::findOrFail($id);
-
-		$validator = Validator::make($data = Input::all(), Opportunity::$rules);
-
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
-		}
-
-		// format deadline for database
-		$data['deadline'] = strtotime($data['deadline']);
-
-		// format checkbox values for database
-		$data['include_form'] = isset($data['include_form']) ? 1 : 0;
-		$data['public'] = isset($data['public']) ? 1 : 0;
-		$data['customers'] = isset($data['customers']) ? 1 : 0;
-		$data['reps'] = isset($data['reps']) ? 1 : 0;
-
-		$opportunity->update($data);
-
-		return Redirect::route('opportunities.show', $id)->with('message', 'Opportunity updated.');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			$opportunity = Opportunity::findOrFail($id);
+	
+			$validator = Validator::make($data = Input::all(), Opportunity::$rules);
+	
+			if ($validator->fails())
+			{
+				return Redirect::back()->withErrors($validator)->withInput();
+			}
+	
+			// format deadline for database
+			if (isset($data['deadline'])) $data['deadline'] = strtotime($data['deadline']);
+	
+			// format checkbox values for database
+			$data['include_form'] = isset($data['include_form']) ? 1 : 0;
+			$data['public'] = isset($data['public']) ? 1 : 0;
+			$data['customers'] = isset($data['customers']) ? 1 : 0;
+			$data['reps'] = isset($data['reps']) ? 1 : 0;
+	
+			$opportunity->update($data);
+	
+			return Redirect::route('opportunities.show', $id)->with('message', 'Opportunity updated.');
+			}
 	}
 
 	/**
@@ -130,9 +143,11 @@ class opportunityController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		Opportunity::destroy($id);
-
-		return Redirect::route('opportunities.index')->with('message', 'Opportunity deleted.');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			Opportunity::destroy($id);
+	
+			return Redirect::route('opportunities.index')->with('message', 'Opportunity deleted.');
+		}
 	}
 	
 	/**
@@ -140,14 +155,16 @@ class opportunityController extends \BaseController {
 	 */
 	public function delete()
 	{
-		foreach (Input::get('ids') as $id) {
-			Opportunity::destroy($id);
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('opportunities.index')->with('message', 'Opportunities deleted.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Opportunity deleted.');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			foreach (Input::get('ids') as $id) {
+				Opportunity::destroy($id);
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('opportunities.index')->with('message', 'Opportunities deleted.');
+			}
+			else {
+				return Redirect::back()->with('message', 'Opportunity deleted.');
+			}
 		}
 	}
 	
@@ -156,14 +173,16 @@ class opportunityController extends \BaseController {
 	 */
 	public function disable()
 	{
-		foreach (Input::get('ids') as $id) {
-			Opportunity::find($id)->update(['disabled' => 1]);	
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('opportunities.index')->with('message', 'Opportunities disabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Opportunity disabled.');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			foreach (Input::get('ids') as $id) {
+				Opportunity::find($id)->update(['disabled' => 1]);	
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('opportunities.index')->with('message', 'Opportunities disabled.');
+			}
+			else {
+				return Redirect::back()->with('message', 'Opportunity disabled.');
+			}
 		}
 	}
 	
@@ -172,14 +191,16 @@ class opportunityController extends \BaseController {
 	 */
 	public function enable()
 	{
-		foreach (Input::get('ids') as $id) {
-			Opportunity::find($id)->update(['disabled' => 0]);	
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('opportunities.index')->with('message', 'Opportunities enabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Opportunity enabled.');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			foreach (Input::get('ids') as $id) {
+				Opportunity::find($id)->update(['disabled' => 0]);	
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('opportunities.index')->with('message', 'Opportunities enabled.');
+			}
+			else {
+				return Redirect::back()->with('message', 'Opportunity enabled.');
+			}
 		}
 	}
 

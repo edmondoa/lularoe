@@ -21,12 +21,6 @@
 			        {{ Form::textarea('body', Input::old('body'), array('class' => 'wysiwyg')) }}
 			    </div>
 			    
-			    <div class="form-group">
-			        <label>
-			        	{{ Form::checkbox('include_form') }} Include Lead Capture Form
-			        </label>
-			    </div>
-			    
 			    <h3>Visibility</h3>
 			    <div class="form-group">
 			        <label>
@@ -42,8 +36,16 @@
 			        </label>
 			    </div>
 			    
+			    <h3>Lead Capture Form</h3>
+			    
 			    <div class="form-group">
-			        {{ Form::label('deadline', 'Deactivation Date') }}
+			        <label>
+			        	{{ Form::checkbox('include_form') }} Include Lead Capture Form
+			        </label>
+			    </div>
+			    
+			    <div class="form-group">
+			        {{ Form::label('deadline', 'Application Deadline') }}
 			        {{ Form::text('deadline', null, array('class' => 'form-control datepicker width-auto')) }}
 			    </div>
 			    
@@ -53,4 +55,25 @@
 	    </div>
 	</div>
 </div>
+@stop
+@section('scripts')
+	<script>
+	
+		// enable/disable date field
+		function toggleDeadlineField() {
+			if (!($('input[name="include_form"]').is(':checked'))) {
+				$('#deadline').attr('disabled', 'disabled');
+			}
+			else {
+				$('#deadline').removeAttr('disabled');
+			} 
+		}
+		
+		$('input[name="include_form"]').change(function() {
+			toggleDeadlineField();
+		});
+		
+		toggleDeadlineField();
+		
+	</script>
 @stop

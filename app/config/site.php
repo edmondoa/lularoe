@@ -17,4 +17,5 @@ return [
 	'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
 	'default_from_email' => 'no-reply@sociallymobile.com',
 	'company_name' => 'SociallyMobile',
+	'subdomain' => Route::getCurrentRoute()->getParameter('subdomain'),
 ];
