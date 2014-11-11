@@ -123,10 +123,8 @@ class Commission extends \BaseController {
 		$frontline = User::find($rep_id)->frontline;
 		foreach($frontline as $rep)
 		{
-			set_time_limit(30);
-			//$this->level_up($rep->id);
-			Level::where('ancestor_id',$rep_id)->delete();
-			Level::where('user_id',$rep_id)->delete();
+			Level::where('ancestor_id',$rep->id)->delete();
+			Level::where('user_id',$rep->id)->delete();
 			$this->delete_levels_down($rep->id,$level+1);
 		}
 		return $level;
@@ -202,7 +200,8 @@ class Commission extends \BaseController {
 		$frontline = User::find($rep_id)->frontline;
 		foreach($frontline as $rep)
 		{
-			set_time_limit(60);
+			//set_time_limit(120);
+			//echo $rep->first_name." ".$rep->last_name." - ".$level."<br />";
 			$this->level_up($rep->id);
 			$this->set_levels_down($rep->id,$level+1);
 		}
@@ -220,7 +219,6 @@ class Commission extends \BaseController {
 		foreach($frontline as $rep)
 		{
 			set_time_limit(30);
-			//Level::where('user_id',$rep_id)->delete();
 			$this->level_up_reassign($rep->id);
 			$this->set_levels_down_reassign($rep->id,$level+1);
 		}
