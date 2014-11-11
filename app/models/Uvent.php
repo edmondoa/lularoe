@@ -40,7 +40,12 @@ class Uvent extends \Eloquent
 	public function getNewRecordAttribute() {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
 	}
+	
+	public function getStatusAttribute($value)
+	{
+		return ($this->attributes['disabled'] == 0) ? 'Active' : 'Disabled';
+	}
 
-	protected $appends = array('new_record','formatted_start_date','formatted_end_date','formatted_start_time','formatted_end_time');
+	protected $appends = array('new_record','formatted_start_date','formatted_end_date','formatted_start_time','formatted_end_time','status');
 
 }

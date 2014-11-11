@@ -20,7 +20,6 @@ class UsersTableSeederTest extends DatabaseSeeder
 				'phone' => $faker->numerify($string = '##########'),
 				'dob' => $faker->date($format = 'Y-m-d', '-18 years'),
 				'gender' => $faker->randomElement(['F','M']),
-				'phone' => $faker->randomDigitNotNull,
 				'role_id' => 2,
 				'public_id' => $faker->lexify('???????????????????????????'),
 				'sponsor_id' => 0,
@@ -242,24 +241,116 @@ class UsersTableSeederTest extends DatabaseSeeder
 			}
 		}
 		User::create([
-			"first_name" => 'John',
-			"last_name" => 'Doe',
-			"email" => 'sgashler@controlpad.com',
-			"password" => Hash::make('password2'),
-			"gender" => 'Male',
-			'key' => str_random(20),
-			"phone" => '8015555555',
-			"dob" => '1982-08-28',
-			'phone' => $faker->randomDigitNotNull,
-			'role_id' => 2,
-			'public_id' => $faker->lexify('???????????????????????????'),
-			'sponsor_id' => $faker->randomDigitNotNull,
+			'id' => 10000,
+			'first_name' => $faker->firstName,
+			'last_name' => $faker->lastName,
+			'email' => 'customer@example.com',
+			'password' => \Hash::make('password2'),
+			'key' => $faker->word,
+			'phone' => $faker->numerify($string = '##########'),
+			'dob' => $faker->date,
+			'role_id' => 1,
+			'sponsor_id' => 0,
 			'mobile_plan_id' => $faker->randomDigitNotNull,
 			'min_commission' => $faker->randomDigitNotNull,
 			'disabled' => $faker->boolean,
-			'created_at' => $now,
-			'updated_at' => $now,
-
+			'public_id' => $faker->word
+		]);
+		User::create([
+			'id' => 10004,
+			'first_name' => $faker->firstName,
+			'last_name' => $faker->lastName,
+			'email' => 'rep@example.com',
+			'password' => \Hash::make('password2'),
+			'key' => $faker->word,
+			'phone' => $faker->numerify($string = '##########'),
+			'dob' => $faker->date,
+			'role_id' => 2,
+			'sponsor_id' => 0,
+			'mobile_plan_id' => $faker->randomDigitNotNull,
+			'min_commission' => $faker->randomDigitNotNull,
+			'disabled' => $faker->boolean,
+			'public_id' => 'local_one'
+		]);
+		User::create([
+			'id' => 10005,
+			'first_name' => $faker->firstName,
+			'last_name' => $faker->lastName,
+			'email' => 'editor@example.com',
+			'password' => \Hash::make('password2'),
+			'key' => $faker->word,
+			'phone' => $faker->numerify($string = '##########'),
+			'dob' => $faker->date,
+			'role_id' => 3,
+			'sponsor_id' => 0,
+			'mobile_plan_id' => $faker->randomDigitNotNull,
+			'min_commission' => $faker->randomDigitNotNull,
+			'disabled' => $faker->boolean,
+			'public_id' => $faker->word
+		]);
+		User::create([
+			'id' => 10006,
+			'first_name' => $faker->firstName,
+			'last_name' => $faker->lastName,
+			'email' => 'admin@example.com',
+			'password' => \Hash::make('password2'),
+			'key' => $faker->word,
+			'phone' => $faker->numerify($string = '##########'),
+			'dob' => $faker->date,
+			'role_id' => 4,
+			'sponsor_id' => 0,
+			'mobile_plan_id' => $faker->randomDigitNotNull,
+			'min_commission' => $faker->randomDigitNotNull,
+			'disabled' => $faker->boolean,
+			'public_id' => $faker->word
+		]);
+		User::create([
+			'id' => 10007,
+			'first_name' => $faker->firstName,
+			'last_name' => $faker->lastName,
+			'email' => 'superadmin@example.com',
+			'password' => \Hash::make('password2'),
+			'key' => $faker->word,
+			'phone' => $faker->numerify($string = '##########'),
+			'dob' => $faker->date,
+			'role_id' => 5,
+			'sponsor_id' => 0,
+			'mobile_plan_id' => $faker->randomDigitNotNull,
+			'min_commission' => $faker->randomDigitNotNull,
+			'disabled' => $faker->boolean,
+			'public_id' => $faker->word
+		]);
+		User::create([
+			'id' => 10008,
+			'first_name' => 'Steve',
+			'last_name' => 'Gashler',
+			'email' => 'sgashler@controlpad.com',
+			'password' => \Hash::make('password2'),
+			'key' => $faker->word,
+			'phone' => $faker->numerify($string = '##########'),
+			'dob' => $faker->date,
+			'role_id' => 5,
+			'sponsor_id' => 0,
+			'mobile_plan_id' => $faker->randomDigitNotNull,
+			'min_commission' => $faker->randomDigitNotNull,
+			'disabled' => $faker->boolean,
+			'public_id' => $faker->word
+		]);
+		User::create([
+			'id' => 10009,
+			'first_name' => 'Jake',
+			'last_name' => 'Barlow',
+			'email' => 'jbarlow@controlpad.com',
+			'password' => \Hash::make('password2'),
+			'key' => $faker->word,
+			'phone' => $faker->numerify($string = '##########'),
+			'dob' => $faker->date,
+			'role_id' => 5,
+			'sponsor_id' => 0,
+			'mobile_plan_id' => $faker->randomDigitNotNull,
+			'min_commission' => $faker->randomDigitNotNull,
+			'disabled' => $faker->boolean,
+			'public_id' => $faker->word
 		]);
 	}
 

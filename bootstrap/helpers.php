@@ -12,9 +12,13 @@ function format_currency($unformatted_number,$number_digits = 6) {
 }
 
 // format phone numbers (remove parenthases, spaces, and hyphens)
-
 function formatPhone($phone) {
 	return preg_replace('/\D+/', '', $phone);
+}
+
+// remove subdomain
+function removeSubdomain($url) {
+	return preg_replace('/\/\/.*\./', '//', $url);
 }
 
 ?>

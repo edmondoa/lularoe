@@ -27,8 +27,7 @@ class userController extends \BaseController {
 	public function index()
 	{
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			$users = User::all();
-			return View::make('user.index', compact('users'));
+			return View::make('user.index');
 		}
 	}
 
