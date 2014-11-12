@@ -40,12 +40,24 @@
 			        
 			        <tr>
 			            <th>Email:</th>
-			            <td>{{ $user->email }}</td>
+			            <td>
+			            	{{ Form::open(array('url' => '/users/email', 'method' => 'POST', 'class' => 'inline-block')) }}
+			            		{{ Form::hidden('user_ids[]', $user->id) }}
+			            		<button title="Send Email"><i class="fa fa-envelope"></i></button>
+			            	{{ Form::close() }}
+			            	&nbsp;{{ $user->email }}
+			            </td>
 			        </tr>
 			        
 			        <tr>
 			            <th>Phone:</th>
-			            <td>{{ $user->phone }}</td>
+			            <td>
+							{{ Form::open(array('url' => '/users/sms', 'method' => 'POST', 'class' => 'inline-block')) }}
+			            		{{ Form::hidden('user_ids[]', $user->id) }}
+			            		<button style="width:32px;" title="Send Text Message (SMS)"><i class="fa fa-mobile-phone"></i></button>
+			            	{{ Form::close() }}
+			            	&nbsp;{{ $user->phone }}
+			            </td>
 			        </tr>
 			        
 					@if (Auth::user()->hasRole(['Admin','Superadmin']))

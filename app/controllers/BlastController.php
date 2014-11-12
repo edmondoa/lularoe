@@ -151,14 +151,15 @@ class BlastController extends \BaseController {
 			});
 			$count ++;
 		}
-		if(count(Mail::failures()) > 0)
+		if (count(Mail::failures()) > 0)
 		{
 			//errors ocurred
 			return Redirect::back()->with('message','The email message was sent successfully to '. $count .' users');
 		}
 		else
 		{
-			return Redirect::back()->with('message','The email message was sent successfully to '. $count .' users');
+			if ($count == 1) return Redirect::back()->with('message','The email message was sent sent.');
+			else return Redirect::back()->with('message','The email message was sent to '. $count .' users');
 		}
 		//return Redirect::back()->with('message','The email message was sent successfully to '. $count .' users');
 

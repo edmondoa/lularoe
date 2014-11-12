@@ -5,6 +5,7 @@ use \Level;
 
 class Commission extends \BaseController {
 
+	public $tree = [];
 	/**
 	* 
 	*
@@ -76,12 +77,57 @@ class Commission extends \BaseController {
 	* @param  
 	* @return 
 	*/
+	public function level_up_reassign($sponsor_id,$level = 0,$from_id=null){
+		$sponsor = User::find($sponsor_id);
+		if(is_null($from_id)) $from_id = $sponsor_id;
+		if((isset($sponsor->id))&&($sponsor->sponsor_id != 0))
+		{
+			if($sponsor_id != $from_id)
+			{
+				$level_data = ['ancestor_id'=>$sponsor->id,'user_id'=>$from_id,'level'=>$level];
+				$new_level = Level::updateOrCreate($level_data);
+			}
+			return $this->level_up_reassign($sponsor->sponsor_id,$level+1,$from_id); //nest the call until we get to the frontline
+		}
+		else
+		{
+			if($sponsor_id != $from_id)
+			{
+				$level_data = ['ancestor_id'=>$sponsor->id,'user_id'=>$from_id,'level'=>$level];
+				$new_level = Level::updateOrCreate($level_data);
+			}
+			return true;
+		}
+	}
+	
+	/**
+	* 
+	*
+	* @param  
+	* @return 
+	*/
 	public function count_down($rep_id,$level){
 		$sponsor = User::find($rep_id)->children;
 		foreach($frontline as $rep)
 		{
 			
 		}
+	}
+	/**
+	* 
+	*
+	* @param  
+	* @return 
+	*/
+	public function delete_levels_down($rep_id,$level = 1){
+		$frontline = User::find($rep_id)->frontline;
+		foreach($frontline as $rep)
+		{
+			Level::where('ancestor_id',$rep->id)->delete();
+			Level::where('user_id',$rep->id)->delete();
+			$this->delete_levels_down($rep->id,$level+1);
+		}
+		return $level;
 	}
 	
 	/**
@@ -103,16 +149,88 @@ class Commission extends \BaseController {
 	/**
 	* 
 	*
+	* @param int rep_id 
+	* @return multi-dimensional array of generational hierarchy
+	*/
+	public function get_org_tree($rep_id,$level = 0){
+		if(is_null($level))
+		{
+			$level = $rep_id;
+		}
+		$frontline = User::find($rep_id)->frontline;
+		$user = User::find($rep_id);
+		$children = [];
+		//$sql = "SELECT level FROM levels WHERE ancestor_id='".$level."' AND user_id='".$rep_id."' LIMIT 1";
+		//$level = \DB::select($sql);
+		//echo"<pre>"; print_r($level); echo"</pre>";
+		//echo"<pre>"; print_r($sql); echo"</pre>";
+		//return ;
+		$generation = new \stdClass;
+		$generation->id = $user->id;
+		$generation->level = $level;
+		$generation->name = $user->first_name." ".$user->last_name;
+		//$generation->children = array();
+		$count = 0;
+		foreach($frontline as $rep)
+		{
+			$count ++;
+			$children[] = $this->get_org_tree($rep->id,$level+1);
+		}
+		$generation->children = $children;
+
+		return $generation;
+
+	}
+
+	/**
+	* 
+	*
 	* @param  
 	* @return 
 	*/
-	public function set_levels_down($rep_id,$level){
+	public function get_org_tree_2($rep_id){
+		$frontline = User::find($rep_id)->frontline;
+		echo "<ul>";
+		foreach($frontline as $rep)
+		{
+			echo "<li>".$rep->id." - ".$rep->first_name." ".$rep->last_name;
+			$this->get_org_tree_2($rep->id);
+			echo "</li>";
+		}
+		echo"</ul>";
+	}
+
+	/**
+	* 
+	*
+	* @param  
+	* @return 
+	*/
+	public function set_levels_down($rep_id,$level = 1){
+		$frontline = User::find($rep_id)->frontline;
+		foreach($frontline as $rep)
+		{
+			//set_time_limit(120);
+			//echo $rep->first_name." ".$rep->last_name." - ".$level."<br />";
+			$this->level_up($rep->id);
+			$this->set_levels_down($rep->id,$level+1);
+		}
+		return $level;
+	}
+	
+	/**
+	* 
+	*
+	* @param  
+	* @return 
+	*/
+	public function set_levels_down_reassign($rep_id,$level = 1){
 		$frontline = User::find($rep_id)->frontline;
 		foreach($frontline as $rep)
 		{
 			set_time_limit(30);
-			$this->level_up($rep->id);
-			$this->set_levels_down($rep->id,$level+1);
+			$this->level_up_reassign($rep->id);
+			$this->set_levels_down_reassign($rep->id,$level+1);
 		}
 		return $level;
 	}

@@ -6,7 +6,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col col-md-8">
-		                <h1 class="no-top">All Events</h1>
+		                <h1 class="no-top">{{ ucfirst($range) }} Events</h1>
 		            </div>
 		            <div class="col col-md-4">
 		                <div class="pull-right">
@@ -118,7 +118,7 @@
 	                            		</span>
 	                        		</th>
 	                        		
-	                            	<th class="link hidable-sm" ng-click="orderByField='editors'; reverseSort = !reverseSort">Editors
+	                            	<!--<th class="link hidable-sm" ng-click="orderByField='editors'; reverseSort = !reverseSort">Editors
 	                            		<span>
 	                            			<span ng-show="orderByField == 'editors'">
 		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -134,7 +134,7 @@
 		                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
 	                            			</span>
 	                            		</span>
-	                        		</th>
+	                        		</th>-->
 	                        		
 	                            	<th class="link hidable-sm" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
 	                            		<span>
@@ -158,7 +158,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="event in events | filter:search | orderBy: 'date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="event in events | filter:search | orderBy:'<?php if ($range == 'past') echo '-' ?>date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 		                        
 		                        @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		                            <td ng-click="checkbox()">
@@ -191,13 +191,13 @@
 						                <span ng-if="event.reps"><i class="fa fa-check"></i></span>
 						            </td>
 						            
-						            <td class="hidable-sm boolean border">
+						            <!--<td class="hidable-sm boolean border">
 						                <span ng-if="event.editors"><i class="fa fa-check"></i></span>
 						            </td>
 						            
 						            <td class="hidable-sm boolean border">
 						                <span ng-if="event.admin"><i class="fa fa-check"></i></span>
-						            </td>
+						            </td>-->
 						            
 						            <td class="hidable-sm boolean border">
 						                <span ng-if="event.disabled"><i class="fa fa-check"></i></span>
@@ -232,10 +232,10 @@
 		
 		<?php
 			if (Auth::user()->hasRole(["Superadmin", "Admin"])) {
-				$object = 'all-events';
+				$object = 'all-' . $range . '-events';
 			}
 			else {
-				$object = 'all-events-by-role';
+				$object = 'all-' . $range . '-events-by-role';
 			}
 		?>
 		

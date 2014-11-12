@@ -3,23 +3,6 @@
 class userController extends \BaseController {
 
 	/**
-	 * Data only
-	 */
-	public function getAllUsers(){
-		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			return User::all();
-			foreach ($users as $user)
-			{
-				if (strtotime($user['created_at']) >= (time() - Config::get('site.new_time_frame') ))
-				{
-					$user['new'] = 1;
-				}
-			}
-			return $users;
-		}
-	}
-
-	/**
 	 * Display a listing of users
 	 *
 	 * @return Response
@@ -27,8 +10,7 @@ class userController extends \BaseController {
 	public function index()
 	{
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			$users = User::all();
-			return View::make('user.index', compact('users'));
+			return View::make('user.index');
 		}
 	}
 
@@ -155,8 +137,10 @@ class userController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) 
+		{
 			$user = User::findOrFail($id);
+			$old_user_data = $user;
 			$rules = User::$rules;
 			$rules['email'] = 'unique:users,email,' . $user->id;
 			$rules['password'] = 'sometimes|confirmed|digits_between:8,12';
@@ -170,6 +154,10 @@ class userController extends \BaseController {
 			}
 			$data['password'] = Hash::make($data['password']);
 			$user->update($data);
+			if($old_user_data->sponsor_id != $user->sponsor_id)
+			{
+				Event::fire('sponsor.update', array('rep_id' => $user->id));
+			}
 	
 			return Redirect::route('users.show', $id)->with('message', 'User updated.');
 		}
@@ -189,7 +177,7 @@ class userController extends \BaseController {
 			return Redirect::route('users.index')->with('message', 'User deleted.');
 		}
 	}
-	
+
 	/**
 	 * Remove users.
 	 */
@@ -207,7 +195,7 @@ class userController extends \BaseController {
 			}
 		}
 	}
-	
+
 	/**
 	 * Diable users.
 	 */
@@ -225,7 +213,7 @@ class userController extends \BaseController {
 			}
 		}
 	}
-	
+
 	/**
 	 * Enable users.
 	 */

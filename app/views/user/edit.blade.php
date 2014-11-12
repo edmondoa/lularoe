@@ -59,7 +59,7 @@
 		    </div> -->
 		   
 		    <div class="form-group">
-		        {{ Form::label('dob', 'DOB') }}
+		        {{ Form::label('dob', 'Date of Birth') }}
 		        {{ Form::text('dob', null, array('class' => 'form-control dateonlypicker')) }}
 		    </div>
 		    
@@ -84,7 +84,7 @@
 			        {{ Form::text('sponsor_id', null, array('class' => 'form-control')) }}
 			    </div>
 			    
-			    <div class="form-group">
+			    <!-- <div class="form-group">
 			        {{ Form::label('mobile_plan_id', 'Mobile Plan Id') }}
 			        {{ Form::text('mobile_plan_id', null, array('class' => 'form-control')) }}
 			    </div>
@@ -97,7 +97,7 @@
 			    <div class="form-group">
 			        {{ Form::label('disabled', 'Disabled') }}
 			        {{ Form::text('disabled', null, array('class' => 'form-control')) }}
-			    </div>
+			    </div> -->
 			@endif		    
 		
 		    {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
