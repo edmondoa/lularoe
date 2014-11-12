@@ -31,7 +31,7 @@
 		@endif
 	</div><!-- row -->
 	<div class="row">
-		<div class="col col-md-12">
+		<div class="col col-md-6">
 		    <table class="table">
 		        [repeat]
 		        <tr>

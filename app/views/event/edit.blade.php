@@ -50,14 +50,14 @@
 			        <label>
 			   			{{ Form::checkbox('reps', null, array('class' => 'form-control')) }} ISM's
 			        </label>
-			        <br>
+			        <!--<br>
 			        <label>
 			   			{{ Form::checkbox('editors', null, array('class' => 'form-control')) }} Editors
 			        </label>
 			        <br>
 			        <label>
 			   			{{ Form::checkbox('admins', null, array('class' => 'form-control')) }} Administrators
-			        </label>
+			        </label>-->
 			    </div>		    
 		
 		    {{ Form::submit('Update event', array('class' => 'btn btn-primary')) }}

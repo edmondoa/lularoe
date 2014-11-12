@@ -1,2 +1,2 @@
 resource = false
-Uvent string( name ) text( description ) date( date ) boolean( public customers reps editors admins disabled )
+Lead string( first_name last_name email gender ) date( dob ) integer( phone sponsor_id opportunity_id ) boolean( disabled )

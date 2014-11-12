@@ -4,14 +4,36 @@ class uventController extends \BaseController {
 
 
 	/**
-	 * Display a listing of uvents
+	 * Display a listing of upcoming uvents
 	 *
 	 * @return Response
 	 */
 	public function index()
 	{
-		$events = Uvent::all();
-		return View::make('event.index');
+		$range = 'upcoming';
+		return View::make('event.index', compact('range'));
+	}
+
+	/**
+	 * Display a listing of past uvents
+	 *
+	 * @return Response
+	 */
+	public function indexPast()
+	{
+		$range = 'past';
+		$sort = 'date_end';
+		return View::make('event.index', compact('range'));
+	}
+	
+	/**
+	 * Display a listing of public uvents
+	 *
+	 * @return Response
+	 */
+	public function publicIndex()
+	{
+		return View::make('event.public_index');
 	}
 
 	/**
@@ -45,8 +67,8 @@ class uventController extends \BaseController {
 			}
 			
 			// format dates and times for database
-			$data['date_start'] = date('Y-m-d h:i:s', strtotime($data['date_start']));
-			$data['date_end'] = date('Y-m-d h:i:s', strtotime($data['date_end']));
+			$data['date_start'] = strtotime($data['date_start']);
+			$data['date_end'] = strtotime($data['date_end']);
 
 			// format checkbox values for database
 			$data['public'] = isset($data['public']) ? 1 : 0;
@@ -70,8 +92,19 @@ class uventController extends \BaseController {
 	public function show($id)
 	{
 		$event = Uvent::findOrFail($id);
-		$event->status = ($event->disabled == 0) ? 'Active' : 'Disabled';
 		return View::make('event.show', compact('event'));
+	}
+
+	/**
+	 * Display the specified uvent.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function publicShow($id)
+	{
+		$event = Uvent::findOrFail($id);
+		return View::make('event.public_show', compact('event'));
 	}
 
 	/**
@@ -108,8 +141,8 @@ class uventController extends \BaseController {
 			}
 			
 			// format dates and times for database
-			$data['date_start'] = date('Y-m-d h:i:s', strtotime($data['date_start']));
-			$data['date_end'] = date('Y-m-d h:i:s', strtotime($data['date_end']));
+			$data['date_start'] = strtotime($data['date_start']);
+			$data['date_end'] = strtotime($data['date_end']);
 
 			// format checkbox values for database
 			$data['public'] = isset($data['public']) ? 1 : 0;
