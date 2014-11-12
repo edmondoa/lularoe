@@ -3,30 +3,29 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class EditUventsTable extends Migration 
+class CreateOpportunitiesTable extends Migration 
 {
 
 	public function up()
 	{
-		Schema::dropIfExists('uvents');
-	}
-
-	public function down()
-	{
-		Schema::create('uvents', function(Blueprint $table) {
+		Schema::create('opportunities', function(Blueprint $table) {
 			$table->increments('id');
-			$table->string('name');
-			$table->text('description');
-			$table->date('date');
+			$table->string('title');
+			$table->text('body');
+			$table->boolean('include_form');
 			$table->boolean('public');
 			$table->boolean('customers');
 			$table->boolean('reps');
-			$table->boolean('editors');
-			$table->boolean('admins');
+			$table->integer('deadline')->nullable();
 			$table->boolean('disabled');
 			$table->timestamp('created_at');
 			$table->timestamp('updated_at');
 		});
+	}
+
+	public function down()
+	{
+		Schema::dropIfExists('opportunities');
 	}
 
 }

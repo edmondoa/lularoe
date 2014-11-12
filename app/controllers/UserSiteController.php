@@ -53,6 +53,9 @@ class userSiteController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+		// format checkbox values for database
+		$data['display_phone'] = isset($data['display_phone']) ? 1 : 0;
+
 		UserSite::create($data);
 
 		return Redirect::route('userSite.index')->with('message', 'Site created.');
@@ -61,9 +64,15 @@ class userSiteController extends \BaseController {
 	public function show($public_id)
 	{
 		$user = User::where('public_id', $public_id)->first();
+		if ($user->image == '') $user->image = '/img/users/default-avatar.png';
+		else $user->image = '/img/users/avatars/' . $user->image;
+		
 		$userSite = UserSite::where('user_id', $user->id)->first();
-		$user = User::find($userSite['user_id']);
-		return View::make('userSite.show', compact('user', 'userSite'));
+		if ($userSite->banner == '') $userSite->banner = '/img/users/default-banner.png';
+		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
+
+		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(10)->get();
+
 	}
 
 	/**
@@ -90,39 +99,65 @@ class userSiteController extends \BaseController {
 		$user = User::where('id', $userSite->user_id)->first();
 		$validator = Validator::make($data = Input::all(), UserSite::$rules);
 
-
-
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+		// format checkbox values for database
+		$data['display_phone'] = isset($data['display_phone']) ? 1 : 0;
+
+		// user avatar
         if (Input::file('image')) {
-            // upload and link to image
             $filename = '';
             if (Input::hasFile('image')) {
                 $file = Input::file('image');
-                $destinationPath = public_path() . '/img/users/';
+                $destinationPath = public_path() . '/img/users/avatars/';
                 $extension = $file->getClientOriginalExtension();
                 $filename = str_random(20) . '.' . $extension;
                 $uploadSuccess   = $file->move($destinationPath, $filename);
     
                 // open an image file
-                $img = Image::make('img/users/' . $filename);
+                $img = Image::make('img/users/avatars/' . $filename);
     
                 // now you are able to resize the instance
-                $img->fit(100, 100);
+                $img->fit(500, 500);
     
                 // finally we save the image as a new image
-                $img->save('img/users/' . $filename);
+                $img->save('img/users/avatars/' . $filename);
     
                 $data['image'] = $filename;
 				DB::update('update users set image = "' . $data['image'] . '" where id = ' . $user->id);
             }
         }
+		
+		// banner
+        if (Input::file('banner')) {
+            // upload and link to image
+            $filename = '';
+            if (Input::hasFile('banner')) {
+                $file = Input::file('banner');
+                $destinationPath = public_path() . '/img/users/banners/';
+                $extension = $file->getClientOriginalExtension();
+                $filename = str_random(20) . '.' . $extension;
+                $uploadSuccess   = $file->move($destinationPath, $filename);
+    
+                // open an image file
+                $img = Image::make('img/users/banners/' . $filename);
+    
+                // now you are able to resize the instance
+                $img->fit(1170, 340);
+    
+                // finally we save the image as a new image
+                $img->save('img/users/banners/' . $filename);
+    
+                $data['banner'] = $filename;
+            }
+        }
+		
 		$userSite->update($data);
 
-		return Redirect::back()->with('message', 'Site updated.');
+		return Redirect::back()->with('message', 'Site updated. <a target="_blank" href="//' . $user->public_id . '.' . Config::get('site.domain') . '">View site</a>.');
 	}
 
 	/**
