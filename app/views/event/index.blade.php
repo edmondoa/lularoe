@@ -6,7 +6,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col col-md-8">
-		                <h1 class="no-top">Upcoming Events</h1>
+		                <h1 class="no-top">{{ ucfirst($range) }} Events</h1>
 		            </div>
 		            <div class="col col-md-4">
 		                <div class="pull-right">
@@ -158,7 +158,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="event in events | filter:search | orderBy: 'date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="event in events | filter:search | orderBy:'<?php if ($range == 'past') echo '-' ?>date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 		                        
 		                        @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		                            <td ng-click="checkbox()">
@@ -232,10 +232,10 @@
 		
 		<?php
 			if (Auth::user()->hasRole(["Superadmin", "Admin"])) {
-				$object = 'all-events';
+				$object = 'all-' . $range . '-events';
 			}
 			else {
-				$object = 'all-events-by-role';
+				$object = 'all-' . $range . '-events-by-role';
 			}
 		?>
 		

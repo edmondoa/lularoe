@@ -114,6 +114,7 @@ Route::group(array('before' => 'auth'), function() {
 	Route::post('events/disable', 'UventController@disable');
 	Route::post('events/enable', 'UventController@enable');
 	Route::post('events/delete', 'UventController@delete');
+	Route::get('past-events', 'UventController@indexPast');
 	
 	// opportunities
 	Route::resource('opportunities', 'OpportunityController');
@@ -140,7 +141,6 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('api/all-sales', 'SaleController@getAllSales');
 	Route::get('api/all-smsMessages', 'SmsMessageController@getAllSmsMessages');
 	Route::get('api/all-states', 'StateController@getAllStates');
-	Route::get('api/all-users', 'UserController@getAllUsers');
 	Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 	Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
 	Route::get('api/all-events', 'DataOnlyController@getAllUvents');

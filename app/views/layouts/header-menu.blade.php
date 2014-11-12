@@ -13,7 +13,7 @@
 					<li><a href="{{ removeSubdomain(url()) }}/login">Log In</a></li>
 				</ul>
 			@else
-	            <ul class="nav navbar-nav navbar-right">
+	            <ul class="nav navbar-nav navbar-right" id="top-right-menu">
 	                <li class="dropdown">
 	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 	                        {{ Auth::user()->first_name }}

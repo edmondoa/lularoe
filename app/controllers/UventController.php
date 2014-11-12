@@ -4,13 +4,26 @@ class uventController extends \BaseController {
 
 
 	/**
-	 * Display a listing of uvents
+	 * Display a listing of upcoming uvents
 	 *
 	 * @return Response
 	 */
 	public function index()
 	{
-		return View::make('event.index');
+		$range = 'upcoming';
+		return View::make('event.index', compact('range'));
+	}
+
+	/**
+	 * Display a listing of past uvents
+	 *
+	 * @return Response
+	 */
+	public function indexPast()
+	{
+		$range = 'past';
+		$sort = 'date_end';
+		return View::make('event.index', compact('range'));
 	}
 	
 	/**

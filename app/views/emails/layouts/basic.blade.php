@@ -144,6 +144,7 @@
 		versus mobile clients. -->
 		<!-- <span class="mobile_link">123-456-7890</span> -->
 		@show
+		<img src="{{ url() }}/img/socially-mobile-logo.png" alt="{{ Config::get('site.company_name') }}"
 		@yield('unsubscribe')
 		</td>
 	</tr>

@@ -26,8 +26,10 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
 /* layouts */
 .layout-centered { padding-top:70px; }
 .layout-default { padding-top:50px !important; }
+.layout-default #top-right-menu { margin-right:0; }
 .layout-gray { padding-top:50px; background:rgb(235,235,235) !important; }
 .layout-gray #container { box-shadow:0 0 5px rgba(0,0,0,.25); background:white; margin-top:-30px; padding:65px 40px 40px 40px; margin-bottom:20px; }
+
 
 /* main content */
 
@@ -97,6 +99,9 @@ small { opacity:.5; font-size:9pt; }
 #main-menu .popover a:hover { background:none !important; text-decoration:none; }
 .label .fa-times { cursor:pointer; }
 .table tbody th { text-align:right; }
+.dropdown-menu { background:#202020; }
+.dropdown-menu a { color:rgb(150,150,150) !important; }
+.dropdown-menu a:hover { color:white !important; background:none !important; }
 
 /* jquery-ui overrides */
 select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight:100; }

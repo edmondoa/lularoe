@@ -3,23 +3,6 @@
 class userController extends \BaseController {
 
 	/**
-	 * Data only
-	 */
-	public function getAllUsers(){
-		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			return User::all();
-			foreach ($users as $user)
-			{
-				if (strtotime($user['created_at']) >= (time() - Config::get('site.new_time_frame') ))
-				{
-					$user['new'] = 1;
-				}
-			}
-			return $users;
-		}
-	}
-
-	/**
 	 * Display a listing of users
 	 *
 	 * @return Response

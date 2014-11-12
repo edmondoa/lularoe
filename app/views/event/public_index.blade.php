@@ -10,11 +10,21 @@
 	            <div class="col col-md-4">
 	                <div class="pull-right">
 	                    <div class="input-group">
+	                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
+	                        <span class="input-group-btn">
+	                            <button class="btn btn-default" type="button">
+	                                <i class="fa fa-search"></i>
+	                            </button>
+	                        </span>
+	                    </div>
+	                </div>
+	                <!-- <div class="pull-right">
+	                    <div class="input-group">
 	                        <span class="input-group-addon">Count</span>
 	                        <input type="number" min="1" class="form-control itemsPerPage" ng-model="pageSize">
 	                    </div>
 	                </div>
-	                <h4 class="pull-right no-top currentPage margin-right-1">Page <span ng-bind="currentPage"></span></h4>
+	                <h4 class="pull-right no-top currentPage margin-right-1">Page <span ng-bind="currentPage"></span></h4> -->
 	            </div>
 	        </div><!-- row -->
 	    </div><!-- page-actions -->

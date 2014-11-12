@@ -3,21 +3,6 @@
 class opportunityController extends \BaseController {
 
 	/**
-	 * Data only
-	 */
-	public function getAllOpportunities(){
-		$opportunities = Opportunity::all();
-		foreach ($opportunities as $opportunity)
-		{
-			if (strtotime($opportunity['created_at']) >= (time() - Config::get('site.new_time_frame') ))
-			{
-				$opportunity['new'] = 1;
-			}
-		}
-		return $opportunities;
-	}
-
-	/**
 	 * Display a listing of opportunities
 	 *
 	 * @return Response

@@ -3,10 +3,6 @@
 class DownlineController extends \BaseController
 {
 	
-	/**
-	 * Data only
-	 */
-	
 	public function immediateDownline($id)
 	{
 		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id || Auth::user()->hasRole(array('Superadmin', 'Admin'))) {

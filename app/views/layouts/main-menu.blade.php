@@ -42,6 +42,7 @@
  					<a href="javascript:void(0)" data-href="/events" class='list-group-item' data-toggle="popover" data-content="
  						<a target='_blank' href='/public-events'><i class='fa fa-globe'></i> Public Events Page</a>
  						<a href='/events'><i class='fa fa-calendar'></i> Upcoming Events</a>
+ 						<a href='/past-events'><i class='fa fa-reply'></i> Past Events</a>
  						<a href='/events/create'><i class='fa fa-plus'></i> New Event</a>
  					">
  						<i class="fa fa-calendar"></i> <span class="text">Events</span>
