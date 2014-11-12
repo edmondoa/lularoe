@@ -137,8 +137,10 @@ class userController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) 
+		{
 			$user = User::findOrFail($id);
+			$old_user_data = $user;
 			$rules = User::$rules;
 			$rules['email'] = 'unique:users,email,' . $user->id;
 			$rules['password'] = 'sometimes|confirmed|digits_between:8,12';
@@ -152,6 +154,10 @@ class userController extends \BaseController {
 			}
 			$data['password'] = Hash::make($data['password']);
 			$user->update($data);
+			if($old_user_data->sponsor_id != $user->sponsor_id)
+			{
+				Event::fire('sponsor.update', array('rep_id' => $user->id));
+			}
 	
 			return Redirect::route('users.show', $id)->with('message', 'User updated.');
 		}

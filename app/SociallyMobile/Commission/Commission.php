@@ -152,19 +152,29 @@ class Commission extends \BaseController {
 	* @param int rep_id 
 	* @return multi-dimensional array of generational hierarchy
 	*/
-	public function get_org_tree($rep_id){
+	public function get_org_tree($rep_id,$level = 0){
+		if(is_null($level))
+		{
+			$level = $rep_id;
+		}
 		$frontline = User::find($rep_id)->frontline;
 		$user = User::find($rep_id);
 		$children = [];
+		//$sql = "SELECT level FROM levels WHERE ancestor_id='".$level."' AND user_id='".$rep_id."' LIMIT 1";
+		//$level = \DB::select($sql);
+		//echo"<pre>"; print_r($level); echo"</pre>";
+		//echo"<pre>"; print_r($sql); echo"</pre>";
+		//return ;
 		$generation = new \stdClass;
 		$generation->id = $user->id;
+		$generation->level = $level;
 		$generation->name = $user->first_name." ".$user->last_name;
 		//$generation->children = array();
 		$count = 0;
 		foreach($frontline as $rep)
 		{
 			$count ++;
-			$children[] = $this->get_org_tree($rep->id);
+			$children[] = $this->get_org_tree($rep->id,$level+1);
 		}
 		$generation->children = $children;
 
