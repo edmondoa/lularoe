@@ -297,6 +297,5 @@ Route::get('test-steve', function() {
 });
 
 Route::get('test', function() {
-	return Config::get('mail.from');
-
+	return User::find(2001)->descendants;
 });
