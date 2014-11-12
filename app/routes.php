@@ -362,7 +362,9 @@ Route::get('populate-levels', function(){
 # Testing and etc.
 ##############################################################################################
 
-Route::get('test-steve', 'dataOnlyController@getAllUventsByRole');
+Route::get('test-steve', function() {
+	echo url() . '/img/socially-mobile-logo.png';
+});
 
 Route::get('test', function() {
 

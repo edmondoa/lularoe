@@ -42,8 +42,10 @@
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('sponsor_id', 'Sponsor Id') }}
-		        {{ Form::text('sponsor_id', null, array('class' => 'form-control')) }}
+			    <div class="form-group">
+			        {{ Form::label('sponsor_id', 'Assign to') }}
+			        {{ Form::text('sponsor_id', null, array('class' => 'form-control', 'placeholder' => 'ISM ID')) }}
+			    </div>
 		    </div>
 		    
 		    <div class="form-group">

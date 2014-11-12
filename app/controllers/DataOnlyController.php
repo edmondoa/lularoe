@@ -75,6 +75,22 @@ class DataOnlyController extends \BaseController
 	public function getAllOpportunities(){
 		return $opportunities = Opportunity::all();
 	}
+	
+	/*
+	 * Leads
+	 */
+
+	public function getAllLeads() {
+		return Lead::all();
+	}
+	
+	public function getAllLeadsByRep($id) {
+		return User::find($id)->leads()->get();
+	}
+
+	/*
+	 * Users
+	 */
 
 	// users
 	public function getAllUsers(){

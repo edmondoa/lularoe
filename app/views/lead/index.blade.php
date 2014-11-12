@@ -27,8 +27,8 @@
 		                            <select class="form-control selectpicker actions">
 		                                <option value="/users/email" selected>Send Email</option>
 		                                <option value="/users/sms">Send Text (SMS)</option>
-		                                <option value="leads/disable" selected>Disable</option>
-		                                <option value="leads/enable">Enable</option>
+		                                <!-- <option value="leads/disable" selected>Disable</option>
+		                                <option value="leads/enable">Enable</option> -->
 		                                <option value="leads/delete">Delete</option>
 		                            </select>
 		                            <div class="input-group-btn">
@@ -106,14 +106,16 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='sponsor_name'; reverseSort = !reverseSort">Sponsor
-                            		<span>
-                            			<span ng-show="orderByField == 'sponsor_name'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
+                        		@if (Auth::user()->hasRole(['Superadmin','Admin']))
+	                            	<th class="link" ng-click="orderByField='sponsor_name'; reverseSort = !reverseSort">Sponsor
+	                            		<span>
+	                            			<span ng-show="orderByField == 'sponsor_name'">
+		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+		                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+	                            			</span>
+	                            		</span>
+	                        		</th>
+                        		@endif
                         		
                             	<th class="link" ng-click="orderByField='opportunity_name'; reverseSort = !reverseSort">Opportunity
                             		<span>
@@ -124,14 +126,14 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
+                            	<!-- <th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
                             		<span>
                             			<span ng-show="orderByField == 'disabled'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
-                        		</th>
+                        		</th> -->
                         		
                             	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
                             		<span>
@@ -169,17 +171,18 @@
 					                <span ng-bind="lead.phone"></span>
 					            </td>
 					            
-					            <td>
-					                <span ng-bind="lead.sponsor_name"></span>
-					            </td>
-					            
+					            @if (Auth::user()->hasRole(['Superadmin','Admin']))
+						            <td>
+						                <span ng-bind="lead.sponsor_name"></span>
+						            </td>
+					            @endif
 					            <td>
 					                <span ng-bind="lead.opportunity_name"></span>
 					            </td>
 					            
-					            <td>
+					            <!-- <td>
 					                <span ng-bind="lead.disabled"></span>
-					            </td>
+					            </td> -->
 					            
 					            <td>
 					            	<span ng-bind="lead.updated_at"></span>

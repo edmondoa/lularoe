@@ -66,9 +66,9 @@
 	                            	<input type="checkbox">
 	                            </th>
                             	  
-                            	<th class="link" ng-click="orderByField='level'; reverseSort = !reverseSort">Level
+                            	<th class="link" ng-click="orderByField='pivot.level'; reverseSort = !reverseSort">Level
                             		<span>
-                            			<span ng-show="orderByField == 'level'">
+                            			<span ng-show="orderByField == 'pivot.level'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
@@ -141,13 +141,13 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: 'last_name' | orderBy: 'pivot.level' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
 	                            
 	                            <td>
-					                <span ng-bind="user.level"></span></a>
+					                <span ng-bind="user.pivot.level"></span></a>
 	                            </td>
 	                            
 	                            <td>
