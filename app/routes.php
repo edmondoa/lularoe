@@ -368,7 +368,7 @@ Route::get('populate-levels', function(){
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	echo url() . '/img/socially-mobile-logo.png';
+	return User::all()->count();
 });
 
 Route::get('test', function() {

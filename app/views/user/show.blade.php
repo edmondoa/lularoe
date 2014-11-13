@@ -7,26 +7,28 @@
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		    <div class="btn-group">
 			    <a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
-			    @if ($user->disabled == 0)
-				    {{ Form::open(array('url' => 'users/disable', 'method' => 'DISABLE')) }}
-				    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
-				    	<button class="btn btn-default active" title="Currently enabled. Click to disable.">
-				    		<i class="fa fa-eye"></i>
+				<?php if (Auth::user()->id != $user->id) { ?>
+				    @if ($user->disabled == 0)
+					    {{ Form::open(array('url' => 'users/disable', 'method' => 'DISABLE')) }}
+					    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
+					    	<button class="btn btn-default active" title="Currently enabled. Click to disable.">
+					    		<i class="fa fa-eye"></i>
+					    	</button>
+					    {{ Form::close() }}
+					@else
+					    {{ Form::open(array('url' => 'users/enable', 'method' => 'ENABLE')) }}
+					    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
+					    	<button class="btn btn-default" title="Currently disabled. Click to enable.">
+					    		<i class="fa fa-eye"></i>
+					    	</button>
+					    {{ Form::close() }}
+					@endif
+				    {{ Form::open(array('url' => 'users/' . $user->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this record? This cannot be undone.");')) }}
+				    	<button class="btn btn-default" title="Delete">
+				    		<i class="fa fa-trash" title="Delete"></i>
 				    	</button>
 				    {{ Form::close() }}
-				@else
-				    {{ Form::open(array('url' => 'users/enable', 'method' => 'ENABLE')) }}
-				    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
-				    	<button class="btn btn-default" title="Currently disabled. Click to enable.">
-				    		<i class="fa fa-eye"></i>
-				    	</button>
-				    {{ Form::close() }}
-				@endif
-			    {{ Form::open(array('url' => 'users/' . $user->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this record? This cannot be undone.");')) }}
-			    	<button class="btn btn-default" title="Delete">
-			    		<i class="fa fa-trash" title="Delete"></i>
-			    	</button>
-			    {{ Form::close() }}
+				<?php } ?>
 			</div>
 		@endif
 	</div><!-- row -->

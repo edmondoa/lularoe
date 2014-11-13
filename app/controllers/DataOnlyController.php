@@ -33,6 +33,9 @@ class DataOnlyController extends \BaseController
 	
 	// all downline
 	public function getAllDownline($id) {
+		if ($id == 0) {
+			return User::all();
+		}
 		return User::find($id)->descendants;
 	}
 

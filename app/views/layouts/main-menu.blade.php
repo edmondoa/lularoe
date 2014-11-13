@@ -1,5 +1,15 @@
  			<div class="list-group" id="main-menu">
- 				@if (Auth::user()->hasRole(['Superadmin','Admin','Rep']))
+ 				@if (Auth::user()->hasRole(['Superadmin','Admin']))
+ 					<a title="Dashboard" href="/dashboard" class="list-group-item"><i class="fa fa-dashboard"></i> <span class="text">Dashboard</span></a>
+ 					<a href="javascript:void(0)" data-href="/downline" class='list-group-item' data-toggle="popover" data-content="
+ 						<a href='/downline/immediate/0'><i class='fa fa-arrow-down'></i> Immediate Downline</a>
+ 						<a href='/downline/all/0'><i class='fa fa-bars'></i> All Downline</a>
+ 						<a href='/downline/visualization/0'><i class='fa fa-sitemap'></i> Visualization</a>
+ 					">
+ 						<i class="fa fa-sitemap"></i> <span class="text">Downline</span>
+ 					</a>
+ 				@endif
+ 				@if (Auth::user()->hasRole(['Rep']))
  					<a title="Dashboard" href="/dashboard" class="list-group-item"><i class="fa fa-dashboard"></i> <span class="text">Dashboard</span></a>
  					<a href="javascript:void(0)" data-href="/downline" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/downline/immediate/{{ Auth::user()->id }}'><i class='fa fa-arrow-down'></i> Immediate Downline</a>
@@ -7,12 +17,7 @@
  						<a href='/downline/visualization/{{ Auth::user()->id }}'><i class='fa fa-sitemap'></i> Visualization</a>
  					">
  						<i class="fa fa-sitemap"></i> 
- 						<span class="text">
- 							@if (Auth::user()->hasRole(['Rep']))
- 								My 
- 							@endif
- 							Downline
- 						</span>
+ 						<span class="text">My Downline</span>
  					</a>
  				@endif
  				@if (Auth::user()->hasRole(['Rep']))
