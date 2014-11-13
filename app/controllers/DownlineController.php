@@ -15,6 +15,10 @@ class DownlineController extends \BaseController
 	{
 		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id || Auth::user()->hasRole(array('Superadmin', 'Admin'))) {
 			$user = User::findOrFail($id);
+			if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+				$total_users = User::all()->count();
+				return View::make('downline.all', compact('user', 'total_users'));
+			}
 			return View::make('downline.all', compact('user'));
 		}
 	}

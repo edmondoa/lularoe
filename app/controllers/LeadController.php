@@ -3,21 +3,6 @@
 class leadController extends \BaseController {
 
 	/**
-	 * Data only
-	 */
-	public function getAllLeads(){
-		$leads = Lead::all();
-		foreach ($leads as $lead)
-		{
-			if (strtotime($lead['created_at']) >= (time() - Config::get('site.new_time_frame') ))
-			{
-				$lead['new'] = 1;
-			}
-		}
-		return $leads;
-	}
-
-	/**
 	 * Display a listing of leads
 	 *
 	 * @return Response

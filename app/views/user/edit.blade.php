@@ -68,7 +68,7 @@
 		        {{ Form::text('phone', null, array('class' => 'form-control')) }}
 		    </div>
 		    
-		    @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		    @if (Auth::user()->hasRole(['Superadmin', 'Admin']) && Auth::user()->id != $user->id)
 		    	<div class="form-group">
 		    		{{ Form::label('roled_id', 'Role') }}<br>
 		    		{{ Form::select('role_id', array(

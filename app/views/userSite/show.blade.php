@@ -25,16 +25,15 @@
 @section('content')
 	<div class="row">
 	    <div class="col col-md-9">
-	        <div class="col col-md-12">
-	        	@if (isset($userSite->body))
-	        		<h2 class="no-top">{{ $userSite->title }}</h2>
-	        	@endif
-	            @if (isset($userSite->body))
-		            {{ $userSite->body }}
-		        @endif
-	        </div>
-	
-	        <div class="col col-md-6" id="contact-form">
+        	@if (isset($userSite->body))
+        		<h2 class="no-top">{{ $userSite->title }}</h2>
+        	@endif
+            @if (isset($userSite->body))
+	            {{ $userSite->body }}
+	        @endif
+	        <br>
+	        <br>
+        	<div class="col col-md-6 no-padding" id="contact-form">
 	            <h2>Contact {{ $user->first_name }}</h2>
 	            {{ Form::open(array('action' => 'send-contact-form')) }}
 	            
@@ -66,14 +65,32 @@
 		            
 	            {{ Form::close() }}
 	        </div>
-	    </div>
-		<div class="col col-md-3 list-group">
-			<h3 class="no-top">Upcoming Events</h3>
-			@foreach ($events as $event)
-				<a class="list-group-item" href="/events/{{ $event->id }}">
-					{{ $event->name }}<br><small>{{ $event->formatted_start_date }}</small>
-				</a>
-			@endforeach
+		</div>
+		<div class="col col-md-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Current Opportunities</h3>
+				</div>
+				<div class="list-group">
+					@foreach ($opportunities as $opportunity)
+						<a class="list-group-item" href="/opportunity/{{ $opportunity->id }}">
+							{{ $opportunity->title }}
+						</a>
+					@endforeach
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Upcoming Events</h3>
+				</div>
+				<div class="list-group">
+					@foreach ($events as $event)
+						<a class="list-group-item" href="/public-events/{{ $event->id }}">
+							{{ $event->name }}<br><small>{{ $event->formatted_start_date }}</small>
+						</a>
+					@endforeach
+				</div>
+			</div>
 		</div>
 	</div>
 @stop
