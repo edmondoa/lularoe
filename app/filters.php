@@ -98,7 +98,8 @@ Route::filter('rep-site', function($router)
     //dd($domain);
     if (! User::where('public_id',$router->parameter('subdomain'))->first())
     {
-        App::abort(404);
+        //App::abort(404);
+        return Redirect::to('http://'.Config::get('site.domain'));
         //dd($route->parameter('subdomain'));
         //dd("can't find the damn thing");
     }

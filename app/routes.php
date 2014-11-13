@@ -33,8 +33,9 @@ Route::group(array('domain' => '{subdomain}.{domain}', 'before' => 'rep-site'), 
 		$user = User::where('public_id', $subdomain)->first();
 		if ($user->image == '') $user->image = '/img/users/default-avatar.png';
 		else $user->image = '/img/users/avatars/' . $user->image;
-		$userSite = UserSite::where('user_id', $user->id)->first();
-		return dd($userSite);
+		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
+		$userSite->save();
+		//return dd($userSite);
 		if ((!isset($userSite->banner))||($userSite->banner == '')) $userSite->banner = '/img/users/default-banner.png';
 		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
 		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(5)->get();

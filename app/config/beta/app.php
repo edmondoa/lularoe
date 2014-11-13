@@ -196,8 +196,6 @@ return array(
 		'Twilio'		  => 'SociallyMobile\Facades\Twilio',
 		'CMSPayment'	  => 'SociallyMobile\Facades\Payment',
 		'Commission'		=> 'SociallyMobile\Facades\Commission',
-
-
 	),
 
 );
