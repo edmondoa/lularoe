@@ -75,6 +75,7 @@ small { opacity:.5; font-size:9pt; }
 .overflow-hidden { overflow:hidden; }
 .align-right { text-align:right; }
 .big { font-size:1.25em; }
+.no-padding { padding:0; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
@@ -139,7 +140,7 @@ select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight
     #content { padding:20px; }
     #main-menu { text-align:center; }
     #main-menu .text { display:none; }
-    .user-banner-text { position:static; background:#7f7f7f; }
+    .user-banner-text { position:static; background:#303030; }
     .user-banner-container .avatar { width:150px; height:150px; border:5px solid white; }
 }
 @media(max-width:1199px) {

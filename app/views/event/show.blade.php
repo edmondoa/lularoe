@@ -2,7 +2,7 @@
 @section('content')
 <div class="show">
 	<div class="row page-actions">
-		@include('_helpers.breadcrumbs')
+		<!-- @include('_helpers.breadcrumbs') -->
 		<h1 class="no-top">Viewing event</h1>
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		    <div class="btn-group">

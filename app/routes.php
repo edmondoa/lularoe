@@ -36,8 +36,11 @@ Route::group(array('domain' => '{subdomain}.{domain}', 'before' => 'rep-site'), 
 		$userSite = UserSite::where('user_id', $user->id)->first();
 		if ($userSite->banner == '') $userSite->banner = '/img/users/default-banner.png';
 		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
-		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(10)->get();
-		return View::make('userSite.show', compact('user', 'userSite', 'events'));
+		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(5)->get();
+		$opportunities = Opportunity::where('public', 1)->where('deadline', '>', time())->orWhere('deadline', '')->take(5)->orderBy('updated_at', 'DESC')->get();
+		// echo '<pre>'; print_r($opportunities->toArray()); echo '</pre>';
+		// exit;
+		return View::make('userSite.show', compact('user', 'userSite', 'opportunities', 'events'));
     });
 
 	// opportunities (public view)
@@ -75,6 +78,9 @@ Route::post('blast_sms',['uses'=>'BlastController@StoreSms']);
 
 // contact form
 Route::post('send-contact-form',['as' => 'send-contact-form', 'uses' => 'ContactController@send']);
+
+// leads
+Route::resource('leads', 'LeadController');
 
 // events
 Route::get('public-events', 'UventController@publicIndex');
@@ -154,7 +160,6 @@ Route::group(array('before' => 'auth'), function() {
 	# Superadmin, Admin, Editor routes
 	##############################################################################################
 	Route::group(array('before' => ['Superadmin','Admin','Editor']), function() {
-		Route::resource('leads', 'LeadController');
 		Route::post('leads/disable', 'LeadController@disable');
 		Route::post('leads/enable', 'LeadController@enable');
 		Route::post('leads/delete', 'LeadController@delete');

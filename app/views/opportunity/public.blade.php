@@ -3,6 +3,7 @@
 <div class="show">
 	<div class="row">
 		<div class="col col-md-9">
+			<!-- @include('_helpers.breadcrumbs') -->
 			<h1>{{ $opportunity->title }}</h1>
 			{{ $opportunity->body }}
 			<br>
