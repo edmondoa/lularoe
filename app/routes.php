@@ -34,7 +34,8 @@ Route::group(array('domain' => '{subdomain}.{domain}', 'before' => 'rep-site'), 
 		if ($user->image == '') $user->image = '/img/users/default-avatar.png';
 		else $user->image = '/img/users/avatars/' . $user->image;
 		$userSite = UserSite::where('user_id', $user->id)->first();
-		if ($userSite->banner == '') $userSite->banner = '/img/users/default-banner.png';
+		return dd($userSite);
+		if ((!isset($userSite->banner))||($userSite->banner == '')) $userSite->banner = '/img/users/default-banner.png';
 		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
 		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(10)->get();
 		return View::make('userSite.show', compact('user', 'userSite', 'events'));
@@ -343,6 +344,7 @@ Route::group(['before' => 'force.ssl'], function() {
 
 Route::get('populate-levels', function(){
 	$level_count = Level::all()->count();
+	DB::connection()->disableQueryLog();
 	if($level_count > 0)
 	{
 		return $level_count;
@@ -365,6 +367,9 @@ Route::get('populate-levels', function(){
 Route::get('test-steve', 'dataOnlyController@getAllUventsByRole');
 
 Route::get('test', function() {
-
+	DB::connection()->disableQueryLog();
+	Commission::set_levels_down(0);
+	return User::find(0);
 });
 
+Route::get('deploy',['as'=>'deploy', 'uses'=>'Server@deploy']);
