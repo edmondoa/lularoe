@@ -33,6 +33,9 @@ class DataOnlyController extends \BaseController
 	
 	// all downline
 	public function getAllDownline($id) {
+		if ($id == 0) {
+			return User::all();
+		}
 		return User::find($id)->descendants;
 	}
 
@@ -75,6 +78,22 @@ class DataOnlyController extends \BaseController
 	public function getAllOpportunities(){
 		return $opportunities = Opportunity::all();
 	}
+	
+	/*
+	 * Leads
+	 */
+
+	public function getAllLeads() {
+		return Lead::all();
+	}
+	
+	public function getAllLeadsByRep($id) {
+		return User::find($id)->leads()->get();
+	}
+
+	/*
+	 * Users
+	 */
 
 	// users
 	public function getAllUsers(){

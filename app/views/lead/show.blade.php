@@ -4,9 +4,10 @@
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
 		<h1 class="no-top">Viewing lead</h1>
-		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep']))
 		    <div class="btn-group">
 			    <a class="btn btn-default" href="{{ url('leads/'.$lead->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
+			    <!--
 			    @if ($lead->disabled == 0)
 				    {{ Form::open(array('url' => 'leads/disable', 'method' => 'DISABLE')) }}
 				    	<input type="hidden" name="ids[]" value="{{ $lead->id }}">
@@ -22,8 +23,9 @@
 				    	</button>
 				    {{ Form::close() }}
 				@endif
-			    {{ Form::open(array('url' => 'leads/' . $lead->id, 'method' => 'DELETE')) }}
-			    	<button class="btn btn-default" title="Delete">
+				-->
+			    {{ Form::open(array('url' => 'leads/' . $lead->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this record? This cannot be undone.");')) }}
+			    	<button class="btn btn-default" title="Delete" style="border-top-right-radius:4px !important; border-bottom-right-radius:4px !important;">
 			    		<i class="fa fa-trash" title="Delete"></i>
 			    	</button>
 			    {{ Form::close() }}
@@ -63,11 +65,13 @@
 		            <th>Phone:</th>
 		            <td>{{ $lead->phone }}</td>
 		        </tr>
-		        
-		        <tr>
-		            <th>Sponsor:</th>
-		            <td>{{ $lead->sponsor_name }}</td>
-		        </tr>
+		       
+				@if (Auth::user()->hasRole(['Superadmin','Admin'])) 
+			        <tr>
+			            <th>Assigned to:</th>
+			            <td>{{ $lead->sponsor_name }}</td>
+			        </tr>
+			    @endif
 		        
 		        <tr>
 		            <th>Opportunity:</th>

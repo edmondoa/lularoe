@@ -45,8 +45,8 @@
 			    </div>
 			    
 			    <div class="form-group">
-			        {{ Form::label('sponsor_id', 'Sponsor Id') }}
-			        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control')) }}
+			        {{ Form::label('sponsor_id', 'Assign to') }}
+			        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control', 'placeholder' => 'ISM ID')) }}
 			    </div>
 			    
 			    <!-- <div class="form-group">

@@ -141,7 +141,7 @@
 					            	@if (Auth::user()->hasRole(['Superadmin','Admin']))
 					                	<a href="/opportunities/@include('_helpers.opportunity_id')"><span ng-bind="opportunity.title"></span></a>
 					            	@else
-					                	<a href="/opportunity/@include('_helpers.opportunity_id')"><span ng-bind="opportunity.title"></span></a>
+					                	<a target="_blank" href="/opportunity/@include('_helpers.opportunity_id')"><span ng-bind="opportunity.title"></span></a>
 					            	@endif
 					            </td>
 					            
