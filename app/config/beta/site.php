@@ -18,5 +18,9 @@ return [
 	'default_from_email' => 'no-reply@sociallymobile.com',
 	'company_name' => 'SociallyMobile - Beta',
 	'subdomain' => Route::getCurrentRoute()->getParameter('subdomain'),
+	'locked_subdomains' => [
+		'my',
+		'beta',
+	]
 
 ];

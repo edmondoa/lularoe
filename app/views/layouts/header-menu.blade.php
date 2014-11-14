@@ -10,7 +10,7 @@
 		<div class="collapse navbar-collapse">
 			@if (!Auth::check())
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="{{ removeSubdomain(url()) }}/login">Log In</a></li>
+					<li><a href="http://{{ Config::get('site.domain')}}/login">Log In</a></li>
 				</ul>
 			@else
 	            <ul class="nav navbar-nav navbar-right" id="top-right-menu">

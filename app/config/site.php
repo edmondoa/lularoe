@@ -18,4 +18,8 @@ return [
 	'default_from_email' => 'no-reply@sociallymobile.com',
 	'company_name' => 'SociallyMobile',
 	'subdomain' => Route::getCurrentRoute()->getParameter('subdomain'),
+	'locked_subdomains' => [
+		'my',
+		'beta',
+	]
 ];
