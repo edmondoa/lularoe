@@ -90,7 +90,11 @@
 			
 			        <tr>
 			            <th>Sponsor:</th>
-			            <td>{{ $user->sponsor->first_name }} {{ $user->sponsor->last_name }}</td>
+			            <td>
+			            	@if (isset($user->sponsor->first_name))
+			            		{{ $user->sponsor->first_name }} {{ $user->sponsor->last_name }}
+			            	@endif
+			            </td>
 			        </tr>
 			        
 			        <tr>
