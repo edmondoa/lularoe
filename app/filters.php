@@ -95,20 +95,21 @@ Route::filter('superadmin', function(){
 ##############################################################################################
 Route::filter('rep-site', function($router)
 {
-    //dd($domain);
+	//dd($domain);
 
-    if (User::where('public_id',$router->parameter('subdomain'))->count() != 1)
-    {
-        //App::abort(404);
-        return Redirect::to('http://'.Config::get('site.domain'));
-        //dd($router->parameter('subdomain'));
-        //dd("can't find the damn thing");
-    }
-    else
-    {
-    	//dd($router->parameter('subdomain'));
-    	//return $site_owner;
-    }
+	if (User::where('public_id',$router->parameter('subdomain'))->count() != 1)
+	{
+		//App::abort(404);
+		return Redirect::to('http://'.Config::get('site.domain'));
+		//dd($router->parameter('subdomain'));
+		//dd("can't find the damn thing");
+	}
+	else
+	{
+		return User::where('public_id',$router->parameter('subdomain'))->get();
+		//dd($router->parameter('subdomain'));
+		//return $site_owner;
+	}
 });
 
 /*
