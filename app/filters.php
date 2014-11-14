@@ -96,15 +96,17 @@ Route::filter('superadmin', function(){
 Route::filter('rep-site', function($router)
 {
     //dd($domain);
-    if (! User::where('public_id',$router->parameter('subdomain'))->first())
+
+    if (User::where('public_id',$router->parameter('subdomain'))->count() != 1)
     {
         //App::abort(404);
-        //return Redirect::to('http://'.Config::get('site.domain'));
-        dd($route->parameter('subdomain'));
+        return Redirect::to('http://'.Config::get('site.domain'));
+        //dd($router->parameter('subdomain'));
         //dd("can't find the damn thing");
     }
     else
     {
+    	//dd($router->parameter('subdomain'));
     	//return $site_owner;
     }
 });
