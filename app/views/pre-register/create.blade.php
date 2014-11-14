@@ -76,7 +76,7 @@
 	    <div class="form-group">
 	        {{ Form::label('state', 'State') }}
 	        <br>
-	        {{ Form::select('state',State::orderBy('full_name')->lists('full_name', 'abbr')) }}
+	        {{ Form::select('state',State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto')) }}
 	    </div>
 	    
 	    <div class="form-group">
@@ -100,7 +100,7 @@
 	<div class="form-group">
 		{{ Form::label('expires_year','* Expires') }}
 		<br>
-		<select name="expires_month">
+		<select name="expires_month" class="form-control inline-block width-auto">
 			<?php
 				for ($y = 1; $y <= 12; $y ++) {
 					if ($y < 10) $y = "0" . $y;
@@ -108,7 +108,7 @@
 				}
 			?>
 		</select>
-		<select name="expires_year">
+		<select name="expires_year" class="form-control inline-block width-auto">
 			<?php
 				$y = date('Y');
 				$x = $y + 10;

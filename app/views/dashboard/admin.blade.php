@@ -2,9 +2,9 @@
 @section('content')
 <div class="row">
 	<div class="col col-md-12">
-		<h1>Welcome, {{ $user->first_name }}</h1>
+		<h1>Dashboard</h1>
 		<div class="alert alert-success inline-block">
-			Copy and paste the following link and send it to anyone whom you'd like to join your team:<br>
+			Copy and paste the following link and send it to anyone whom you'd like to become a top-level ISM:<br>
 			<a href="{{ url() }}/join/{{ $user->public_id }}">{{ url() }}/join/{{ $user->public_id }}</a>
 		</div>
 	</div>
@@ -16,34 +16,17 @@
 			<table class="table table-striped">
 				<tr>
 					<th>Total ISM's</th>
-					<td><a href="/downline/all/0">{{ $user->front_line_count }}</a></td>
+					<td><a href="/downline/all/0">{{ $reps }}</a></td>
+				</tr>
+				<tr>
+					<th>Top Level ISM's</th>
+					<td><a href="/downline/immediate/{{ $user->id }}">{{ $user->front_line_count }}</a></td>
 				</tr>
 			</table>
 		</div><!-- panel -->
-		@if (count($ranks) > 1)
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h2 class="panel-title">Rank Advancement History</h2>
-				</div>
-				<table class="table table-striped">
-					<thead>
-						<th>Date</th>
-						<th>Rank</th>
-					</thead>
-					<tbody>
-						@foreach ($ranks as $rank)
-							<tr>
-								<th>{{ $rank->pivot->created_at }}</th>
-								<td>{{ $rank->name }} (Rank {{ $rank->id }})</td>
-							</tr>
-						@endforeach
-					</tbody>
-				</table>
-			</div><!-- panel -->
-		@endif
 	</div><!-- col -->
 	<div class="col col-md-6">
-		<div class="panel panel-default">
+		<!--<div class="panel panel-default">
 			<div class="panel-heading">
 				<h2 class="panel-title">Your Info</h2>
 			</div>
@@ -64,23 +47,6 @@
 				@endif
 			</table>
 		</div><!-- panel -->
-		@if (isset($children))
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h2 class="panel-title">Your Team</h2>
-				</div>
-				<table class="table table-striped">
-					<tr>
-						<th>Members in Direct Downline</th>
-						<td><a href="/downline/immediate/{{ $user->id }}">{{ $user->descendant_count }}</a></td>
-					</tr>
-					<tr>
-						<th>Members in Entire Team</th>
-						<td><a href="/downline/all/{{ $user->id }}">{{ $user->front_line_count }}</a></td>
-					</tr>
-				</table>
-			</div><!-- panel -->
-		@endif
 	</div><!-- col -->
 </div><!-- row -->
 @stop

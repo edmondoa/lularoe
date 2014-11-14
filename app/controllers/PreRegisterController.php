@@ -11,8 +11,16 @@ class PreRegisterController extends \BaseController {
 	 */
 	public function create($public_id = '')
 	{
+		//return dd($public_id);
 		if (empty($public_id)) return View::make('pre-register.sponsor');
-		$sponsor = User::where('public_id',$public_id)->where('disabled',0)->first();
+		$sponsor = User::where('public_id',$public_id)->first();
+		if($sponsor->disabled)
+		{
+			return View::make('pre-register.sponsor')->with('message_danger', 'The sponsor you entered has been disabled');
+		}
+		//echo"<pre>"; print_r($sponsor); echo"</pre>";
+		//exit;
+		//return $sponsor;
 		if(isset($sponsor->id))
 		{
 			return View::make('pre-register.create',compact('sponsor'));
@@ -44,7 +52,7 @@ class PreRegisterController extends \BaseController {
 	{
 		$data = Input::all();
 		$sponsor_id = $data['sponsor_id'];
-		return Redirect::to('join/' . $sponsor_id);
+		return Redirect::to('/join/' . $sponsor_id);
 	}
 
 	/**
@@ -175,6 +183,8 @@ class PreRegisterController extends \BaseController {
 		}
 		//User::create($data);
 		//exit;
+		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
+		$user->userSite()->associate($userSite);
 		Event::fire('rep.create', array('rep_id' => $user->id));
 		Auth::loginUsingId($user->id);
 		return Redirect::to('/dashboard');

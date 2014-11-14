@@ -7,26 +7,28 @@
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		    <div class="btn-group">
 			    <a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
-			    @if ($user->disabled == 0)
-				    {{ Form::open(array('url' => 'users/disable', 'method' => 'DISABLE')) }}
-				    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
-				    	<button class="btn btn-default active" title="Currently enabled. Click to disable.">
-				    		<i class="fa fa-eye"></i>
+				<?php if (Auth::user()->id != $user->id) { ?>
+				    @if ($user->disabled == 0)
+					    {{ Form::open(array('url' => 'users/disable', 'method' => 'DISABLE')) }}
+					    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
+					    	<button class="btn btn-default active" title="Currently enabled. Click to disable.">
+					    		<i class="fa fa-eye"></i>
+					    	</button>
+					    {{ Form::close() }}
+					@else
+					    {{ Form::open(array('url' => 'users/enable', 'method' => 'ENABLE')) }}
+					    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
+					    	<button class="btn btn-default" title="Currently disabled. Click to enable.">
+					    		<i class="fa fa-eye"></i>
+					    	</button>
+					    {{ Form::close() }}
+					@endif
+				    {{ Form::open(array('url' => 'users/' . $user->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this record? This cannot be undone.");')) }}
+				    	<button class="btn btn-default" title="Delete">
+				    		<i class="fa fa-trash" title="Delete"></i>
 				    	</button>
 				    {{ Form::close() }}
-				@else
-				    {{ Form::open(array('url' => 'users/enable', 'method' => 'ENABLE')) }}
-				    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
-				    	<button class="btn btn-default" title="Currently disabled. Click to enable.">
-				    		<i class="fa fa-eye"></i>
-				    	</button>
-				    {{ Form::close() }}
-				@endif
-			    {{ Form::open(array('url' => 'users/' . $user->id, 'method' => 'DELETE')) }}
-			    	<button class="btn btn-default" title="Delete">
-			    		<i class="fa fa-trash" title="Delete"></i>
-			    	</button>
-			    {{ Form::close() }}
+				<?php } ?>
 			</div>
 		@endif
 	</div><!-- row -->
@@ -37,15 +39,36 @@
 					<h2 div class="panel-title">Information</h2>
 				</div>
 			    <table class="table table-striped">
-			        
+			        <tr>
+			            <th>
+			            	@if ($user->role_name == 'Rep')
+			            		ISM ID:
+			            	@else
+			            		User ID:
+			            	@endif
+			            </th>
+			            <td>{{ $user->id }}</td>
+			        </tr>
 			        <tr>
 			            <th>Email:</th>
-			            <td>{{ $user->email }}</td>
+			            <td>
+			            	{{ Form::open(array('url' => '/users/email', 'method' => 'POST', 'class' => 'inline-block')) }}
+			            		{{ Form::hidden('user_ids[]', $user->id) }}
+			            		<button title="Send Email"><i class="fa fa-envelope"></i></button>
+			            	{{ Form::close() }}
+			            	&nbsp;{{ $user->email }}
+			            </td>
 			        </tr>
 			        
 			        <tr>
 			            <th>Phone:</th>
-			            <td>{{ $user->phone }}</td>
+			            <td>
+							{{ Form::open(array('url' => '/users/sms', 'method' => 'POST', 'class' => 'inline-block')) }}
+			            		{{ Form::hidden('user_ids[]', $user->id) }}
+			            		<button style="width:32px;" title="Send Text Message (SMS)"><i class="fa fa-mobile-phone"></i></button>
+			            	{{ Form::close() }}
+			            	&nbsp;{{ $user->phone }}
+			            </td>
 			        </tr>
 			        
 					@if (Auth::user()->hasRole(['Admin','Superadmin']))
@@ -61,14 +84,13 @@
 			        </tr>
 					  
 			        <tr>
-			            <th>Role Id:</th>
-			            <td>{{ $user->role_id }}</td>
+			            <th>Role:</th>
+			            <td>{{ $user->role_name }}</td>
 			        </tr>
 			
-					
 			        <tr>
-			            <th>Sponsor Id:</th>
-			            <td>{{ $user->sponsor_id }}</td>
+			            <th>Sponsor:</th>
+			            <td>{{ $user->sponsor->first_name }} {{ $user->sponsor->last_name }}</td>
 			        </tr>
 			        
 			        <tr>

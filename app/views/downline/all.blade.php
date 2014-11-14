@@ -6,16 +6,25 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col col-md-8">
-		            	@if (Auth::user()->hasRepInDownline($user->id))
+		            	@if (Auth::user()->hasRepInDownline($user->id) || (Auth::user()->hasRole(['Superadmin', 'Admin']) && isset($user->sponsor_id)))
 		            		<div class="breadcrumbs">
 		            			<a href="/downline/all/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
 		            		</div>
 		            	@endif
-		            	@if ($user->id == Auth::user()->id)
-		            		<h1 class="no-top">Your Entire Downline</h1>
-		            	@else
-		                	<h1 class="no-top">{{ $user->first_name }} {{ $user->last_name }}'s Entire Downline</h1>
-		            	@endif
+		            	<h1 class="no-top">
+			            	@if ($user->id == Auth::user()->id)
+			            		Your Entire Downline
+			            	@else
+			                	{{ $user->first_name }} {{ $user->last_name }}'s Entire Downline
+			            	@endif
+			            	<span class="badge">
+				            	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+				            		{{ $total_users }}
+				            	@else
+				            		{{ $user->descendant_count }}
+				            	@endif
+			            	</span>
+		            	</h1>
 		            </div>
 		            <div class="col col-md-4">
 		                <div class="pull-right">
@@ -65,6 +74,17 @@
 	                            <th>
 	                            	<input type="checkbox">
 	                            </th>
+	                            
+	                            @if (Auth::user()->hasRole(['Rep']))
+	                            	<th class="link" ng-click="orderByField='pivot.level'; reverseSort = !reverseSort">Level
+	                            		<span>
+	                            			<span ng-show="orderByField == 'pivot.level'">
+		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+		                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+	                            			</span>
+	                            		</span>
+	                        		</th>
+	                        	@endif
                             	                     			
                             	<th class="link" ng-click="orderByField='last_name'; reverseSort = !reverseSort">Name
                             		<span>
@@ -132,10 +152,16 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: 'last_name' | orderBy: 'pivot.level' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
+	                            
+	                            @if (Auth::user()->hasRole(['Rep']))
+		                            <td>
+						                <span ng-bind="user.pivot.level"></span></a>
+		                            </td>
+	                            @endif
 	                            
 	                            <td>
 					                <a href="/users/@include('_helpers.user_id')" title="View Details"><span ng-bind="user.last_name"></span>, <span ng-bind="user.first_name"></span></a>
