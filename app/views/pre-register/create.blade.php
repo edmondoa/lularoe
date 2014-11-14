@@ -100,23 +100,8 @@
 	<div class="form-group">
 		{{ Form::label('expires_year','* Expires') }}
 		<br>
-		<select name="expires_month">
-			<?php
-				for ($y = 1; $y <= 12; $y ++) {
-					if ($y < 10) $y = "0" . $y;
-					echo "<option>$y</option>";
-				}
-			?>
-		</select>
-		<select name="expires_year">
-			<?php
-				$y = date('Y');
-				$x = $y + 10;
-				for ($y = date('Y'); $y <= $x; $y ++) {
-					echo "<option>$y</option>";
-				}
-			?>
-		</select>
+		{{Form::select('expires_month',['01'=>'Jan','02'=>'Jan','03'=>'Mar','04'=>'Apr','05'=>'May','06'=>'Jun','07'=>'Jul','08'=>'Aug','09'=>'Sept','10'=>'Oct','11'=>'Nov','12'=>'Dec'])}}
+		{{Form::select('expires_year',array_combine(range(date('Y'),(date('Y')+10)),range(date('Y'),(date('Y')+10))))}}
 	</div>
 
 	<div class="form-group">
