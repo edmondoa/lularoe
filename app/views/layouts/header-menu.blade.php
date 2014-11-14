@@ -20,8 +20,8 @@
 	                        <b class="caret"></b>
 	                    </a>
 	                    <ul class="dropdown-menu">
-	                        <li><a href="{{ removeSubdomain(url()) }}/settings"><span class="fa fa-cog"></span> &nbsp;Settings</a></li>
-	                        <li><a href="{{ removeSubdomain(url()) }}/logout"><span class="fa fa-sign-out"></span> &nbsp;Log Out</a></li>
+	                        <li><a href="/settings"><span class="fa fa-cog"></span> &nbsp;Settings</a></li>
+	                        <li><a href="/logout"><span class="fa fa-sign-out"></span> &nbsp;Log Out</a></li>
 	                    </ul>
 	                </li>
 	            </ul>
