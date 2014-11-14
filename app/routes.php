@@ -26,33 +26,36 @@ Route::controller('password', 'RemindersController');
 ##############################################################################################
 Route::group(array('domain' => '{subdomain}.sociallymobile.{tld}', 'before' => 'rep-site'), function($subdomain)
 {
-    //dd($domain);
-    
-    Route::get('/', function($subdomain)
-    {
-		$user = User::where('public_id', $subdomain)->first();
-		if ($user->image == '') $user->image = '/img/users/default-avatar.png';
-		else $user->image = '/img/users/avatars/' . $user->image;
-		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
-		$userSite->save();
-		//return dd($userSite);
-		if ((!isset($userSite->banner))||($userSite->banner == '')) $userSite->banner = '/img/users/default-banner.png';
-		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
-		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(5)->get();
-		$opportunities = Opportunity::where('public', 1)->where('deadline', '>', time())->orWhere('deadline', '')->take(5)->orderBy('updated_at', 'DESC')->get();
-		// echo '<pre>'; print_r($opportunities->toArray()); echo '</pre>';
-		// exit;
-		return View::make('userSite.show', compact('user', 'userSite', 'opportunities', 'events'));
-    });
-
-	// opportunities (public view)
-	Route::get('opportunity/{id}', function($subdomain, $domain, $id)
+	//dd($domain);
+	if(!in_array($subdomain,Config::get('site.locked_subdomains')))
 	{
-		$opportunity = Opportunity::findOrFail($id);
-		$sponsor = User::where('public_id', $subdomain)->first();
-		return View::make('opportunity.public', compact('opportunity','sponsor'));
-	});
+		Route::get('/', function($subdomain)
+		{
+			$user = User::where('public_id', $subdomain)->first();
+			if ($user->image == '') $user->image = '/img/users/default-avatar.png';
+			else $user->image = '/img/users/avatars/' . $user->image;
+			$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
+			$userSite->save();
+			//return dd($userSite);
+			if ((!isset($userSite->banner))||($userSite->banner == '')) $userSite->banner = '/img/users/default-banner.png';
+			else $userSite->banner = '/img/users/banners/' . $userSite->banner;
+			$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(5)->get();
+			$opportunities = Opportunity::where('public', 1)->where('deadline', '>', time())->orWhere('deadline', '')->take(5)->orderBy('updated_at', 'DESC')->get();
+			// echo '<pre>'; print_r($opportunities->toArray()); echo '</pre>';
+			// exit;
+			return View::make('userSite.show', compact('user', 'userSite', 'opportunities', 'events'));
+		});
 
+		// opportunities (public view)
+		Route::get('opportunity/{id}', function($subdomain, $domain, $id)
+		{
+			$opportunity = Opportunity::findOrFail($id);
+			$sponsor = User::where('public_id', $subdomain)->first();
+			return View::make('opportunity.public', compact('opportunity','sponsor'));
+		});
+
+		
+	}
 });
 
 ##############################################################################################
