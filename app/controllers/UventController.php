@@ -2,7 +2,6 @@
 
 class uventController extends \BaseController {
 
-
 	/**
 	 * Display a listing of upcoming uvents
 	 *

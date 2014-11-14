@@ -194,10 +194,8 @@ return array(
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
 		'Twilio'		  => 'SociallyMobile\Facades\Twilio',
-		'Payment'		  => 'SociallyMobile\Facades\Payment',
+		'CMSPayment'	  => 'SociallyMobile\Facades\Payment',
 		'Commission'		=> 'SociallyMobile\Facades\Commission',
-
-
 	),
 
 );

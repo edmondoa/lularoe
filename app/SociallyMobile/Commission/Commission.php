@@ -51,7 +51,7 @@ class Commission extends \BaseController {
 	public function level_up($sponsor_id,$level = 0,$from_id=null){
 		$sponsor = User::find($sponsor_id);
 		if(is_null($from_id)) $from_id = $sponsor_id;
-		if((isset($sponsor->id))&&($sponsor->sponsor_id != 0))
+		if((isset($sponsor->id))&&(!is_null($sponsor->sponsor_id)))
 		{
 			if($sponsor_id != $from_id)
 			{
@@ -62,6 +62,7 @@ class Commission extends \BaseController {
 		}
 		else
 		{
+			//echo "It must be a topline";
 			if($sponsor_id != $from_id)
 			{
 				$level_data = ['ancestor_id'=>$sponsor->id,'user_id'=>$from_id,'level'=>$level];

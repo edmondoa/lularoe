@@ -44,7 +44,7 @@ class userController extends \BaseController {
 		$rules['zip'] = 'required|digits_between:5,10';
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
 		$rules['password'] = 'required|confirmed|digits_between:8,12';
-		$rules['sponsor_id'] = 'required|digits';
+		$rules['sponsor_id'] = 'required|numeric';
 		$check_sponsor_id = User::where('public_id', $data['sponsor_id']);
 
 		$validator = Validator::make($data,$rules);
@@ -65,38 +65,9 @@ class userController extends \BaseController {
 	    	'zip'=>$data['zip'],
 	    	]);
 		$user->addresses()->save($address);
-		
-        // process and store image
-        if (Input::file('image')) {
-            // upload and link to image
-            $filename = '';
-            if (Input::hasFile('image')) {
-                $file = Input::file('image');
-                $destinationPath = public_path() . '/img/avatars/';
-                $extension = $file->getClientOriginalExtension();
-                $filename = str_random(20) . '.' . $extension;
-                $uploadSuccess   = $file->move($destinationPath, $filename);
-    
-                // open an image file
-                $img = Image::make('img/avatars/' . $filename);
-    
-                // now you are able to resize the instance
-                $img->fit(50, 50);
-    
-                // finally we save the image as a new image
-                $img->save('img/avatars/' . $filename);
-    
-                $data['image'] = $filename;
-            }
-        }
-        else if ($data['icon'] != '') {
-            $data['image'] = 'icons/' . $data['icon'] . '.png';
-        }
-		
-		// log in new user
 		Event::fire('rep.create', array('rep_id' => $user->id));
-		Auth::loginUsingId($user->id);
-		return Redirect::to('users.index');
+		//Auth::loginUsingId($user->id);
+		return Redirect::to('users')->with('message', 'User created.');
 	}
 
 	/**
@@ -143,7 +114,7 @@ class userController extends \BaseController {
 			$old_user_data = $user;
 			$rules = User::$rules;
 			$rules['email'] = 'unique:users,email,' . $user->id;
-			$rules['password'] = 'sometimes|confirmed|digits_between:8,12';
+			$rules['password'] = 'sometimes|confirmed|digits_between:8,25';
 			//$rules['sponsor_id'] = 'required|digits';
 			$data = Input::all();
 			$data['phone'] = formatPhone($data['phone']);
@@ -159,7 +130,7 @@ class userController extends \BaseController {
 				Event::fire('sponsor.update', array('rep_id' => $user->id));
 			}
 	
-			return Redirect::route('users.show', $id)->with('message', 'User updated.');
+			return Redirect::route('users.show', $id)->with('message', 'Updates saved.');
 		}
 	}
 

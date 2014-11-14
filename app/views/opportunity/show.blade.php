@@ -22,7 +22,7 @@
 				    	</button>
 				    {{ Form::close() }}
 				@endif
-			    {{ Form::open(array('url' => 'opportunities/' . $opportunity->id, 'method' => 'DELETE')) }}
+			    {{ Form::open(array('url' => 'opportunities/' . $opportunity->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this record? This cannot be undone.");')) }}
 			    	<button class="btn btn-default" title="Delete">
 			    		<i class="fa fa-trash" title="Delete"></i>
 			    	</button>
@@ -34,7 +34,10 @@
 	<div class="row">
 		<div class="col col-md-6">
 		    <table class="table">
-		       
+		        <tr>
+		            <th>Opportunity ID:</th>
+		            <td>{{ $opportunity->id }}</td>
+		        </tr>
 		        @if ($opportunity->deadline != 0) 
 			        <tr>
 			            <th>Deadline:</th>
