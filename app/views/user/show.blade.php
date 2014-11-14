@@ -88,10 +88,9 @@
 			            <td>{{ $user->role_name }}</td>
 			        </tr>
 			
-					
 			        <tr>
-			            <th>Sponsor Id:</th>
-			            <td>{{ $user->sponsor_name }}</td>
+			            <th>Sponsor:</th>
+			            <td>{{ $user->sponsor->first_name }} {{ $user->sponsor->last_name }}</td>
 			        </tr>
 			        
 			        <tr>

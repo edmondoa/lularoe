@@ -75,8 +75,8 @@
 		       
 				@if (Auth::user()->hasRole(['Superadmin','Admin'])) 
 			        <tr>
-			            <th>Assigned to:</th>
-			            <td>{{ $lead->sponsor_name }}</td>
+			            <th>Sponsor:</th>
+			            <td>{{ $lead->sponsor->first_name }} {{ $lead->sponsor->last_name }}</td>
 			        </tr>
 			    @endif
 		        
