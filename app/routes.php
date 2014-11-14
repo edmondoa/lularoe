@@ -27,7 +27,7 @@ Route::controller('password', 'RemindersController');
 Route::group(array('domain' => '{subdomain}.sociallymobile.{tld}', 'before' => 'rep-site'), function($subdomain)
 {
 	function ($subdomain){
-		if(!in_array($subdomain,Config::get('site.locked_subdomains'))) return;
+		//if(!in_array($subdomain,Config::get('site.locked_subdomains'))) return;
 		dd($subdomain);
 		//echo"<pre>"; print_r($subdomain->toArray()); echo"</pre>";
 		echo"<pre>"; print_r(Config::get('site.locked_subdomains')); echo"</pre>";
