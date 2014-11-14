@@ -21,12 +21,11 @@ class Lead extends \Eloquent
 	}
 
 	public function getSponsorNameAttribute() {
-		return $this->sponsor->first_name . ' ' . $this->sponsor->last_name;
+		return ((isset($this->sponsor->first_name))&&(isset($this->sponsor->first_name)))?$this->sponsor->first_name . ' ' . $this->sponsor->last_name:'';
 	}
 
 	public function getOpportunityNameAttribute() {
-		if (isset($this->opportunity)) return $this->opportunity->title;
-		else return '';
+		return (isset($this->opportunity->title))?$this->opportunity->title:'';
 	}
 
 	protected $appends = array('opportunity_name', 'sponsor_name');

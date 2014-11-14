@@ -67,7 +67,7 @@ class userController extends \BaseController {
 		$user->addresses()->save($address);
 		Event::fire('rep.create', array('rep_id' => $user->id));
 		//Auth::loginUsingId($user->id);
-		return Redirect::to('users.index')->with('message', 'User created.');
+		return Redirect::to('users')->with('message', 'User created.');
 	}
 
 	/**
@@ -114,7 +114,7 @@ class userController extends \BaseController {
 			$old_user_data = $user;
 			$rules = User::$rules;
 			$rules['email'] = 'unique:users,email,' . $user->id;
-			$rules['password'] = 'sometimes|confirmed|digits_between:8,12';
+			$rules['password'] = 'sometimes|confirmed|digits_between:8,25';
 			//$rules['sponsor_id'] = 'required|digits';
 			$data = Input::all();
 			$data['phone'] = formatPhone($data['phone']);
