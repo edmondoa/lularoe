@@ -22,9 +22,19 @@ Route::resource('sessions', 'SessionController', ['only' => ['create', 'destroy'
 Route::controller('password', 'RemindersController');
 
 ##############################################################################################
+# Non-Replicated Site Routes
+##############################################################################################
+Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
+{
+	Route::get('/', function()
+	{
+		return "catching it";
+	});
+});
+##############################################################################################
 # Replicated Site Routes
 ##############################################################################################
-Route::group(array('domain' => '{subdomain}.sociallymobile.{tld}', 'before' => 'rep-site'), function($subdomain)
+Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain)
 {
 	function ($subdomain){
 		//if(!in_array($subdomain,Config::get('site.locked_subdomains'))) return;
