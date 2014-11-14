@@ -24,7 +24,7 @@ Route::controller('password', 'RemindersController');
 ##############################################################################################
 # Replicated Site Routes
 ##############################################################################################
-Route::group(array('domain' => '{subdomain}.sociallymobile', 'before' => 'rep-site'), function($subdomain)
+Route::group(array('domain' => '{subdomain}.sociallymobile.{tld}', 'before' => 'rep-site'), function($subdomain)
 {
     //dd($domain);
     
