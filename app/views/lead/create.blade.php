@@ -45,14 +45,14 @@
 			    </div>
 			    
 			    <div class="form-group">
-			        {{ Form::label('sponsor_id', 'Assign to') }}
+			        {{ Form::label('sponsor_id', 'Assign to ISM') }}
 			        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control', 'placeholder' => 'ISM ID')) }}
 			    </div>
 			    
-			    <!-- <div class="form-group">
-			        {{ Form::label('opportunity_id', 'Opportunity Id') }}
+			    <div class="form-group">
+			        {{ Form::label('opportunity_id', 'Opportunity ID') }}
 			        {{ Form::text('opportunity_id', Input::old('opportunity_id'), array('class' => 'form-control')) }}
-			    </div> -->
+			    </div>
 			    
 			    {{ Form::submit('Add Lead', array('class' => 'btn btn-primary')) }}
 	

@@ -59,8 +59,7 @@
  						<i class="fa fa-users"></i> <span class="text">Leads</span>
  					</a>
  					<a href="javascript:void(0)" data-href="/opportunities" class='list-group-item' data-toggle="popover" data-content="
- 						<a href='/opportunities'><i class='fa fa-check'></i> Current Opportunities</a>
- 						<a href='/opportunities'><i class='fa fa-check'></i> Past Opportunities</a>
+ 						<a href='/opportunities'><i class='fa fa-check'></i> All Opportunities</a>
  						<a href='/opportunities/create'><i class='fa fa-plus'></i> New Opportunity</a>
  					">
  						<i class="fa fa-check"></i> <span class="text">Opportunities</span>
@@ -80,13 +79,13 @@
 					<!-- <a href="/reviews" class="list-group-item"><i class="fa fa-comments"></i> Reviews</a> -->
 					<!-- <a href="/roles" class="list-group-item"><i class="fa fa-user"></i> Roles</a> -->
 					<!-- <a href="/sales" class="list-group-item"><i class="fa fa-dollar"></i> Sales</a> -->
- 					<a title="Users" href='/users' class="list-group-item"><i class='fa fa-user'></i> <span class="text">Users</span></a>
- 					<!-- <a href="javascript:void(0)" data-href="/users" class='list-group-item' data-toggle="popover" data-content="
+ 					<!-- <a title="Users" href='/users' class="list-group-item"><i class='fa fa-user'></i> <span class="text">Users</span></a> -->
+ 					<a href="javascript:void(0)" data-href="/users" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/users'><i class='fa fa-user'></i> All Users</a>
  						<a href='/users/create'><i class='fa fa-plus'></i> New User</a>
  					">
  						<i class="fa fa-user"></i> <span class="text">Users</span>
- 					</a> -->
+ 					</a>
  					<!-- <a href="/userProducts" class="list-group-item"><i class="fa fa-mobile-phone"></i> UserProducts</a> -->
 					<!-- <a href="/userRanks" class="list-group-item"><i class="fa fa-certificate"></i> UserRanks</a> -->
 					<!-- <a href="/smsMessages" class="list-group-item"><i class="fa fa-mobile-phone"></i> <span class="text">SmsMessages</span></a> -->

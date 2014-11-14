@@ -34,7 +34,10 @@
 	<div class="row">
 		<div class="col col-md-6">
 		    <table class="table">
-		       
+		        <tr>
+		            <th>Opportunity ID:</th>
+		            <td>{{ $opportunity->id }}</td>
+		        </tr>
 		        @if ($opportunity->deadline != 0) 
 			        <tr>
 			            <th>Deadline:</th>

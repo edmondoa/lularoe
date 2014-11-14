@@ -6,6 +6,7 @@
 			@include('_helpers.breadcrumbs')
 		    <h1>Edit lead</h1>
 		</div>
+	</div>
 	<div class="row">
 		<div class="col col-lg-3 col-md-4 col-sm-6">
 		    {{ Form::model($lead, array('route' => array('leads.update', $lead->id), 'method' => 'PUT')) }}
@@ -43,13 +44,13 @@
 		    
 		    <div class="form-group">
 			    <div class="form-group">
-			        {{ Form::label('sponsor_id', 'Assign to') }}
+			        {{ Form::label('sponsor_id', 'Assign to ISM') }}
 			        {{ Form::text('sponsor_id', null, array('class' => 'form-control', 'placeholder' => 'ISM ID')) }}
 			    </div>
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('opportunity_id', 'Opportunity Id') }}
+		        {{ Form::label('opportunity_id', 'Opportunity ID') }}
 		        {{ Form::text('opportunity_id', null, array('class' => 'form-control')) }}
 		    </div>
 		    

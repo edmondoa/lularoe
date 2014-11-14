@@ -25,7 +25,8 @@ class Lead extends \Eloquent
 	}
 
 	public function getOpportunityNameAttribute() {
-		return $this->opportunity->title;
+		if (isset($this->opportunity)) return $this->opportunity->title;
+		else return '';
 	}
 
 	protected $appends = array('opportunity_name', 'sponsor_name');

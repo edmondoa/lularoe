@@ -383,7 +383,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	return User::all()->count();
+	return Lead::all()->count();
 });
 
 Route::get('test', function() {

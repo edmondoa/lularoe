@@ -44,7 +44,7 @@ class userController extends \BaseController {
 		$rules['zip'] = 'required|digits_between:5,10';
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
 		$rules['password'] = 'required|confirmed|digits_between:8,12';
-		$rules['sponsor_id'] = 'required|digits';
+		$rules['sponsor_id'] = 'required|numeric';
 		$check_sponsor_id = User::where('public_id', $data['sponsor_id']);
 
 		$validator = Validator::make($data,$rules);

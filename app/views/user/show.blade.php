@@ -39,7 +39,16 @@
 					<h2 div class="panel-title">Information</h2>
 				</div>
 			    <table class="table table-striped">
-			        
+			        <tr>
+			            <th>
+			            	@if ($user->role_name == 'Rep')
+			            		ISM ID:
+			            	@else
+			            		User ID:
+			            	@endif
+			            </th>
+			            <td>{{ $user->id }}</td>
+			        </tr>
 			        <tr>
 			            <th>Email:</th>
 			            <td>
@@ -75,14 +84,14 @@
 			        </tr>
 					  
 			        <tr>
-			            <th>Role Id:</th>
-			            <td>{{ $user->role_id }}</td>
+			            <th>Role:</th>
+			            <td>{{ $user->role_name }}</td>
 			        </tr>
 			
 					
 			        <tr>
 			            <th>Sponsor Id:</th>
-			            <td>{{ $user->sponsor_id }}</td>
+			            <td>{{ $user->sponsor_name }}</td>
 			        </tr>
 			        
 			        <tr>

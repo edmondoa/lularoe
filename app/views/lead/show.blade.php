@@ -3,7 +3,7 @@
 <div class="show">
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
-		<h1 class="no-top">{{ $lead->id }} {{ $lead->first_name }} {{ $lead->last_name }}</h1>
+		<h1 class="no-top">{{ $lead->first_name }} {{ $lead->last_name }}</h1>
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep']))
 		    <div class="btn-group">
 			    <a class="btn btn-default" href="{{ url('leads/'.$lead->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
@@ -35,7 +35,10 @@
 	<div class="row">
 		<div class="col col-md-6">
 		    <table class="table">
-		        
+		        <tr>
+		            <th>Lead ID:</th>
+		            <td>{{ $lead->id }}</td>
+		        </tr>		        
 		        <tr>
 		            <th>Email:</th>
 		            <td>
