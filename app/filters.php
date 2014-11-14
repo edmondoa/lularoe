@@ -96,7 +96,7 @@ Route::filter('superadmin', function(){
 Route::filter('rep-site', function($router)
 {
 	//dd($domain);
-	if(in_array($router->parameter('subdomain'),Config::get('site.locked_subdomains'))) return false;
+	//if(in_array($router->parameter('subdomain'),Config::get('site.locked_subdomains'))) return false;
 	if (User::where('public_id',$router->parameter('subdomain'))->count() != 1)
 	{
 		return Redirect::to('http://'.Config::get('site.domain'));
