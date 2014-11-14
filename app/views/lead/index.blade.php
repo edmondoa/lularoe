@@ -1,7 +1,8 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'leads/disable', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => 'users/email', 'method' => 'POST')) }}
+    	{{ Form::hidden('leads', 1) }}
 	    <div ng-controller="LeadController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
@@ -148,7 +149,7 @@
 	                    <tbody>
 	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="lead in leads | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
-	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.lead_id')">
+	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.lead_id')">
 	                            </td>
 								
 					            <td>
