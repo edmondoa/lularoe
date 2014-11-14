@@ -21,8 +21,16 @@ class BlastController extends \BaseController {
 	 */
 	public function CreateSms()
 	{
-		$users = User::whereIn('id', Input::get('user_ids'))->get();
-		return View::make('blasts.createsms', compact('users'));
+		$data = Input::all();
+		if (isset($data['leads'])) {
+			$users = Lead::whereIn('id', Input::get('user_ids'))->get();
+			$leads = 1;
+		}
+		else {
+			$users = User::whereIn('id', Input::get('user_ids'))->get();
+			$leads = 0;
+		}
+		return View::make('blasts.createsms', compact('users', 'leads'));
 	}
 
 	/**
@@ -47,7 +55,10 @@ class BlastController extends \BaseController {
 		//echo"<pre>"; print_r($data); echo"</pre>";
 		//exit;
 
-		$users = User::whereIn('id', $data['user_ids'])->get();
+		if (isset($form_data['leads']) && $form_data['leads'] == 1) {
+			$users = Lead::whereIn('id', $form_data['user_ids'])->get();
+		}
+		else $users = User::whereIn('id', $data['user_ids'])->get();
 		//$merchant = Merchant::findOrFail(Auth::user()->merchant_id);
 		$count = 0;
 		$not_textable = 0;
@@ -96,7 +107,7 @@ class BlastController extends \BaseController {
 			$data['date_sent'] = date('Y-m-d H:i:s');
 			$data['date_queued'] = date('Y-m-d H:i:s');
 
-			$sms = Smsmessage::create($data);
+			$sms = SmsMessage::create($data);
 			$sms->recipient()->associate($user);
 			$sms->sender()->associate(Auth::user());
 			$sms->save();
@@ -104,14 +115,22 @@ class BlastController extends \BaseController {
 		}
 		//echo"<pre>"; print_r($users->toArray()); echo"</pre>";
 		//exit;
-		return Redirect::back()->with('message','The text message was sent successfully to '.$count.' recipients. Unable to send message to '.$not_textable.' recipients because they have no textable phone on file.');
+		return Redirect::route('dashboard')->with('message','The text message was sent successfully to '.$count.' recipients. Unable to send message to '.$not_textable.' recipients because they have no textable phone on file.');
 
 	}
 
 	public function CreateMail()
 	{
-		$users = User::whereIn('id', Input::get('user_ids'))->get();
-		return View::make('blasts.createmail', compact('users'));
+		$data = Input::all();
+		if (isset($data['leads'])) {
+			$users = Lead::whereIn('id', Input::get('user_ids'))->get();
+			$leads = 1;
+		}
+		else {
+			$users = User::whereIn('id', Input::get('user_ids'))->get();
+			$leads = 0;
+		}
+		return View::make('blasts.createmail', compact('users', 'leads'));
 	}
 
 	/**
@@ -135,7 +154,10 @@ class BlastController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
-		$users = User::whereIn('id', $form_data['user_ids'])->get();
+		if (isset($form_data['leads']) && $form_data['leads'] == 1) {
+			$users = Lead::whereIn('id', $form_data['user_ids'])->get();
+		}
+		else $users = User::whereIn('id', $form_data['user_ids'])->get();
 		//echo"<pre>"; print_r($users->toArray()); echo"</pre>";
 		//exit;
 		$count = 0;
@@ -154,12 +176,12 @@ class BlastController extends \BaseController {
 		if (count(Mail::failures()) > 0)
 		{
 			//errors ocurred
-			return Redirect::back()->with('message','The email message was sent successfully to '. $count .' users');
+			return Redirect::route('dashboard')->with('message','The email message was sent successfully to '. $count .' users');
 		}
 		else
 		{
 			if ($count == 1) return Redirect::back()->with('message','The email message was sent sent.');
-			else return Redirect::back()->with('message','The email message was sent to '. $count .' users');
+			else return Redirect::route('dashboard')->with('message','The email message was sent to '. $count .' users');
 		}
 		//return Redirect::back()->with('message','The email message was sent successfully to '. $count .' users');
 

@@ -3,7 +3,7 @@
 <div class="show">
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
-		<h1 class="no-top">Viewing lead</h1>
+		<h1 class="no-top">{{ $lead->id }} {{ $lead->first_name }} {{ $lead->last_name }}</h1>
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep']))
 		    <div class="btn-group">
 			    <a class="btn btn-default" href="{{ url('leads/'.$lead->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
@@ -37,20 +37,29 @@
 		    <table class="table">
 		        
 		        <tr>
-		            <th>First Name:</th>
-		            <td>{{ $lead->first_name }}</td>
-		        </tr>
-		        
-		        <tr>
-		            <th>Last Name:</th>
-		            <td>{{ $lead->last_name }}</td>
-		        </tr>
-		        
-		        <tr>
 		            <th>Email:</th>
-		            <td>{{ $lead->email }}</td>
+		            <td>
+		            	{{ Form::open(array('url' => '/users/email', 'method' => 'POST', 'class' => 'inline-block')) }}
+		            		{{ Form::hidden('user_ids[]', $lead->id) }}
+		            		{{ Form::hidden('leads', 1) }}
+		            		<button title="Send Email"><i class="fa fa-envelope"></i></button>
+		            	{{ Form::close() }}
+		            	&nbsp;{{ $lead->email }}
+		            </td>
 		        </tr>
-		        
+
+		        <tr>
+		            <th>Phone:</th>
+		            <td>
+						{{ Form::open(array('url' => '/users/sms', 'method' => 'POST', 'class' => 'inline-block')) }}
+		            		{{ Form::hidden('user_ids[]', $lead->id) }}
+		            		{{ Form::hidden('leads', 1) }}
+		            		<button style="width:32px;" title="Send Text Message (SMS)"><i class="fa fa-mobile-phone"></i></button>
+		            	{{ Form::close() }}
+		            	&nbsp;{{ $lead->phone }}
+		            </td>
+		        </tr>
+
 		        <tr>
 		            <th>Gender:</th>
 		            <td>{{ $lead->gender }}</td>
@@ -59,11 +68,6 @@
 		        <tr>
 		            <th>Date of Birth:</th>
 		            <td>{{ $lead->dob }}</td>
-		        </tr>
-		        
-		        <tr>
-		            <th>Phone:</th>
-		            <td>{{ $lead->phone }}</td>
 		        </tr>
 		       
 				@if (Auth::user()->hasRole(['Superadmin','Admin'])) 

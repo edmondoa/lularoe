@@ -9,7 +9,9 @@
 	</div>
 		<div class="col col-md-6">
 			{{ Form::open( array('route' => array('blast_email'))) }}
-			
+				@if (isset($leads))
+					{{ Form::hidden('leads', $leads) }}
+				@endif
 				<div class="form-group">
 					{{ Form::label('subject_line','To:')}}<br>
 					@foreach ($users as $user)
