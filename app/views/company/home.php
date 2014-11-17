@@ -97,11 +97,11 @@
 										
 					<nav>
 						<ul class="sf-menu">	
-							<li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://sociallymobile.com/login">Events</a></li>
+							<li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://my.sociallymobile.com/login">Events</a></li>
 <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074"><a href="/contact-us/">Contact Us</a></li>
 <li id="menu-item-3075" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075"><a href="/terms-conditions/">Terms</a></li>
 <li id="menu-item-3089" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
-<li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="https://sociallymobile.com/login">LOG IN</a></li>
+<li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="https://my.sociallymobile.com/login">LOG IN</a></li>
 							<li id="search-btn"><div><a href="#searchbox"><span class="icon-salient-search" aria-hidden="true"></span></a></div> </li>
 						</ul>
 					</nav>
@@ -126,11 +126,11 @@
 	
 	<div class="container">
 		<ul>
-			<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://sociallymobile.com/login">Events</a></li>
+			<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://my.sociallymobile.com/login">Events</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074"><a href="/contact-us/">Contact Us</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075"><a href="/terms-conditions/">Terms</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
-<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="https://sociallymobile.com/login">LOG IN</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="https://my.sociallymobile.com/login">LOG IN</a></li>
 <li id="mobile-search">  
 					<form action="http://sociallymobile-wordpress" method="GET">
 			      		<input type="text" name="s" value="" placeholder="Search.." />
@@ -180,7 +180,7 @@
 				    <div class="swiper-wrapper"><div class="swiper-slide" style="background-image: url(/wp-content/uploads/2014/09/DPExample.jpg);" data-bg-alignment="center" data-color-scheme="dark" data-x-pos="centered" data-y-pos="middle"> 
 								<div class="container">
 									<div class="content"><h2>Next Website Update <br> 12.1.2014</h2><p class="transparent-bg" ><span>Pre-launch Starts in:</span></p><div class="buttons"><div class="button solid_color">
-												 		 <a class="extra-color-1" href="https://sociallymobile.com/join">JOIN NOW</a>
+												 		 <a class="extra-color-1" href="https://my.sociallymobile.com/join">JOIN NOW</a>
 												 	 </div></div></div>
 								</div><!--/container--><div class="video-texture active_texture"> <span class="ie-fix"></span> </div></div><!--/swiper-slide--></div><div class="nectar-slider-loading "> <span class="loading-icon ">   </span> </div> </div> 
 				
