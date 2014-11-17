@@ -22,5 +22,6 @@ return [
 	'locked_subdomains' => [
 		'my',
 		'beta',
+		'www',
 	]
 ];
