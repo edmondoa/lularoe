@@ -140,7 +140,7 @@
 										
 					<nav>
 						<ul class="sf-menu">	
-							<li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://my.sociallymobile.com/login">Events</a></li>
+							<li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://my.sociallymobile.com/company-events">Events</a></li>
 <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-26 current_page_item menu-item-3074"><a href="/contact-us/">Contact Us</a></li>
 <li id="menu-item-3075" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075"><a href="/terms-conditions/">Terms</a></li>
 <li id="menu-item-3089" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
@@ -169,7 +169,7 @@
 	
 	<div class="container">
 		<ul>
-			<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://my.sociallymobile.com/login">Events</a></li>
+			<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://my.sociallymobile.com/company-events">Events</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-26 current_page_item menu-item-3074"><a href="/contact-us/">Contact Us</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075"><a href="/terms-conditions/">Terms</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>

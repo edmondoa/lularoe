@@ -99,7 +99,7 @@
 										
 					<nav>
 						<ul class="sf-menu">	
-							<li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-2563 current_page_item current_page_parent menu-item-3251"><a href="https://my.sociallymobile.com/login">Events</a></li>
+							<li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-2563 current_page_item current_page_parent menu-item-3251"><a href="https://my.sociallymobile.com/company-events">Events</a></li>
 <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074"><a href="/contact-us/">Contact Us</a></li>
 <li id="menu-item-3075" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075"><a href="/terms-conditions/">Terms</a></li>
 <li id="menu-item-3089" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
@@ -128,7 +128,7 @@
 	
 	<div class="container">
 		<ul>
-			<li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-2563 current_page_item current_page_parent menu-item-3251"><a href="https://my.sociallymobile.com/login">Events</a></li>
+			<li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-2563 current_page_item current_page_parent menu-item-3251"><a href="https://my.sociallymobile.com/company-events">Events</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074"><a href="/contact-us/">Contact Us</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075"><a href="/terms-conditions/">Terms</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
@@ -208,7 +208,7 @@
 							<div class="article-content-wrap">
 
 					<div class="post-header">
-						<h2 class="title"> <a href="/2014/11/12/live-events/">Live Events: </a> </h2>
+						<h2 class="title">Live Events:</h2>
 						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/12/live-events/#comments">
 						No Comments</a></span>
 					</div><!--/post-header-->
@@ -248,7 +248,7 @@ San Juan, PR</p>
 					November 12, 2014				</div><!--/date-->
 				
 				<div class="nectar-love-wrap">
-					<a href="#" class="nectar-love" id="nectar-love-3242" title="Love this"> <i class="icon-salient-heart"></i><span class="nectar-love-count">0</span></a>				</div><!--/nectar-love-wrap-->	
+					<i class="icon-salient-heart"></i><span class="nectar-love-count">0</span></a>				</div><!--/nectar-love-wrap-->	
 							
 			</div><!--/post-meta-->
 			
@@ -259,7 +259,7 @@ San Juan, PR</p>
 							<div class="article-content-wrap">
 
 					<div class="post-header">
-						<h2 class="title"> <a href="/2014/11/12/corporate-overview-call/">Corporate Overview Call </a> </h2>
+						<h2 class="title">Corporate Overview Call</h2>
 						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/12/corporate-overview-call/#comments">
 						No Comments</a></span>
 					</div><!--/post-header-->
@@ -308,7 +308,7 @@ Hosted by Corporate</p>
 							<div class="article-content-wrap">
 
 					<div class="post-header">
-						<h2 class="title"> <a href="/2014/11/11/spanish-overview-call/">Spanish Overview Call </a> </h2>
+						<h2 class="title">Spanish Overview Call</h2>
 						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/11/spanish-overview-call/#comments">
 						No Comments</a></span>
 					</div><!--/post-header-->
@@ -357,7 +357,7 @@ Hosted by Corporate and Field Leaders</p>
 							<div class="article-content-wrap">
 
 					<div class="post-header">
-						<h2 class="title"> <a href="/2014/11/10/field-overview-call-followed-by-open-qa-and-training/">Field Overview Call followed by open Q&#038;A and Training </a> </h2>
+						<h2 class="title">Field Overview Call followed by open Q&#038;A and Training</h2>
 						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/10/field-overview-call-followed-by-open-qa-and-training/#comments">
 						No Comments</a></span>
 					</div><!--/post-header-->
