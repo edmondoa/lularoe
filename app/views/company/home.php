@@ -180,7 +180,7 @@
 				    <div class="swiper-wrapper"><div class="swiper-slide" style="background-image: url(/wp-content/uploads/2014/09/DPExample.jpg);" data-bg-alignment="center" data-color-scheme="dark" data-x-pos="centered" data-y-pos="middle"> 
 								<div class="container">
 									<div class="content"><h2>Next Website Update <br> 12.1.2014</h2><p class="transparent-bg" ><span>Pre-launch Starts in:</span></p><div class="buttons"><div class="button solid_color">
-												 		 <a class="extra-color-1" href="https://my.sociallymobile-wordpress/join">JOIN NOW</a>
+												 		 <a class="extra-color-1" href="/join">JOIN NOW</a>
 												 	 </div></div></div>
 								</div><!--/container--><div class="video-texture active_texture"> <span class="ie-fix"></span> </div></div><!--/swiper-slide--></div><div class="nectar-slider-loading "> <span class="loading-icon ">   </span> </div> </div> 
 				
