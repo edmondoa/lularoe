@@ -209,8 +209,6 @@
 
 					<div class="post-header">
 						<h2 class="title">Live Events:</h2>
-						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/12/live-events/#comments">
-						No Comments</a></span>
 					</div><!--/post-header-->
 				<p><strong>Live Events:</strong></p>
 <p>Puerto Rico Leadership Conference<br />
@@ -260,8 +258,6 @@ San Juan, PR</p>
 
 					<div class="post-header">
 						<h2 class="title">Corporate Overview Call</h2>
-						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/12/corporate-overview-call/#comments">
-						No Comments</a></span>
 					</div><!--/post-header-->
 				<p>Corporate Overview Call<br />
 Every Monday and Wednesday at 10 AM Hawaii, 1 PM Pacific, 3 PM Central, 4 PM Eastern, 5 PM Puerto Rico.<br />
@@ -309,8 +305,6 @@ Hosted by Corporate</p>
 
 					<div class="post-header">
 						<h2 class="title">Spanish Overview Call</h2>
-						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/11/spanish-overview-call/#comments">
-						No Comments</a></span>
 					</div><!--/post-header-->
 				<p>Spanish Overview Call<br />
 Every Monday and Wednesday at 11 AM Hawaii, 2 PM Pacific, 4 PM Central, 5 PM Eastern, 6 PM Puerto Rico.<br />
@@ -358,8 +352,6 @@ Hosted by Corporate and Field Leaders</p>
 
 					<div class="post-header">
 						<h2 class="title">Field Overview Call followed by open Q&#038;A and Training</h2>
-						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/10/field-overview-call-followed-by-open-qa-and-training/#comments">
-						No Comments</a></span>
 					</div><!--/post-header-->
 				<p><strong>Field Overview Call followed by open Q&amp;A and Training</strong><br />
 Every Tuesday and Thursday at 3:30 PM Hawaii, 6:30 PM Pacific, 8:30 PM Central, 9:30 PM Eastern, 10:30 PM Puerto Rico.<br />
