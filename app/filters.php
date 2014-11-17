@@ -91,21 +91,24 @@ Route::filter('superadmin', function(){
 });
 
 ##############################################################################################
+# Public filter
+##############################################################################################
+Route::filter('pub-site', function($router)
+{
+
+});
+
+##############################################################################################
 # replicated filter
 ##############################################################################################
 Route::filter('rep-site', function($router)
 {
-    //dd($domain);
-    if (! User::where('public_id',$router->parameter('subdomain'))->first())
-    {
-        App::abort(404);
-        //dd($route->parameter('subdomain'));
-        //dd("can't find the damn thing");
-    }
-    else
-    {
-    	//return $site_owner;
-    }
+	//dd($domain);
+	if(in_array($router->parameter('subdomain'),Config::get('site.locked_subdomains'))) return;
+	if (User::where('public_id',$router->parameter('subdomain'))->count() != 1)
+	{
+		return Redirect::to('http://'.Config::get('site.domain'));
+	}
 });
 
 /*

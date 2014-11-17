@@ -71,7 +71,7 @@ class userSiteController extends \BaseController {
 		if ($userSite->banner == '') $userSite->banner = '/img/users/default-banner.png';
 		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
 
-		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(10)->get();
+		$opportunities = Opportunity::where('public', 1)->where('deadline', '>', time())->orWhere('deadline', '')->take(10)->orderBy('updated_at', DESC)->get();
 
 	}
 
@@ -114,7 +114,14 @@ class userSiteController extends \BaseController {
                 $file = Input::file('image');
                 $destinationPath = public_path() . '/img/users/avatars/';
                 $extension = $file->getClientOriginalExtension();
-                $filename = str_random(20) . '.' . $extension;
+                
+				// generate file name and check for existing
+				$filename = str_random(20) . '.' . $extension;
+				$existing_file = User::where('image', $filename)->get();
+				while (count($existing_file) > 0) {
+					$filename = str_random(20) . '.' . $extension;
+				}
+                
                 $uploadSuccess   = $file->move($destinationPath, $filename);
     
                 // open an image file
@@ -127,7 +134,14 @@ class userSiteController extends \BaseController {
                 $img->save('img/users/avatars/' . $filename);
     
                 $data['image'] = $filename;
-				DB::update('update users set image = "' . $data['image'] . '" where id = ' . $user->id);
+				
+				// delete old image if exists
+				$old = $user->image;
+				$user->image = $filename;
+				$user->save();
+				if (is_file('img/users/avatars/' . $old)) {
+					unlink('img/users/avatars/' . $old);
+				}
             }
         }
 		
@@ -139,7 +153,14 @@ class userSiteController extends \BaseController {
                 $file = Input::file('banner');
                 $destinationPath = public_path() . '/img/users/banners/';
                 $extension = $file->getClientOriginalExtension();
-                $filename = str_random(20) . '.' . $extension;
+
+				// generate file name and check for existing
+				$filename = str_random(20) . '.' . $extension;
+				$existing_file = UserSite::where('banner', $filename)->get();
+				while (count($existing_file) > 0) {
+					$filename = str_random(20) . '.' . $extension;
+				}
+
                 $uploadSuccess   = $file->move($destinationPath, $filename);
     
                 // open an image file
@@ -150,7 +171,12 @@ class userSiteController extends \BaseController {
     
                 // finally we save the image as a new image
                 $img->save('img/users/banners/' . $filename);
-    
+				
+				$old = $userSite->banner;
+				if (is_file('img/users/banners/' . $old)) {
+					unlink('img/users/banners/' . $old);
+				}
+
                 $data['banner'] = $filename;
             }
         }
