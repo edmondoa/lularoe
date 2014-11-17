@@ -4,8 +4,8 @@
 backup_parent_dir="/var/www/db_backup/"
 
 # MySQL settings
-mysql_user="sm_admin"
-mysql_password="WyHuR$jYGuT&9a8"
+mysql_user="soc_mob"
+mysql_password="7U8$SAV*NEjuB$T%"
  
 # Create backup directory and set permissions
 backup_date=`date +%Y_%m_%d_%H_%M_%p`
