@@ -104,7 +104,7 @@
 		     <div id="search-box">
 		     	
 		     	<div class="col span_12">
-			      	<form action="https://my.sociallymoble.com" method="GET">
+			      	<form action="https://my.sociallymobile.com" method="GET">
 			      		<input type="text" name="s" id="s" value="Start Typing..." data-placeholder="Start Typing..." />
 			      	</form>
 			      			        </div><!--/span_12-->
@@ -126,7 +126,7 @@
 				  
 				<div class="col span_3">
 					
-					<a id="logo" href="https://my.sociallymoble.com" >
+					<a id="logo" href="https://my.sociallymobile.com" >
 						
 						<img class=" dark-version" alt="SociallyMobile" src="/wp-content/uploads/2014/10/Socially-Mobile-with-tag-e1413399140125.png" /> 
 					</a>
@@ -175,7 +175,7 @@
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="https://my.sociallymobile.com/login">LOG IN</a></li>
 <li id="mobile-search">  
-					<form action="https://my.sociallymoble.com" method="GET">
+					<form action="https://my.sociallymobile.com" method="GET">
 			      		<input type="text" name="s" value="" placeholder="Search.." />
 					</form> 
 					</li>		
