@@ -12,7 +12,8 @@
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteRule ^ index.php [L]
-
-	RewriteCond %{HTTP_HOST} ^my.sociallymobile.com$
-	RewriteRule (.*)$ http://www.sociallymobile.com/$1 [R=301,L]
+	
+	RewriteCond %{HTTP_HOST} ^sociallymobile.com$ [OR]
+	RewriteCond %{HTTP_HOST} ^www.sociallymobile.com$
+	RewriteRule (.*)$ http://my.sociallymobile.com/$1 [R=301,L]
 </IfModule>
