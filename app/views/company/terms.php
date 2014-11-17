@@ -61,7 +61,7 @@
 		     <div id="search-box">
 		     	
 		     	<div class="col span_12">
-			      	<form action="http://sociallymobile-wordpress" method="GET">
+			      	<form action="https://my.sociallymobile.com" method="GET">
 			      		<input type="text" name="s" id="s" value="Start Typing..." data-placeholder="Start Typing..." />
 			      	</form>
 			      			        </div><!--/span_12-->
@@ -83,7 +83,7 @@
 				  
 				<div class="col span_3">
 					
-					<a id="logo" href="http://sociallymobile-wordpress" >
+					<a id="logo" href="https://my.sociallymobile.com" >
 						
 						<img class=" dark-version" alt="SociallyMobile" src="/wp-content/uploads/2014/10/Socially-Mobile-with-tag-e1413399140125.png" /> 
 					</a>
@@ -97,7 +97,7 @@
 										
 					<nav>
 						<ul class="sf-menu">	
-							<li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://my.sociallymobile.com/login">Events</a></li>
+							<li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://my.sociallymobile.com/company-events">Events</a></li>
 <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074"><a href="/contact-us/">Contact Us</a></li>
 <li id="menu-item-3075" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-3058 current_page_item menu-item-3075"><a href="/terms-conditions/">Terms</a></li>
 <li id="menu-item-3089" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
@@ -126,13 +126,13 @@
 	
 	<div class="container">
 		<ul>
-			<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://my.sociallymobile.com/login">Events</a></li>
+			<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251"><a href="https://my.sociallymobile.com/company-events">Events</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074"><a href="/contact-us/">Contact Us</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-3058 current_page_item menu-item-3075"><a href="/terms-conditions/">Terms</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="https://my.sociallymobile.com/login">LOG IN</a></li>
 <li id="mobile-search">  
-					<form action="http://sociallymobile-wordpress" method="GET">
+					<form action="https://my.sociallymobile.com" method="GET">
 			      		<input type="text" name="s" value="" placeholder="Search.." />
 					</form> 
 					</li>		
