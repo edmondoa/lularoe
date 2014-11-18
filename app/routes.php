@@ -30,14 +30,29 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	# Public Routes
 	##############################################################################################
 
+	// company
 	Route::get('/', ['as' => 'home', function() {
-		if (Auth::check()) {
-			return Redirect::to('dashboard');
-		}
-		else {
-			return View::make('sessions.create');
-		}
+		// if (Auth::check()) {
+			// return Redirect::to('dashboard');
+		// }
+		// else {
+			return View::make('company.home');
+		//}
 	}]);
+	Route::get('company-events', function() {
+		return View::make('company.events');
+	});
+	Route::get('contact-us', function() {
+		return View::make('company.contact-us');
+	});
+	Route::get('terms-conditions', function() {
+		return View::make('company.terms');
+	});
+	Route::get('privacy-policy', function() {
+		return View::make('company.privacy');
+	});
+	
+
 
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');
