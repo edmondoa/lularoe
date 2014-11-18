@@ -11,6 +11,7 @@ mysql_password="Yr*r,dAv$S?qE8,N"
 backup_date=`date +%Y_%m_%d_%H_%M_%p`
 backup_dir="${backup_parent_dir}${backup_date}"
 echo "Backup directory: ${backup_dir}"
+echo `--password="$mysql_password"`
 mkdir -p "${backup_dir}"
 chmod 755 "${backup_dir}"
 
