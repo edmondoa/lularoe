@@ -15,7 +15,7 @@ mkdir -p "${backup_dir}"
 chmod 755 "${backup_dir}"
 
 # Get MySQL databases
-mysql_databases=`echo 'show databases' | mysql --user=${mysql_user} --password="${mysql_password}" -B | sed /^Database$/d`
+mysql_databases=`echo 'show databases' | mysql --user=${mysql_user} --password="$mysql_password" -B | sed /^Database$/d`
  
 # Backup and compress each database
 for database in $mysql_databases
@@ -26,7 +26,7 @@ do
         additional_mysqldump_params=""
   fi
   echo "Creating backup of \"${database}\" database"
-  mysqldump ${additional_mysqldump_params} --user=${mysql_user} --password="${mysql_password}" ${database} | gzip > "${backup_dir}/${database}.gz"
+  mysqldump ${additional_mysqldump_params} --user=${mysql_user} --password="$mysql_password" ${database} | gzip > "${backup_dir}/${database}.gz"
   chmod 775 "${backup_dir}/${database}.gz"
 done
 
