@@ -10,8 +10,9 @@ mysql_password="Yr*r,dAv$S?qE8,N"
 # Create backup directory and set permissions
 backup_date=`date +%Y_%m_%d_%H_%M_%p`
 backup_dir="${backup_parent_dir}${backup_date}"
+single_quote="'"
 echo "Backup directory: ${backup_dir}"
-echo `--password="$mysql_password"`
+echo --password="$single_quote$mysql_password$single_quote"
 mkdir -p "${backup_dir}"
 chmod 755 "${backup_dir}"
 
