@@ -13,6 +13,12 @@ class DataOnlyController extends \BaseController
 	}
 	
 	public function getAllBranches() {
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			$result = Commission::get_org_tree(0);
+			$response = Response::make(json_encode($result, JSON_PRETTY_PRINT), 200);
+			$response->header('Content-Type', 'application/json');
+			return $response;
+		}
 		$result = Commission::get_org_tree(Auth::user()->id);
 		$response = Response::make(json_encode($result, JSON_PRETTY_PRINT), 200);
 		$response->header('Content-Type', 'application/json');
@@ -33,8 +39,11 @@ class DataOnlyController extends \BaseController
 	
 	// all downline
 	public function getAllDownline($id) {
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			return User::find(0)->descendants;
+		}
 		if ($id == 0) {
-			return User::all();
+			return User::find(0)->descendants;
 		}
 		return User::find($id)->descendants;
 	}
@@ -88,7 +97,7 @@ class DataOnlyController extends \BaseController
 	}
 	
 	public function getAllLeadsByRep($id) {
-		return User::find($id)->leads()->get();
+		return User::find($id)->leads;
 	}
 
 	/*
