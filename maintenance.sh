@@ -10,13 +10,12 @@ mysql_password="Yr*r,dAv$S?qE8,N"
 # Create backup directory and set permissions
 backup_date=`date +%Y_%m_%d_%H_%M_%p`
 backup_dir="${backup_parent_dir}${backup_date}"
-single_quote="'"
 echo "Backup directory: ${backup_dir}"
 mkdir -p "${backup_dir}"
 chmod 755 "${backup_dir}"
 
 # Get MySQL databases
-mysql_databases=`echo 'show databases' | mysql --user=${mysql_user} --password="$single_quote$mysql_password$single_quote" -B | sed /^Database$/d`
+mysql_databases=`echo 'show databases' | mysql --user=${mysql_user} --password='${mysql_password}' -B | sed /^Database$/d`
  
 # Backup and compress each database
 for database in $mysql_databases
@@ -27,7 +26,7 @@ do
         additional_mysqldump_params=""
   fi
   echo "Creating backup of \"${database}\" database"
-  mysqldump ${additional_mysqldump_params} --user=${mysql_user} --password="$single_quote$mysql_password$single_quote" ${database} | gzip > "${backup_dir}/${database}.gz"
+  mysqldump ${additional_mysqldump_params} --user=${mysql_user} --password="${mysql_password}" ${database} | gzip > "${backup_dir}/${database}.gz"
   chmod 775 "${backup_dir}/${database}.gz"
 done
 
