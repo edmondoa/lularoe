@@ -50,6 +50,14 @@
 			            <td>{{ $user->id }}</td>
 			        </tr>
 			        <tr>
+			            <th>
+			            	Rank:
+			            </th>
+			            <td>
+			            	{{ $user->rank_name }} (Rank {{ $user->rank_id }})
+			            </td>
+			        </tr>
+			        <tr>
 			            <th>Email:</th>
 			            <td>
 			            	{{ Form::open(array('url' => '/users/email', 'method' => 'POST', 'class' => 'inline-block')) }}
@@ -97,20 +105,20 @@
 			            </td>
 			        </tr>
 			        
-			        <tr>
+			        <!-- <tr>
 			            <th>Min Commission:</th>
 			            <td>{{ $user->min_commission }}</td>
-			        </tr>
+			        </tr> -->
 			        
 			        <tr>
 			            <th>Disabled:</th>
 			            <td>{{ $user->disabled }}</td>
 			        </tr>
 			        
-			        <tr>
+			        <!-- <tr>
 			            <th>Mobile Plan Id:</th>
 			            <td>{{ $user->mobile_plan_id }}</td>
-			        </tr>
+			        </tr> -->
 			        
 					@endif
 			        

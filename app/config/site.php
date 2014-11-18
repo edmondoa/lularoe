@@ -12,7 +12,7 @@ return [
 	|
 	*/
 
-	'domain' => 'sociallymobile.com',
+	'domain' => 'my.sociallymobile.com',
 	'base_domain' => 'sociallymobile.com',
 	'preregistration_fee' => 100.00,
 	'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
@@ -22,5 +22,6 @@ return [
 	'locked_subdomains' => [
 		'my',
 		'beta',
+		'www',
 	]
 ];
