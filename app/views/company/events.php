@@ -63,7 +63,7 @@
 		     <div id="search-box">
 		     	
 		     	<div class="col span_12">
-			      	<form action="http://sociallymobile-wordpress" method="GET">
+			      	<form action="https://my.sociallymobile.com" method="GET">
 			      		<input type="text" name="s" id="s" value="Start Typing..." data-placeholder="Start Typing..." />
 			      	</form>
 			      			        </div><!--/span_12-->
@@ -85,7 +85,7 @@
 				  
 				<div class="col span_3">
 					
-					<a id="logo" href="http://sociallymobile-wordpress" >
+					<a id="logo" href="https://my.sociallymobile.com" >
 						
 						<img class=" dark-version" alt="SociallyMobile" src="/wp-content/uploads/2014/10/Socially-Mobile-with-tag-e1413399140125.png" /> 
 					</a>
@@ -99,11 +99,11 @@
 										
 					<nav>
 						<ul class="sf-menu">	
-							<li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-2563 current_page_item current_page_parent menu-item-3251"><a href="/public-events/">Events</a></li>
+							<li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-2563 current_page_item current_page_parent menu-item-3251"><a href="https://my.sociallymobile.com/company-events">Events</a></li>
 <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074"><a href="/contact-us/">Contact Us</a></li>
 <li id="menu-item-3075" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075"><a href="/terms-conditions/">Terms</a></li>
 <li id="menu-item-3089" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
-<li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="/login">LOG IN</a></li>
+<li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="https://my.sociallymobile.com/login">LOG IN</a></li>
 							<li id="search-btn"><div><a href="#searchbox"><span class="icon-salient-search" aria-hidden="true"></span></a></div> </li>
 						</ul>
 					</nav>
@@ -128,13 +128,13 @@
 	
 	<div class="container">
 		<ul>
-			<li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-2563 current_page_item current_page_parent menu-item-3251"><a href="/public-events/">Events</a></li>
+			<li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-2563 current_page_item current_page_parent menu-item-3251"><a href="https://my.sociallymobile.com/company-events">Events</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074"><a href="/contact-us/">Contact Us</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075"><a href="/terms-conditions/">Terms</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
-<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="/login">LOG IN</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="https://my.sociallymobile.com/login">LOG IN</a></li>
 <li id="mobile-search">  
-					<form action="http://sociallymobile-wordpress" method="GET">
+					<form action="https://my.sociallymobile.com" method="GET">
 			      		<input type="text" name="s" value="" placeholder="Search.." />
 					</form> 
 					</li>		
@@ -208,9 +208,7 @@
 							<div class="article-content-wrap">
 
 					<div class="post-header">
-						<h2 class="title"> <a href="/2014/11/12/live-events/">Live Events: </a> </h2>
-						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/12/live-events/#comments">
-						No Comments</a></span>
+						<h2 class="title">Live Events:</h2>
 					</div><!--/post-header-->
 				<p><strong>Live Events:</strong></p>
 <p>Puerto Rico Leadership Conference<br />
@@ -248,7 +246,7 @@ San Juan, PR</p>
 					November 12, 2014				</div><!--/date-->
 				
 				<div class="nectar-love-wrap">
-					<a href="#" class="nectar-love" id="nectar-love-3242" title="Love this"> <i class="icon-salient-heart"></i><span class="nectar-love-count">0</span></a>				</div><!--/nectar-love-wrap-->	
+					<i class="icon-salient-heart"></i><span class="nectar-love-count">0</span></a>				</div><!--/nectar-love-wrap-->	
 							
 			</div><!--/post-meta-->
 			
@@ -259,9 +257,7 @@ San Juan, PR</p>
 							<div class="article-content-wrap">
 
 					<div class="post-header">
-						<h2 class="title"> <a href="/2014/11/12/corporate-overview-call/">Corporate Overview Call </a> </h2>
-						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/12/corporate-overview-call/#comments">
-						No Comments</a></span>
+						<h2 class="title">Corporate Overview Call</h2>
 					</div><!--/post-header-->
 				<p>Corporate Overview Call<br />
 Every Monday and Wednesday at 10 AM Hawaii, 1 PM Pacific, 3 PM Central, 4 PM Eastern, 5 PM Puerto Rico.<br />
@@ -308,9 +304,7 @@ Hosted by Corporate</p>
 							<div class="article-content-wrap">
 
 					<div class="post-header">
-						<h2 class="title"> <a href="/2014/11/11/spanish-overview-call/">Spanish Overview Call </a> </h2>
-						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/11/spanish-overview-call/#comments">
-						No Comments</a></span>
+						<h2 class="title">Spanish Overview Call</h2>
 					</div><!--/post-header-->
 				<p>Spanish Overview Call<br />
 Every Monday and Wednesday at 11 AM Hawaii, 2 PM Pacific, 4 PM Central, 5 PM Eastern, 6 PM Puerto Rico.<br />
@@ -357,9 +351,7 @@ Hosted by Corporate and Field Leaders</p>
 							<div class="article-content-wrap">
 
 					<div class="post-header">
-						<h2 class="title"> <a href="/2014/11/10/field-overview-call-followed-by-open-qa-and-training/">Field Overview Call followed by open Q&#038;A and Training </a> </h2>
-						<span class="meta-author">By <a href="/author/admin/" title="Posts by admin" rel="author">admin</a></span> <span class="meta-category">| <a href="/category/uncategorized/">Uncategorized</a></span> <span class="meta-comment-count">| <a href="/2014/11/10/field-overview-call-followed-by-open-qa-and-training/#comments">
-						No Comments</a></span>
+						<h2 class="title">Field Overview Call followed by open Q&#038;A and Training</h2>
 					</div><!--/post-header-->
 				<p><strong>Field Overview Call followed by open Q&amp;A and Training</strong><br />
 Every Tuesday and Thursday at 3:30 PM Hawaii, 6:30 PM Pacific, 8:30 PM Central, 9:30 PM Eastern, 10:30 PM Puerto Rico.<br />

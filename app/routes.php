@@ -337,17 +337,14 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::get('populate-levels', function(){
 		$level_count = Level::all()->count();
 		DB::connection()->disableQueryLog();
+
 		if($level_count > 0)
 		{
 			return $level_count;
 		}
 		else
 		{
-			$frontline = User::find(0)->frontline;
-			foreach($frontline as $rep)
-			{
-				Commission::set_levels_down($rep->id);		
-			}
+			Commission::set_levels_down(0);
 			return "Populated Levels";
 		}
 
@@ -359,11 +356,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain)
 {
 	function ($subdomain){
-		//if(!in_array($subdomain,Config::get('site.locked_subdomains'))) return;
-		dd($subdomain);
-		//echo"<pre>"; print_r($subdomain->toArray()); echo"</pre>";
-		echo"<pre>"; print_r(Config::get('site.locked_subdomains')); echo"</pre>";
-		exit;
 	};
 
 	Route::get('/', function($subdomain)
@@ -402,9 +394,7 @@ Route::get('test-steve', function() {
 });
 
 Route::get('test', function() {
-	DB::connection()->disableQueryLog();
-	Commission::set_levels_down(0);
-	return User::find(0);
+	return Hash::make('password2');
 });
 
 Route::get('deploy',['as'=>'deploy', 'uses'=>'Server@deploy']);
