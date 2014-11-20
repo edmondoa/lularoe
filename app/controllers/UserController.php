@@ -93,6 +93,10 @@ class userController extends \BaseController {
 	 */
 	public function edit($id)
 	{
+		if ($id === 0) 
+		{
+			return Redirect::back()->with('message', 'Unable to edit that user.');
+		}
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
 			$user = User::find($id);
 			
@@ -108,6 +112,10 @@ class userController extends \BaseController {
 	 */
 	public function update($id)
 	{
+		if ($id === 0) 
+		{
+			return Redirect::back()->with('message', 'Unable to edit that user.');
+		}
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) 
 		{
 			$user = User::findOrFail($id);
