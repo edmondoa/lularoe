@@ -186,5 +186,10 @@
 	  update(d);
 	}
 	
+	// hover popups
+	$('text').hover(function() {
+		alert('hover');
+	});
+	
 	</script>
 @stop
