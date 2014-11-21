@@ -90,7 +90,4 @@
 					<!-- <a href="/userRanks" class="list-group-item"><i class="fa fa-certificate"></i> UserRanks</a> -->
 					<!-- <a href="/smsMessages" class="list-group-item"><i class="fa fa-mobile-phone"></i> <span class="text">SmsMessages</span></a> -->
 				@endif
-				@if ((Auth::check())&&(Auth::user()->hasRole(['Rep','Customer'])))
-					<a title="Opportunities" href="/opportunities" class="list-group-item"><i class="fa fa-check"></i> <span class="text">Opportunities</span></a>
-				@endif
  			</div>
