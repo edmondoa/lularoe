@@ -96,7 +96,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		// downline
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
-		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
+		Route::get('/downline/visualization', 'DownlineController@visualization');
 
 		// users
 		Route::resource('users', 'UserController');
@@ -394,7 +394,7 @@ Route::get('test-steve', function() {
 });
 
 Route::get('test', function() {
-	return Hash::make('password2');
+	return User::find(2001)->descendants;
 });
 
 Route::get('deploy',['as'=>'deploy', 'uses'=>'Server@deploy']);
