@@ -30,7 +30,7 @@ class UsersTableSeederTest extends DatabaseSeeder
 				'updated_at' => $now,
 			);
 			$founder = User::create($users);
-			$number_level_two = $faker->numberBetween(0,5);
+			$number_level_two = $faker->numberBetween(1,5);
 			for($i_two = 1; $i_two <= $number_level_two; $i_two++) {
 				//level_2
 				$users = array(
