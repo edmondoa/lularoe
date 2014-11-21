@@ -79,9 +79,8 @@ $(document).ready(function() {
         });
     });
     
-    // close sidebar menu popups
+    // close sidebar menu popovers when clicking outside
     $('[data-toggle="popover"]').popover();
-    
     $('body').on('click', function (e) {
         $('[data-toggle="popover"]').each(function () {
             //the 'is' for buttons that trigger popups
