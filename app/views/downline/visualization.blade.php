@@ -43,7 +43,7 @@
 	</div>
 @stop
 @section('scripts')
-	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="//d3js.org/d3.v3.min.js"></script>
 	<script>
 	
 	var margin = {top: 20, right: 120, bottom: 20, left: 120},

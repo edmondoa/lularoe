@@ -210,7 +210,7 @@
 	
 	function LeadController($scope, $http) {
 	
-		$http.get('/api/all-leads').success(function(leads) {
+		$http.get('/api/all-leads-by-rep/{{ Auth::user()->id }}').success(function(leads) {
 			$scope.leads = leads;
 			
 			@include('_helpers.bulk_action_checkboxes')
