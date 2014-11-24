@@ -188,14 +188,14 @@
 	
 
 	// hover
-	$('g').on({
-		mouseenter: function(event) {
-
-			$('body').prepend('' +
-				'<span class="test">Potato</span>' +
-			'')
-		}
-	}, ' text')
+	// $('g').on({
+		// mouseenter: function(event) {
+// 
+			// $('body').prepend('' +
+				// '<span class="test">Potato</span>' +
+			// '')
+		// }
+	// }, ' text')
 	
 	</script>
 	<style>
