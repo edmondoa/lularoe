@@ -38,6 +38,8 @@ class userSiteController extends \BaseController {
 	{
 		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
 		$userSite->save();
+		echo '<pre>'; print_r($userSite); echo '</pre>';
+		exit;
 		return View::make('userSite.create');
 	}
 
