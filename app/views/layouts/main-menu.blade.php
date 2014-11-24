@@ -30,7 +30,7 @@
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Editor', 'Rep', 'Customer'])))
  					<a href="javascript:void(0)" data-href="/user-sites" class='list-group-item' data-toggle="popover" data-content="
- 						<a target='_blank' href='//{{ Auth::user()->public_id }}.{{ Config::get("site.domain") }}'><i class='fa fa-eye'></i> View Site</a>
+ 						<a target='_blank' href='//{{ Auth::user()->public_id }}.{{ Config::get("site.base_domain") }}'><i class='fa fa-eye'></i> View Site</a>
  						<a href='/user-sites/{{ Auth::user()->id }}/edit'><i class='fa fa-pencil'></i> Edit Site</a>
  					">
  						<i class="fa fa-globe"></i> 

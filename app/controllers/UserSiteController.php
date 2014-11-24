@@ -36,6 +36,8 @@ class userSiteController extends \BaseController {
 	 */
 	public function create()
 	{
+		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
+		$userSite->save();
 		return View::make('userSite.create');
 	}
 
@@ -83,8 +85,10 @@ class userSiteController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$userSite = UserSite::where('user_id', $id)->first();
-		return View::make('userSite.edit', compact('userSite'));
+		if (Auth::user()->id == $id || Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			$userSite = UserSite::where('user_id', $id)->first();
+			return View::make('userSite.edit', compact('userSite'));
+		}
 	}
 
 	/**

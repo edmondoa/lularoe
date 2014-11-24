@@ -139,7 +139,7 @@
 	      .attr("r", 1e-6);
 	
 	  nodeExit.select("text")
-	      .style("fill-opacity", 1e-6);
+	      .style("fill-opacity", 0);
 	
 	  // Update the links…
 	  var link = svg.selectAll("path.link")
@@ -186,10 +186,22 @@
 	  update(d);
 	}
 	
-	// hover popups
-	$('text').hover(function() {
-		alert('hover');
-	});
+
+	// hover
+	$('g').on({
+		mouseenter: function(event) {
+
+			$('body').prepend('' +
+				'<span class="test">Potato</span>' +
+			'')
+		}
+	}, ' text')
 	
 	</script>
+	<style>
+		
+		/*text { position:relative; }*/
+		/*.test { display:block; position:absolute; z-index:1000; background:red; color:green; height:500px; width:500px; }*/
+		
+	</style>
 @stop
