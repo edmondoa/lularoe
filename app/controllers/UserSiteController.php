@@ -84,7 +84,7 @@ class userSiteController extends \BaseController {
 	public function edit($id)
 	{
 		if (Auth::user()->id == $id || Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
+			$userSite = UserSite::firstOrNew(['user_id'=> $id]);
 			$userSite->save();
 			return View::make('userSite.edit', compact('userSite'));
 		}
