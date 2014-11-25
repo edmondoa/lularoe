@@ -76,6 +76,8 @@ small { opacity:.5; font-size:9pt; }
 .align-right { text-align:right; }
 .big { font-size:1.25em; }
 .no-padding { padding:0; }
+.nostyle { background:inherit !important; border:inherit !important; padding:inherit !important; }
+.downline-popover th { text-align:right; padding-right:.5em; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
