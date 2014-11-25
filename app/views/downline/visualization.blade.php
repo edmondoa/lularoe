@@ -230,18 +230,21 @@
 		}, ' text')
 		
 		// close popovers
-		$('g').on({
-			mouseout: function() {
-				timer = setTimeout(function() {
-					$('.downline-popover').remove();
-				}, 1000);
-			}
-		}, ' text');
-		$('body').on({
-			mouseenter: function() {
-				clearTimeout(timer);
-			}
-		}, '.downline-popover');
+		$('svg').click(function() {
+			$('.downline-popover').remove();
+		});
+		// $('g').on({
+			// mouseout: function() {
+				// timer = setTimeout(function() {
+					// $('.downline-popover').remove();
+				// }, 1000);
+			// }
+		// }, ' text');
+		// $('body').on({
+			// mouseenter: function() {
+				// clearTimeout(timer);
+			// }
+		// }, '.downline-popover');
 	
 	</script>
 	<style>
