@@ -170,6 +170,11 @@ class Commission extends \BaseController {
 		$generation->id = $user->id;
 		$generation->level = $level;
 		$generation->name = $user->first_name." ".$user->last_name;
+		$generation->rank = $user->rank_name . ' (rank level ' . $user->rank_id . ')';
+		$generation->phone = $user->phone;
+		$generation->email = substr($user->email,0,20);
+		if (strlen($user->email) > 20) $generation->email .= '...';
+		
 		//$generation->children = array();
 		$count = 0;
 		foreach($frontline as $rep)
@@ -177,7 +182,10 @@ class Commission extends \BaseController {
 			$count ++;
 			$children[] = $this->get_org_tree($rep->id,$level+1);
 		}
-		$generation->children = $children;
+		 if(count($children) > 0)
+		  {
+		   $generation->children = $children;
+		  }
 
 		return $generation;
 
