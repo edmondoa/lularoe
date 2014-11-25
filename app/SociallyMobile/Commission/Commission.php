@@ -172,7 +172,8 @@ class Commission extends \BaseController {
 		$generation->name = $user->first_name." ".$user->last_name;
 		$generation->rank = $user->rank_name . ' (rank level ' . $user->rank_id . ')';
 		$generation->phone = $user->phone;
-		$generation->email = $user->email;
+		$generation->email = substr($user->email,0,20);
+		if (strlen($user->email) > 20) $generation->email .= '...';
 		
 		//$generation->children = array();
 		$count = 0;
