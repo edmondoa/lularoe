@@ -65,7 +65,7 @@
  						<i class="fa fa-check"></i> <span class="text">Opportunities</span>
  					</a>
  				@endif
- 				<a class="list-group-item" href="https://imsociallymobile.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Store</a>
+ 				<!-- <a class="list-group-item" href="https://imsociallymobile.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Store</a> -->
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin'])))
 					<!-- <a href="/addresses" class="list-group-item"><i class="fa fa-home"></i> <span class="text">Addresses</span></a> -->
 					<!-- <a href="/bonuses" class="list-group-item"><i class="fa fa-certificate"></i> Bonuses</a> -->
