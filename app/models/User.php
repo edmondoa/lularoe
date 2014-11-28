@@ -47,6 +47,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;
 
+	##############################################################################################
+	# Relationships
+	##############################################################################################
+	
 	public function addresses()
 	{
 		return $this->hasMany('Address', 'addressable_id', 'id');
@@ -80,6 +84,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsToMany('Product','plans');
 	}
 	
+	public function payments() {
+		return $this->hasMany('Payment');
+	}
+	
 	public function userSite() {
 		return $this->belongsTo('UserSite');
 	}
@@ -93,21 +101,34 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 	
 	public function descendantsCountRelation()
-    {
-        return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->first();
-    }
+	{
+		return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->first();
+	}
 
 	public function frontlineCountRelation()
-    {
-        return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->first();
-    }
+	{
+		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->first();
+	}
 
+	public function orgVolumeRelation()
+	{
+		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id')->first();
+	}
+
+	##############################################################################################
+	# Custom Attributes
+	##############################################################################################
+	
 	public function getFrontLineCountAttribute() {
 		return (int) (isset($this->frontlineCountRelation()->count))?$this->frontlineCountRelation()->count:0;
 	}
 
 	public function getDescendantCountAttribute() {
 		return (int) (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
+	}
+
+	public function getVolumeAttribute() {
+		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->volume:0;
 	}
 
 	public function getRankNameAttribute() {
@@ -143,7 +164,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return substr($this->attributes['phone'], 0, 3)."-".substr($this->attributes['phone'], 3, 3)."-".substr($this->attributes['phone'],6);
 	}
 	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone');
+	##############################################################################################
+	# append custom Attribs
+	##############################################################################################
+	
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume');
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -152,6 +177,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 	protected $hidden = array('password', 'remember_token');
 
+	##############################################################################################
+	# Password reminder methods
+	##############################################################################################
+	
 	public function getRememberToken()
 	{
 		return $this->remember_token;
@@ -166,14 +195,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	{
 		return 'remember_token';
 	}
+	
+	##############################################################################################
+	# role and permissions
+	##############################################################################################
+	
 	public function hasRole($key) {
-	    if(!is_array($key)) return false;
-	    foreach($key as $role){
-		    if($this->role->name === $role){
-		    	return true;
+		if(!is_array($key)) return false;
+		foreach($key as $role){
+			if($this->role->name === $role){
+				return true;
 			}
-	    }
-	    return false;
+		}
+		return false;
 	}
 
 	public function hasRepInDownline($repId) {
