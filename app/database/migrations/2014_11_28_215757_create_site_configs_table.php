@@ -23,7 +23,7 @@ class CreateSiteConfigsTable extends Migration {
 		SiteConfig::create([
 			'key'=>'pre-registration-fee',
 			'value'=>100.00,
-			'description'=>'This is the fee that will be charged to all new pre-registrants',
+			'description'=>'This is the fee that will be charged to all new pre-registrants. Warning: only enter numbers and decimal point. If you include any other punctuation or text it will break',
 		]);
 	}
 
