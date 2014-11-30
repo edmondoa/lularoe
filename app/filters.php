@@ -90,6 +90,27 @@ Route::filter('superadmin', function(){
 	}
 });
 
+##############################################################################################
+# Public filter
+##############################################################################################
+Route::filter('pub-site', function($router)
+{
+
+});
+
+##############################################################################################
+# replicated filter
+##############################################################################################
+Route::filter('rep-site', function($router)
+{
+	//dd($domain);
+	if(in_array($router->parameter('subdomain'),Config::get('site.locked_subdomains'))) return;
+	if (User::where('public_id',$router->parameter('subdomain'))->count() != 1)
+	{
+		return Redirect::to('http://'.Config::get('site.domain'));
+	}
+});
+
 /*
 |--------------------------------------------------------------------------
 | Force Https requests

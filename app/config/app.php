@@ -126,7 +126,7 @@ return array(
 		'SociallyMobile\Payments\PaymentServiceProvider',
 		'SociallyMobile\Twilio\TwilioServiceProvider',
 		'SociallyMobile\Commission\CommissionServiceProvider',
-    	//'Intervention\Image\ImageServiceProvider'
+    	'Intervention\Image\ImageServiceProvider'
 
 
 	),
@@ -196,9 +196,9 @@ return array(
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
 		'Twilio'		  => 'SociallyMobile\Facades\Twilio',
-		'CMSPayment'		  => 'SociallyMobile\Facades\Payment',
-		'Commission'		=> 'SociallyMobile\Facades\Commission',
-		//'Image' 		  => 'Intervention\Image\Facades\Image'
+		'CMSPayment'	  => 'SociallyMobile\Facades\Payment',
+		'Commission'	  => 'SociallyMobile\Facades\Commission',
+		'Image' 		  => 'Intervention\Image\Facades\Image'
 
 	),
 

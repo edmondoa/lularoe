@@ -6,16 +6,19 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col col-md-8">
-		            	@if (Auth::user()->hasRepInDownline($user->id))
+		            	@if (Auth::user()->hasRepInDownline($user->id) || (Auth::user()->hasRole(['Superadmin', 'Admin']) && isset($user->sponsor_id)))
 		            		<div class="breadcrumbs">
 		            			<a href="/downline/immediate/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
 		            		</div>
 		            	@endif
-		            	@if ($user->id == Auth::user()->id)
-		            		<h1 class="no-top">Your Immediate Downline</h1>
-		            	@else
-		                	<h1 class="no-top">{{ $user->first_name }} {{ $user->last_name }}'s Immediate Downline</h1>
-		            	@endif
+		            	<h1 class="no-top">
+			            	@if ($user->id == Auth::user()->id)
+			            		Your Immediate Downline
+			            	@else
+			                	{{ $user->first_name }} {{ $user->last_name }}'s Immediate Downline
+			            	@endif
+			            	<span class="badge">{{ $user->front_line_count }}</span>
+		            	</h1>
 		            </div>
 		            <div class="col col-md-4">
 		                <div class="pull-right">

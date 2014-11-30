@@ -7,9 +7,11 @@
 			<div class="row">
 		</div>
 	</div>
-		<div class="col col-lg-4 col-md-6">
+		<div class="col col-md-6">
 			{{ Form::open( array('route' => array('blast_email'))) }}
-			
+				@if (isset($leads))
+					{{ Form::hidden('leads', $leads) }}
+				@endif
 				<div class="form-group">
 					{{ Form::label('subject_line','To:')}}<br>
 					@foreach ($users as $user)
@@ -27,7 +29,7 @@
 		
 				<div class="form-group">
 					{{ Form::label('body','Message:')}}
-					{{ Form::textarea('body',null,  $attributes = array('class'=>'form-control')) }}
+					{{ Form::textarea('body',null,  $attributes = array('class'=>'wysiwyg')) }}
 				</div>
 		
 				<div class="form-group">

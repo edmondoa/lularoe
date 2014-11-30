@@ -22,7 +22,7 @@
 				    	</button>
 				    {{ Form::close() }}
 				@endif
-			    {{ Form::open(array('url' => '[models]/' . $[model]->id, 'method' => 'DELETE')) }}
+			    {{ Form::open(array('url' => '[models]/' . $[model]->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this [model]? This cannot be undone.");')) }}
 			    	<button class="btn btn-default" title="Delete">
 			    		<i class="fa fa-trash" title="Delete"></i>
 			    	</button>
@@ -31,7 +31,7 @@
 		@endif
 	</div><!-- row -->
 	<div class="row">
-		<div class="col col-md-12">
+		<div class="col col-md-6">
 		    <table class="table">
 		        [repeat]
 		        <tr>

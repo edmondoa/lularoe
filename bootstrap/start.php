@@ -38,6 +38,7 @@ $env = $app->detectEnvironment(function(){
 		'Jake-PC'=>'jake_local', 
 		'Owner-PC'=>'steve_local',
 		'jakus1-MacBookPro'=>'jake_local',
+		'linux-rocks'=>'jake_local',
 		'ip-172-31-23-154'=>'production',
 		'ip-172-31-23-215'=>'beta'
 	];

@@ -1,8 +1,6 @@
 		<div class="breadcrumbs">
-			@if (URL::previous() == url())
-				<a href="/users">
-			@else
+			@if (URL::previous() !== Request::url())
 				<a href="{{ URL::previous() }}">
+				&lsaquo; Back</a>
 			@endif
-			&lsaquo; Back</a>
 		</div>

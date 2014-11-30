@@ -73,3 +73,10 @@ Event::listen('rep.create' , function($rep_id)
 {
 	return Commission::level_up($rep_id);
 });
+
+// infinity income
+Event::listen('sponsor.update' , function($rep_id)
+{
+	Commission::delete_levels_down($rep_id);
+	Commission::set_levels_down($rep_id);
+});

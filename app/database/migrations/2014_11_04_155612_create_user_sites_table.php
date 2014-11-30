@@ -11,8 +11,10 @@ class CreateUserSitesTable extends Migration
 		Schema::create('user_sites', function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('user_id');
+			$table->string('title');
 			$table->text('body');
 			$table->string('banner');
+			$table->boolean('display_phone');
 			$table->timestamp('created_at');
 			$table->timestamp('updated_at');
 		});

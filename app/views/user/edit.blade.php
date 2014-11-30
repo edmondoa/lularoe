@@ -59,7 +59,7 @@
 		    </div> -->
 		   
 		    <div class="form-group">
-		        {{ Form::label('dob', 'DOB') }}
+		        {{ Form::label('dob', 'Date of Birth') }}
 		        {{ Form::text('dob', null, array('class' => 'form-control dateonlypicker')) }}
 		    </div>
 		    
@@ -68,7 +68,7 @@
 		        {{ Form::text('phone', null, array('class' => 'form-control')) }}
 		    </div>
 		    
-		    @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		    @if (Auth::user()->hasRole(['Superadmin', 'Admin']) && Auth::user()->id != $user->id)
 		    	<div class="form-group">
 		    		{{ Form::label('roled_id', 'Role') }}<br>
 		    		{{ Form::select('role_id', array(
@@ -84,7 +84,7 @@
 			        {{ Form::text('sponsor_id', null, array('class' => 'form-control')) }}
 			    </div>
 			    
-			    <div class="form-group">
+			    <!-- <div class="form-group">
 			        {{ Form::label('mobile_plan_id', 'Mobile Plan Id') }}
 			        {{ Form::text('mobile_plan_id', null, array('class' => 'form-control')) }}
 			    </div>
@@ -97,7 +97,7 @@
 			    <div class="form-group">
 			        {{ Form::label('disabled', 'Disabled') }}
 			        {{ Form::text('disabled', null, array('class' => 'form-control')) }}
-			    </div>
+			    </div> -->
 			@endif		    
 		
 		    {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}

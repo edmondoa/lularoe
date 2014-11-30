@@ -18,7 +18,7 @@
 		@show
 		<hr>
 		<footer>
-			<p>&copy; SociallyMobile {{ date('Y') }}</p>
+			<p>&copy; {{Config::get('site.company_name')}} {{ date('Y') }}</p>
 		</footer>
 	</div><!--/col-->
 </div><!--/row-->

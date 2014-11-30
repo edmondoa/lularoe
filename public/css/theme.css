@@ -16,7 +16,6 @@ body { position:absolute; top:0; right:0; bottom:0; left:0; }
 #content { display:table-cell; padding:40px; }
 #content h1:first-of-type { margin-top:0; }
 
-
 /* sidebar */
 #sidebar { display:table-cell; background:black; width:205px; vertical-align:top; }
 body.layout-default #main-menu > a:first-child { border-top-left-radius:0; border-top-right-radius:0; }
@@ -24,9 +23,13 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
 #main-menu a:hover { background:rgb(64,64,64) !important; color:white; }
 #main-menu a.active { background:#017dc5 !important; color:white; }
 
-/* body */
+/* layouts */
 .layout-centered { padding-top:70px; }
 .layout-default { padding-top:50px !important; }
+.layout-default #top-right-menu { margin-right:0; }
+.layout-gray { padding-top:50px; background:rgb(235,235,235) !important; }
+.layout-gray #container { box-shadow:0 0 5px rgba(0,0,0,.25); background:white; margin-top:-30px; padding:65px 40px 40px 40px; margin-bottom:20px; }
+
 
 /* main content */
 
@@ -40,6 +43,8 @@ footer { text-align:center; color:gray; font-size:8pt; }
 .width-auto { width:auto; }
 .tiny { font-size:7pt; display:block; }
 .clear { clear:both; }
+.margin-top-1 { margin-top:.25em; }
+.margin-top-2 { margin-top:.5em; }
 .margin-right-1 { margin-right:.5em; }
 .margin-right-2 { margin-right:1em; }
 .itemsPerPage { max-width:80px; }
@@ -60,6 +65,19 @@ td.border { border-right:1px solid rgba(0,0,0,.1); }
 .no-bullets { list-style:none; }
 .date-col { width:150px; }
 small { opacity:.5; font-size:9pt; }
+.user-banner-container { position:relative; padding:0; }
+.user-banner { width:100%; }
+.user-banner-container .avatar { position:relative; z-index:1; margin-top:-170px; margin-left:30px; border:10px solid white; border-radius:4px; box-shadow:1px 1px 3px rgba(0,0,0,.25) inset, 1px 1px 3px rgba(0,0,0,.25); }
+.user-banner-container h1 { margin:0; text-shadow:0 2px rgba(0,0,0,.25); }
+.user-banner-text { position:absolute; left:0; right:0; bottom:30px; background:rgba(0,0,0,.25); color:white; }
+.user-banner-content { padding:20px 20px 20px 255px; text-shadow:0 1px rgba(0,0,0,.25); }
+.user-banner-content small { opacity:1; }
+.overflow-hidden { overflow:hidden; }
+.align-right { text-align:right; }
+.big { font-size:1.25em; }
+.no-padding { padding:0; }
+.nostyle { background:inherit !important; border:inherit !important; padding:inherit !important; }
+.downline-popover th { text-align:right; padding-right:.5em; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
@@ -84,6 +102,9 @@ small { opacity:.5; font-size:9pt; }
 #main-menu .popover a:hover { background:none !important; text-decoration:none; }
 .label .fa-times { cursor:pointer; }
 .table tbody th { text-align:right; }
+.navbar-inverse .dropdown-menu { background:#202020; }
+.navbar-inverse .dropdown-menu a { color:rgb(150,150,150) !important; }
+.navbar-inverse .dropdown-menu a:hover { color:white !important; background:none !important; }
 
 /* jquery-ui overrides */
 select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight:100; }
@@ -95,7 +116,7 @@ select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight
 .ui-timepicker-div dl dd { margin: 0 10px 10px 45%; }
 .ui-timepicker-div td { font-size: 90%; }
 .ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
-.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl { direction: rtl; }
 .ui-timepicker-rtl dl { text-align: right; padding: 0 5px 0 0; }
 .ui-timepicker-rtl dl dt{ float: right; clear: right; }
 .ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }
@@ -106,13 +127,23 @@ select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight
 @media(max-width:767px) {
     .hidable-xs { display:none; }
     .date-col { width:auto; }
+    .user-banner-container { position:relative !important; }
+    .user-banner { display:none; }
+    .user-banner-container .avatar { width:102px !important; height:102px !important; position:absolute !important; top:0 !important; left:0 !important; margin:0 !important; z-index:10; }
+    .user-banner-text {  }
+    .user-banner-content { padding:20px 20px 20px 125px; }
+    .user-banner-content small { display:block; margin-bottom:1em; }
+    .user-banner-content h1 { font-size:18pt; }
+    .layout-gray #container { padding:40px 20px 20px 20px !important; }
 }
 @media(max-width:991px) {
     .hidable-sm { display:none; }
-    #sidebar { width:auto; }
+    #sidebar { width:40px; }
     #content { padding:20px; }
     #main-menu { text-align:center; }
     #main-menu .text { display:none; }
+    .user-banner-text { position:static; background:#303030; }
+    .user-banner-container .avatar { width:150px; height:150px; border:5px solid white; }
 }
 @media(max-width:1199px) {
     .hidable-md { display:none; }
