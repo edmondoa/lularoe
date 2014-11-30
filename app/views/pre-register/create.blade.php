@@ -84,7 +84,7 @@
 	        {{ Form::text('zip', Input::old('zip'), array('class' => 'form-control')) }}
 	    </div>
 	    <br>
-	<div class="alert alert-success">Prelaunch Membership Fee: ${{ number_format(Config::get('settings.pre-registration-fee'),2) }}</div>
+	<div class="alert alert-success">Prelaunch Membership Fee: $100 or any other promotional amount at the time of your enrollment.</div>
 
 	    
 	<div class="form-group">
