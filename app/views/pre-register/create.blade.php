@@ -84,7 +84,7 @@
 	        {{ Form::text('zip', Input::old('zip'), array('class' => 'form-control')) }}
 	    </div>
 	    <br>
-	<div class="alert alert-success">Prelaunch Membership Fee: $100 or any other promotional amount at the time of your enrollment.</div>
+	<div class="alert alert-success">Prelaunch Membership Fee: ${{number_format(Config::get('settings.pre-registration-fee'),2)}}</div>
 
 	    
 	<div class="form-group">
@@ -131,7 +131,7 @@
 		</label>
 	</div>
 	<div style="position:relative; top:-10px;">
-		<small class="tiny">October 14, 2014 - December 31, 2014 is considered "Beta Launch Pad" wherein you can enroll for as little as $100. The $100 is fully refundable by sending an email to cancellations@sociallymobile.com. No commissions are being paid during this Beta Launch phase. 100% of the $100 collected in Beta will be credited toward your fees in January.</small>
+		<small class="tiny">October 14, 2014 - December 31, 2014 is considered "Beta Launch Pad" wherein you can enroll for as little as $100. The $100, or any other promotional amount at the time of your enrollment, is fully refundable by sending an email to cancellations@sociallymobile.com. No commissions are being paid during this Beta Launch phase. 100% of the $100 collected in Beta will be credited toward your fees in January.</small>
 	</div>
 	<br>
    

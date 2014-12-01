@@ -397,7 +397,7 @@ Route::get('test-steve', function() {
 });
 
 Route::get('test', function() {
-
+	return Config::get('settings.pre-registration-fee');
 });
 
 Route::get('test-payments', function() {

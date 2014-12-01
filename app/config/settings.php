@@ -21,7 +21,7 @@ class DBconfiguratorObject implements ArrayAccess, Serializable {
 		$this->tableName = $tableName;
 
 		// Query the database and cache it forever
-		$this->table = DB::table($tableName)->rememberForever($tableName);
+		$this->table = DB::table($tableName)->rememberForever('site_configs');
 
 		// Set the config array like a typical config file is structured
 		$this->config = $this->table->lists('value', 'key');
