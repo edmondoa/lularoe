@@ -149,7 +149,7 @@
 					            </td>
 					            
 					            <td class="hidable-sm">
-					                <span ng-bind="user.email"></span>
+					            	<span ng-bind="user.email"></span>
 					            </td>
 					            		            
 					            <td class="hidable-sm">

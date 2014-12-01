@@ -73,7 +73,7 @@
 		    		{{ Form::label('roled_id', 'Role') }}<br>
 		    		{{ Form::select('role_id', array(
 				    	'1' => 'Customer',
-				    	'2' => 'Rep',
+				    	'2' => 'ISM',
 				    	'3' => 'Editor',
 				    	'4' => 'Admin'
 				    ), null, array('class' => 'selectpicker')) }}

@@ -91,7 +91,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 		// dashboard
 		Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@index']);
-		Route::get('settings', 'DashboardController@settings');
+		Route::get('settings', ['as' => 'settings', 'uses' => 'DashboardController@settings']);
 
 		// downline
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
@@ -102,6 +102,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::resource('users', 'UserController');
 		Route::post('users/email', 'BlastController@createMail');
 		Route::post('users/sms', 'BlastController@createSms');
+		Route::get('users/{id}/privacy', 'UserController@privacy');
+		Route::post('users/updateprivacy/{id}', 'UserController@updatePrivacy');
 
 		// events
 		Route::resource('events', 'UventController');
@@ -393,7 +395,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	dd(User::find(10004));
+	return User::find(2008)->frontline;
 });
 
 Route::get('test', function() {
