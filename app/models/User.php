@@ -112,53 +112,53 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function getPublicGenderAttribute() {
 		if (isset($this->gender)) {
-			if ($this->id == Auth::user()->id) return $this->gender;
+			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->gender;
 			return ($this->hide_gender != true)?$this->gender:'';
 		}
 	}
 
 	public function getPublicDobAttribute() {
 		if (isset($this->dob)) {
-			if ($this->id == Auth::user()->id) return $this->dob;
+			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->dob;
 			return ($this->hide_dob != true)?$this->dob:'';
 		}
 	}
 
 	public function getPublicEmailAttribute() {
 		if (isset($this->email)) {
-			if ($this->id == Auth::user()->id) return $this->email;
+			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->email;
 			return ($this->hide_email != true)?$this->email:'';
 		}
 	}
 
 	public function getPublicPhoneAttribute() {
 		if (isset($this->phone)) {
-			if ($this->id == Auth::user()->id) return $this->phone;
+			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->phone;
 			return ($this->hide_phone != true)?$this->phone:'';
 		}
 	}
 
-	public function getPublicBillingAddressAttribute() {
-		if (isset($this->addresses)) {
-			foreach ($this->addresses as $address) {
-				if ($address->label == 'Billing') {
-					if ($this->id == Auth::user()->id) return $address;
-					return ($this->hide_billing_address != true)?$address:'';
-				}
-			}
-		}
-	}
-	
-	public function getPublicShippingAddressAttribute() {
-		if (isset($this->addresses)) {
-			foreach ($this->addresses as $address) {
-				if ($address->label == 'Billing') {
-					if ($this->id == Auth::user()->id) return $address;
-					return ($this->hide_shipping_address != true)?$address:'';
-				}
-			}
-		}
-	}
+	// public function getPublicBillingAddressAttribute() {
+		// if (isset($this->addresses)) {
+			// foreach ($this->addresses as $address) {
+				// if ($address->label == 'Billing') {
+					// if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $address;
+					// return ($this->hide_billing_address != true)?$address:'';
+				// }
+			// }
+		// }
+	// }
+// 	
+	// public function getPublicShippingAddressAttribute() {
+		// if (isset($this->addresses)) {
+			// foreach ($this->addresses as $address) {
+				// if ($address->label == 'Billing') {
+					// if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $address;
+					// return ($this->hide_shipping_address != true)?$address:'';
+				// }
+			// }
+		// }
+	// }
 	
 	public function getDescendantCountAttribute() {
 		return (int) (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
@@ -197,14 +197,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return substr($this->attributes['phone'], 0, 3)."-".substr($this->attributes['phone'], 3, 3)."-".substr($this->attributes['phone'],6);
 	}
 	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone', 'public_gender', 'public_dob', 'public_email', 'public_phone', 'public_billing_address', 'public_shipping_address');
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone', 'public_gender', 'public_dob', 'public_email', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
 
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('password', 'remember_token', 'gender', 'dob', 'email', 'phone', 'billing_address', 'shipping_address');
+	protected $hidden = array('password', 'remember_token', 'gender', 'dob', 'email', 'phone');
 
 	public function getRememberToken()
 	{
