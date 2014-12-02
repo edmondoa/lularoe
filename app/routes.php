@@ -52,8 +52,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		return View::make('company.privacy');
 	});
 	
-
-
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');
 	Route::resource('send_text','SmsMessagesController');
@@ -83,6 +81,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	});
 
 	Route::controller('api','DataOnlyController');
+		
+	//timezone
+	Route::post('set-timezone', 'TimezoneController@set');
 		
 	##############################################################################################
 	// Protected Routes
@@ -395,7 +396,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	return User::find(2008)->frontline;
+	return Session::get(‘timezone’);
 });
 
 Route::get('test', function() {

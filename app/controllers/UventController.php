@@ -43,6 +43,7 @@ class uventController extends \BaseController {
 	public function create()
 	{
 		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			if (!isset($event->timezone)) $event->timezone = Session::get('timezone');
 			return View::make('event.create');
 		}
 	}
@@ -116,7 +117,7 @@ class uventController extends \BaseController {
 	{
 		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
 			$event = Uvent::find($id);
-	
+			if (!isset($event->timezone)) $event->timezone = Session::get('timezone');
 			return View::make('event.edit', compact('event'));
 		}
 	}
