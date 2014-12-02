@@ -29,6 +29,11 @@
 			    </div>
 			    
 			    <div class="form-group">
+			    	{{ Form::label('timezone', 'Time Zone') }}
+					{{ Timezone::selectForm($event->timezone, null, ['id' => 'timezone', 'name' => 'timezone', 'class' => 'form-control width-auto']) }}
+			    </div>
+			    
+			    <div class="form-group">
 			        {{ Form::label('disabled', 'Status') }}
 			        <br>
 			    	{{ Form::select('disabled', [

@@ -14,7 +14,7 @@ class Uvent extends \Eloquent
 
  	// Don't forget to fill this array
 	protected $table = 'uvents';
-	protected $fillable = array('name','description','date_start','date_end','public','customers','reps','editors','admins','disabled','formatted_start_date','formatted_end_date','formatted_start_time','formatted_end_time');
+	protected $fillable = array('name','description','date_start','date_end','public','customers','reps','editors','admins','disabled','formatted_start_date','formatted_end_date','formatted_start_time','formatted_end_time','timezone');
 
 
 	public function getFormattedStartDateAttribute($value)
