@@ -78,27 +78,27 @@
                             		</span>
                         		</th>
                         	
-                            	<th class="link hidable-sm" ng-click="orderByField='gender'; reverseSort = !reverseSort">Gender
+                            	<th class="link hidable-sm" ng-click="orderByField='public_gender'; reverseSort = !reverseSort">Gender
                             		<span>
-                            			<span ng-show="orderByField == 'gender'">
+                            			<span ng-show="orderByField == 'public_gender'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link hidable-sm" ng-click="orderByField='email'; reverseSort = !reverseSort">Email
+                            	<th class="link hidable-sm" ng-click="orderByField='public_email'; reverseSort = !reverseSort">Email
                             		<span>
-                            			<span ng-show="orderByField == 'email'">
+                            			<span ng-show="orderByField == 'public_email'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link hidable-sm" ng-click="orderByField='phone'; reverseSort = !reverseSort">Phone
+                            	<th class="link hidable-sm" ng-click="orderByField='public_phone'; reverseSort = !reverseSort">Phone
                             		<span>
-                            			<span ng-show="orderByField == 'phone'">
+                            			<span ng-show="orderByField == 'public_phone'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
@@ -145,15 +145,15 @@
 					            </td>
 					            
 					            <td class="hidable-sm">
-					                <span ng-bind="user.gender"></span>
+					                <span ng-bind="user.public_gender"></span>
 					            </td>
 					            
 					            <td class="hidable-sm">
-					                <span ng-bind="user.email"></span>
+					            	<span ng-bind="user.public_email"></span>
 					            </td>
 					            		            
 					            <td class="hidable-sm">
-					                <span ng-bind="user.phone"></span>
+					                <span ng-bind="user.public_phone"></span>
 					            </td>
 					            
 					            <td class="hidable-sm">

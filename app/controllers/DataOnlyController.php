@@ -111,4 +111,11 @@ class DataOnlyController extends \BaseController
 		}
 	}
 
+	// users
+	public function getAllConfig(){
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			return SiteConfig::all();
+		}
+	}
+
 }

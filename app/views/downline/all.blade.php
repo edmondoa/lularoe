@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => '/users/public_email', 'method' => 'POST')) }}
 	    <div ng-controller="DownlineController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
@@ -42,7 +42,7 @@
 		                    <div class="pull-left">
 		                        <div class="input-group">
 		                            <select class="form-control selectpicker actions">
-		                                <option value="/users/email">Send Email</option>
+		                                <option value="/users/public_email">Send Email</option>
 		                                <option value="/users/sms">Send Text (SMS)</option>
 		                            </select>
 		                            <div class="input-group-btn">
@@ -95,27 +95,27 @@
                             		</span>
                         		</th>
                         	
-                            	<th class="link" ng-click="orderByField='gender'; reverseSort = !reverseSort">Gender
+                            	<th class="link" ng-click="orderByField='public_gender'; reverseSort = !reverseSort">Gender
                             		<span>
-                            			<span ng-show="orderByField == 'gender'">
+                            			<span ng-show="orderByField == 'public_gender'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='email'; reverseSort = !reverseSort">Email
+                            	<th class="link" ng-click="orderByField='public_email'; reverseSort = !reverseSort">Email
                             		<span>
-                            			<span ng-show="orderByField == 'email'">
+                            			<span ng-show="orderByField == 'public_email'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='phone'; reverseSort = !reverseSort">Phone
+                            	<th class="link" ng-click="orderByField='public_phone'; reverseSort = !reverseSort">Phone
                             		<span>
-                            			<span ng-show="orderByField == 'phone'">
+                            			<span ng-show="orderByField == 'public_phone'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
@@ -168,15 +168,15 @@
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="user.gender"></span>
+					                <span ng-bind="user.public_gender"></span>
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="user.email"></span>
+					                <span ng-bind="user.public_email"></span>
 					            </td>
 					            		            
 					            <td>
-					                <span ng-bind="user.phone"></span>
+					                <span ng-bind="user.public_phone"></span>
 					            </td>
 					            
 					            <td>

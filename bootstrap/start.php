@@ -30,7 +30,7 @@ $env = $app->detectEnvironment(function(){
 	$haystack = getenv('LARAVEL_ENV');
 	if(!empty($haystack))
 	{
-		//return $haystack;
+		return $haystack;
 	}
 	//if not look in the hostname and map it to an environment
 	$environments = [

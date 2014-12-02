@@ -126,7 +126,8 @@ return array(
 		'SociallyMobile\Payments\PaymentServiceProvider',
 		'SociallyMobile\Twilio\TwilioServiceProvider',
 		'SociallyMobile\Commission\CommissionServiceProvider',
-    	'Intervention\Image\ImageServiceProvider'
+    	'Intervention\Image\ImageServiceProvider',
+    	'Camroncade\Timezone\TimezoneServiceProvider'
 
 
 	),
