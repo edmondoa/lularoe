@@ -96,7 +96,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		// downline
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
-		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
+		Route::get('/downline/visualization', 'DownlineController@visualization');
 
 		// users
 		Route::resource('users', 'UserController');
@@ -399,7 +399,35 @@ Route::get('test-steve', function() {
 });
 
 Route::get('test', function() {
-	return Config::get('settings.pre-registration-fee');
+	return User::with('payments')->take(200)->get();
+	return Payment::take(1)->get();
+	var_dump($payment);
+	exit;
+	$reps = User::all();
+	foreach($reps as $rep)
+	{
+		foreach($rep->plans as $plan)
+		{
+			if($plan->price > 0)
+			{
+				$payment = Payment::Create([
+					'user_id'=>$rep->id,
+					'amount'=>$plan->price,
+					'details'=>'Test payment in the amount of '.$plan->price.' to figure out how to run commissions.'
+				]);
+				$payment->user()->associate($rep);
+				$payment->save();
+				//echo"<pre>"; print_r($payment->toArray()); echo"</pre>";
+			}
+			else
+			{
+				//echo"<pre>"; print_r($plan->toArray()); echo"</pre>";
+			}
+		}
+		
+	}
+	return $reps;
+	return User::find(2001)->plans;
 });
 
 Route::get('test-payments', function() {
