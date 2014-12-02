@@ -160,13 +160,8 @@ class Commission extends \BaseController {
 		}
 		$frontline = User::find($rep_id)->frontline;
 		$user = User::find($rep_id);
-		$children = [];
-		//$sql = "SELECT level FROM levels WHERE ancestor_id='".$level."' AND user_id='".$rep_id."' LIMIT 1";
-		//$level = \DB::select($sql);
-		//echo"<pre>"; print_r($level); echo"</pre>";
-		//echo"<pre>"; print_r($sql); echo"</pre>";
-		//return ;
-		$generation = new \stdClass;
+		$children = []; //ensure we have an empty array to start with
+		$generation = new \stdClass; //create a new object of stdClass
 		$generation->id = $user->id;
 		$generation->level = $level;
 		$generation->name = $user->first_name." ".$user->last_name;
@@ -180,15 +175,13 @@ class Commission extends \BaseController {
 		foreach($frontline as $rep)
 		{
 			$count ++;
-			$children[] = $this->get_org_tree($rep->id,$level+1);
+			$children[] = $this->get_org_tree($rep->id,$level+1); // recursively add children
 		}
-		 if(count($children) > 0)
-		  {
-		   $generation->children = $children;
-		  }
-
+		if(count($children) > 0) //if there were children add them to the object
+		{
+			$generation->children = $children;
+		}
 		return $generation;
-
 	}
 
 	/**
