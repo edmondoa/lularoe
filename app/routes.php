@@ -91,7 +91,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 		// dashboard
 		Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@index']);
-		Route::get('settings', 'DashboardController@settings');
+		Route::get('settings', ['as' => 'settings', 'uses' => 'DashboardController@settings']);
 
 		// downline
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
@@ -102,6 +102,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::resource('users', 'UserController');
 		Route::post('users/email', 'BlastController@createMail');
 		Route::post('users/sms', 'BlastController@createSms');
+		Route::get('users/{id}/privacy', 'UserController@privacy');
+		Route::post('users/updateprivacy/{id}', 'UserController@updatePrivacy');
 
 		// events
 		Route::resource('events', 'UventController');
@@ -165,6 +167,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		Route::group(array('before' => 'Admin'), function() {
 			
+			// site-config
+			Route::resource('config', 'SiteConfigController');
+
 			// addresses
 			Route::resource('addresses', 'AddressController');
 			Route::post('addresses/disable', 'AddressController@disable');
@@ -390,11 +395,40 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	dd(User::find(10004));
+	return User::find(2008)->frontline;
 });
 
 Route::get('test', function() {
-	return Hash::make('password2');
+	return Config::get('settings.pre-registration-fee');
 });
 
-Route::get('deploy',['as'=>'deploy', 'uses'=>'Server@deploy']);
+Route::get('test-payments', function() {
+	$reps = User::all();
+	foreach($reps as $rep)
+	{
+		foreach($rep->plans as $plan)
+		{
+			if($plan->price > 0)
+			{
+				$payment = Payment::Create([
+					'user_id'=>$rep->id,
+					'amount'=>$plan->price,
+					'details'=>'Test payment in the amount of '.$plan->price.' to figure out how to run commissions.',
+					'created_at' => date('Y-m-d H:i:s',strtotime('last month'))
+				]);
+				$payment->user()->associate($rep);
+				$payment->save();
+				//echo"<pre>"; print_r($payment->toArray()); echo"</pre>";
+			}
+			else
+			{
+				//echo"<pre>"; print_r($plan->toArray()); echo"</pre>";
+			}
+		}
+		
+	}
+	return $reps;
+	return User::find(2001)->plans;
+});
+
+//Route::get('deploy',['as'=>'deploy', 'uses'=>'Server@deploy']);

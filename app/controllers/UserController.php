@@ -95,12 +95,75 @@ class userController extends \BaseController {
 	{
 		if ($id === 0) 
 		{
-			return Redirect::back()->with('message', 'Unable to edit that user.');
+			return Redirect::back()->with('message', 'Unable to edit this user.');
 		}
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
 			$user = User::find($id);
 			
 			return View::make('user.edit', compact('user'));
+		}
+	}
+
+	/**
+	 * Show the form for editing the specified user's privacy and communication preferences.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function privacy($id)
+	{
+		if ($id === 0) 
+		{
+			return Redirect::back()->with('message', 'Unable to edit this user.');
+		}
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
+			$user = User::find($id);
+
+			$checked = [];
+
+			// format checkbox values for database
+			$checked['hide_gender'] = $user->hide_gender == 1 ? 0 : 1;
+			$checked['hide_dob'] = $user->hide_dob == 1 ? 0 : 1;
+			$checked['hide_email'] = $user->hide_email == 1 ? 0 : 1;
+			$checked['hide_phone'] = $user->hide_phone == 1 ? 0 : 1;
+			$checked['hide_billing_address'] = $user->hide_billing_address == 1 ? 0 : 1;
+			$checked['hide_shipping_address'] = $user->hide_shipping_address == 1 ? 0 : 1;
+			$checked['block_email'] = $user->block_email == 1 ? 0 : 1;
+			$checked['block_sms'] = $user->block_sms == 1 ? 0 : 1;
+			
+			return View::make('user.privacy', compact('user', 'checked'));
+		}
+	}
+
+	/**
+	 * Update the specified user's privacy and communications settings in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function updatePrivacy($id)
+	{
+		if ($id === 0) 
+		{
+			return Redirect::back()->with('message', 'Unable to edit this user.');
+		}
+		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) 
+		{
+			$user = User::findOrFail($id);
+			$data = Input::all();
+			
+			// format checkbox values for database
+			$data['hide_gender'] = isset($data['hide_gender']) ? 0 : 1;
+			$data['hide_dob'] = isset($data['hide_dob']) ? 0 : 1;
+			$data['hide_email'] = isset($data['hide_email']) ? 0 : 1;
+			$data['hide_phone'] = isset($data['hide_phone']) ? 0 : 1;
+			$data['hide_billing_address'] = isset($data['hide_billing_address']) ? 0 : 1;
+			$data['hide_shipping_address'] = isset($data['hide_shipping_address']) ? 0 : 1;
+			$data['block_email'] = isset($data['block_email']) ? 0 : 1;
+			$data['block_sms'] = isset($data['block_sms']) ? 0 : 1;
+			
+			$user->update($data);
+			return Redirect::route('settings')->with('message', 'Preferences saved.');
 		}
 	}
 
@@ -114,7 +177,7 @@ class userController extends \BaseController {
 	{
 		if ($id === 0) 
 		{
-			return Redirect::back()->with('message', 'Unable to edit that user.');
+			return Redirect::back()->with('message', 'Unable to edit this user.');
 		}
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) 
 		{
@@ -125,7 +188,7 @@ class userController extends \BaseController {
 			$rules['password'] = 'sometimes|confirmed|digits_between:8,25';
 			//$rules['sponsor_id'] = 'required|digits';
 			$data = Input::all();
-			$data['phone'] = formatPhone($data['phone']);
+			if (isset($data['phone'])) $data['phone'] = formatPhone($data['phone']);
 			$validator = Validator::make($data, $rules);
 			if ($validator->fails())
 			{

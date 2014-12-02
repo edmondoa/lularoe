@@ -28,7 +28,7 @@
 			    </div>
 			    
 			    <div class="form-group">
-			    	{{ Timezone::selectForm() }}
+			    	@include('_helpers.selectTimeZone')
 			    </div>
 			    
 			    <div class="form-group">
