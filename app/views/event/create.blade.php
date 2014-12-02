@@ -28,6 +28,10 @@
 			    </div>
 			    
 			    <div class="form-group">
+			    	{{ Timezone::selectForm() }}
+			    </div>
+			    
+			    <div class="form-group">
 			        <h3>Visibility</h3>
 			        <label>
 			   			{{ Form::checkbox('public', null, array('class' => 'form-control')) }} Public

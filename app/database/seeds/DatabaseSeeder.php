@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder {
 		// $this->call('SmsRecipientsTableSeeder');
 		// $this->call('PaymentsTableSeeder');
 		$this->call('RankUserTableSeeder');
-		$this->call('UsersTableSeederTest');
+		// $this->call('UsersTableSeederTest');
 		//$this->call('ProductCategoriesTableSeeder');
 		$this->call('UventsTableSeeder');
 		$this->call('UserSitesTableSeeder');
