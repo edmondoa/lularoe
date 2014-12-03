@@ -71,6 +71,7 @@ class DataOnlyController extends \BaseController
 		elseif (Auth::user()->role_name == 'Rep') $events = Uvent::where('reps', 1)->where('date_start', '>', time())->get();
 		elseif (Auth::user()->role_name == 'Editor') $events = Uvent::where('editors', 1)->where('date_start', '>', time())->get();
 		elseif (Auth::user()->role_name == 'Admin') $events = Uvent::where('admins', 1)->where('date_start', '>', time())->get();
+		elseif (Auth::user()->role_name == 'Superadmin') $events = Uvent::where('date_start', '>', time())->get();
 		return $events;
 	}
 	
@@ -81,6 +82,7 @@ class DataOnlyController extends \BaseController
 		elseif (Auth::user()->role_name == 'Rep') $events = Uvent::where('reps', 1)->where('date_start', '<', time())->get();
 		elseif (Auth::user()->role_name == 'Editor') $events = Uvent::where('editors', 1)->where('date_start', '<', time())->get();
 		elseif (Auth::user()->role_name == 'Admin') $events = Uvent::where('admins', 1)->where('date_start', '<', time())->get();
+		elseif (Auth::user()->role_name == 'Superadmin') $events = Uvent::where('date_start', '<', time())->get();
 		return $events;
 	}
 
