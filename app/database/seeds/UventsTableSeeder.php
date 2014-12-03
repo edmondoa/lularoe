@@ -21,7 +21,8 @@ class UventsTableSeeder extends DatabaseSeeder
 				'reps' => $faker->boolean,
 				'editors' => $faker->boolean,
 				'admins' => $faker->boolean,
-				'disabled' => $faker->boolean,
+				'timezone' => $faker->timezone,
+				'disabled' => $faker->boolean
 			);
 			Uvent::create($uvent);
 		}

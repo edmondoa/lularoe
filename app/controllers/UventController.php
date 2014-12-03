@@ -46,6 +46,7 @@ class uventController extends \BaseController {
 			$event = new Uvent;
 			$event->timezone = Session::get('timezone');
 			return View::make('event.create', compact('event'));
+			Timezone::convertFromUTC($session->created_at);
 		}
 	}
 
