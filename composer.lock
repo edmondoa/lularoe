@@ -4,8 +4,49 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9f1aa068a6a4df76df9a23294d3e415d",
+    "hash": "b16c748ee06f62f50f95f77126691573",
     "packages": [
+        {
+            "name": "camroncade/timezone",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/camroncade/timezone.git",
+                "reference": "ea49afb74ae1717b8c1d487b1dfeacf471c8f6dc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/camroncade/timezone/zipball/ea49afb74ae1717b8c1d487b1dfeacf471c8f6dc",
+                "reference": "ea49afb74ae1717b8c1d487b1dfeacf471c8f6dc",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "4.2.*",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/migrations"
+                ],
+                "psr-0": {
+                    "Camroncade\\Timezone\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Camron Cade",
+                    "email": "camron@camroncade.com"
+                }
+            ],
+            "description": "Helps manage timezones in Laravel. Includes <select> form builder for timezones.",
+            "homepage": "http://www.camroncade.com/managing-timezones-with-laravel/",
+            "time": "2014-07-21 19:02:22"
+        },
         {
             "name": "classpreloader/classpreloader",
             "version": "1.0.2",
@@ -1861,47 +1902,6 @@
     ],
     "packages-dev": [
         {
-            "name": "camroncade/timezone",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/camroncade/timezone.git",
-                "reference": "ea49afb74ae1717b8c1d487b1dfeacf471c8f6dc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/camroncade/timezone/zipball/ea49afb74ae1717b8c1d487b1dfeacf471c8f6dc",
-                "reference": "ea49afb74ae1717b8c1d487b1dfeacf471c8f6dc",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "4.2.*",
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/migrations"
-                ],
-                "psr-0": {
-                    "Camroncade\\Timezone\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Camron Cade",
-                    "email": "camron@camroncade.com"
-                }
-            ],
-            "description": "Helps manage timezones in Laravel. Includes <select> form builder for timezones.",
-            "homepage": "http://www.camroncade.com/managing-timezones-with-laravel/",
-            "time": "2014-07-21 19:02:22"
-        },
-        {
             "name": "fzaninotto/faker",
             "version": "v1.3.0",
             "source": {
@@ -2047,8 +2047,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "twilio/sdk": 20,
-        "jrenton/laravel-scaffold": 20,
-        "camroncade/timezone": 20
+        "camroncade/timezone": 20,
+        "jrenton/laravel-scaffold": 20
     },
     "prefer-stable": false,
     "platform": [],

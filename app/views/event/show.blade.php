@@ -60,7 +60,7 @@
 			            <td>{{ $event->formatted_end_date }}, {{ $event->formatted_end_time }}</td>
 			        </tr>
 		        @endif
-		        @if (isset($event->timezone))
+		        @if (isset($event->timezone !== ''))
 		        	<tr>
 		        		<th>Time Zone:</th>
 		        		<td>{{ $event->timezone }}</td>

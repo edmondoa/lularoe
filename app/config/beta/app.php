@@ -126,7 +126,7 @@ return array(
 		'SociallyMobile\Payments\PaymentServiceProvider',
 		'SociallyMobile\Twilio\TwilioServiceProvider',
 		'SociallyMobile\Commission\CommissionServiceProvider',
-
+    	'Camroncade\Timezone\TimezoneServiceProvider'
 	),
 
 	/*

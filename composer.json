@@ -7,7 +7,8 @@
 		"laravel/framework": "4.2.*",
         "intervention/image": "2.*",
 		"twilio/sdk": "dev-master",
-		"guzzlehttp/guzzle": "~4.0"
+		"guzzlehttp/guzzle": "~4.0",
+        "camroncade/timezone": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
@@ -45,8 +46,6 @@
 	"minimum-stability": "stable",
 	"require-dev": {
 		"way/generators": "2.*",
-		"jrenton/laravel-scaffold": "dev-master",
-		"camroncade/timezone": "dev-master"
-
+		"jrenton/laravel-scaffold": "dev-master"
 	}
 }
