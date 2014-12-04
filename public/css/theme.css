@@ -37,6 +37,9 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
 footer { text-align:center; color:gray; font-size:8pt; }
 
 /* global classes */
+.align-left { text-align:left; }
+.align-right { text-align:right; }
+.align-center { text-align:center; }
 .auto { width:auto; }
 .full { width:100%; }
 .inline-block { display:inline-block !important; }
@@ -86,8 +89,6 @@ small { opacity:.5; font-size:9pt; }
     border-bottom-right-radius: 0px !important;
 }
 
-
-
 .bs-callout { -moz-border-bottom-colors: none; -moz-border-left-colors: none; -moz-border-right-colors: none; -moz-border-top-colors: none; border-color: #eee; border-image: none; border-radius: 3px; border-style: solid; border-width: 1px 1px 1px 5px; margin: 20px 0; padding: 20px; }
 .bs-callout h4 { margin-bottom: 5px; margin-top: 0; }
 .bs-callout p:last-child { margin-bottom: 0 }
@@ -99,8 +100,6 @@ small { opacity:.5; font-size:9pt; }
 .bs-callout-warning h4 { color: #f0ad4e }
 .bs-callout-info { border-left-color: #5bc0de }
 .bs-callout-info h4 { color: #5bc0de }
-
-
 
 .show .col > .table, .edit .col > .table { width:auto !important; }
 /*.create form, .edit form { display:inline-block; }*/

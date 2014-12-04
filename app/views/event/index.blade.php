@@ -8,22 +8,20 @@
 		            <div class="col col-md-8">
 		                <h1 class="no-top">{{ ucfirst($range) }} Events</h1>
 		            </div>
-		            <div class="col col-md-4">
-		                <div class="pull-right">
-		                    <div class="input-group">
-		                        <span class="input-group-addon">Count</span>
-		                        <input type="number" min="1" class="form-control itemsPerPage" ng-model="pageSize">
-		                    </div>
-		                </div>
-		                <h4 class="pull-right no-top currentPage margin-right-1">Page <span ng-bind="currentPage"></span></h4>
-		            </div>
+					<div class="input-group pull-right col-lg-2 col-md-4 col-sm-5 col-xs-12">
+			            <div class="input-group col col-lg-5 col-md-6 col-sm-8 col-xs-12" style="float:right !important;">
+	                        <span class="input-group-addon">Count</span>
+	                        <input type="number" min="1" class="form-control itemsPerPage" ng-model="pageSize">
+			            </div>
+		            	<!-- <h4 class="pull-right margin-right-1">Page <span ng-bind="currentPage"></span></h4> -->
+			    	</div>
 		        </div><!-- row -->
 		        <div class="row">
 		            <div class="col col-md-12">
 		            	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 			                <div class="pull-left">
-			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('events/create') }}"><i class="fa fa-plus"></i></a>
-			                    <div class="pull-left">
+			                    <a class="btn btn-primary pull-left" title="New" href="{{ url('events/create') }}"><i class="fa fa-plus"></i></a>
+			                    <div class="pull-left col-lg-2 col-md-4 col-sm-5 col-xs-12">
 			                        <div class="input-group">
 			                            <select class="form-control selectpicker actions">
 			                                <option value="events/disable" selected>Disable</option>
@@ -39,16 +37,14 @@
 			                    </div>
 			                </div>
 			            @endif
-		                <div class="pull-right">
-		                    <div class="input-group">
-		                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
-		                        <span class="input-group-btn">
-		                            <button class="btn btn-default" type="button">
-		                                <i class="fa fa-search"></i>
-		                            </button>
-		                        </span>
-		                    </div>
-		                </div>
+	                    <div class="input-group pull-right col-lg-2 col-md-4 col-sm-5 col-xs-12">
+	                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
+	                        <span class="input-group-btn">
+	                            <button class="btn btn-default" type="button">
+	                                <i class="fa fa-search"></i>
+	                            </button>
+	                        </span>
+	                    </div>
 		            </div><!-- col -->
 		        </div><!-- row -->
 		    </div><!-- page-actions -->

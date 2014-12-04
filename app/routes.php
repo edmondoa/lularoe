@@ -97,7 +97,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		// downline
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
-		Route::get('/downline/visualization', 'DownlineController@visualization');
+		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
 
 		// users
 		Route::resource('users', 'UserController');
