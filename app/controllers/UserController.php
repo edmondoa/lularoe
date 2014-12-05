@@ -81,10 +81,8 @@ class userController extends \BaseController {
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id || Auth::user()->hasRepInDownline($id) || Auth::user()->sponsor_id == $id) {
 			$user = User::findOrFail($id);
 			$addresses = [];
-			if (Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) {
-				if ($user->hide_billing_address != true) $addresses[] = Address::where('addressable_id', $id)->where('addressable_type', 'Billing')->first();
-				if ($user->hide_shipping_address != true) $addresses[] = Address::where('addressable_id', $id)->where('addressable_type', 'Shipping')->first();
-			}
+			if ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) $addresses[] = Address::where('addressable_id', $id)->where('addressable_type', 'Billing')->first();
+			if ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) $addresses[] = Address::where('addressable_id', $id)->where('addressable_type', 'Shipping')->first();
 			return View::make('user.show', compact('user', 'addresses'));
 		}
 	}
