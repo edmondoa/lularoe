@@ -2,7 +2,7 @@
 @section('content')
 <div class="row">
 	<div class="col col-lg-4 col-md-6">
-		<h1>Settings</h1>
+		<h1>My Settings</h1>
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h2 class="panel-title">User Settings</h2>

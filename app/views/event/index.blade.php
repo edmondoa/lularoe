@@ -251,7 +251,7 @@
 		$scope.meals = [];
 		
 		$scope.pageChangeHandler = function(num) {
-			console.log('meals page changed to ' + num);
+			
 		};
 		
 	}

@@ -1,4 +1,4 @@
-@extends('layouts.gray')
+@extends('layouts.public')
 @section('content')
 <div class="show">
 	<div class="row">

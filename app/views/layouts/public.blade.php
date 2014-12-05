@@ -47,10 +47,12 @@
             }
         </style>
         <meta name="generator" content="Powered by Visual Composer - drag and drop page builder for WordPress."/>
-
+        {{ HTML::style('bootstrap/css/bootstrap.min.css') }}
+        {{ HTML::style('bootstrap/css/bootstrap-theme.min.css') }}
+        {{ HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css') }}
     </head>
 
-    <body class="page page-id-3085 page-template-default wpb-js-composer js-comp-ver-3.7.3 vc_responsive" data-ajax-transitions="false" data-loading-animation="none" data-bg-header="false" data-ext-responsive="true" data-header-resize="1" data-header-color="light" data-transparent-header="false" data-smooth-scrolling="0" data-responsive="1" >
+    <body class="@yield('classes')@show page page-id-3085 page-template-default wpb-js-composer js-comp-ver-3.7.3 vc_responsive" data-ajax-transitions="false" data-loading-animation="none" data-bg-header="false" data-ext-responsive="true" data-header-resize="1" data-header-color="light" data-transparent-header="false" data-smooth-scrolling="0" data-responsive="1" >
 
         <div id="header-space"></div>
 
@@ -249,6 +251,9 @@ var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-
         </script>
         <script type='text/javascript' src='/wp-content/themes/salient/nectar/love/js/nectar-love.js?ver=1.0'></script>
         <script type='text/javascript' src='/wp-content/themes/salient/wpbakery/js_composer/assets/js/js_composer_front.js?ver=3.7.3'></script>
-
+        {{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
+        {{ HTML::script('/packages/dirpagination/dirPagination.js') }}
+		@section('scripts')
+		@show
     </body>
 </html>

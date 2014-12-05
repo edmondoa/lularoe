@@ -1,4 +1,7 @@
 @extends('layouts.public')
+@section('classes')
+	home
+@stop
 @section('content')	
     <script type="text/javascript" src="/wp-content/themes/salient/packages/flipcountdown/jquery.flipcountdown.js"></script>
     <link rel="stylesheet" type="text/css" href="/wp-content/themes/salient/packages/flipcountdown/jquery.flipcountdown.css">

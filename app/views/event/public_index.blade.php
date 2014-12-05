@@ -1,4 +1,4 @@
-@extends('layouts.gray')
+@extends('layouts.public')
 @section('content')
 <div ng-app="app" class="index">
     <div ng-controller="uventController" class="my-controller">
@@ -80,33 +80,34 @@
     </div><!-- app -->
 @stop
 @section('scripts')
-<script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
+	{{ HTML::script('/js/jquery1.js') }}
+	<script>
 	
-	function uventController($scope, $http) {
+		var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 		
-		$http.get('/api/all-upcoming-events-by-role').success(function(events) {
-			$scope.events = events;
-			console.log($scope.events);
-			@include('_helpers.bulk_action_checkboxes')
-
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			console.log('meals page changed to ' + num);
-		};
-		
-	}
+		function uventController($scope, $http) {
+			
+			$http.get('/api/all-upcoming-events-by-role').success(function(events) {
+				$scope.events = events;
+				console.log($scope.events);
+				@include('_helpers.bulk_action_checkboxes')
 	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
-</script>
+			});
+			
+			$scope.currentPage = 1;
+			$scope.pageSize = 10;
+			$scope.meals = [];
+			
+			$scope.pageChangeHandler = function(num) {
+				
+			};
+			
+		}
+		
+		function OtherController($scope) {
+			$scope.pageChangeHandler = function(num) {
+			};
+		}
+	
+	</script>
 @stop

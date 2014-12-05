@@ -236,6 +236,11 @@ body.single-product div.product .product_title {
  * added by Steve 
 */
 
+html { background:rgb(28, 28, 28); }
+.container-wrap { padding-bottom:0; }
+body:not(.home) .main-content { padding-bottom:40px; }
+input[type="text"].form-control { border: 1px solid rgba(0,0,0,.1) !important; }
+.table { width:auto !important; }
 .tiles {
     padding: 0;
     list-style: none;
