@@ -11,7 +11,7 @@ class Payment extends \Eloquent {
 	];
 
 	// Don't forget to fill this array
-	//public $timestamps = false;
+	// public $timestamps = true;
 
 	protected $fillable = ['transaction_id','tender','amount','details','created_at'];
 

@@ -94,4 +94,5 @@ require $framework.'/Illuminate/Foundation/start.php';
 
 include('helpers.php');
 include('events.php');
+//\Payment::$timestamps = false;
 return $app;
