@@ -1,4 +1,5 @@
 @extends('layouts.public')
+@section('content')
 	<h1 class="western">SOCIALLYMOBILE TERMS OF USE (“AGREEMENT”)</h1>
 	<h2>ACCEPTANCE OF TERMS THROUGH USE</h2>
 	<p>By using this site or by clicking “I agree” to this Agreement, you (“User”) signify your agreement to these terms and conditions. If you do not agree to this Agreement please do not use this site and do not click “I agree”. Please check this Agreement periodically for changes as the owner of this site (“Company”) reserves the right to revise this<br />
