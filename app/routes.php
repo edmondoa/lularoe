@@ -51,6 +51,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::get('privacy-policy', function() {
 		return View::make('company.privacy');
 	});
+	Route::get('leadership', function() {
+		return View::make('company.leadership');
+	});
 	
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');

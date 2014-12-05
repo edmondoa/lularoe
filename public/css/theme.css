@@ -81,6 +81,7 @@ small { opacity:.5; font-size:9pt; }
 .no-padding { padding:0; }
 .nostyle { background:inherit !important; border:inherit !important; padding:inherit !important; }
 .downline-popover th { text-align:right; padding-right:.5em; }
+.no-width { width:0; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
@@ -151,6 +152,8 @@ select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight
     .user-banner-content small { display:block; margin-bottom:1em; }
     .user-banner-content h1 { font-size:18pt; }
     .layout-gray #container { padding:40px 20px 20px 20px !important; }
+    .no-pull-xs { float:none !important; }
+    .page-actions-left { margin-bottom:1em !important; }
 }
 @media(max-width:991px) {
     .hidable-sm { display:none; }

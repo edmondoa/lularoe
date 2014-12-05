@@ -21,7 +21,9 @@
 		        <div class="row">
 		            <div class="col col-md-12">
 		                <div class="pull-left">
-		                    <!-- <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('users/create') }}"><i class="fa fa-plus"></i></a> -->
+		                    @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		                    	<a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('users/create') }}"><i class="fa fa-plus"></i></a>
+		                    @endif
 		                    <div class="pull-left">
 		                        <div class="input-group">
 		                            <select class="form-control selectpicker actions">
