@@ -57,27 +57,30 @@
 			            	{{ $user->rank_name }} (Rank {{ $user->rank_id }})
 			            </td>
 			        </tr>
-			        <tr>
-			            <th>Email:</th>
-			            <td>
-			            	{{ Form::open(array('url' => '/users/email', 'method' => 'POST', 'class' => 'inline-block')) }}
-			            		{{ Form::hidden('user_ids[]', $user->id) }}
-			            		<button title="Send Email"><i class="fa fa-envelope"></i></button>
-			            	{{ Form::close() }}
-			            	&nbsp;{{ $user->email }}
-			            </td>
-			        </tr>
-			        
-			        <tr>
-			            <th>Phone:</th>
-			            <td>
-							{{ Form::open(array('url' => '/users/sms', 'method' => 'POST', 'class' => 'inline-block')) }}
-			            		{{ Form::hidden('user_ids[]', $user->id) }}
-			            		<button style="width:32px;" title="Send Text Message (SMS)"><i class="fa fa-mobile-phone"></i></button>
-			            	{{ Form::close() }}
-			            	&nbsp;{{ $user->phone }}
-			            </td>
-			        </tr>
+			        @if ($user->hide_email != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)
+				        <tr>
+				            <th>Email:</th>
+				            <td>
+				            	{{ Form::open(array('url' => '/users/email', 'method' => 'POST', 'class' => 'inline-block')) }}
+				            		{{ Form::hidden('user_ids[]', $user->id) }}
+				            		<button title="Send Email"><i class="fa fa-envelope"></i></button>
+				            	{{ Form::close() }}
+				            	&nbsp;{{ $user->email }}
+				            </td>
+				        </tr>
+			        @endif
+			         @if ($user->hide_phone != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)
+				        <tr>
+				            <th>Phone:</th>
+				            <td>
+								{{ Form::open(array('url' => '/users/sms', 'method' => 'POST', 'class' => 'inline-block')) }}
+				            		{{ Form::hidden('user_ids[]', $user->id) }}
+				            		<button style="width:32px;" title="Send Text Message (SMS)"><i class="fa fa-mobile-phone"></i></button>
+				            	{{ Form::close() }}
+				            	&nbsp;{{ $user->phone }}
+				            </td>
+				        </tr>
+				    @endif
 			        
 					@if (Auth::user()->hasRole(['Admin','Superadmin']))
 					
@@ -125,28 +128,30 @@
 			    </table>
 			</div><!-- panel -->
 		</div><!-- col -->
-		<div class="col col-md-6 col-sm-12">
-			@foreach ($addresses as $address)
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h2 div class="panel-title">{{ $address->addressable_type }} Address</h2>
-					</div>
-				    <table class="table table-striped">
-				        <tr>
-				            <td>{{ $address->address_1 }}</td>
-				        </tr>
-				        
-				        @if (!empty($address->address_2))
+		@if (!empty($addresses) && $addresses[0] != '')
+			<div class="col col-md-6 col-sm-12">
+				@foreach ($addresses as $address)
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h2 div class="panel-title">{{ $address->addressable_type }} Address</h2>
+						</div>
+					    <table class="table table-striped">
 					        <tr>
-					            <td>{{ $address->address_2 }}</td>
+					            <td>{{ $address->address_1 }}</td>
 					        </tr>
-				        @endif
-				        <tr>
-				            <td>{{ $address->city }}, {{ $address->state }} {{ $address->zip }}</td>
-				        </tr>
-				    </table>
-				</div><!-- panel -->
-			@endforeach
-		</div><!-- row -->
+					        
+					        @if (!empty($address->address_2))
+						        <tr>
+						            <td>{{ $address->address_2 }}</td>
+						        </tr>
+					        @endif
+					        <tr>
+					            <td>{{ $address->city }}, {{ $address->state }} {{ $address->zip }}</td>
+					        </tr>
+					    </table>
+					</div><!-- panel -->
+				@endforeach
+			</div><!-- row -->
+		@endif
 	</div><!-- row -->
 @stop

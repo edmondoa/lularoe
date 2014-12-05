@@ -166,9 +166,9 @@ class Commission extends \BaseController {
 		$generation->level = $level;
 		$generation->name = $user->first_name." ".$user->last_name;
 		$generation->rank = $user->rank_name . ' (rank level ' . $user->rank_id . ')';
-		$generation->phone = $user->phone;
-		$generation->email = substr($user->email,0,20);
-		if (strlen($user->email) > 20) $generation->email .= '...';
+		if ($user->hide_phone != true) $generation->phone = $user->phone;
+		if ($user->hide_email != true) $generation->email = substr($user->email,0,20);
+		if (strlen($user->email) > 20 && isset($generation->email)) $generation->email .= '...';
 		
 		//$generation->children = array();
 		$count = 0;

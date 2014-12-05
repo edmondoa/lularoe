@@ -12,14 +12,14 @@ class DataOnlyController extends \BaseController
 		return;
 	}
 	
-	public function getAllBranches() {
+	public function getAllBranches($id) {
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
 			$result = Commission::get_org_tree(0);
 			$response = Response::make(json_encode($result, JSON_PRETTY_PRINT), 200);
 			$response->header('Content-Type', 'application/json');
 			return $response;
 		}
-		$result = Commission::get_org_tree(Auth::user()->id);
+		$result = Commission::get_org_tree($id);
 		$response = Response::make(json_encode($result, JSON_PRETTY_PRINT), 200);
 		$response->header('Content-Type', 'application/json');
 		return $response;

@@ -89,7 +89,7 @@
  					">
  						<i class="fa fa-user"></i> <span class="text">Users</span>
  					</a>
- 					<a title="Dashboard" href="/config" class="list-group-item"><span class="fa fa-cog"></span> <span class="text">Site Settings</span></a>
+ 					<a title="Site Settings" href="/config" class="list-group-item"><span class="fa fa-cog"></span> <span class="text">Site Settings</span></a>
  					<!-- <a href="/userProducts" class="list-group-item"><i class="fa fa-mobile-phone"></i> UserProducts</a> -->
 					<!-- <a href="/userRanks" class="list-group-item"><i class="fa fa-certificate"></i> UserRanks</a> -->
 					<!-- <a href="/smsMessages" class="list-group-item"><i class="fa fa-mobile-phone"></i> <span class="text">SmsMessages</span></a> -->
