@@ -106,7 +106,8 @@ class PreRegisterController extends \BaseController {
 				"street_2" => $data['address_2'],
 				"city" => $data['city'],
 				"state" => $data['state'],
-				"zip" => $data['zip']
+				"zip" => $data['zip'],
+				"addressable_type" => 'Billing',
 			), //address object or add later
 			"software" => "", 
 			//"recurring_billing" => array(), //recurring billing object or add later
@@ -151,7 +152,7 @@ class PreRegisterController extends \BaseController {
 				'city'=>$data['city'],
 				'state'=>$data['state'],
 				'zip'=>$data['zip'],
-
+				"addressable_type" => 'Billing'
 			];
 			$address = Address::create($address);
 			$user->addresses()->save($address);

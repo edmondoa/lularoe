@@ -82,6 +82,7 @@ class userController extends \BaseController {
 			$user = User::findOrFail($id);
 			$user->role_name == 'Rep' ? $user->formatted_role_name = 'ISM' : $user->formatted_role_name = $user->role_name;
 			$addresses = [];
+			if (Address::where('addressable_id', $id)->where('addressable_type', '')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->first();
 			if (Address::where('addressable_id', $id)->where('addressable_type', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('addressable_type', 'Billing')->first();
 			if (Address::where('addressable_id', $id)->where('addressable_type', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('addressable_type', 'Shipping')->first();
 			// echo '<pre>'; print_r($addresses); echo '</pre>';

@@ -195,15 +195,15 @@
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="user.gender"></span>
+					                <span ng-bind="user.public_gender"></span>
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="user.dob"></span>
+					                <span ng-bind="user.public_dob"></span>
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="user.phone"></span>
+					                <span ng-bind="user.public_phone"></span>
 					            </td>
 					            
 					            <td>
