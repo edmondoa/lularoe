@@ -40,7 +40,10 @@
 				<h1>{{ $name }} Downline</h1>
             	@if (Auth::user()->hasRepInDownline($user->id) || (Auth::user()->hasRole(['Superadmin', 'Admin']) && isset($user->sponsor_id)))
             		<div class="breadcrumbs">
-            			<a href="/downline/visualization/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
+            			<a href="/downline/visualization/{{ Auth::user()->id }}"><i class="fa fa-user"></i> My Downline</a>
+            			@if (Auth::user()->id != $user->sponsor_id)
+            				&nbsp;&nbsp;<a href="/downline/visualization/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
+            			@endif
             		</div>
             	@endif
 			</div>

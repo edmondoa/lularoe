@@ -68,8 +68,6 @@
 				            	&nbsp;{{ $user->email }}
 				            </td>
 				        </tr>
-			        @endif
-			         @if ($user->hide_phone != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)
 				        <tr>
 				            <th>Phone:</th>
 				            <td>
@@ -79,79 +77,58 @@
 				            	{{ Form::close() }}
 				            	&nbsp;{{ $user->phone }}
 				            </td>
+				        </tr>	
+				        <tr>
+				            <th>Gender:</th>
+				            <td>{{ $user->gender }}</td>
 				        </tr>
-				    @endif
-			        
-					@if (Auth::user()->hasRole(['Admin','Superadmin']))
-					
-			        <tr>
-			            <th>Gender:</th>
-			            <td>{{ $user->gender }}</td>
-			        </tr>
-					
-			        <tr>
-			            <th>DOB:</th>
-			            <td>{{ $user->dob }}</td>
-			        </tr>
-					  
-			        <tr>
-			            <th>Role:</th>
-			            <td>{{ $user->role_name }}</td>
-			        </tr>
-			
-			        <tr>
-			            <th>Sponsor:</th>
-			            <td>
-			            	@if (isset($user->sponsor->first_name))
-			            		{{ $user->sponsor->first_name }} {{ $user->sponsor->last_name }}
-			            	@endif
-			            </td>
-			        </tr>
-			        
-			        <!-- <tr>
-			            <th>Min Commission:</th>
-			            <td>{{ $user->min_commission }}</td>
-			        </tr> -->
-			        
-			        <tr>
-			            <th>Disabled:</th>
-			            <td>{{ $user->disabled }}</td>
-			        </tr>
-			        
-			        <!-- <tr>
-			            <th>Mobile Plan Id:</th>
-			            <td>{{ $user->mobile_plan_id }}</td>
-			        </tr> -->
-			        
+						
+				        <tr>
+				            <th>DOB:</th>
+				            <td>{{ $user->dob }}</td>
+				        </tr>
+						  
+				        <tr>
+				            <th>Role:</th>
+				            <td>{{ $user->formatted_role_name }}</td>
+				        </tr>
+				
+				        <tr>
+				            <th>Sponsor:</th>
+				            <td>
+				            	<a href="/users/{{ $user->sponsor_id }}">
+				            		@if (isset($user->sponsor->first_name))
+				            			{{ $user->sponsor->first_name }} {{ $user->sponsor->last_name }}
+				            		@endif
+				            	</a>
+				            </td>
+				        </tr>
 					@endif
-			        
 			    </table>
 			</div><!-- panel -->
 		</div><!-- col -->
-		@if (!empty($addresses) && $addresses[0] != '')
-			<div class="col col-md-6 col-sm-12">
-				@foreach ($addresses as $address)
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h2 div class="panel-title">{{ $address->addressable_type }} Address</h2>
-						</div>
-					    <table class="table table-striped">
+		<div class="col col-md-6 col-sm-12">
+			@foreach ($addresses as $address)
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h2 div class="panel-title">{{ $address->addressable_type }} Address</h2>
+					</div>
+				    <table class="table table-striped">
+				        <tr>
+				            <td>{{ $address->address_1 }}</td>
+				        </tr>
+				        
+				        @if (!empty($address->address_2))
 					        <tr>
-					            <td>{{ $address->address_1 }}</td>
+					            <td>{{ $address->address_2 }}</td>
 					        </tr>
-					        
-					        @if (!empty($address->address_2))
-						        <tr>
-						            <td>{{ $address->address_2 }}</td>
-						        </tr>
-					        @endif
-					        <tr>
-					            <td>{{ $address->city }}, {{ $address->state }} {{ $address->zip }}</td>
-					        </tr>
-					    </table>
-					</div><!-- panel -->
-				@endforeach
-			</div><!-- row -->
-		@endif
+				        @endif
+				        <tr>
+				            <td>{{ $address->city }}, {{ $address->state }} {{ $address->zip }}</td>
+				        </tr>
+				    </table>
+				</div><!-- panel -->
+			@endforeach
+		</div><!-- row -->
 	</div><!-- row -->
 @stop

@@ -191,7 +191,7 @@
 					            </td> -->
 					            
 					            <td>
-					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.last_name"></span>, <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.first_name"></span></a>
+					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.last_name"></span>, <span ng-bind="user.first_name"></span></a>
 					            </td>
 					            
 					            <td>
