@@ -26,7 +26,8 @@ class SessionController extends \BaseController {
 		{
 			return Redirect::intended('/dashboard');
 		}
-		return View::make('sessions.create');
+		$title = 'Log In';
+		return View::make('sessions.create', compact('title'));
 	}
 
 	/**

@@ -36,23 +36,29 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			// return Redirect::to('dashboard');
 		// }
 		// else {
-			return View::make('company.home');
+			$title = 'Home';
+			return View::make('company.home', compact('title'));
 		//}
 	}]);
-	Route::get('company-events', function() {
-		return View::make('company.events');
-	});
+	// Route::get('company-events', function() {
+		// $title = 'Company Events';
+		// return View::make('company.events', compact('title'));
+	// });
 	Route::get('contact-us', function() {
-		return View::make('company.contact-us');
+		$title = 'Contact Us';
+		return View::make('company.contact-us', compact('title'));
 	});
 	Route::get('terms-conditions', function() {
-		return View::make('company.terms');
+		$title = 'Terms and Conditions';
+		return View::make('company.terms', compact('title'));
 	});
 	Route::get('privacy-policy', function() {
-		return View::make('company.privacy');
+		$title = 'Privacy Policy';
+		return View::make('company.privacy', compact('title'));
 	});
 	Route::get('leadership', function() {
-		return View::make('company.leadership');
+		$title = 'Leadership';
+		return View::make('company.leadership', compact('title'));
 	});
 	
 	// blasts

@@ -8,7 +8,7 @@
 	                <h1 class="no-top">Upcoming Events</h1>
 	            </div>
 	            <div class="col col-md-4">
-	                <div class="pull-right">
+	                <div>
 	                    <div class="input-group">
 	                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
 	                        <span class="input-group-btn">
@@ -18,6 +18,7 @@
 	                        </span>
 	                    </div>
 	                </div>
+	                <br>
 	                <!-- <div class="pull-right">
 	                    <div class="input-group">
 	                        <span class="input-group-addon">Count</span>

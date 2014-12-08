@@ -9,7 +9,7 @@
 
         <!--Shortcut icon-->
 
-        <title> Leadership |  SociallyMobile</title>
+        <title>{{ $title }} | SociallyMobile</title>
 
         <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Feed" href="/feed/" />
         <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Comments Feed" href="/comments/feed/" />
@@ -117,13 +117,13 @@
                                         <a href="/privacy-policy/">Privacy Policy</a>
                                     </li>
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
-                                        <a href="<?php echo url() ?>/login">LOG IN</a>
+                                        <a href="<?php echo url() ?>/login">Log In</a>
                                     </li>
-                                    <li id="search-btn">
+                                    <!-- <li id="search-btn">
                                         <div>
                                             <a href="#searchbox"><span class="icon-salient-search" aria-hidden="true"></span></a>
                                         </div>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </nav>
 

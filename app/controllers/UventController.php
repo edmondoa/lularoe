@@ -32,7 +32,8 @@ class uventController extends \BaseController {
 	 */
 	public function publicIndex()
 	{
-		return View::make('event.public_index');
+		$title = 'Company Events';
+		return View::make('event.public_index', compact('title'));
 	}
 
 	/**
