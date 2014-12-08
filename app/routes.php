@@ -60,6 +60,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		$title = 'Leadership';
 		return View::make('company.leadership', compact('title'));
 	});
+	Route::get('presentation', function() {
+		$title = 'Presentation';
+		return View::make('company.presentation', compact('title'));
+	});
 	
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');
