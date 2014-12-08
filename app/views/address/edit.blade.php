@@ -33,8 +33,11 @@
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('addressable_id', 'Addressable Id') }}
-		        {{ Form::text('addressable_id', null, array('class' => 'form-control')) }}
+		        {{ Form::label('label', 'Type') }}
+		        {{ Form::select('label', [
+		        	'Billing' => 'Billing',
+		        	'Shipping' => 'Shipping'
+		        ], null, array('class' => 'form-control')) }}
 		    </div>
 		    
 		    <div class="form-group">

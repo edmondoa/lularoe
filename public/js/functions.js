@@ -90,12 +90,5 @@ $(document).ready(function() {
             }
         });
     });
-    
-    // get timezone
-    var tz = jstz.determine();
-    // Determines the time zone of the browser client
-    var timezone = tz.name();
-    //'Asia/Kolhata' for Indian Time.
-    $.post('/set-timezone', { timezone : timezone });
-    
+        
 });

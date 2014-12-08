@@ -111,7 +111,7 @@
 			@foreach ($addresses as $address)
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h2 div class="panel-title">{{ $address->addressable_type }} Address</h2>
+						<h2 div class="panel-title">{{ $address->label }} Address</h2>
 					</div>
 				    <table class="table table-striped">
 				        <tr>

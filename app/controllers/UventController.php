@@ -107,7 +107,8 @@ class uventController extends \BaseController {
 	public function publicShow($id)
 	{
 		$event = Uvent::findOrFail($id);
-		return View::make('event.public_show', compact('event'));
+		$title = $event->name;
+		return View::make('event.public_show', compact('event', 'title'));
 	}
 
 	/**
