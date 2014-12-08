@@ -101,11 +101,11 @@
 
                             <nav>
                                 <ul class="sf-menu">
-                                    <li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
-                                        <a href="/public-events">Events</a>
-                                    </li>
                                     <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074">
                                         <a href="/contact-us/">Contact Us</a>
+                                    </li>
+                                    <li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
+                                        <a href="/public-events">Events</a>
                                     </li>
                                     <li id="menu-item-4074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4074">
                                         <a href="/leadership/">Leadership</a>
@@ -113,11 +113,11 @@
                                     <li id="menu-item-4074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5074">
                                         <a href="/presentation/">Presentation</a>
                                     </li>
-                                    <li id="menu-item-3075" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075">
-                                        <a href="/terms-conditions/">Terms</a>
-                                    </li>
                                     <li id="menu-item-3089" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089">
                                         <a href="/privacy-policy/">Privacy Policy</a>
+                                    </li>
+                                    <li id="menu-item-3075" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075">
+                                        <a href="/terms-conditions/">Terms</a>
                                     </li>
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                                         <a href="<?php echo url() ?>/login">Log In</a>
@@ -146,11 +146,11 @@
 
             <div class="container">
                 <ul>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
-                        <a href="/public-events">Events</a>
-                    </li>
                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074">
                         <a href="/contact-us/">Contact Us</a>
+                    </li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
+                        <a href="/public-events">Events</a>
                     </li>
                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4074">
                         <a href="/leadership/">Leadership</a>
@@ -158,11 +158,11 @@
                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5074">
                         <a href="/presentation/">Presentation</a>
                     </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075">
-                        <a href="/terms-conditions/">Terms</a>
-                    </li>
                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089">
                         <a href="/privacy-policy/">Privacy Policy</a>
+                    </li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075">
+                        <a href="/terms-conditions/">Terms</a>
                     </li>
                     <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                         <a href="<?php echo url() ?>/login">LOG IN</a>
