@@ -87,6 +87,15 @@
                             			</span>
                             		</span>
                         		</th>
+ 
+                            	<th class="link" ng-click="orderByField='id'; reverseSort = !reverseSort">ISM ID
+                            		<span>
+                            			<span ng-show="orderByField == 'id'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
                         		
                             	<th class="link" ng-click="orderByField='gender'; reverseSort = !reverseSort">Gender
                             		<span>
@@ -192,6 +201,10 @@
 					            
 					            <td>
 					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.last_name"></span>, <span ng-bind="user.first_name"></span></a>
+					            </td>
+
+					            <td>
+					                <a href="/users/@include('_helpers.user_id')"><span ng-bind="user.id"></span></a>
 					            </td>
 					            
 					            <td>
