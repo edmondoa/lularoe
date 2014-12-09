@@ -4,10 +4,10 @@
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
 		<h1>{{ $user->first_name }} {{ $user->last_name }}</h1>
-		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-		    <div class="btn-group">
-			    <a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
-				<?php if (Auth::user()->id != $user->id) { ?>
+	    <div class="btn-group">
+			@if (Auth::user()->id != $user->id)
+				@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		    		<a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 				    @if ($user->disabled == 0)
 					    {{ Form::open(array('url' => 'users/disable', 'method' => 'DISABLE')) }}
 					    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
@@ -28,9 +28,23 @@
 				    		<i class="fa fa-trash" title="Delete"></i>
 				    	</button>
 				    {{ Form::close() }}
-				<?php } ?>
-			</div>
-		@endif
+				@endif
+				@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep']))
+					{{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
+	            		{{ Form::hidden('user_ids[]', $user->id) }}
+	            		<button class="btn btn-default" title="Send Email">
+	            			<i class="fa fa-envelope"></i>
+	            		</button>
+	            	{{ Form::close() }}
+					{{ Form::open(array('url' => '/users/sms', 'method' => 'POST')) }}
+	            		{{ Form::hidden('user_ids[]', $user->id) }}
+	            		<button class="btn btn-default" title="Send Text Message (SMS)">
+	            			<i class="fa fa-mobile-phone"></i>
+	            		</button>
+	            	{{ Form::close() }}
+	            @endif
+			@endif
+		</div>
 	</div><!-- row -->
 	<div class="row">
 		<div class="col col-md-6 col-sm-12">
@@ -61,21 +75,13 @@
 				        <tr>
 				            <th>Email:</th>
 				            <td>
-				            	{{ Form::open(array('url' => '/users/email', 'method' => 'POST', 'class' => 'inline-block')) }}
-				            		{{ Form::hidden('user_ids[]', $user->id) }}
-				            		<button title="Send Email"><i class="fa fa-envelope"></i></button>
-				            	{{ Form::close() }}
-				            	&nbsp;{{ $user->email }}
+				            	{{ $user->email }}
 				            </td>
 				        </tr>
 				        <tr>
 				            <th>Phone:</th>
 				            <td>
-								{{ Form::open(array('url' => '/users/sms', 'method' => 'POST', 'class' => 'inline-block')) }}
-				            		{{ Form::hidden('user_ids[]', $user->id) }}
-				            		<button style="width:32px;" title="Send Text Message (SMS)"><i class="fa fa-mobile-phone"></i></button>
-				            	{{ Form::close() }}
-				            	&nbsp;{{ $user->phone }}
+				            	{{ $user->phone }}
 				            </td>
 				        </tr>	
 				        <tr>

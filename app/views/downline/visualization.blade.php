@@ -218,12 +218,12 @@
 				var id = $(this).siblings('id').text();
 				var rank = $(this).siblings('rank').text();
 				var yCompensation = 0;
-				if ($(this).siblings('phone').text() !== '') var phone = '<tr><th><form method="post" target="_blank" action="/users/sms"><input type="hidden" name="user_ids[]" value="' + id + '"><button style="width:32px;" title="Send text message (SMS)"><i class="fa fa-mobile-phone"></i></button></form></th><td>' + $(this).siblings('phone').text() + '</td></tr>';
+				if ($(this).siblings('phone').text() !== '') var phone = '<tr><th><form method="post" target="_blank" action="/users/sms"><input type="hidden" name="user_ids[]" value="' + id + '"><button class="nostyle" title="Send text message (SMS)"><i class="link fa fa-mobile-phone"></i></button></form></th><td>' + $(this).siblings('phone').text() + '</td></tr>';
 				else {
 					var phone = '';
 					yCompensation += 20;
 				}
-				if ($(this).siblings('email').text() !== '') var email = '<tr><th><form method="post" target="_blank" action="/users/email"><input type="hidden" name="user_ids[]" value="' + id + '"><button style="width:32px;" title="Send email"><i class="fa fa-envelope"></i></button></form></th><td>' + $(this).siblings('email').text() + '</td></tr>';
+				if ($(this).siblings('email').text() !== '') var email = '<tr><th><form method="post" target="_blank" action="/users/email"><input type="hidden" name="user_ids[]" value="' + id + '"><button class="nostyle" title="Send email"><i class="link fa fa-envelope"></i></button></form></th><td>' + $(this).siblings('email').text() + '</td></tr>';
 				else {
 					var email = '';
 					yCompensation += 20;
