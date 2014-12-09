@@ -190,7 +190,7 @@ class Commission extends \BaseController {
 	* @param  
 	* @return 
 	*/
-	public function get_org_tree_2($rep_id){
+	public function get_org_tree_visual($rep_id){
 		$frontline = User::find($rep_id)->frontline;
 		echo "<ul>";
 		foreach($frontline as $rep)
@@ -212,8 +212,6 @@ class Commission extends \BaseController {
 		$frontline = User::find($rep_id)->frontline;
 		foreach($frontline as $rep)
 		{
-			//set_time_limit(120);
-			//echo $rep->first_name." ".$rep->last_name." - ".$level."<br />";
 			$this->level_up($rep->id);
 			$this->set_levels_down($rep->id,$level+1);
 		}

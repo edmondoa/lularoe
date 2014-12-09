@@ -185,6 +185,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return (int) (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
 	}
 
+	public function getAccountBalanceAttribute()
+	{
+	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->sum('amount');    
+	}
+
 	public function getVolumeAttribute() {
 		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->volume:0;
 	}
@@ -222,7 +227,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return substr($this->attributes['phone'], 0, 3)."-".substr($this->attributes['phone'], 3, 3)."-".substr($this->attributes['phone'],6);
 	}
 	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone', 'volume', 'public_gender', 'public_dob', 'public_email', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume','account_balance', 'public_gender', 'public_dob', 'public_email', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
 
 	##############################################################################################
 	# append custom Attribs
