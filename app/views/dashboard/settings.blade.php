@@ -12,6 +12,7 @@
 				@foreach ($addresses as $address)
 					<a class="link list-group-item" href="/addresses/{{ $address->id }}/edit"><span class="fa fa-home"></span> Edit {{ $address->addressable_type }} Address</a>
 				@endforeach
+				<a class="link list-group-item" href="/users/{{ Auth::user()->id }}/privacy"><span class="fa fa-lock"></span> Privacy &amp; Communication Preferences</a>
 			</div>
 		</div>
 	</div>

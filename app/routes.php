@@ -52,8 +52,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		return View::make('company.privacy');
 	});
 	
-
-
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');
 	Route::resource('send_text','SmsMessagesController');
@@ -84,6 +82,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 	Route::controller('api','DataOnlyController');
 		
+	//timezone
+	Route::post('set-timezone', 'TimezoneController@set');
+		
 	##############################################################################################
 	// Protected Routes
 	##############################################################################################
@@ -91,17 +92,19 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 		// dashboard
 		Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@index']);
-		Route::get('settings', 'DashboardController@settings');
+		Route::get('settings', ['as' => 'settings', 'uses' => 'DashboardController@settings']);
 
 		// downline
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
-		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
+		Route::get('/downline/visualization', 'DownlineController@visualization');
 
 		// users
 		Route::resource('users', 'UserController');
 		Route::post('users/email', 'BlastController@createMail');
 		Route::post('users/sms', 'BlastController@createSms');
+		Route::get('users/{id}/privacy', 'UserController@privacy');
+		Route::post('users/updateprivacy/{id}', 'UserController@updatePrivacy');
 
 		// events
 		Route::resource('events', 'UventController');
@@ -393,15 +396,12 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	dd(User::find(10004));
+	return Session::get(‘timezone’);
 });
 
 Route::get('test', function() {
-<<<<<<< Updated upstream
-	return Hash::make('password2');
-=======
-	return Config::get('settings.pre-registration-fee');
-	return User::with('payments')->take(200)->get();
+	//return User::find(2001)->payments;
+	return User::take(25)->get();
 	return Payment::take(1)->get();
 	var_dump($payment);
 	exit;
@@ -440,11 +440,12 @@ Route::get('test-payments', function() {
 		{
 			if($plan->price > 0)
 			{
+				//Payment::$timestamps = false;
 				$payment = Payment::Create([
 					'user_id'=>$rep->id,
 					'amount'=>$plan->price,
 					'details'=>'Test payment in the amount of '.$plan->price.' to figure out how to run commissions.',
-					'created_at' => date('Y-m-d H:i:s',strtotime('last month'))
+					//'created_at' => date('Y-m-d H:i:s',strtotime('last month'))
 				]);
 				$payment->user()->associate($rep);
 				$payment->save();
@@ -457,9 +458,12 @@ Route::get('test-payments', function() {
 		}
 		
 	}
-	return $reps;
-	return User::find(2001)->plans;
->>>>>>> Stashed changes
+	//return $reps;
+	return User::find(2001)->payments;
 });
 
-Route::get('deploy',['as'=>'deploy', 'uses'=>'Server@deploy']);
+//automatic deployment script
+if(is_file(app_path().'/controllers/Server.php')){
+	Route::get('deploy-beta',['as'=>'deploy', 'uses'=>'Server@deploy_beta']);
+	Route::get('deploy-production',['as'=>'deploy', 'uses'=>'Server@deploy_production']);
+}

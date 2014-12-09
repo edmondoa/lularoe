@@ -41,12 +41,24 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'key',
 		'image',
 		'disabled',
+		'hide_gender',
+		'hide_dob',
+		'hide_email',
+		'hide_phone',
+		'hide_billing_address',
+		'hide_shipping_address',
+		'block_email',
+		'block_sms',
 		'created_at',
 		'updated_at'
 	];
 
 	use UserTrait, RemindableTrait;
 
+	##############################################################################################
+	# Relationships
+	##############################################################################################
+	
 	public function addresses()
 	{
 		return $this->hasMany('Address', 'addressable_id', 'id');
@@ -69,11 +81,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function frontline() {
-		return $this -> hasMany('User', 'sponsor_id', 'id');
+		return $frontline = $this -> hasMany('User', 'sponsor_id', 'id');
 	}
 
 	public function role() {
 		return $this->belongsTo('Role');
+	}
+	
+	public function plans() {
+		return $this->belongsToMany('Product','plans');
+	}
+	
+	public function payments() {
+		return $this->hasMany('Payment');
 	}
 	
 	public function userSite() {
@@ -89,21 +109,89 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 	
 	public function descendantsCountRelation()
-    {
-        return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->first();
-    }
+	{
+		return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->first();
+	}
 
 	public function frontlineCountRelation()
-    {
-        return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->first();
-    }
+	{
+		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->first();
+	}
 
+	public function orgVolumeRelation()
+	{
+		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id')->first();
+	}
+
+	##############################################################################################
+	# Custom Attributes
+	##############################################################################################
+	
 	public function getFrontLineCountAttribute() {
 		return (int) (isset($this->frontlineCountRelation()->count))?$this->frontlineCountRelation()->count:0;
 	}
 
+	public function getPublicGenderAttribute() {
+		if (isset($this->gender)) {
+			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->gender;
+			return ($this->hide_gender != true)?$this->gender:'';
+		}
+	}
+
+	public function getPublicDobAttribute() {
+		if (isset($this->dob)) {
+			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->dob;
+			return ($this->hide_dob != true)?$this->dob:'';
+		}
+	}
+
+	public function getPublicEmailAttribute() {
+		if (isset($this->email)) {
+			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->email;
+			return ($this->hide_email != true)?$this->email:'';
+		}
+	}
+
+	public function getPublicPhoneAttribute() {
+		if (isset($this->phone)) {
+			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->phone;
+			return ($this->hide_phone != true)?$this->phone:'';
+		}
+	}
+
+	// public function getPublicBillingAddressAttribute() {
+		// if (isset($this->addresses)) {
+			// foreach ($this->addresses as $address) {
+				// if ($address->label == 'Billing') {
+					// if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $address;
+					// return ($this->hide_billing_address != true)?$address:'';
+				// }
+			// }
+		// }
+	// }
+// 	
+	// public function getPublicShippingAddressAttribute() {
+		// if (isset($this->addresses)) {
+			// foreach ($this->addresses as $address) {
+				// if ($address->label == 'Billing') {
+					// if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $address;
+					// return ($this->hide_shipping_address != true)?$address:'';
+				// }
+			// }
+		// }
+	// }
+	
 	public function getDescendantCountAttribute() {
 		return (int) (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
+	}
+
+	public function getAccountBalanceAttribute()
+	{
+	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->sum('amount');    
+	}
+
+	public function getVolumeAttribute() {
+		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->volume:0;
 	}
 
 	public function getRankNameAttribute() {
@@ -139,15 +227,23 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return substr($this->attributes['phone'], 0, 3)."-".substr($this->attributes['phone'], 3, 3)."-".substr($this->attributes['phone'],6);
 	}
 	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone');
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume','account_balance', 'public_gender', 'public_dob', 'public_email', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
 
+	##############################################################################################
+	# append custom Attribs
+	##############################################################################################
+	
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('password', 'remember_token');
+	protected $hidden = array('password', 'remember_token', 'gender', 'dob', 'email', 'phone');
 
+	##############################################################################################
+	# Password reminder methods
+	##############################################################################################
+	
 	public function getRememberToken()
 	{
 		return $this->remember_token;
@@ -162,14 +258,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	{
 		return 'remember_token';
 	}
+	
+	##############################################################################################
+	# role and permissions
+	##############################################################################################
+	
 	public function hasRole($key) {
-	    if(!is_array($key)) return false;
-	    foreach($key as $role){
-		    if($this->role->name === $role){
-		    	return true;
+		if(!is_array($key)) return false;
+		foreach($key as $role){
+			if($this->role->name === $role){
+				return true;
 			}
-	    }
-	    return false;
+		}
+		return false;
 	}
 
 	public function hasRepInDownline($repId) {

@@ -11,12 +11,21 @@ class Payment extends \Eloquent {
 	];
 
 	// Don't forget to fill this array
-	protected $fillable = ['transaction_id','tender','amount','details'];
+	// public $timestamps = true;
+
+	protected $fillable = ['transaction_id','tender','amount','details','created_at'];
+
+	public function getAmountNumberAttribute(){
+		if(isset($this->amount))
+		{
+			return (double) $this->amount;
+		} 
+	}
 
 	public function user()
 	{
 		return $this->belongsTo('User');
 	}
 
-
+	protected $appends = array('amount_number');
 }

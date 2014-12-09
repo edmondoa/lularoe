@@ -8,9 +8,10 @@
 			{{ Form::model($site_config, array('action' => array('SiteConfigController@update', $site_config->id), 'method' => 'PUT')) }}
 		
 			
-			<div class="form-group">
+			<div class="bs-callout bs-callout-warning">
 				{{ $site_config->description}}
 			</div>
+			
 			<div class="form-group">
 				{{ Form::label('value', 'Value') }}
 				{{ Form::text('value', null, array('class' => 'form-control')) }}
