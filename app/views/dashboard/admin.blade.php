@@ -7,6 +7,7 @@
 			<div class="alert alert-success inline-block">
 				<a href="https://imsociallymobile.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Click here to sign up for beta service</a>
 			</div>
+			<br>
 		@endif
 		<div class="alert alert-success inline-block">
 			Copy and paste the following link and send it to anyone whom you'd like to join your team:<br>
