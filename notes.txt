@@ -1,2 +1,24 @@
 beta-five.sociallymobile.com, beta-four.sociallymobile.com, beta-three.sociallymobile.com, beta-two.sociallymobile.com betaone.sociallymobile.com, betaone.sociallymobile.com
 not-there.sociallymobile.com to test what happens when one is entered that isn't in the db
+// back up db
+mysqldump -u root --password='Yr*r,dAv$S?qE8,N' soc_mob > /var/www/html/soc_mob_backup_2014_12_03_12.sql
+// zip file
+gzip d [backup_name]
+// unzip file
+gzip -d [backup_name]
+// restore db
+mysql -u root -p [database_name] < [backup_name]
+
+// reset to head
+git reset --hard origin/master
+// back up one commit
+git reset --hard origin/master^
+
+// put into maintenance mode
+php artisan down
+
+// take out of maintenance mode
+php artisan up
+
+// install composer on production without dev libraries
+composer install --dev

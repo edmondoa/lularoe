@@ -80,7 +80,18 @@ class userController extends \BaseController {
 	{
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id || Auth::user()->hasRepInDownline($id) || Auth::user()->sponsor_id == $id) {
 			$user = User::findOrFail($id);
-			$addresses = User::find($id)->addresses;
+			$user->role_name == 'Rep' ? $user->formatted_role_name = 'ISM' : $user->formatted_role_name = $user->role_name;
+			
+			// set unlabeled addresses to billing
+			$address = $user->addresses()->first();
+			if (isset($address) && $address->label == NULL) {
+				$address->update(['label' => 'Billing']);
+			}
+			
+			// make array of addresses set as visible by target user or viewable by current user
+			$addresses = [];
+			if (Address::where('addressable_id', $id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Billing')->first();
+			if (Address::where('addressable_id', $id)->where('label', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Shipping')->first();
 			return View::make('user.show', compact('user', 'addresses'));
 		}
 	}

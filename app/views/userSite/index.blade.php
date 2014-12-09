@@ -5,32 +5,30 @@
 	    <div ng-controller="UserSiteController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
-		            <div class="col col-md-8">
-		                <h1 class="no-top">All UserSites</h1>
-		            </div>
-		            <div class="col col-md-4">
-		                <div class="pull-right">
-		                    <div class="input-group">
-		                        <span class="input-group-addon">Count</span>
-		                        <input type="number" min="1" class="form-control itemsPerPage" ng-model="pageSize">
+		            <div class="col-md-12">
+		                <h1 class="no-top pull-left no-pull-xs">All UserSites</h1>
+		            	<div class="pull-right hidable-xs">
+		                    <div class="input-group pull-right">
+		                    	<span class="input-group-addon no-width">Count</span>
+		                    	<input class="form-control itemsPerPage width-auto" ng-model="pageSize" type="number" min="1">
 		                    </div>
-		                </div>
-		                <h4 class="pull-right no-top currentPage margin-right-1">Page <span ng-bind="currentPage"></span></h4>
-		            </div>
+		                    <h4 class="pull-right margin-right-1">Page <span ng-bind="currentPage"></span></h4>
+		            	</div>
+			    	</div>
 		        </div><!-- row -->
 		        <div class="row">
-		            <div class="col col-md-12">
-		            	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		        	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+			    		<div class="col-md-6 col-sm-6 col-xs-12 page-actions-left">
 			                <div class="pull-left">
 			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('userSites/create') }}"><i class="fa fa-plus"></i></a>
 			                    <div class="pull-left">
 			                        <div class="input-group">
 			                            <select class="form-control selectpicker actions">
-			                                <option value="user-sites/disable" selected>Disable</option>
-			                                <option value="user-sites/enable">Enable</option>
-			                                <option value="user-sites/delete">Delete</option>
+			                                <option value="events/disable" selected>Disable</option>
+			                                <option value="events/enable">Enable</option>
+			                                <option value="events/delete">Delete</option>
 			                            </select>
-			                            <div class="input-group-btn">
+			                            <div class="input-group-btn no-width">
 			                                <button class="btn btn-default applyAction" disabled>
 			                                    <i class="fa fa-check"></i>
 			                                </button>
@@ -38,11 +36,15 @@
 			                        </div>
 			                    </div>
 			                </div>
-			            @endif
+			        	</div>
+			        	<div class="col-md-6 col-sm-6 col-xs-12">
+					@else
+						<div class="col-md-12 col-sm-12 col-xs-12">
+					@endif
 		                <div class="pull-right">
 		                    <div class="input-group">
 		                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
-		                        <span class="input-group-btn">
+		                        <span class="input-group-btn no-width">
 		                            <button class="btn btn-default" type="button">
 		                                <i class="fa fa-search"></i>
 		                            </button>
@@ -140,7 +142,7 @@
 		$scope.meals = [];
 		
 		$scope.pageChangeHandler = function(num) {
-			console.log('meals page changed to ' + num);
+			
 		};
 		
 	}

@@ -100,23 +100,28 @@
 	<div class="form-group">
 		{{ Form::label('expires_year','* Expires') }}
 		<br>
-		<select name="expires_month" class="form-control inline-block width-auto">
-			<?php
-				for ($y = 1; $y <= 12; $y ++) {
-					if ($y < 10) $y = "0" . $y;
-					echo "<option>$y</option>";
-				}
-			?>
-		</select>
-		<select name="expires_year" class="form-control inline-block width-auto">
-			<?php
-				$y = date('Y');
-				$x = $y + 10;
-				for ($y = date('Y'); $y <= $x; $y ++) {
-					echo "<option>$y</option>";
-				}
-			?>
-		</select>
+		<?php
+		
+			// generate months
+			$months = [];
+			for ($m = 1; $m <= 12; $m ++) {
+				if ($m < 10) $m = "0" . $m;
+				$months[$m] = $m;
+				// echo '</pre>'; print_r($months); echo '</pre>';
+				// exit;
+			}
+			
+			// generate years
+			$y = date('Y');
+			$x = $y + 10;
+			$years = [];
+			for ($y = date('Y'); $y <= $x; $y ++) {
+				$years[$y] = $y;
+			}
+			
+		?>
+		{{ Form::select('expires_month', $months, null, ['class' => 'form-control inline-block width-auto']) }}
+		{{ Form::select('expires_year', $years, null, ['class' => 'form-control inline-block width-auto']) }}
 	</div>
 
 	<div class="form-group">
@@ -126,8 +131,8 @@
 
 	<div class="form-group">
 		<label for="agree" style="font-size:10pt; !important; max-width:250px; display:inline-block; vertical-align:top;">
-			<input type="checkbox" name="agree" id="agree">
-			&nbsp;I agree to the <a target="_blank" href="http://sociallymobile.com/terms-conditions/">terms and conditions</a>.
+			{{ Form::checkbox('agree', null, null, array('id' => 'agree')) }}
+			&nbsp;I agree to the <a target="_blank" href="/terms-conditions">terms and conditions</a>.
 		</label>
 	</div>
 	<div style="position:relative; top:-10px;">

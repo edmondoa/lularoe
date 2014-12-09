@@ -72,8 +72,9 @@ class addressController extends \BaseController {
 	public function edit($id)
 	{
 		$address = Address::find($id);
-
-		return View::make('address.edit', compact('address'));
+		if (Auth::user()->hasRole(['Superadmin', 'Admin']) || $address->addressable_id == Auth::user()->id) {
+			return View::make('address.edit', compact('address'));
+		}
 	}
 
 	/**
@@ -95,7 +96,7 @@ class addressController extends \BaseController {
 
 		$address->update($data);
 
-		return Redirect::route('addresses.show', $id)->with('message', 'Address updated.');
+		return Redirect::route('settings')->with('message', 'Address updated.');
 	}
 
 	/**

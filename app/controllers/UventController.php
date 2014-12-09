@@ -32,7 +32,8 @@ class uventController extends \BaseController {
 	 */
 	public function publicIndex()
 	{
-		return View::make('event.public_index');
+		$title = 'Company Events';
+		return View::make('event.public_index', compact('title'));
 	}
 
 	/**
@@ -43,8 +44,10 @@ class uventController extends \BaseController {
 	public function create()
 	{
 		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
-			if (!isset($event->timezone)) $event->timezone = Session::get('timezone');
-			return View::make('event.create');
+			$event = new Uvent;
+			$event->timezone = Session::get('timezone');
+			return View::make('event.create', compact('event'));
+			Timezone::convertFromUTC($session->created_at);
 		}
 	}
 
@@ -104,7 +107,8 @@ class uventController extends \BaseController {
 	public function publicShow($id)
 	{
 		$event = Uvent::findOrFail($id);
-		return View::make('event.public_show', compact('event'));
+		$title = $event->name;
+		return View::make('event.public_show', compact('event', 'title'));
 	}
 
 	/**

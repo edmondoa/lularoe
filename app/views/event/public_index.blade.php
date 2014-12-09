@@ -1,4 +1,4 @@
-@extends('layouts.gray')
+@extends('layouts.public')
 @section('content')
 <div ng-app="app" class="index">
     <div ng-controller="uventController" class="my-controller">
@@ -8,7 +8,7 @@
 	                <h1 class="no-top">Upcoming Events</h1>
 	            </div>
 	            <div class="col col-md-4">
-	                <div class="pull-right">
+	                <div>
 	                    <div class="input-group">
 	                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
 	                        <span class="input-group-btn">
@@ -18,6 +18,7 @@
 	                        </span>
 	                    </div>
 	                </div>
+	                <br>
 	                <!-- <div class="pull-right">
 	                    <div class="input-group">
 	                        <span class="input-group-addon">Count</span>
@@ -34,9 +35,9 @@
                     <thead>
                         <tr>
 	                        
-                        	<th class="link hidable-xs" ng-click="orderByField='date_start'; reverseSort = !reverseSort">Date
+                        	<th class="link hidable-xs" ng-click="orderByField='local_start_date'; reverseSort = !reverseSort">Date
                         		<span>
-                        			<span ng-show="orderByField == 'date_start'">
+                        			<span ng-show="orderByField == 'local_start_date'">
                             			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
                             			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                         			</span>
@@ -55,10 +56,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="event in events | filter:search | orderBy: 'date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="event in events | filter:search | orderBy: 'local_start_date' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 							
 				            <td class="date-col">
-				                <span ng-bind="event.formatted_start_date"></span>
+				                <span ng-bind="event.local_start_date"></span>
 				            </td>
 							
 				            <td>
@@ -80,33 +81,34 @@
     </div><!-- app -->
 @stop
 @section('scripts')
-<script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
+	{{ HTML::script('/js/jquery1.js') }}
+	<script>
 	
-	function uventController($scope, $http) {
+		var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 		
-		$http.get('/api/all-upcoming-events-by-role').success(function(events) {
-			$scope.events = events;
-			console.log($scope.events);
-			@include('_helpers.bulk_action_checkboxes')
-
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			console.log('meals page changed to ' + num);
-		};
-		
-	}
+		function uventController($scope, $http) {
+			
+			$http.get('/api/all-upcoming-events-by-role').success(function(events) {
+				$scope.events = events;
+				console.log($scope.events);
+				@include('_helpers.bulk_action_checkboxes')
 	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
-</script>
+			});
+			
+			$scope.currentPage = 1;
+			$scope.pageSize = 10;
+			$scope.meals = [];
+			
+			$scope.pageChangeHandler = function(num) {
+				
+			};
+			
+		}
+		
+		function OtherController($scope) {
+			$scope.pageChangeHandler = function(num) {
+			};
+		}
+	
+	</script>
 @stop
