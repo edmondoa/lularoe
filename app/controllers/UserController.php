@@ -54,6 +54,7 @@ class userController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 		$data['password'] = Hash::make($data['password']);
+		$data['email'] = strtolower($data['email']);
 		$user = User::create($data);
 		
 		// store address
@@ -92,6 +93,8 @@ class userController extends \BaseController {
 			$addresses = [];
 			if (Address::where('addressable_id', $id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Billing')->first();
 			if (Address::where('addressable_id', $id)->where('label', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Shipping')->first();
+			// echo '<pre>'; print_r($user); echo '</pre>';
+			// exit;
 			return View::make('user.show', compact('user', 'addresses'));
 		}
 	}
@@ -206,6 +209,7 @@ class userController extends \BaseController {
 				return Redirect::back()->withErrors($validator)->withInput();
 			}
 			$data['password'] = Hash::make($data['password']);
+			$data['email'] = strtolower($data['email']);
 			$user->update($data);
 			if($old_user_data->sponsor_id != $user->sponsor_id)
 			{

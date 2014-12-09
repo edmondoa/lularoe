@@ -241,7 +241,7 @@ html { background:rgb(28, 28, 28); }
 body:not(.home) .main-content { padding-bottom:40px; }
 input[type="text"].form-control { border: 1px solid rgba(0,0,0,.1) !important; }
 small { color:gray; font-size:8pt !important; display:block; }
-.table { width:auto !important; font-size:12pt; }
+.table { width:auto !important; font-size:11pt; }
 .tiles {
     padding: 0;
     list-style: none;
