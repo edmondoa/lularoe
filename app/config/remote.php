@@ -29,10 +29,18 @@ return array(
 	'connections' => array(
 
 		'production' => array(
-			'host'      => '',
-			'username'  => '',
+			'host'      => '54.69.239.101',
+			'username'  => 'ec2-user',
 			'password'  => '',
-			'key'       => '',
+			'key'       => base_path().'/SociallyMobile.pem',
+			'keyphrase' => '',
+			'root'      => '/var/www',
+		),
+		'beta' => array(
+			'host'      => '54.69.40.19',
+			'username'  => 'ec2-user',
+			'password'  => '',
+			'key'       => base_path().'/SociallyMobile.pem',
 			'keyphrase' => '',
 			'root'      => '/var/www',
 		),

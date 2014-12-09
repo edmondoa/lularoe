@@ -463,6 +463,7 @@ Route::get('test-payments', function() {
 });
 
 //automatic deployment script
-if(is_file('./controllers/Server.php')){
-	Route::get('deploy',['as'=>'deploy', 'uses'=>'Server@deploy']);
+if(is_file(app_path().'/controllers/Server.php')){
+	Route::get('deploy-beta',['as'=>'deploy', 'uses'=>'Server@deploy_beta']);
+	Route::get('deploy-production',['as'=>'deploy', 'uses'=>'Server@deploy_production']);
 }
