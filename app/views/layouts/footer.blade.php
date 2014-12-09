@@ -11,6 +11,7 @@
 		    var path = '{{ Request::path() }}';
 		
 		</script>
+		{{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
 		{{ HTML::script('js/functions.js') }}
 		{{ HTML::script('/js/controllers/datepickerController.js') }}
 		{{ HTML::script('/packages/jquery-ui/timepicker.js') }}

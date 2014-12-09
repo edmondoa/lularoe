@@ -186,6 +186,8 @@
 
                 <div class="container main-content">
                 	<div class="row">
+                		@include('_helpers.errors')
+                		@include('_helpers.message')
 	                	@section('content')
 	                	@show
                 	</div><!--/row-->
