@@ -123,8 +123,8 @@ class uventController extends \BaseController {
 			$event = Uvent::find($id);
 			$start_date_stamp = date('Y-m-d G:i:s', $event->date_start);
 			$end_date_stamp = date('Y-m-d G:i:s', $event->date_end);
-			$event->date_start = Timezone::convertFromUTC($start_date_stamp, $event->timezone, 'Y-m-d G:i A');
-			$event->date_end = Timezone::convertFromUTC($end_date_stamp, $event->timezone, 'Y-m-d G:i A');
+			$event->date_start = Timezone::convertFromUTC($start_date_stamp, $event->timezone, 'm/d/Y g:i a');
+			$event->date_end = Timezone::convertFromUTC($end_date_stamp, $event->timezone, 'm/d/Y g:i a');
 			if (!isset($event->timezone)) $event->timezone = Session::get('timezone');
 			return View::make('event.edit', compact('event'));
 		}
