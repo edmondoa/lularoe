@@ -172,6 +172,7 @@ class PreRegisterController extends \BaseController {
 			$role = Role::where('name','Rep')->first();
 			//echo"<pre>"; print_r($role); echo"</pre>";
 			$user->role()->associate($role);
+			$user->email = strtolower($user->email);
 			$user->save();
 			//exit('we got to here');
 		}

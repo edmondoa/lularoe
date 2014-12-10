@@ -120,7 +120,11 @@
                                         <a href="/terms-conditions/">Terms</a>
                                     </li>
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
-                                        <a href="<?php echo url() ?>/login">Log In</a>
+                                        @if (!Auth::check())
+                                        	<a href="<?php echo url() ?>/login">Log In</a>
+                                        @else
+                                        	<a href="/dashboard">Dashboard</a>
+                                        @endif
                                     </li>
                                     <!-- <li id="search-btn">
                                         <div>
@@ -165,7 +169,11 @@
                         <a href="/terms-conditions/">Terms</a>
                     </li>
                     <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
-                        <a href="<?php echo url() ?>/login">LOG IN</a>
+                        @if (!Auth::check())
+                        	<a href="<?php echo url() ?>/login">Log In</a>
+                        @else
+                        	<a href="/dashboard">Dashboard</a>
+                        @endif
                     </li>
                     <li id="mobile-search">
                         <form action="/" method="GET">
@@ -186,6 +194,8 @@
 
                 <div class="container main-content">
                 	<div class="row">
+                		@include('_helpers.errors')
+                		@include('_helpers.message')
 	                	@section('content')
 	                	@show
                 	</div><!--/row-->

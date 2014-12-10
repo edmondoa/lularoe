@@ -35,9 +35,9 @@
                     <thead>
                         <tr>
 	                        
-                        	<th class="link hidable-xs" ng-click="orderByField='local_start_date'; reverseSort = !reverseSort">Date
+                        	<th class="link hidable-xs" ng-click="orderByField='date_start'; reverseSort = !reverseSort">Date
                         		<span>
-                        			<span ng-show="orderByField == 'local_start_date'">
+                        			<span ng-show="orderByField == 'date_start'">
                             			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
                             			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                         			</span>
@@ -56,7 +56,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="event in events | filter:search | orderBy: 'local_start_date' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="event in events | filter:search | orderBy: 'date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 							
 				            <td class="date-col">
 				                <span ng-bind="event.local_start_date"></span>

@@ -23,6 +23,8 @@
 							<span class="label label-default">{{ $user->first_name }} {{ $user->last_name }} &nbsp;<i class="fa fa-times"></i></span>
 						</span>
 					@endforeach
+					<br>
+					<small>(Users who have opted out of receiving text messages will not be included.)</small>
 				</div>
 				
 				<div class="form-group">

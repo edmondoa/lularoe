@@ -409,7 +409,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	return Session::get(‘timezone’);
+	return date('Y-m-d H:i:s');
 });
 
 Route::get('test', function() {
