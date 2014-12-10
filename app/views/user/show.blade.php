@@ -4,7 +4,7 @@
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
 		<h1>{{ $user->first_name }} {{ $user->last_name }}</h1>
-	    <div class="btn-group">
+	    <div class="btn-group" id="record-options">
 			@if (Auth::user()->id != $user->id)
 				@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		    		<a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
@@ -29,22 +29,32 @@
 				    	</button>
 				    {{ Form::close() }}
 				@endif
-				@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep']))
-					{{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
-	            		{{ Form::hidden('user_ids[]', $user->id) }}
-	            		<button class="btn btn-default" title="Send Email">
-	            			<i class="fa fa-envelope"></i>
-	            		</button>
-	            	{{ Form::close() }}
-					{{ Form::open(array('url' => '/users/sms', 'method' => 'POST')) }}
-	            		{{ Form::hidden('user_ids[]', $user->id) }}
-	            		<button class="btn btn-default" title="Send Text Message (SMS)">
-	            			<i class="fa fa-mobile-phone"></i>
-	            		</button>
-	            	{{ Form::close() }}
-	            @endif
 			@endif
 		</div>
+		@if (!$user->block_email && !$user->block_sms)
+			<div class="btn-group" id="communication-options">
+		@endif
+				@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep']))
+					@if (!$user->block_email)
+						{{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
+		            		{{ Form::hidden('user_ids[]', $user->id) }}
+		            		<button class="btn btn-default" title="Send Email">
+		            			<i class="fa fa-envelope"></i>
+		            		</button>
+		            	{{ Form::close() }}
+		            @endif
+		            @if (!$user->block_sms)
+						{{ Form::open(array('url' => '/users/sms', 'method' => 'POST')) }}
+		            		{{ Form::hidden('user_ids[]', $user->id) }}
+		            		<button class="btn btn-default" title="Send Text Message (SMS)">
+		            			<i class="fa fa-mobile-phone"></i>
+		            		</button>
+		            	{{ Form::close() }}
+		            @endif
+	            @endif
+		@if (!$user->block_email && !$user->block_sms)
+			</div>
+		@endif
 	</div><!-- row -->
 	<div class="row">
 		<div class="col col-md-6 col-sm-12">
@@ -76,12 +86,24 @@
 				            <th>Email:</th>
 				            <td>
 				            	{{ $user->email }}
+				            	@if ($user->block_email)
+				            		<br>
+				            		<span class="label label-warning">
+				            			{{ $user->first_name }} has opted out of receiving emails.
+				            		</span>
+				            	@endif
 				            </td>
 				        </tr>
 				        <tr>
 				            <th>Phone:</th>
 				            <td>
 				            	{{ $user->phone }}
+				            	@if ($user->block_sms)
+				            		<br>
+				            		<span class="label label-warning">
+				            			{{ $user->first_name }} has opted out of receiving text messages.
+				            		</span>
+				            	@endif
 				            </td>
 				        </tr>	
 				        <tr>

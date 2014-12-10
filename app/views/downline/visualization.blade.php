@@ -139,6 +139,14 @@
 			return d.email;
 		});
 		
+		nodeEnter.append('block_email').text(function(d) {
+			return d.block_email;
+		});
+		
+		nodeEnter.append('block_sms').text(function(d) {
+			return d.block_sms;
+		});
+		
 		// close popovers upon animation
 		$('.downline-popover').remove();
 		
@@ -212,18 +220,22 @@
 		}
 	
 		// open popovers
-		$('g').on({
+		$('svg').on({
 			mouseenter: function(event) {
 				$('.downline-popover').remove();
 				var id = $(this).siblings('id').text();
 				var rank = $(this).siblings('rank').text();
 				var yCompensation = 0;
-				if ($(this).siblings('phone').text() !== '') var phone = '<tr><th><form method="post" target="_blank" action="/users/sms"><input type="hidden" name="user_ids[]" value="' + id + '"><button class="nostyle" title="Send text message (SMS)"><i class="link fa fa-mobile-phone"></i></button></form></th><td>' + $(this).siblings('phone').text() + '</td></tr>';
+				if ($(this).siblings('block_email').text() == 'true') var email_form = 'Email:';
+				else var email_form = '<form method="post" target="_blank" action="/users/email"><input type="hidden" name="user_ids[]" value="' + id + '"><button class="nostyle" title="Send email"><i class="link fa fa-envelope"></i></button></form>';
+				if ($(this).siblings('block_sms').text() == 'true') var sms_form = 'Phone:';
+				else var sms_form = '<form method="post" target="_blank" action="/users/sms"><input type="hidden" name="user_ids[]" value="' + id + '"><button class="nostyle" title="Send text message (SMS)"><i class="link fa fa-mobile-phone"></i></button></form>';
+				if ($(this).siblings('phone').text() !== '') var phone = '<tr><th>' + sms_form + '</th><td>' + $(this).siblings('phone').text() + '</td></tr>';
 				else {
 					var phone = '';
 					yCompensation += 20;
 				}
-				if ($(this).siblings('email').text() !== '') var email = '<tr><th><form method="post" target="_blank" action="/users/email"><input type="hidden" name="user_ids[]" value="' + id + '"><button class="nostyle" title="Send email"><i class="link fa fa-envelope"></i></button></form></th><td>' + $(this).siblings('email').text() + '</td></tr>';
+				if ($(this).siblings('email').text() !== '') var email = '<tr><th>' + email_form + '</th><td>' + $(this).siblings('email').text() + '</td></tr>';
 				else {
 					var email = '';
 					yCompensation += 20;
@@ -245,23 +257,25 @@
 				);
 			}
 		}, ' text')
-		
+
 		// close popovers
 		$('svg').click(function() {
 			$('.downline-popover').remove();
 		});
 		$('g').on({
 			mouseout: function() {
+				reenter = false;
 				timer = setTimeout(function() {
-					$('.downline-popover').remove();
+					$('body').on({
+						mouseenter: function() {
+							reenter = true;
+							clearTimeout(timer);
+						}
+					}, ' .downline-popover');
+					if (reenter == false) $('.downline-popover').remove();
 				}, 1000);
 			}
 		}, ' text');
-		$('body').on({
-			mouseenter: function() {
-				clearTimeout(timer);
-			}
-		}, '.downline-popover');
 	
 	</script>
 	<style>
