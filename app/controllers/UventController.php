@@ -121,6 +121,10 @@ class uventController extends \BaseController {
 	{
 		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
 			$event = Uvent::find($id);
+			$start_date_stamp = date('Y-m-d G:i:s', $event->date_start);
+			$end_date_stamp = date('Y-m-d G:i:s', $event->date_end);
+			$event->date_start = Timezone::convertFromUTC($start_date_stamp, $event->timezone, 'm/d/Y g:i a');
+			$event->date_end = Timezone::convertFromUTC($end_date_stamp, $event->timezone, 'm/d/Y g:i a');
 			if (!isset($event->timezone)) $event->timezone = Session::get('timezone');
 			return View::make('event.edit', compact('event'));
 		}
@@ -145,7 +149,9 @@ class uventController extends \BaseController {
 			}
 			
 			// format dates and times for database
+			$data['date_start'] = Timezone::convertToUTC($data['date_start'], $data['timezone']);
 			$data['date_start'] = strtotime($data['date_start']);
+			$data['date_end'] = Timezone::convertToUTC($data['date_end'], $data['timezone']);
 			$data['date_end'] = strtotime($data['date_end']);
 
 			// format checkbox values for database
@@ -154,9 +160,9 @@ class uventController extends \BaseController {
 			$data['reps'] = isset($data['reps']) ? 1 : 0;
 			$data['editors'] = isset($data['editors']) ? 1 : 0;
 			$data['admins'] = isset($data['admins']) ? 1 : 0;
-	
+			
 			$event->update($data);
-	
+			
 			return Redirect::route('events.show', $id)->with('message', 'Event updated.');
 		}
 	}

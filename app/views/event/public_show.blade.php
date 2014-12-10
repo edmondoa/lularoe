@@ -5,6 +5,7 @@
 		<div class="col col-md-6">
 			@include('_helpers.breadcrumbs')
 			<h1 class="no-top">{{ $event->name }}</h1>
+			<br>
 		    <table class="table">
 
 		        @if ($event->local_start_date == $event->local_end_date)

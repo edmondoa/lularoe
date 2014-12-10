@@ -63,7 +63,7 @@
 		                            </th>
 		                        @endif
 		                        
-                            	<th class="link hidable-xs" ng-click="orderByField='date_start'; reverseSort = !reverseSort">Date
+                            	<th class="link hidable-xs" ng-click="orderByField='date_start'; reverseSort = !reverseSort">Local Date
                             		<span>
                             			<span ng-show="orderByField == 'date_start'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -167,7 +167,7 @@
 								@endif
 								
 					            <td class="date-col">
-					                <span ng-bind="event.formatted_start_date"></span>
+					                <span ng-bind="event.local_start_date"></span>
 					            </td>
 								
 					            <td>

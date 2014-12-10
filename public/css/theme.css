@@ -82,6 +82,7 @@ small { opacity:.5; font-size:9pt; }
 .nostyle { background:inherit !important; border:inherit !important; padding:inherit !important; }
 .downline-popover th { text-align:right; padding-right:.5em; }
 .no-width { width:0; }
+i { width:16px; } /* standardizes font awesome icons */
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
@@ -107,7 +108,8 @@ small { opacity:.5; font-size:9pt; }
 .panel table { width:100%; }
 .panel table tbody th { text-align:left; }
 .btn-group > form { display:inline-block; }
-.btn-group > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; }
+#record-options > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; border-right:0 !important; border-left:0 !important; }
+#communication-options > form:nth-of-type(1) > .btn { border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-right:0 !important; }
 .btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
 .navbar-inverse {
     background-image: linear-gradient(to bottom, #3C3C3C 0px, #303030 100%); background-repeat: repeat-x;

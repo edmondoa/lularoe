@@ -75,6 +75,15 @@
                             			</span>
                             		</span>
                         		</th>
+                        		
+                            	<th class="link" ng-click="orderByField='id'; reverseSort = !reverseSort">ISM ID
+                            		<span>
+                            			<span ng-show="orderByField == 'id'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
                         	
                             	<th class="link hidable-sm" ng-click="orderByField='public_gender'; reverseSort = !reverseSort">Gender
                             		<span>
@@ -134,12 +143,19 @@
 	                    </thead>
 	                    <tbody>
 	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
-	                            <td ng-click="checkbox()">
+
+	                            <td ng-if="!user.block_email && !user.block_sms" ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
+
+	                            <td ng-if="user.block_email && user.block_sms"></td>
 	                            
 	                            <td>
 					                <a href="/users/@include('_helpers.user_id')" title="View Details"><span ng-bind="user.last_name"></span>, <span ng-bind="user.first_name"></span></a>
+					            </td>
+
+					            <td class="hidable-sm">
+					                <span ng-bind="user.id"></span>
 					            </td>
 					            
 					            <td class="hidable-sm">

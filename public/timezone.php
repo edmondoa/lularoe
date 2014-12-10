@@ -1,5 +1,7 @@
 <?
-	session_start();
-	if (isset($_GET['timezone'])) {$_SESSION['timezone'] = $_REQUEST['timezone'];}
-	echo $_REQUEST['timezone'];
+	// session_start();
+	$data = Input::all();
+	if (isset($data['timezone'])) {
+		Session::put('timezone', $_REQUEST['timezone']);
+	}
 ?>
