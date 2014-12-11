@@ -93,11 +93,16 @@
 			        {{ Form::label('min_commission', 'Min Commission') }}
 			        {{ Form::text('min_commission', null, array('class' => 'form-control')) }}
 			    </div>
-			    
+			   -->
 			    <div class="form-group">
-			        {{ Form::label('disabled', 'Disabled') }}
-			        {{ Form::text('disabled', null, array('class' => 'form-control')) }}
-			    </div> -->
+			        {{ Form::label('disabled', 'Status') }}
+			        <br>
+			    	{{ Form::select('disabled', [
+			    		0 => 'Active',
+			    		1 => 'Disabled'
+			    	], $user->disabled, ['class' => 'selectpicker']) }}
+			    </div>
+			    
 			@endif		    
 		
 		    {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}

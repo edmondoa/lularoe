@@ -111,11 +111,16 @@
 			        {{ Form::label('min_commission', 'Min Commission') }}
 			        {{ Form::text('min_commission', Input::old('min_commission'), array('class' => 'form-control')) }}
 			    </div>
+			    -->
 			    
 			    <div class="form-group">
-			        {{ Form::label('disabled', 'Disabled') }}
-			        {{ Form::text('disabled', Input::old('disabled'), array('class' => 'form-control')) }}
-			    </div> -->
+			        {{ Form::label('disabled', 'Status') }}
+			        <br>
+			    	{{ Form::select('disabled', [
+			    		0 => 'Active',
+			    		1 => 'Disabled'
+			    	], null, ['class' => 'form-control']) }}
+			    </div>
 		
 			    {{ Form::submit('Add User', array('class' => 'btn btn-primary')) }}
 	

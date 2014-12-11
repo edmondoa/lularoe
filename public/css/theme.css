@@ -83,6 +83,7 @@ small { opacity:.5; font-size:9pt; }
 .downline-popover th { text-align:right; padding-right:.5em; }
 .no-width { width:0; }
 i { width:16px; } /* standardizes font awesome icons */
+.semitransparent { opacity:.5; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }

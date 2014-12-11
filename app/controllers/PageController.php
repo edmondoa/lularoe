@@ -3,21 +3,6 @@
 class pageController extends \BaseController {
 
 	/**
-	 * Data only
-	 */
-	public function getAllPages(){
-		$pages = Page::all();
-		foreach ($pages as $page)
-		{
-			if (strtotime($page['created_at']) >= (time() - Config::get('site.new_time_frame') ))
-			{
-				$page['new'] = 1;
-			}
-		}
-		return $pages;
-	}
-
-	/**
 	 * Display a listing of pages
 	 *
 	 * @return Response
@@ -52,10 +37,10 @@ class pageController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
+		strtolower($data['url']);
+		$page = Page::create($data);
+		return Redirect::route('pages.edit', $page->id)->with('message', 'Page created.');
 
-		Page::create($data);
-
-		return Redirect::route('pages.index')->with('message', 'Page created.');
 	}
 
 	/**
@@ -64,11 +49,11 @@ class pageController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show($url)
 	{
-		$page = Page::findOrFail($id);
-
-		return View::make('page.show', compact('page'));
+		$page = Page::where('url', $url)->first();
+		$title = $page->title;
+		return View::make('page.show', compact('page', 'title'));
 	}
 
 	/**
@@ -100,10 +85,10 @@ class pageController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
-
+		strtolower($data['url']);
 		$page->update($data);
 
-		return Redirect::route('pages.show', $id)->with('message', 'Page updated.');
+		return Redirect::back()->with('message', 'Page updated.');
 	}
 
 	/**
