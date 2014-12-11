@@ -5,8 +5,6 @@
     	<div class="page-actions">
 	        <div class="row">
 	            <div class="col col-md-8">
-	            			<h1>Timezone: {{ Session::get('timezone') }}</h1>
-
 	                <h1 class="no-top">Upcoming Events</h1>
 	            </div>
 	            <div class="col col-md-4">

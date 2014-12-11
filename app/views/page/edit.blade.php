@@ -16,7 +16,7 @@
 				@else
 				    {{ Form::open(array('url' => 'pages/enable', 'method' => 'ENABLE')) }}
 				    	<input type="hidden" name="ids[]" value="{{ $page->id }}">
-				    	<button class="btn btn-default" title="Currently disabled. Click to enable.">
+				    	<button class="btn btn-default" style="border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" title="Currently disabled. Click to enable.">
 				    		<i class="fa fa-eye"></i>
 				    	</button>
 				    {{ Form::close() }}
@@ -68,17 +68,22 @@
 			    		<h2 class="panel-title">Visibility</h2>
 			    	</div>
 				    <div class="panel-body">
-				        <label>
-				   			{{ Form::checkbox('public') }} Public
-				        </label>
-				        <br>
-				        <label>
-				   			{{ Form::checkbox('customers') }} Customers
-				        </label>
-				        <br>
-				        <label>
-				   			{{ Form::checkbox('reps') }} ISM's
-				        </label>
+				    	<label>
+				    		{{ Form::radio('public', 1, null, ['id' => 'show_to_everyone']) }} Show to everyone
+				    	</label>
+				    	<br>
+				    	<label>
+				    		{{ Form::radio('public', 0, null, ['id' => 'only_show_to']) }} Only show to:
+				    	</label>
+				    	<div id="only_show_to_list">
+					        <label>
+					   			{{ Form::checkbox('customers') }} Customers
+					        </label>
+					        <br>
+					        <label>
+					   			{{ Form::checkbox('reps') }} ISM's
+					        </label>
+				    	</div>
 			    	</div>
 			    </div><!-- panel -->
 			    
