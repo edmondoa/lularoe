@@ -98,7 +98,9 @@ $(document).ready(function() {
         var timezone = tz.name();
         //'Asia/Kolhata' for Indian Time.
         localStorage['timezone'] = timezone;
-        $.post('/set-timezone', { timezone : timezone });
+        $.post('/set-timezone', { timezone : timezone }, function() {
+            location.reload();
+        });
     }
        
 });
