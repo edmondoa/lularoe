@@ -101,16 +101,24 @@
 
                             <nav>
                                 <ul class="sf-menu">
-                                    <?php $pages = Page::where('public_header', 1)->get(); ?>
-									@foreach ($pages as $page)
-										<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
-									@endforeach
                                     <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074">
                                         <a href="/contact-us/">Contact Us</a>
                                     </li>
                                     <li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
                                         <a href="/public-events">Events</a>
                                     </li>
+				                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4074">
+				                        <a href="/leadership/">Leadership</a>
+				                    </li>
+				                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5074">
+				                        <a href="/presentation/">Presentation</a>
+				                    </li>
+				                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089">
+				                        <a href="/privacy-policy/">Privacy Policy</a>
+				                    </li>
+				                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075">
+				                        <a href="/terms-conditions/">Terms</a>
+				                    </li>
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                                         @if (!Auth::check())
                                         	<a href="<?php echo url() ?>/login">Log In</a>
@@ -147,18 +155,6 @@
                     </li>
                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
                         <a href="/public-events">Events</a>
-                    </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4074">
-                        <a href="/leadership/">Leadership</a>
-                    </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5074">
-                        <a href="/presentation/">Presentation</a>
-                    </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089">
-                        <a href="/privacy-policy/">Privacy Policy</a>
-                    </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075">
-                        <a href="/terms-conditions/">Terms</a>
                     </li>
                     <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                         @if (!Auth::check())
