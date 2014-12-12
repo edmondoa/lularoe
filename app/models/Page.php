@@ -5,9 +5,7 @@ class Page extends \Eloquent
 
 	// Add your validation rules here
 	public static $rules = [
-		'title' => 'required',
-		'short_title' => 'required',
-		'url' => 'required|alpha_dash',
+
 	];
 
 	// Don't forget to fill this array    

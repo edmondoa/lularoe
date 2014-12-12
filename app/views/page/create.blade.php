@@ -99,7 +99,7 @@
 			    
 			    <div class="panel panel-default">
 			    	<div class="panel-heading">
-			    		<h2 class="panel-title">Visibility</h2>
+			    		<h2 class="panel-title">Show in Navigation</h2>
 			    	</div>
 				    <div class="panel-body">
 				        <label>

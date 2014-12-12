@@ -31,13 +31,30 @@ class pageController extends \BaseController {
 	 */
 	public function store()
 	{
+		// validation
+		$rules = [
+			'title' => 'required',
+			'short_title' => 'required',
+			'url' => 'unique|required|alpha_dash',		
+			'url' => 'required|alpha_dash|unique:pages'
+		];
 		$validator = Validator::make($data = Input::all(), Page::$rules);
-
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
-		strtolower($data['url']);
+		
+		// format checkbox values for database
+		$data['public'] = isset($data['public']) ? 1 : 0;
+		$data['customers'] = isset($data['customers']) ? 1 : 0;
+		$data['reps'] = isset($data['reps']) ? 1 : 0;
+		if ($data['public'] == 0 && $data['customers'] == 0 && $data['public'] == 0) $data['public'] = 1;
+		if ($data['customers'] == 1 || $data['reps'] == 1) $data['public'] = 0;
+		$data['public_header'] = isset($data['public_header']) ? 1 : 0;
+		$data['public_footer'] = isset($data['public_footer']) ? 1 : 0;
+		$data['back_office_header'] = isset($data['back_office_header']) ? 1 : 0;
+		$data['back_office_footer'] = isset($data['back_office_footer']) ? 1 : 0;
+		
 		$page = Page::create($data);
 		return Redirect::route('pages.edit', $page->id)->with('message', 'Page created.');
 
@@ -65,8 +82,9 @@ class pageController extends \BaseController {
 	public function edit($id)
 	{
 		$page = Page::find($id);
-
-		return View::make('page.edit', compact('page'));
+		if ($page['customers'] || $page['reps']) $only_show_to = 'checked';
+		else $only_show_to = '';
+		return View::make('page.edit', compact('page', 'only_show_to'));
 	}
 
 	/**
@@ -78,14 +96,33 @@ class pageController extends \BaseController {
 	public function update($id)
 	{
 		$page = Page::findOrFail($id);
-
+		
+		// validation
+		$rules = [
+			'title' => 'required',
+			'short_title' => 'required',
+			'url' => 'unique|required|alpha_dash',		
+			'url' => 'required|alpha_dash|unique:pages,url,' . $page->id
+		];
 		$validator = Validator::make($data = Input::all(), Page::$rules);
-
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
+
 		strtolower($data['url']);
+		
+		// format checkbox values for database
+		$data['public'] = isset($data['public']) ? 1 : 0;
+		$data['customers'] = isset($data['customers']) ? 1 : 0;
+		$data['reps'] = isset($data['reps']) ? 1 : 0;
+		if ($data['public'] == 0 && $data['customers'] == 0 && $data['public'] == 0) $data['public'] = 1;
+		if ($data['customers'] == 1 || $data['reps'] == 1) $data['public'] = 0;
+		$data['public_header'] = isset($data['public_header']) ? 1 : 0;
+		$data['public_footer'] = isset($data['public_footer']) ? 1 : 0;
+		$data['back_office_header'] = isset($data['back_office_header']) ? 1 : 0;
+		$data['back_office_footer'] = isset($data['back_office_footer']) ? 1 : 0;
+		
 		$page->update($data);
 
 		return Redirect::back()->with('message', 'Page updated.');

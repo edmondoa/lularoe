@@ -84,6 +84,8 @@ small { opacity:.5; font-size:9pt; }
 .no-width { width:0; }
 i { width:16px; } /* standardizes font awesome icons */
 .semitransparent { opacity:.5; }
+.footer-links { text-decoration:none; padding:0; text-align:center; }
+.footer-links li { display:inline-block; margin:0 1em; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }

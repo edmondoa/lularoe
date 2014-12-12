@@ -96,7 +96,7 @@
                 <div class="panel-body">
                     <label> {{ Form::radio('public', 1, null, ['id' => 'show_to_everyone']) }} Show to everyone </label>
                     <br>
-                    <label> {{ Form::radio('public', 0, null, ['id' => 'only_show_to']) }} Only show to: </label>
+                    <label> {{ Form::radio('public', 0, null, ['id' => 'only_show_to', $only_show_to]) }} Only show to: </label>
                     <div id="only_show_to_list">
                         <label> {{ Form::checkbox('customers') }} Customers </label>
                         <br>
@@ -107,7 +107,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h2 class="panel-title">Visibility</h2>
+                    <h2 class="panel-title">Show in Navigation</h2>
                 </div>
                 <div class="panel-body">
                     <label> {{ Form::checkbox('public_header') }} Public Header </label>
@@ -136,6 +136,9 @@
 			if ($("#show_to_everyone").is(':checked')) {
 				$("#only_show_to_list input").attr('disabled', 'disabled');
 				$("#only_show_to_list label").addClass('semitransparent');
+				$('#only_show_to_list checkbox').each(function() {
+					$(this).removeAttr('checked');
+				});
 			}
 			if (!$("#show_to_everyone").is(':checked')) {
 				$("#only_show_to_list input").removeAttr('disabled');
