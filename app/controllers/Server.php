@@ -31,11 +31,11 @@ class Server extends \BaseController {
 		//return "Deploying";
 		SSH::into('production')->run(array(
 			'cd /var/www/html',
-			'ls -la',
-			//'git pull',
+			// 'ls -la',
+			'git pull',
 			//'sudo chmod -R 777 app/storage',
-			//'composer install --no-dev',
-			//'php artisan migrate'
+			'composer install --no-dev',
+			'php artisan migrate'
 		), function($line){
 		 
 			echo $line.PHP_EOL; // outputs server feedback

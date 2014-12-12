@@ -90,17 +90,5 @@ $(document).ready(function() {
             }
         });
     });
-
-    if (localStorage['timezone'] == undefined) {
-        // get timezone
-        var tz = jstz.determine();
-        // Determines the time zone of the browser client
-        var timezone = tz.name();
-        //'Asia/Kolhata' for Indian Time.
-        localStorage['timezone'] = timezone;
-        $.post('/set-timezone', { timezone : timezone }, function() {
-            location.reload();
-        });
-    }
        
 });

@@ -258,22 +258,19 @@ var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-
         {{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
         {{ HTML::script('/packages/dirpagination/dirPagination.js') }}
 		{{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
-		<script>
-			
-			// handle timezones
-		    if (localStorage['timezone'] == undefined) {
-		        // get timezone
-		        var tz = jstz.determine();
-		        // Determines the time zone of the browser client
-		        var timezone = tz.name();
-		        //'Asia/Kolhata' for Indian Time.
-		        localStorage['timezone'] = timezone;
-		        jQuery.post('/set-timezone', { timezone : timezone }, function() {
-		            location.reload();
-		        });
-		    }
-			
-		</script>
+		@if (!Session::has('timezone'))
+			<!-- get timezone -->
+			<script>
+			    // if (localStorage['timezone'] == undefined) {
+			        // get timezone
+			        var tz = jstz.determine();
+			        // Determines the time zone of the browser client
+			        var timezone = tz.name();
+			        //'Asia/Kolhata' for Indian Time.
+			        jQuery.post('/set-timezone', { timezone : timezone });
+			    // }
+			</script>
+		@endif
 		@section('scripts')
 		@show
     </body>
