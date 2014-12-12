@@ -79,7 +79,7 @@
 			    	</div>
 				    <div class="panel-body">
 				    	<label>
-				    		{{ Form::radio('public', 1, null, ['id' => 'show_to_everyone']) }} Show to everyone
+				    		{{ Form::radio('public', 1, null, ['id' => 'show_to_everyone', 'checked' => 'checked']) }} Show to everyone
 				    	</label>
 				    	<br>
 				    	<label>
