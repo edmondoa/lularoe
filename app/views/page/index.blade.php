@@ -66,7 +66,7 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='url'; reverseSort = !reverseSort">Url
+                            	<th class="link" ng-click="orderByField='url'; reverseSort = !reverseSort">URL
                             		<span>
                             			<span ng-show="orderByField == 'url'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -75,18 +75,27 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='type'; reverseSort = !reverseSort">Type
+                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">Public
                             		<span>
-                            			<span ng-show="orderByField == 'type'">
+                            			<span ng-show="orderByField == 'public'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='body'; reverseSort = !reverseSort">Body
+                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">ISM's
                             		<span>
-                            			<span ng-show="orderByField == 'body'">
+                            			<span ng-show="orderByField == 'public'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
+                        		
+                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">Customers
+                            		<span>
+                            			<span ng-show="orderByField == 'public'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
@@ -101,7 +110,7 @@
                             			</span>
                             		</span>
                         		</th>
-                        		
+                        		                      		
                             	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
                             		<span>
                             			<span ng-show="orderByField == 'updated_at'">
@@ -110,6 +119,7 @@
                             			</span>
                             		</span>
                         		</th>
+                        			
 	                        </tr>
 	                    </thead>
 	                    <tbody>
@@ -119,27 +129,31 @@
 	                            </td>
 								
 					            <td>
-					                <a href="/pages/@include('_helpers.page_id')"><span ng-bind="page.title"></span></a>
+					            	<a href="/pages/@include('_helpers.page_id')/edit"><span ng-bind="page.title"></span></a>
 					            </td>
 					            
 					            <td>
-					                <a href="/pages/@include('_helpers.page_id')"><span ng-bind="page.url"></span></a>
+					                <span ng-bind="page.url"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/pages/@include('_helpers.page_id')"><span ng-bind="page.type"></span></a>
+					                 <span ng-if="page.public"><i class="fa fa-check"></i></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/pages/@include('_helpers.page_id')"><span ng-bind="page.body"></span></a>
+					                 <span ng-if="page.reps"><i class="fa fa-check"></i></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/pages/@include('_helpers.page_id')"><span ng-bind="page.disabled"></span></a>
+					                 <span ng-if="page.customers"><i class="fa fa-check"></i></span>
 					            </td>
-					            
+
 					            <td>
-					            	<a href="/pages/@include('_helpers.page_id')"><span ng-bind="page.updated_at"></span></a>
+					                <span ng-if="page.disabled"><i class="fa fa-check"></i></span>
+					            </td>
+
+					            <td>
+					            	<span ng-bind="page.updated_at"></span>
 					            </td>
 	                        </tr>
 	                        <tr dir-paginate-end></tr>

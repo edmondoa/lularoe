@@ -3,9 +3,10 @@
 <div class="show">
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
-		<h1 class="no-top">{{ $lead->first_name }} {{ $lead->last_name }}</h1>
+		<h1 class="no-top">{{ $lead->first_name }} {{ $lead->last_name }}</h1>
+
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep']))
-		    <div class="btn-group">
+		    <div class="btn-group" id="record-options">
 			    <a class="btn btn-default" href="{{ url('leads/'.$lead->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 			    <!--
 			    @if ($lead->disabled == 0)

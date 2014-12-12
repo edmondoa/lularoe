@@ -116,4 +116,15 @@ class DataOnlyController extends \BaseController
 		}
 	}
 
+
+	/*
+	 * Pages
+	 */
+	 
+	public function getAllPages(){
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			return Page::all();
+		}
+	}
+	 
 }

@@ -12,6 +12,14 @@
  */
 //use SociallyMobile\Payments\USAEpayment;
 
+	// load user-created pages
+	/*
+	$path = Request::path();
+	if (Page::where('url', $path)->first()) {
+		Route::get('/{' . $path . '}', 'PageController@show');
+	}
+	*/
+
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
@@ -29,7 +37,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	##############################################################################################
 	# Public Routes
 	##############################################################################################
-
+	
 	// company
 	Route::get('/', ['as' => 'home', function() {
 		// if (Auth::check()) {
@@ -52,10 +60,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		$title = 'Terms and Conditions';
 		return View::make('company.terms', compact('title'));
 	});
-	Route::get('privacy-policy', function() {
-		$title = 'Privacy Policy';
-		return View::make('company.privacy', compact('title'));
-	});
+	// Route::get('privacy-policy', function() {
+		// $title = 'Privacy Policy';
+		// return View::make('company.privacy', compact('title'));
+	// });
 	Route::get('leadership', function() {
 		$title = 'Leadership';
 		return View::make('company.leadership', compact('title'));
@@ -96,7 +104,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::controller('api','DataOnlyController');
 		
 	//timezone
-	Route::post('set-timezone', 'TimezoneController@set');
+	Route::post('set-timezone', 'TimezoneController@setTimezone');
 		
 	##############################################################################################
 	// Protected Routes
@@ -409,7 +417,8 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	return date('Y-m-d H:i:s');
+	$date = date('Y-m-d H:i:s');
+	return Timezone::convertFromUTC($date, "Asia/Kolkata", 'F j, Y H:i:s');
 });
 
 Route::get('test', function() {

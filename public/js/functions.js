@@ -90,15 +90,55 @@ $(document).ready(function() {
             }
         });
     });
-
-    if (localStorage['timezone'] == undefined) {
-        // get timezone
-        var tz = jstz.determine();
-        // Determines the time zone of the browser client
-        var timezone = tz.name();
-        //'Asia/Kolhata' for Indian Time.
-        localStorage['timezone'] = timezone;
-        $.post('/set-timezone', { timezone : timezone });
-    }
-       
+ 
 });
+
+/*
+ * functions
+ */
+
+// clean URL
+function cleanURL(text) {
+    text = text.toLowerCase();
+    text = text.toLowerCase();
+    text = text.replace(/ a /g, "-");
+    text = text.replace(/ an /g, "-");
+    text = text.replace(/ it /g, "-");
+    text = text.replace(/ the /g, "-");
+    text = text.replace(/\ and /g, "-");
+    text = text.replace(/\ /g, "-");
+    text = text.replace(/\,/g, "-");
+    text = text.replace(/\./g, "-");
+    text = text.replace(/\&/g, "-");
+    text = text.replace(/\?/g, "-");
+    text = text.replace(/\!/g, "-");
+    text = text.replace(/\@/g, "-");
+    text = text.replace(/\#/g, "-");
+    text = text.replace(/\$/g, "-");
+    text = text.replace(/\%/g, "-");
+    text = text.replace(/\^/g, "-");
+    text = text.replace(/\*/g, "-");
+    text = text.replace(/\(/g, "-");
+    text = text.replace(/\)/g, "-");
+    text = text.replace(/\+/g, "-");
+    text = text.replace(/\=/g, "-");
+    text = text.replace(/\~/g, "-");
+    text = text.replace(/\`/g, "-");
+    text = text.replace(/\:/g, "-");
+    text = text.replace(/\;/g, "-");
+    text = text.replace(/\'/g, "-");
+    text = text.replace(/\"/g, "-");
+    text = text.replace(/\[/g, "-");
+    text = text.replace(/\{/g, "-");
+    text = text.replace(/\]/g, "-");
+    text = text.replace(/\}/g, "-");
+    text = text.replace(/\\/g, "-");
+    text = text.replace(/\|/g, "-");
+    text = text.replace(/\</g, "-");
+    text = text.replace(/\>/g, "-");
+    text = text.replace(/\--/g, "");
+    text = text.replace(/\__/g, "");
+    text = text.replace(/\_-/g, "");
+    text = text.replace(/\-_/g, "");
+    return cleaned_text = text;
+}

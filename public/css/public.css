@@ -242,14 +242,9 @@ body:not(.home) .main-content { padding-bottom:40px; }
 input[type="text"].form-control { border: 1px solid rgba(0,0,0,.1) !important; }
 small { color:gray; font-size:8pt !important; display:block; }
 .table { width:auto !important; font-size:11pt; }
-.tiles {
-    padding: 0;
-    list-style: none;
-}
-.tiles > li {
-    width: 236px;
-    display: inline-block;
-    margin: 1em;
-    vertical-align: top;
-}
+.tiles { padding: 0; list-style: none; }
+.tiles > li { width: 236px; display: inline-block; margin: 1em; vertical-align: top; }
 .align-center { text-align:center; }
+#copyright-text { text-align:left !important; }
+.footer-menu { float:none !important; padding:0 !important; margin-bottom:1em !important; }
+.footer-menu li:nth-child(1) { margin-left:0 !important; }

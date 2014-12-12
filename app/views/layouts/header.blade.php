@@ -34,13 +34,6 @@
                 //firefox
                 return (key != 13);
             }
-            
-		    // smoothly scroll to an element
-		    function scrollTo(element) {
-		        $('html, body').animate({
-		            scrollTop: $(element).offset().top
-		        }, 2000);
-		    }
 
         </script>
     </head>

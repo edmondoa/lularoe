@@ -10,18 +10,53 @@
 		<div class="collapse navbar-collapse">
 			@if (!Auth::check())
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="http://{{ Config::get('site.domain')}}/login">Log In</a></li>
+					<li><a href="//{{ Config::get('site.domain') }}/login">Log In</a></li>
 				</ul>
 			@else
 	            <ul class="nav navbar-nav navbar-right" id="top-right-menu">
+	            	@if ($layout == 'default')
+	                    <?php
+	                    	if (Auth::check()) {
+								if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+		                    		$pages = Page::where('back_office_header', 1)->where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->get();
+								}
+								elseif (Auth::user()->hasRole(['Customer'])) {
+		                    		$pages = Page::where('back_office_header', 1)->where('Customers', 1)->orWhere('Public', 1)->get();
+								}
+								elseif (Auth::user()->hasRole(['Rep'])) {
+		                    		$pages = Page::where('back_office_header', 1)->where('Reps', 1)->orWhere('Public', 1)->get();
+								}
+							}
+							else $pages = Page::where('back_office_header', 1)->where('Public', 1)->get();
+	                    ?>
+	                @elseif ($layout == 'gray')
+	                    <?php
+	                    	if (Auth::check()) {
+								if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+		                    		$pages = Page::where('public_header', 1)->where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->get();
+								}
+								elseif (Auth::user()->hasRole(['Customer'])) {
+		                    		$pages = Page::where('public_header', 1)->where('Customers', 1)->orWhere('Public', 1)->get();
+								}
+								elseif (Auth::user()->hasRole(['Rep'])) {
+		                    		$pages = Page::where('public_header', 1)->where('Reps', 1)->orWhere('Public', 1)->get();
+								}
+							}
+							else $pages = Page::where('public_header', 1)->where('Public', 1)->get();
+	                    ?>
+	                @endif
+					@foreach ($pages as $page)
+						<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+					@endforeach
 	                <li class="dropdown">
 	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 	                        {{ Auth::user()->first_name }}
 	                        <b class="caret"></b>
 	                    </a>
 	                    <ul class="dropdown-menu">
-	                        <li><a href="/settings"><span class="fa fa-cog"></span> &nbsp;My Settings</a></li>
-	                        <li><a href="/logout"><span class="fa fa-sign-out"></span> &nbsp;Log Out</a></li>
+	                        <li><a href="//{{ Config::get('site.domain') }}/dashboard"><span class="fa fa-dashboard"></span> &nbsp;Dashboard</a></li>
+	                        <li><a href="//{{ Config::get('site.domain') }}/settings"><span class="fa fa-cog"></span> &nbsp;My Settings</a></li>
+	                        <li><a href="//{{ Config::get('site.domain') }}/logout"><span class="fa fa-sign-out"></span> &nbsp;Log Out</a></li>
 	                    </ul>
 	                </li>
 	            </ul>

@@ -107,18 +107,23 @@
                                     <li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
                                         <a href="/public-events">Events</a>
                                     </li>
-                                    <li id="menu-item-4074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4074">
-                                        <a href="/leadership/">Leadership</a>
-                                    </li>
-                                    <li id="menu-item-4074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5074">
-                                        <a href="/presentation/">Presentation</a>
-                                    </li>
-                                    <li id="menu-item-3089" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089">
-                                        <a href="/privacy-policy/">Privacy Policy</a>
-                                    </li>
-                                    <li id="menu-item-3075" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075">
-                                        <a href="/terms-conditions/">Terms</a>
-                                    </li>
+				                    <?php
+				                    	if (Auth::check()) {
+											if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+					                    		$pages = Page::where('public_header', 1)->where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->get();
+											}
+											elseif (Auth::user()->hasRole(['Customer'])) {
+					                    		$pages = Page::where('public_header', 1)->where('Customers', 1)->orWhere('Public', 1)->get();
+											}
+											elseif (Auth::user()->hasRole(['Rep'])) {
+					                    		$pages = Page::where('public_header', 1)->where('Reps', 1)->orWhere('Public', 1)->get();
+											}
+										}
+										else $pages = Page::where('public_header', 1)->where('Public', 1)->get();
+				                    ?>
+									@foreach ($pages as $page)
+										<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+									@endforeach
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                                         @if (!Auth::check())
                                         	<a href="<?php echo url() ?>/login">Log In</a>
@@ -156,18 +161,9 @@
                     <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
                         <a href="/public-events">Events</a>
                     </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4074">
-                        <a href="/leadership/">Leadership</a>
-                    </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5074">
-                        <a href="/presentation/">Presentation</a>
-                    </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089">
-                        <a href="/privacy-policy/">Privacy Policy</a>
-                    </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3075">
-                        <a href="/terms-conditions/">Terms</a>
-                    </li>
+					@foreach ($pages as $page)
+						<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+					@endforeach
                     <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                         @if (!Auth::check())
                         	<a href="<?php echo url() ?>/login">Log In</a>
@@ -175,11 +171,11 @@
                         	<a href="/dashboard">Dashboard</a>
                         @endif
                     </li>
-                    <li id="mobile-search">
+                    <!-- <li id="mobile-search">
                         <form action="/" method="GET">
                             <input type="text" name="s" value="" placeholder="Search.." />
                         </form>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
 
@@ -211,9 +207,27 @@
 
                         <div class="col span_5">
 
-                            <p>
-                                &copy; 2014 SociallyMobile.
-                            </p>
+		                    <?php
+		                    	if (Auth::check()) {
+									if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			                    		$pages = Page::where('public_footer', 1)->where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->get();
+									}
+									elseif (Auth::user()->hasRole(['Customer'])) {
+			                    		$pages = Page::where('public_footer', 1)->where('Customers', 1)->orWhere('Public', 1)->get();
+									}
+									elseif (Auth::user()->hasRole(['Rep'])) {
+			                    		$pages = Page::where('public_footer', 1)->where('Reps', 1)->orWhere('Public', 1)->get();
+									}
+								}
+								else $pages = Page::where('public_footer', 1)->where('Public', 1)->get();
+		                    ?>
+		                    <ul class="footer-menu">
+								@foreach ($pages as $page)
+									<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+								@endforeach
+							</ul>
+							<br>
+                            <p id="copyright-text">&copy; {{ date('Y') }} SociallyMobile</p>
 
                         </div><!--/span_5-->
 
@@ -269,6 +283,20 @@ var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-
         <script type='text/javascript' src='/wp-content/themes/salient/wpbakery/js_composer/assets/js/js_composer_front.js?ver=3.7.3'></script>
         {{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
         {{ HTML::script('/packages/dirpagination/dirPagination.js') }}
+		{{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
+		@if (!Session::has('timezone'))
+			<!-- get timezone -->
+			<script>
+			    // if (localStorage['timezone'] == undefined) {
+			        // get timezone
+			        var tz = jstz.determine();
+			        // Determines the time zone of the browser client
+			        var timezone = tz.name();
+			        //'Asia/Kolhata' for Indian Time.
+			        jQuery.post('/set-timezone', { timezone : timezone });
+			    // }
+			</script>
+		@endif
 		@section('scripts')
 		@show
     </body>

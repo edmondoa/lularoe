@@ -5,7 +5,7 @@
 		@include('_helpers.breadcrumbs')
 		<h1 class="no-top">Viewing [model]</h1>
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-		    <div class="btn-group">
+		    <div class="btn-group" id="record-options">
 			    <a class="btn btn-default" href="{{ url('[models]/'.$[model]->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 			    @if ($[model]->disabled == 0)
 				    {{ Form::open(array('url' => '[models]/disable', 'method' => 'DISABLE')) }}
