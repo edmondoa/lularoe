@@ -24,7 +24,7 @@
 					    <div class="form-group">
 					        {{ Form::label('short_title', 'Short Title') }}
 					        <br>
-					        <small>(How you would like the title to appear in menus)</small>
+					        <small>(To be used in menus)</small>
 					        {{ Form::text('short_title', Input::old('url'), array('class' => 'form-control')) }}
 					    </div>
 					
@@ -130,36 +130,40 @@
 @section('scripts')
 	<script>
 	
-		// alternate visibility options
-		function toggleVisibility() {
-			if ($("#show_to_everyone").is(':checked')) {
-				$("#only_show_to_list input").attr('disabled', 'disabled');
-				$("#only_show_to_list label").addClass('semitransparent');
+		$(document).ready(function() {
+			// alternate visibility options
+			function toggleVisibility() {
+				if ($("#show_to_everyone").is(':checked')) {
+					$("#only_show_to_list input").attr('disabled', 'disabled');
+					$("#only_show_to_list label").addClass('semitransparent');
+				}
+				if (!$("#show_to_everyone").is(':checked')) {
+					$("#only_show_to_list input").removeAttr('disabled');
+					$("#only_show_to_list label").removeClass('semitransparent');
+				}
 			}
-			if (!$("#show_to_everyone").is(':checked')) {
-				$("#only_show_to_list input").removeAttr('disabled');
-				$("#only_show_to_list label").removeClass('semitransparent');
-			}
-		}
-		toggleVisibility();
-		$('input[name="public"]').click(function() {
 			toggleVisibility();
-		});
-		
-		// generate url
-		var activatedURL = false;
-		$('input#url').focus(function() {
-			activatedURL = true;
-		});
-		$('input#short_title').keyup(function() {
-		if (activatedURL == false) {
-				var text = $('input#short_title').val().toLowerCase();
-				text = text.replace(/\ /g, "-");
-				text = text.replace(/the/g, "-");
-				text = text.replace(/\and/g, "-");
-				text = text.replace(/\--/g, "");
-				$('input#url').val(text);
-			}
+			$('input[name="public"]').click(function() {
+				toggleVisibility();
+			});
+			
+			// generate url
+			var activatedURL = false;
+			$('input#url').focus(function() {
+				activatedURL = true;
+			});
+			$('input#short_title').keyup(function() {
+				if (activatedURL == false) {
+					var text = $('input#short_title').val();
+					cleanURL(text);
+					$('input#url').val(cleaned_text);
+				}
+			});
+			$('input#url').keyup(function() {
+				var text = $('input#url').val();
+				cleanURL(text);
+				$('input#url').val(cleaned_text);
+			});
 		});
 		
 	</script>
