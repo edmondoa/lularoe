@@ -19,6 +19,9 @@
 		Route::get('/{' . $path . '}', 'PageController@show');
 	}
 	*/
+Route::get('025b3b4f.html', function() {
+	return "a293016c";
+});
 
 ##############################################################################################
 # Non-Replicated Site Routes
