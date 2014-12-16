@@ -12,6 +12,14 @@
  */
 //use SociallyMobile\Payments\USAEpayment;
 
+	// load user-created pages
+	/*
+	$path = Request::path();
+	if (Page::where('url', $path)->first()) {
+		Route::get('/{' . $path . '}', 'PageController@show');
+	}
+	*/
+
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
@@ -29,27 +37,40 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	##############################################################################################
 	# Public Routes
 	##############################################################################################
-
+	
 	// company
 	Route::get('/', ['as' => 'home', function() {
 		// if (Auth::check()) {
 			// return Redirect::to('dashboard');
 		// }
 		// else {
-			return View::make('company.home');
+			$title = 'Home';
+			return View::make('company.home', compact('title'));
 		//}
 	}]);
-	Route::get('company-events', function() {
-		return View::make('company.events');
-	});
+	// Route::get('company-events', function() {
+		// $title = 'Company Events';
+		// return View::make('company.events', compact('title'));
+	// });
 	Route::get('contact-us', function() {
-		return View::make('company.contact-us');
+		$title = 'Contact Us';
+		return View::make('company.contact-us', compact('title'));
 	});
 	Route::get('terms-conditions', function() {
-		return View::make('company.terms');
+		$title = 'Terms and Conditions';
+		return View::make('company.terms', compact('title'));
 	});
-	Route::get('privacy-policy', function() {
-		return View::make('company.privacy');
+	// Route::get('privacy-policy', function() {
+		// $title = 'Privacy Policy';
+		// return View::make('company.privacy', compact('title'));
+	// });
+	Route::get('leadership', function() {
+		$title = 'Leadership';
+		return View::make('company.leadership', compact('title'));
+	});
+	Route::get('presentation', function() {
+		$title = 'Presentation';
+		return View::make('company.presentation', compact('title'));
 	});
 	
 	// blasts
@@ -83,7 +104,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::controller('api','DataOnlyController');
 		
 	//timezone
-	Route::post('set-timezone', 'TimezoneController@set');
+	Route::post('set-timezone', 'TimezoneController@setTimezone');
 		
 	##############################################################################################
 	// Protected Routes
@@ -97,7 +118,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		// downline
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
-		Route::get('/downline/visualization', 'DownlineController@visualization');
+		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
 
 		// users
 		Route::resource('users', 'UserController');
@@ -396,7 +417,8 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	return Session::get(‘timezone’);
+	$date = date('Y-m-d H:i:s');
+	return Timezone::convertFromUTC($date, "Asia/Kolkata", 'F j, Y H:i:s');
 });
 
 Route::get('test', function() {

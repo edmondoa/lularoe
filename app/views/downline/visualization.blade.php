@@ -36,8 +36,16 @@
 	<div id="dendrogram-container">
 		<div id="dendrogram">
 			<div id="dendrogram-header">
-				@include('_helpers.breadcrumbs')
-				<h1>Downline Visualization</h1>
+				@include('_helpers.breadcrumbs') 
+				<h1>{{ $name }} Downline</h1>
+            	@if (Auth::user()->hasRepInDownline($user->id) || (Auth::user()->hasRole(['Superadmin', 'Admin']) && isset($user->sponsor_id)))
+            		<div class="breadcrumbs">
+            			<a href="/downline/visualization/{{ Auth::user()->id }}"><i class="fa fa-user"></i> My Downline</a>
+            			@if (Auth::user()->id != $user->sponsor_id)
+            				&nbsp;&nbsp;<a href="/downline/visualization/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
+            			@endif
+            		</div>
+            	@endif
 			</div>
 		</div>
 	</div>
@@ -66,7 +74,7 @@
 		  .append("g")
 		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		
-		d3.json("/api/all-branches", function(error, flare) {
+		d3.json("/api/all-branches/{{ $user->id }}", function(error, flare) {
 		  root = flare;
 		  root.x0 = height / 2;
 		  root.y0 = 0;
@@ -129,6 +137,14 @@
 		
 		nodeEnter.append('email').text(function(d) {
 			return d.email;
+		});
+		
+		nodeEnter.append('block_email').text(function(d) {
+			return d.block_email;
+		});
+		
+		nodeEnter.append('block_sms').text(function(d) {
+			return d.block_sms;
 		});
 		
 		// close popovers upon animation
@@ -204,47 +220,62 @@
 		}
 	
 		// open popovers
-		$('g').on({
+		$('svg').on({
 			mouseenter: function(event) {
 				$('.downline-popover').remove();
 				var id = $(this).siblings('id').text();
 				var rank = $(this).siblings('rank').text();
-				var phone = $(this).siblings('phone').text();
-				var email = $(this).siblings('email').text();
+				var yCompensation = 0;
+				if ($(this).siblings('block_email').text() == 'true') var email_form = 'Email:';
+				else var email_form = '<form method="post" target="_blank" action="/users/email"><input type="hidden" name="user_ids[]" value="' + id + '"><button class="nostyle" title="Send email"><i class="link fa fa-envelope"></i></button></form>';
+				if ($(this).siblings('block_sms').text() == 'true') var sms_form = 'Phone:';
+				else var sms_form = '<form method="post" target="_blank" action="/users/sms"><input type="hidden" name="user_ids[]" value="' + id + '"><button class="nostyle" title="Send text message (SMS)"><i class="link fa fa-mobile-phone"></i></button></form>';
+				if ($(this).siblings('phone').text() !== '') var phone = '<tr><th>' + sms_form + '</th><td>' + $(this).siblings('phone').text() + '</td></tr>';
+				else {
+					var phone = '';
+					yCompensation += 20;
+				}
+				if ($(this).siblings('email').text() !== '') var email = '<tr><th>' + email_form + '</th><td>' + $(this).siblings('email').text() + '</td></tr>';
+				else {
+					var email = '';
+					yCompensation += 20;
+				}
 				mouseX = event.pageX - 120;
-				mouseY = event.pageY - 115;
+				mouseY = event.pageY - 120 + yCompensation;
 		        // currentMousePos.y = event.pageY;
 				$('body').prepend(
 					'<div class="popover downline-popover fade top in" role="tooltip" style="top:' + mouseY + 'px; left:' + mouseX + 'px">' +
 						'<div style="left: 50%;" class="arrow"></div><div class="popover-content">' +
 							'<table>' +
-								'<tr><th>ISM ID:</th><td>' + id + '@if (Auth::user()->hasRole(["Superadmin", "Admin"]))<a style="pull-right" href="/users/' + id + '"><i class="fa fa-eye"></i></a>@endif<td></tr>' +
+								'<tr><th>ISM ID:</th><td>' + id + '<div class="pull-right"><a title="View details" target="_blank" href="/users/' + id + '"><i class="fa fa-eye"></i></a> <a title="View downline" href="/downline/visualization/' + id + '"><i class="fa fa-sitemap"></i></a></div><td></tr>' +
 								'<tr><th>Rank:</th><td>' + rank + '</td></tr>' +
-								'<tr><th>Phone:</th><td>' + phone + '</td></tr>' +
-								'<tr><th>Email:</th><td><form method="post" action="/users/email"><input type="hidden" name="user_ids[]" value="' + id + '"><button class="nostyle"><span class="link">' + email + '</span></button></form></td></tr>' +
+								phone +
+								email +
 							'</table>' +
 						'</div>' +
 					'</div>'
 				);
 			}
 		}, ' text')
-		
+
 		// close popovers
 		$('svg').click(function() {
 			$('.downline-popover').remove();
 		});
 		$('g').on({
 			mouseout: function() {
+				reenter = false;
 				timer = setTimeout(function() {
-					$('.downline-popover').remove();
+					$('body').on({
+						mouseenter: function() {
+							reenter = true;
+							clearTimeout(timer);
+						}
+					}, ' .downline-popover');
+					if (reenter == false) $('.downline-popover').remove();
 				}, 1000);
 			}
 		}, ' text');
-		$('body').on({
-			mouseenter: function() {
-				clearTimeout(timer);
-			}
-		}, '.downline-popover');
 	
 	</script>
 	<style>

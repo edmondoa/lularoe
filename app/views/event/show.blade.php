@@ -5,7 +5,7 @@
 		<!-- @include('_helpers.breadcrumbs') -->
 		<h1 class="no-top">Viewing event</h1>
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-		    <div class="btn-group">
+		    <div class="btn-group" id="record-options">
 			    <a class="btn btn-default" href="{{ url('events/'.$event->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 			    @if ($event->disabled == 0)
 				    {{ Form::open(array('url' => 'events/disable', 'method' => 'DISABLE')) }}
@@ -43,29 +43,27 @@
 		            <th>Description:</th>
 		            <td>{{ $event->description }}</td>
 		        </tr>
-		        
-		        @if ($event->formatted_start_date == $event->formatted_end_date)
+		        @if ($event->local_start_date == $event->local_end_date)
 			        <tr>
-			            <th>Date/Time:</th>
-			            <td>{{ $event->formatted_start_date }}, {{ $event->formatted_start_time }} - {{ $event->formatted_end_time }}</td>
+			            <th>Local Date/Time:</th>
+			            <td>{{ $event->local_start_date }}, {{ $event->local_start_time }} - {{ $event->local_end_time }}</td>
 			        </tr>
 		        @else
 			        <tr>
-			            <th>Starting Time:</th>
-			            <td>{{ $event->formatted_start_date }}, {{ $event->formatted_start_time }}</td>
+			        	<th>Local Start Time:</th>
+			        	<td>{{ $event->local_start_date }}, {{ $event->local_start_time }}</td>
 			        </tr>
-			        
 			        <tr>
-			            <th>Ending Time:</th>
-			            <td>{{ $event->formatted_end_date }}, {{ $event->formatted_end_time }}</td>
+			        	<th>Local End Time:</th>
+			        	<td>{{ $event->local_end_date }}, {{ $event->local_end_time }}</td>
 			        </tr>
 		        @endif
-		        @if (isset($event->timezone))
+		        <!-- @if ($event->timezone != '')
 		        	<tr>
 		        		<th>Time Zone:</th>
 		        		<td>{{ $event->timezone }}</td>
 		        	</tr>
-		        @endif
+		        @endif -->
 		        @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 
 			        <tr>

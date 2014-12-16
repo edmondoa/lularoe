@@ -2,11 +2,12 @@
 
 class TimezoneController extends \BaseController {
 
-	public function set()
+	public function setTimezone()
 	{
 		$data = Input::all();
-		if ($data['timezone'] == 'America/Denver') $data['timezone'] = 'US/Mountain';
-		Session::put('timezone', $data['timezone']);
+		if (isset($data['timezone'])) {
+			Session::put('timezone', $data['timezone']);
+		}
 	}
 
 

@@ -23,11 +23,11 @@ class BlastController extends \BaseController {
 	{
 		$data = Input::all();
 		if (isset($data['leads'])) {
-			$users = Lead::whereIn('id', Input::get('user_ids'))->get();
+			$users = Lead::whereIn('id', Input::get('user_ids'))->where('block_sms', '!=', true)->get();
 			$leads = 1;
 		}
 		else {
-			$users = User::whereIn('id', Input::get('user_ids'))->get();
+			$users = User::whereIn('id', Input::get('user_ids'))->where('block_sms', '!=', true)->get();
 			$leads = 0;
 		}
 		return View::make('blasts.createsms', compact('users', 'leads'));
@@ -123,11 +123,11 @@ class BlastController extends \BaseController {
 	{
 		$data = Input::all();
 		if (isset($data['leads'])) {
-			$users = Lead::whereIn('id', Input::get('user_ids'))->get();
+			$users = Lead::whereIn('id', Input::get('user_ids'))->where('block_email', '!=', true)->get();
 			$leads = 1;
 		}
 		else {
-			$users = User::whereIn('id', Input::get('user_ids'))->get();
+			$users = User::whereIn('id', Input::get('user_ids'))->where('block_email', '!=', true)->get();
 			$leads = 0;
 		}
 		return View::make('blasts.createmail', compact('users', 'leads'));

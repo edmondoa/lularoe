@@ -65,6 +65,14 @@
  						<i class="fa fa-check"></i> <span class="text">Opportunities</span>
  					</a>
  				@endif
+ 				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
+ 					<a href="javascript:void(0)" data-href="/pages" class='list-group-item' data-toggle="popover" data-content="
+ 						<a href='/pages'><i class='fa fa-file'></i> All Pages</a>
+ 						<a href='/pages/create'><i class='fa fa-plus'></i> New Page</a>
+ 					">
+						<i class="fa fa-file"></i> <span class="text">Pages</span>
+ 					</a>
+ 				@endif
  				<!-- <a class="list-group-item" href="https://imsociallymobile.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Store</a> -->
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin'])))
 					<!-- <a href="/addresses" class="list-group-item"><i class="fa fa-home"></i> <span class="text">Addresses</span></a> -->
@@ -74,7 +82,6 @@
 					<!-- <a href="/emailMessages" class="list-group-item"><i class="fa fa-envelope"></i> <span class="text">EmailMessages</span></a> -->
 					<!-- <a href="/images" class="list-group-item"><i class="fa fa-file-image-o"></i> Images</a> -->
 					<!-- <a href="/levels" class="list-group-item"><i class="fa fa-sitemap"></i> Levels</a> -->
-					<!-- <a href="/pages" class="list-group-item"><i class="fa fa-file-o"></i> Pages</a> -->
 					<!-- <a href="/payments" class="list-group-item">Payments</a> -->
 					<!-- <a href="/products" class="list-group-item"><i class="fa fa-mobile-phone"></i> &nbsp;Products</a> -->
 					<!-- <a href="/profiles" class="list-group-item"><i class="fa fa-user"></i> Profiles</a> -->
@@ -89,7 +96,7 @@
  					">
  						<i class="fa fa-user"></i> <span class="text">Users</span>
  					</a>
- 					<a title="Dashboard" href="/config" class="list-group-item"><span class="fa fa-cog"></span> &nbsp;Config</a>
+ 					<a title="Site Settings" href="/config" class="list-group-item"><span class="fa fa-cog"></span> <span class="text">Site Settings</span></a>
  					<!-- <a href="/userProducts" class="list-group-item"><i class="fa fa-mobile-phone"></i> UserProducts</a> -->
 					<!-- <a href="/userRanks" class="list-group-item"><i class="fa fa-certificate"></i> UserRanks</a> -->
 					<!-- <a href="/smsMessages" class="list-group-item"><i class="fa fa-mobile-phone"></i> <span class="text">SmsMessages</span></a> -->

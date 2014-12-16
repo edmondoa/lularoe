@@ -13,7 +13,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var string
 	 */
 	protected $table = 'users';
-	public $timestamps = false;
+	// public $timestamps = false;
 
 	public static $rules = [
 		'email' => 'required|unique:users,email',
@@ -49,8 +49,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'hide_shipping_address',
 		'block_email',
 		'block_sms',
-		'created_at',
-		'updated_at'
 	];
 
 	use UserTrait, RemindableTrait;

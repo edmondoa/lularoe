@@ -4,10 +4,10 @@
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
 		<h1>{{ $user->first_name }} {{ $user->last_name }}</h1>
-		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-		    <div class="btn-group">
-			    <a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
-				<?php if (Auth::user()->id != $user->id) { ?>
+	    <div class="btn-group" id="record-options">
+			@if (Auth::user()->id != $user->id)
+				@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		    		<a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 				    @if ($user->disabled == 0)
 					    {{ Form::open(array('url' => 'users/disable', 'method' => 'DISABLE')) }}
 					    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
@@ -28,7 +28,31 @@
 				    		<i class="fa fa-trash" title="Delete"></i>
 				    	</button>
 				    {{ Form::close() }}
-				<?php } ?>
+				@endif
+			@endif
+		</div>
+		@if (!$user->block_email && !$user->block_sms)
+			<div class="btn-group" id="communication-options">
+		@endif
+				@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep']))
+					@if (!$user->block_email)
+						{{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
+		            		{{ Form::hidden('user_ids[]', $user->id) }}
+		            		<button class="btn btn-default" title="Send Email">
+		            			<i class="fa fa-envelope"></i>
+		            		</button>
+		            	{{ Form::close() }}
+		            @endif
+		            @if (!$user->block_sms)
+						{{ Form::open(array('url' => '/users/sms', 'method' => 'POST')) }}
+		            		{{ Form::hidden('user_ids[]', $user->id) }}
+		            		<button class="btn btn-default" title="Send Text Message (SMS)">
+		            			<i class="fa fa-mobile-phone"></i>
+		            		</button>
+		            	{{ Form::close() }}
+		            @endif
+	            @endif
+		@if (!$user->block_email && !$user->block_sms)
 			</div>
 		@endif
 	</div><!-- row -->
@@ -57,71 +81,57 @@
 			            	{{ $user->rank_name }} (Rank {{ $user->rank_id }})
 			            </td>
 			        </tr>
-			        <tr>
-			            <th>Email:</th>
-			            <td>
-			            	{{ Form::open(array('url' => '/users/email', 'method' => 'POST', 'class' => 'inline-block')) }}
-			            		{{ Form::hidden('user_ids[]', $user->id) }}
-			            		<button title="Send Email"><i class="fa fa-envelope"></i></button>
-			            	{{ Form::close() }}
-			            	&nbsp;{{ $user->email }}
-			            </td>
-			        </tr>
-			        
-			        <tr>
-			            <th>Phone:</th>
-			            <td>
-							{{ Form::open(array('url' => '/users/sms', 'method' => 'POST', 'class' => 'inline-block')) }}
-			            		{{ Form::hidden('user_ids[]', $user->id) }}
-			            		<button style="width:32px;" title="Send Text Message (SMS)"><i class="fa fa-mobile-phone"></i></button>
-			            	{{ Form::close() }}
-			            	&nbsp;{{ $user->phone }}
-			            </td>
-			        </tr>
-			        
-					@if (Auth::user()->hasRole(['Admin','Superadmin']))
-					
-			        <tr>
-			            <th>Gender:</th>
-			            <td>{{ $user->gender }}</td>
-			        </tr>
-					
-			        <tr>
-			            <th>DOB:</th>
-			            <td>{{ $user->dob }}</td>
-			        </tr>
-					  
-			        <tr>
-			            <th>Role:</th>
-			            <td>{{ $user->role_name }}</td>
-			        </tr>
-			
-			        <tr>
-			            <th>Sponsor:</th>
-			            <td>
-			            	@if (isset($user->sponsor->first_name))
-			            		{{ $user->sponsor->first_name }} {{ $user->sponsor->last_name }}
-			            	@endif
-			            </td>
-			        </tr>
-			        
-			        <!-- <tr>
-			            <th>Min Commission:</th>
-			            <td>{{ $user->min_commission }}</td>
-			        </tr> -->
-			        
-			        <tr>
-			            <th>Disabled:</th>
-			            <td>{{ $user->disabled }}</td>
-			        </tr>
-			        
-			        <!-- <tr>
-			            <th>Mobile Plan Id:</th>
-			            <td>{{ $user->mobile_plan_id }}</td>
-			        </tr> -->
-			        
+			        @if ($user->hide_email != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)
+				        <tr>
+				            <th>Email:</th>
+				            <td>
+				            	{{ $user->email }}
+				            	@if ($user->block_email)
+				            		<br>
+				            		<span class="label label-warning">
+				            			{{ $user->first_name }} has opted out of receiving emails.
+				            		</span>
+				            	@endif
+				            </td>
+				        </tr>
+				        <tr>
+				            <th>Phone:</th>
+				            <td>
+				            	{{ $user->phone }}
+				            	@if ($user->block_sms)
+				            		<br>
+				            		<span class="label label-warning">
+				            			{{ $user->first_name }} has opted out of receiving text messages.
+				            		</span>
+				            	@endif
+				            </td>
+				        </tr>	
+				        <tr>
+				            <th>Gender:</th>
+				            <td>{{ $user->gender }}</td>
+				        </tr>
+						
+				        <tr>
+				            <th>DOB:</th>
+				            <td>{{ $user->dob }}</td>
+				        </tr>
+						  
+				        <tr>
+				            <th>Role:</th>
+				            <td>{{ $user->formatted_role_name }}</td>
+				        </tr>
+				
+				        <tr>
+				            <th>Sponsor:</th>
+				            <td>
+				            	<a href="/users/{{ $user->sponsor_id }}">
+				            		@if (isset($user->sponsor->first_name))
+				            			{{ $user->sponsor->first_name }} {{ $user->sponsor->last_name }}
+				            		@endif
+				            	</a>
+				            </td>
+				        </tr>
 					@endif
-			        
 			    </table>
 			</div><!-- panel -->
 		</div><!-- col -->
@@ -129,7 +139,7 @@
 			@foreach ($addresses as $address)
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h2 div class="panel-title">{{ $address->addressable_type }} Address</h2>
+						<h2 div class="panel-title">{{ $address->label }} Address</h2>
 					</div>
 				    <table class="table table-striped">
 				        <tr>

@@ -24,5 +24,18 @@
 		<!-- Include IE8 JS. -->
 		<script src="/packages/froala/js/froala_editor_ie8.min.js"></script>
 		<![endif]-->
+		@if (!Session::has('timezone'))
+			<!-- get timezone -->
+			<script>
+			    // if (localStorage['timezone'] == undefined) {
+			        // get timezone
+			        var tz = jstz.determine();
+			        // Determines the time zone of the browser client
+			        var timezone = tz.name();
+			        //'Asia/Kolhata' for Indian Time.
+			        $.post('/set-timezone', { timezone : timezone });
+			    // }
+			</script>
+		@endif
 	</body>
 </html>

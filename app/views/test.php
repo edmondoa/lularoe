@@ -52,7 +52,7 @@ function MyController($scope) {
   }
   
   $scope.pageChangeHandler = function(num) {
-      console.log('meals page changed to ' + num);
+      
   };
 }
 

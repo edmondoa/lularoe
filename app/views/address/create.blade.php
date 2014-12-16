@@ -5,6 +5,10 @@
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
 		    <h1 class="no-top">New Address</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col col-lg-3 col-md-4 col-sm-6">
 		    {{ Form::open(array('url' => 'addresses')) }}
 		
 			    

@@ -12,7 +12,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col col-lg-3 col-md-4">
+		<div class="col col-lg-3 col-md-4 col-sm-6">
 		    {{ Form::model($user, array('route' => array('users.update', $user->id), 'method' => 'PUT')) }}
 		
 		    <div class="form-group">
@@ -36,7 +36,7 @@
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('password', 'Password') }}
+		        {{ Form::label('password', 'New Password') }}
 		        {{ Form::password('password', array('class' => 'form-control')) }}
 		    </div>
 		    
@@ -93,11 +93,16 @@
 			        {{ Form::label('min_commission', 'Min Commission') }}
 			        {{ Form::text('min_commission', null, array('class' => 'form-control')) }}
 			    </div>
-			    
+			   -->
 			    <div class="form-group">
-			        {{ Form::label('disabled', 'Disabled') }}
-			        {{ Form::text('disabled', null, array('class' => 'form-control')) }}
-			    </div> -->
+			        {{ Form::label('disabled', 'Status') }}
+			        <br>
+			    	{{ Form::select('disabled', [
+			    		0 => 'Active',
+			    		1 => 'Disabled'
+			    	], $user->disabled, ['class' => 'selectpicker']) }}
+			    </div>
+			    
 			@endif		    
 		
 		    {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}

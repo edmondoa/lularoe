@@ -26,7 +26,8 @@ class SessionController extends \BaseController {
 		{
 			return Redirect::intended('/dashboard');
 		}
-		return View::make('sessions.create');
+		$title = 'Log In';
+		return View::make('sessions.create', compact('title'));
 	}
 
 	/**
@@ -38,6 +39,8 @@ class SessionController extends \BaseController {
 	public function store()
 	{
 		$input = Input::all();
+		$note = '';
+		if (strpos($input['password'],' ')) $note = ' Note: the password you entered included one or more spaces. Was this on purpose?';
 		$attempt = Auth::attempt([
 				'email' => $input['email'],
 				'password' => $input['password']
@@ -48,7 +51,7 @@ class SessionController extends \BaseController {
 		} 
 		else
 		{
-			return Redirect::back()->with('message_danger', 'Incorrect email or password.');
+			return Redirect::back()->with('message_danger', 'Incorrect email or password.' . $note);
 		}
 	}
 

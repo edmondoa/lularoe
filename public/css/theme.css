@@ -37,6 +37,9 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
 footer { text-align:center; color:gray; font-size:8pt; }
 
 /* global classes */
+.align-left { text-align:left; }
+.align-right { text-align:right; }
+.align-center { text-align:center; }
 .auto { width:auto; }
 .full { width:100%; }
 .inline-block { display:inline-block !important; }
@@ -78,6 +81,11 @@ small { opacity:.5; font-size:9pt; }
 .no-padding { padding:0; }
 .nostyle { background:inherit !important; border:inherit !important; padding:inherit !important; }
 .downline-popover th { text-align:right; padding-right:.5em; }
+.no-width { width:0; }
+i { width:16px; } /* standardizes font awesome icons */
+.semitransparent { opacity:.5; }
+.footer-links { text-decoration:none; padding:0; text-align:center; }
+.footer-links li { display:inline-block; margin:0 1em; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
@@ -85,8 +93,6 @@ small { opacity:.5; font-size:9pt; }
     border-top-right-radius: 0px !important;
     border-bottom-right-radius: 0px !important;
 }
-
-
 
 .bs-callout { -moz-border-bottom-colors: none; -moz-border-left-colors: none; -moz-border-right-colors: none; -moz-border-top-colors: none; border-color: #eee; border-image: none; border-radius: 3px; border-style: solid; border-width: 1px 1px 1px 5px; margin: 20px 0; padding: 20px; }
 .bs-callout h4 { margin-bottom: 5px; margin-top: 0; }
@@ -100,14 +106,13 @@ small { opacity:.5; font-size:9pt; }
 .bs-callout-info { border-left-color: #5bc0de }
 .bs-callout-info h4 { color: #5bc0de }
 
-
-
 .show .col > .table, .edit .col > .table { width:auto !important; }
 /*.create form, .edit form { display:inline-block; }*/
 .panel table { width:100%; }
 .panel table tbody th { text-align:left; }
 .btn-group > form { display:inline-block; }
-.btn-group > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; }
+#record-options > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; border-right:0 !important; border-left:0 !important; }
+#communication-options > form:nth-of-type(1) > .btn { border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-right:0 !important; }
 .btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
 .navbar-inverse {
     background-image: linear-gradient(to bottom, #3C3C3C 0px, #303030 100%); background-repeat: repeat-x;
@@ -152,6 +157,8 @@ select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight
     .user-banner-content small { display:block; margin-bottom:1em; }
     .user-banner-content h1 { font-size:18pt; }
     .layout-gray #container { padding:40px 20px 20px 20px !important; }
+    .no-pull-xs { float:none !important; }
+    .page-actions-left { margin-bottom:1em !important; }
 }
 @media(max-width:991px) {
     .hidable-sm { display:none; }

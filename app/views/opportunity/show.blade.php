@@ -5,7 +5,7 @@
 		@include('_helpers.breadcrumbs')
 		<h1 class="no-top">{{ $opportunity->title }}</h1>
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-		    <div class="btn-group">
+		    <div class="btn-group" id="record-options">
 			    <a class="btn btn-default" href="{{ url('opportunities/'.$opportunity->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 			    @if ($opportunity->disabled == 0)
 				    {{ Form::open(array('url' => 'opportunities/disable', 'method' => 'DISABLE')) }}
