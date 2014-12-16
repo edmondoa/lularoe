@@ -19,10 +19,6 @@
 		Route::get('/{' . $path . '}', 'PageController@show');
 	}
 	*/
-Route::get('025b3b4f.html', function() {
-	return "a293016c";
-});
-
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
@@ -422,10 +418,6 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 Route::get('test-steve', function() {
 	$date = date('Y-m-d H:i:s');
 	return Timezone::convertFromUTC($date, "Asia/Kolkata", 'F j, Y H:i:s');
-});
-
-Route::get('025b3b4f.html', function() {
-	return "a293016c";
 });
 
 Route::get('test', function() {
