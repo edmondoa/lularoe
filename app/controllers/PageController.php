@@ -72,10 +72,13 @@ class pageController extends \BaseController {
 	 */
 	public function show($url)
 	{
-		if (Auth::check()) {
-			$page = Page::where('url', $url)->first();
+		$page = Page::where('url', $url)->first();
+		$title = $page->title;
+		if ($page->public) {
+			return View::make('page.show', compact('page', 'title'));
+		}
+		elseif (Auth::check()) {
 			if ($page->public || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (Auth::user()->hasRole(['Rep']) && $page->reps) || (Auth::user()->hasRole(['Customer']) && $page->customers)) {
-				$title = $page->title;
 				return View::make('page.show', compact('page', 'title'));
 			}
 		}
