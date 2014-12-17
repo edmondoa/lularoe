@@ -3,6 +3,14 @@
 class DataOnlyController extends \BaseController
 {
 
+
+	/**
+	 * Attachments
+	 */
+	public function getAllAttachments(){
+		return Attachment::all();
+	}
+
 	/*
 	 * Downline
 	 */

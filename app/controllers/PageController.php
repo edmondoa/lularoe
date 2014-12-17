@@ -9,9 +9,10 @@ class pageController extends \BaseController {
 	 */
 	public function index()
 	{
-		$pages = Page::all();
-
-		return View::make('page.index', compact('pages'));
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			$pages = Page::all();
+			return View::make('page.index', compact('pages'));
+		}
 	}
 
 	/**
@@ -21,7 +22,9 @@ class pageController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('page.create');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			return View::make('page.create');
+		}
 	}
 
 	/**
@@ -31,33 +34,34 @@ class pageController extends \BaseController {
 	 */
 	public function store()
 	{
-		// validation
-		$rules = [
-			'title' => 'required',
-			'short_title' => 'required',
-			'url' => 'unique|required|alpha_dash',		
-			'url' => 'required|alpha_dash|unique:pages'
-		];
-		$validator = Validator::make($data = Input::all(), Page::$rules);
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			// validation
+			$rules = [
+				'title' => 'required',
+				'short_title' => 'required',
+				'url' => 'unique|required|alpha_dash',		
+				'url' => 'required|alpha_dash|unique:pages'
+			];
+			$validator = Validator::make($data = Input::all(), Page::$rules);
+			if ($validator->fails())
+			{
+				return Redirect::back()->withErrors($validator)->withInput();
+			}
+			
+			// format checkbox values for database
+			$data['public'] = isset($data['public']) ? 1 : 0;
+			$data['customers'] = isset($data['customers']) ? 1 : 0;
+			$data['reps'] = isset($data['reps']) ? 1 : 0;
+			if ($data['public'] == 0 && $data['customers'] == 0 && $data['public'] == 0) $data['public'] = 1;
+			if ($data['customers'] == 1 || $data['reps'] == 1) $data['public'] = 0;
+			$data['public_header'] = isset($data['public_header']) ? 1 : 0;
+			$data['public_footer'] = isset($data['public_footer']) ? 1 : 0;
+			$data['back_office_header'] = isset($data['back_office_header']) ? 1 : 0;
+			$data['back_office_footer'] = isset($data['back_office_footer']) ? 1 : 0;
+			
+			$page = Page::create($data);
+			return Redirect::route('pages.edit', $page->id)->with('message', 'Page created.');
 		}
-		
-		// format checkbox values for database
-		$data['public'] = isset($data['public']) ? 1 : 0;
-		$data['customers'] = isset($data['customers']) ? 1 : 0;
-		$data['reps'] = isset($data['reps']) ? 1 : 0;
-		if ($data['public'] == 0 && $data['customers'] == 0 && $data['public'] == 0) $data['public'] = 1;
-		if ($data['customers'] == 1 || $data['reps'] == 1) $data['public'] = 0;
-		$data['public_header'] = isset($data['public_header']) ? 1 : 0;
-		$data['public_footer'] = isset($data['public_footer']) ? 1 : 0;
-		$data['back_office_header'] = isset($data['back_office_header']) ? 1 : 0;
-		$data['back_office_footer'] = isset($data['back_office_footer']) ? 1 : 0;
-		
-		$page = Page::create($data);
-		return Redirect::route('pages.edit', $page->id)->with('message', 'Page created.');
-
 	}
 
 	/**
@@ -68,9 +72,14 @@ class pageController extends \BaseController {
 	 */
 	public function show($url)
 	{
-		$page = Page::where('url', $url)->first();
-		$title = $page->title;
-		return View::make('page.show', compact('page', 'title'));
+		if (Auth::check()) {
+			$page = Page::where('url', $url)->first();
+			if ($page->public || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (Auth::user()->hasRole(['Rep']) && $page->reps) || (Auth::user()->hasRole(['Customer']) && $page->customers)) {
+				$title = $page->title;
+				return View::make('page.show', compact('page', 'title'));
+			}
+		}
+		else return "You don't have permission to view this page.";
 	}
 
 	/**
@@ -81,10 +90,12 @@ class pageController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$page = Page::find($id);
-		if ($page['customers'] || $page['reps']) $only_show_to = 'checked';
-		else $only_show_to = '';
-		return View::make('page.edit', compact('page', 'only_show_to'));
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			$page = Page::find($id);
+			if ($page['customers'] || $page['reps']) $only_show_to = 'checked';
+			else $only_show_to = '';
+			return View::make('page.edit', compact('page', 'only_show_to'));
+		}
 	}
 
 	/**
@@ -95,37 +106,39 @@ class pageController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$page = Page::findOrFail($id);
-		
-		// validation
-		$rules = [
-			'title' => 'required',
-			'short_title' => 'required',
-			'url' => 'unique|required|alpha_dash',		
-			'url' => 'required|alpha_dash|unique:pages,url,' . $page->id
-		];
-		$validator = Validator::make($data = Input::all(), Page::$rules);
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			$page = Page::findOrFail($id);
+			
+			// validation
+			$rules = [
+				'title' => 'required',
+				'short_title' => 'required',
+				'url' => 'unique|required|alpha_dash',		
+				'url' => 'required|alpha_dash|unique:pages,url,' . $page->id
+			];
+			$validator = Validator::make($data = Input::all(), Page::$rules);
+			if ($validator->fails())
+			{
+				return Redirect::back()->withErrors($validator)->withInput();
+			}
+	
+			strtolower($data['url']);
+			
+			// format checkbox values for database
+			$data['public'] = isset($data['public']) ? 1 : 0;
+			$data['customers'] = isset($data['customers']) ? 1 : 0;
+			$data['reps'] = isset($data['reps']) ? 1 : 0;
+			if ($data['public'] == 0 && $data['customers'] == 0 && $data['public'] == 0) $data['public'] = 1;
+			if ($data['customers'] == 1 || $data['reps'] == 1) $data['public'] = 0;
+			$data['public_header'] = isset($data['public_header']) ? 1 : 0;
+			$data['public_footer'] = isset($data['public_footer']) ? 1 : 0;
+			$data['back_office_header'] = isset($data['back_office_header']) ? 1 : 0;
+			$data['back_office_footer'] = isset($data['back_office_footer']) ? 1 : 0;
+			
+			$page->update($data);
+	
+			return Redirect::back()->with('message', 'Page updated.');
 		}
-
-		strtolower($data['url']);
-		
-		// format checkbox values for database
-		$data['public'] = isset($data['public']) ? 1 : 0;
-		$data['customers'] = isset($data['customers']) ? 1 : 0;
-		$data['reps'] = isset($data['reps']) ? 1 : 0;
-		if ($data['public'] == 0 && $data['customers'] == 0 && $data['public'] == 0) $data['public'] = 1;
-		if ($data['customers'] == 1 || $data['reps'] == 1) $data['public'] = 0;
-		$data['public_header'] = isset($data['public_header']) ? 1 : 0;
-		$data['public_footer'] = isset($data['public_footer']) ? 1 : 0;
-		$data['back_office_header'] = isset($data['back_office_header']) ? 1 : 0;
-		$data['back_office_footer'] = isset($data['back_office_footer']) ? 1 : 0;
-		
-		$page->update($data);
-
-		return Redirect::back()->with('message', 'Page updated.');
 	}
 
 	/**
@@ -136,9 +149,11 @@ class pageController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		Page::destroy($id);
-
-		return Redirect::route('pages.index')->with('message', 'Page deleted.');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			Page::destroy($id);
+	
+			return Redirect::route('pages.index')->with('message', 'Page deleted.');
+		}
 	}
 	
 	/**
@@ -146,14 +161,16 @@ class pageController extends \BaseController {
 	 */
 	public function delete()
 	{
-		foreach (Input::get('ids') as $id) {
-			Page::destroy($id);
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('pages.index')->with('message', 'Pages deleted.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Page deleted.');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			foreach (Input::get('ids') as $id) {
+				Page::destroy($id);
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('pages.index')->with('message', 'Pages deleted.');
+			}
+			else {
+				return Redirect::back()->with('message', 'Page deleted.');
+			}
 		}
 	}
 	
@@ -162,14 +179,16 @@ class pageController extends \BaseController {
 	 */
 	public function disable()
 	{
-		foreach (Input::get('ids') as $id) {
-			Page::find($id)->update(['disabled' => 1]);	
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('pages.index')->with('message', 'Pages disabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Page disabled.');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			foreach (Input::get('ids') as $id) {
+				Page::find($id)->update(['disabled' => 1]);	
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('pages.index')->with('message', 'Pages disabled.');
+			}
+			else {
+				return Redirect::back()->with('message', 'Page disabled.');
+			}
 		}
 	}
 	
@@ -178,14 +197,16 @@ class pageController extends \BaseController {
 	 */
 	public function enable()
 	{
-		foreach (Input::get('ids') as $id) {
-			Page::find($id)->update(['disabled' => 0]);	
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('pages.index')->with('message', 'Pages enabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Page enabled.');
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			foreach (Input::get('ids') as $id) {
+				Page::find($id)->update(['disabled' => 0]);	
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('pages.index')->with('message', 'Pages enabled.');
+			}
+			else {
+				return Redirect::back()->with('message', 'Page enabled.');
+			}
 		}
 	}
 

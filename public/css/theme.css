@@ -86,6 +86,14 @@ i { width:16px; } /* standardizes font awesome icons */
 .semitransparent { opacity:.5; }
 .footer-links { text-decoration:none; padding:0; text-align:center; }
 .footer-links li { display:inline-block; margin:0 1em; }
+.tiles { padding:0; list-style:none; text-align:center; }
+.tiles li { display:inline-block; position:relative; margin:0 3px 10px 0; }
+.tiles li img { max-width:200px; max-height:200px; cursor:pointer; }
+.tiles li .options { display:none; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px; text-align:right; }
+.tiles li .options a { color:white; }
+
+/* tinmce overrides */
+.mceu_44-inp-hack { width:207px !important; border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
@@ -144,6 +152,10 @@ select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight
 .ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }
 .ui_tpicker_time_label, .ui_tpicker_time { display:none; }
 .ui-timepicker-div select { margin-bottom:0; }
+
+/* froala overrides */
+.froala-editor.f-basic { border:0 !important; }
+.froala-element textarea { height:370px !important; }
 
 /* media queries*/
 @media(max-width:767px) {
