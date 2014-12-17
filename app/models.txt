@@ -1,0 +1,2 @@
+resource = false
+Lead string( first_name last_name email gender ) date( dob ) integer( phone sponsor_id opportunity_id ) boolean( disabled )

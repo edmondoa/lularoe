@@ -1,0 +1,23 @@
+@extends('layouts.default')
+@section('content')
+<div class="create">
+	<div class="row">
+		<div class="col col-md-12">
+			@include('_helpers.breadcrumbs')
+		    <h1 class="no-top">New [Model]</h1>
+		    {{ Form::open(array('url' => '[models]')) }}
+		
+			    [repeat]
+			    <div class="form-group">
+			        {{ Form::label('[property]', '[formatted_property]') }}
+			        {{ Form::text('[property]', Input::old('[property]'), array('class' => 'form-control')) }}
+			    </div>
+			    [/repeat]
+		
+			    {{ Form::submit('Add [Model]', array('class' => 'btn btn-success')) }}
+	
+		    {{ Form::close() }}
+	    </div>
+	</div>
+</div>
+@stop
