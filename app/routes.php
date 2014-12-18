@@ -101,6 +101,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		return View::make('opportunity.public', compact('opportunity','sponsor'));
 	});
 
+	// pages
+	Route::resource('pages', 'PageController');
+	Route::post('pages/disable', 'PageController@disable');
+	Route::post('pages/enable', 'PageController@enable');
+	Route::post('pages/delete', 'PageController@delete');
+	
 	Route::controller('api','DataOnlyController');
 		
 	//timezone
@@ -134,6 +140,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('events/delete', 'UventController@delete');
 		Route::get('past-events', 'UventController@indexPast');
 		
+		// media/attachments
+		Route::resource('attachments', 'AttachmentController');
+		Route::post('attachments/disable', 'AttachmentController@disable');
+		Route::post('attachments/enable', 'AttachmentController@enable');
+		Route::post('attachments/delete', 'AttachmentController@delete');
+		
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
 		Route::post('opportunities/disable', 'OpportunityController@disable');
@@ -164,6 +176,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
 		Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 		Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+
+		// upload attachment
+		Route::post('upload-attachment', 'AttachmentController@upload');
 
 		// userSites
 		Route::resource('user-sites', 'UserSiteController');
@@ -245,12 +260,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::post('mobilePlans/disable', 'MobilePlanController@disable');
 			Route::post('mobilePlans/enable', 'MobilePlanController@enable');
 			Route::post('mobilePlans/delete', 'MobilePlanController@delete');
-			
-			// pages
-			Route::resource('pages', 'PageController');
-			Route::post('pages/disable', 'PageController@disable');
-			Route::post('pages/enable', 'PageController@enable');
-			Route::post('pages/delete', 'PageController@delete');
 			
 			// products
 			Route::resource('products', 'ProductController');
