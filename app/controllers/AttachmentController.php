@@ -90,7 +90,7 @@ class attachmentController extends \BaseController {
 				$img = Image::make('uploads/' . $path . $filename);
     
                 // now you are able to resize the instance
-                $img->fit(100, 100);
+                $img->fit(800, 600);
 
                 // finally we save the image as a new image
                 $img->save('uploads/' . $path . $filename);
