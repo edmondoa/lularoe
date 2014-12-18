@@ -110,13 +110,13 @@
 				                    <?php
 				                    	if (Auth::check()) {
 											if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-					                    		$pages = Page::where('public_header', 1)->where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->get();
+					                    		$pages = Page::where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->where('public_header', 1)->get();
 											}
 											elseif (Auth::user()->hasRole(['Customer'])) {
-					                    		$pages = Page::where('public_header', 1)->where('Customers', 1)->orWhere('Public', 1)->get();
+					                    		$pages = Page::where('Customers', 1)->orWhere('Public', 1)->where('public_header', 1)->get();
 											}
 											elseif (Auth::user()->hasRole(['Rep'])) {
-					                    		$pages = Page::where('public_header', 1)->where('Reps', 1)->orWhere('Public', 1)->get();
+					                    		$pages = Page::where('Reps', 1)->orWhere('Public', 1)->where('public_header', 1)->get();
 											}
 										}
 										else $pages = Page::where('public_header', 1)->where('Public', 1)->get();
@@ -161,20 +161,6 @@
                     <li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
                         <a href="/public-events">Events</a>
                     </li>
-                    <?php
-                    	if (Auth::check()) {
-							if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-	                    		$pages = Page::where('public_header', 1)->where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->get();
-							}
-							elseif (Auth::user()->hasRole(['Customer'])) {
-	                    		$pages = Page::where('public_header', 1)->where('Customers', 1)->orWhere('Public', 1)->get();
-							}
-							elseif (Auth::user()->hasRole(['Rep'])) {
-	                    		$pages = Page::where('public_header', 1)->where('Reps', 1)->orWhere('Public', 1)->get();
-							}
-						}
-						else $pages = Page::where('public_header', 1)->where('Public', 1)->get();
-                    ?>
 					@foreach ($pages as $page)
 						<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
 					@endforeach
@@ -224,13 +210,13 @@
 		                    <?php
 		                    	if (Auth::check()) {
 									if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-			                    		$pages = Page::where('public_footer', 1)->where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->get();
+			                    		$pages = Page::where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->where('public_footer', 1)->get();
 									}
 									elseif (Auth::user()->hasRole(['Customer'])) {
-			                    		$pages = Page::where('public_footer', 1)->where('Customers', 1)->orWhere('Public', 1)->get();
+			                    		$pages = Page::where('Customers', 1)->orWhere('Public', 1)->where('public_footer', 1)->get();
 									}
 									elseif (Auth::user()->hasRole(['Rep'])) {
-			                    		$pages = Page::where('public_footer', 1)->where('Reps', 1)->orWhere('Public', 1)->get();
+			                    		$pages = Page::where('Reps', 1)->orWhere('Public', 1)->where('public_footer', 1)->get();
 									}
 								}
 								else $pages = Page::where('public_footer', 1)->where('Public', 1)->get();
