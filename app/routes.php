@@ -23,6 +23,8 @@
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
+Route::post('pass/{id}', 'ExternalAuthController@auth');
+
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
 	##############################################################################################
@@ -72,6 +74,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		$title = 'Presentation';
 		return View::make('company.presentation', compact('title'));
 	});
+
 	
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');
