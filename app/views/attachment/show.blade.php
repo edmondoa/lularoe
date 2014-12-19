@@ -3,7 +3,7 @@
 <div class="show">
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
-		<h1 class="no-top">Viewing attachment</h1>
+		<h1 class="no-top">File Details</h1>
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		    <div class="btn-group" id="record-options">
 			    <a class="btn btn-default" href="{{ url('attachments/'.$attachment->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
@@ -32,7 +32,22 @@
 	</div><!-- row -->
 	<div class="row">
 		<div class="col col-md-6">
+			@if ($attachment->type == 'Image')
+				<img src="/uploads/{{ $attachment->url }}" style="width:100%;">
+				<br>
+				<br>
+			@endif
 		    <table class="table">
+
+		        <tr>
+		            <th>Title:</th>
+		            <td>{{ $attachment->title }}</td>
+		        </tr>
+		        
+		        <tr>
+		            <th>Description:</th>
+		            <td>{{ $attachment->description }}</td>
+		        </tr>
 		        
 		        <tr>
 		            <th>Type:</th>
@@ -40,19 +55,19 @@
 		        </tr>
 		        
 		        <tr>
-		            <th>Url:</th>
-		            <td>{{ $attachment->url }}</td>
+		            <th>URL:</th>
+		            <td>{{ url() }}/uploads/{{ $attachment->url }}</td>
 		        </tr>
 		        
 		        <tr>
-		            <th>User Id:</th>
-		            <td>{{ $attachment->user_id }}</td>
+		            <th>Owner:</th>
+		            <td><a href='/users/{{ $attachment->user_id }}'>{{ $attachment->owner }}</a></td>
 		        </tr>
 		        
-		        <tr>
+		        <!-- <tr>
 		            <th>Disabled:</th>
 		            <td>{{ $attachment->disabled }}</td>
-		        </tr>
+		        </tr> -->
 		        
 		    </table>
 	    </div>

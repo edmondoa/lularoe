@@ -25,48 +25,38 @@ class attachmentController extends \BaseController {
 	}
 
 	/**
-	 * Store a newly created attachment in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		$validator = Validator::make($data = Input::all(), Attachment::$rules);
-
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
-		}
-
-		Attachment::create($data);
-
-		return Redirect::route('attachments.index')->with('message', 'Attachment created.');
-	}
-
-	/**
 	 * Upload attachment
 	 */
 	 
-	public function upload() {
-		// echo '<pre>'; print_r(Input::all()); echo '</pre>';
-		// echo '<pre>'; print_r($_POST); echo '</pre>';
-		// exit;
-		$response = [];
+	public function store() {
+
 		$validator = Validator::make($data = Input::all(), Attachment::$rules);
 		if ($validator->fails())
 		{
-			$response['success'] = false;
-			$response['errors'] = json_encode($validator->messages());
-			return $response;
+			if (isset($data['ajax'])) {
+				$response = [];
+				$response['success'] = false;
+				$response['errors'] = json_encode($validator->messages());
+				return $response;
+			}
+			else {
+				return Redirect::back()->withErrors($validator)->withInput();
+			}
 		}
 		
-		// process and store image
-        if (Input::file('image')) {
+				echo '<pre>'; print_r(Input::file('file')); echo '</pre>';
+				// echo $data['file'];
+				exit;
+		
+		// process and store file
+        if (Input::file('file')) {
 
             // upload and link to image
             $filename = '';
-            if (Input::hasFile('image')) {
-                $file = Input::file('image');
+            if (Input::hasFile('file')) {
+                $file = Input::file('file');
+				echo Input::file('file');
+				exit;
 				
 				if (!file_exists('/uploads/' . date('Y') . '/' . date('m'))) {
 				    mkdir('/uploads/' . date('Y') . '/' . date('m'), 0755, true);
@@ -85,25 +75,61 @@ class attachmentController extends \BaseController {
 				}
 
                 $uploadSuccess = $file->move($fullPath, $filename);
+				
+				// common file types		
+				$raster_image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+				$image_extensions = ['svg', 'tiff', 'psd', 'ai', 'eps'];
+				$video_extensions = ['avchd', 'avi', 'flv', 'mpeg', 'mpg', 'mp4', 'wmv', 'mov', 'flv', 'rm', 'vob', 'swf'];
+				$audio_extensions = ['wav', 'mp3', 'wma', 'flac', 'ogg', 'ra', 'ram', 'rm', 'mid', 'aiff', 'mpa', 'm4a', 'aif', 'iff'];
+				$pdf_extensions = ['pdf'];
+				$document_extensions = ['doc', 'docx', 'odt', 'pages', 'rtf', 'wpd', 'wps'];
+				$spreadsheet_extensions = ['gnumeric', 'gnm', 'ods', 'xls', 'xlsx', 'xlsm', 'xlsb', 'csv'];
+				$text_extensions = ['txt', 'log', 'msg', 'tex'];
+				$presentation_extensions = ['key', 'ppt', 'pptx', 'odp'];
+				$code_extensions = ['html', 'php', 'js', 'xml', 'json', 'c', 'class', 'cpp', 'cs', 'dtd', 'fla', 'h', 'java', 'lua', 'm', 'pl', 'py', 'sh', 'sln', 'swift', 'vcxproj', 'xcodeproj'];
+				$database_extensions = ['odb', 'db', 'mdb', 'accdb', 'dbf', 'pdb', 'sql'];
+				$archive_extensions = ['7z', 'cbr', 'deb', 'gz', 'pkg', 'rar', 'rpm', 'sitx', 'tar.gz', 'zip', 'zipx'];
 						
-                // open an image file
-				$img = Image::make('uploads/' . $path . $filename);
-    
-                // now you are able to resize the instance
-                $img->fit(800, 600);
-
-                // finally we save the image as a new image
-                $img->save('uploads/' . $path . $filename);
+				// determine file type
+				if (in_array($extension, $raster_image_extensions)) {
+	                // open an image file
+					$img = Image::make('uploads/' . $path . $filename);
+	    
+	                // now you are able to resize the instance
+	                $img->fit(800, 600);
+	
+	                // finally we save the image as a new image
+	                $img->save('uploads/' . $path . $filename);
+					$data['type'] = 'Image';
+				}
+				elseif (in_array($extension, $image_extensions)) $data['type'] = 'Image file';
+				elseif (in_array($extension, $video_extensions)) $data['type'] = 'Video';
+				elseif (in_array($extension, $audio_extensions)) $data['type'] = 'Audio';
+				elseif (in_array($extension, $pdf_extensions)) $data['type'] = 'PDF';
+				elseif (in_array($extension, $document_extensions)) $data['type'] = 'Document';
+				else if (in_array($extension, $spreadsheet_extensions)) $data['type'] = 'Spreadsheet';
+				elseif (in_array($extension, $text_extensions)) $data['type'] = 'Text';
+				elseif (in_array($extension, $presentation_extensions)) $data['type'] = 'Presentation';
+				elseif (in_array($extension, $code_extensions)) $data['type'] = 'Code';
+				elseif (in_array($extension, $database_extensions)) $data['type'] = 'Database';
+				elseif (in_array($extension, $archive_extensions)) $data['type'] = 'Archive';
+				else $data['type'] = 'File';
 
 				// store record in database
                 $data['url'] = $url;
-				$data['type'] = 'Image';
 				$data['user_id'] = Auth::user()->id;
+				if ($data['title'] == '') $data['title'] = $file;
+				echo '<pre>'; print_r($data); echo '</pre>';
+				exit;
 				$attachment = Attachment::create($data);
-				$response['success'] = true;
-				$response['url'] = '/uploads/' . $attachment->url;
-				return $response;
-
+				if (isset($data['ajax'])) {
+					$response['success'] = true;
+					$response['url'] = '/uploads/' . $attachment->url;
+					return $response;
+				}
+				else {
+					return Redirect::route('attachments.index')->with('message', 'Media uploaded.');
+				}
             }
         }
 	}
@@ -174,15 +200,19 @@ class attachmentController extends \BaseController {
 	 */
 	public function delete()
 	{
-		foreach (Input::get('ids') as $id) {
-			Attachment::destroy($id);
+		$data = Input::all();
+		if (isset($data['ids'])) {
+			foreach (Input::get('ids') as $id) {
+				Attachment::destroy($id);
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('attachments.index')->with('message', 'Files deleted.');
+			}
+			else {
+				return Redirect::back()->with('message', 'File deleted.');
+			}
 		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('attachments.index')->with('message', 'Attachments deleted.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Attachment deleted.');
-		}
+		else return Redirect::back()->with('message_danger', 'You must select at least 1 file.');
 	}
 	
 	/**
@@ -190,15 +220,19 @@ class attachmentController extends \BaseController {
 	 */
 	public function disable()
 	{
-		foreach (Input::get('ids') as $id) {
-			Attachment::find($id)->update(['disabled' => 1]);	
+		$data = Input::all();
+		if (isset($data['ids'])) {
+			foreach (Input::get('ids') as $id) {
+				Attachment::find($id)->update(['disabled' => 1]);	
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('attachments.index')->with('message', 'Files disabled.');
+			}
+			else {
+				return Redirect::back()->with('message', 'File disabled.');
+			}
 		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('attachments.index')->with('message', 'Attachments disabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Attachment disabled.');
-		}
+		else return Redirect::back()->with('message_danger', 'You must select at least 1 file.');
 	}
 	
 	/**
@@ -206,15 +240,19 @@ class attachmentController extends \BaseController {
 	 */
 	public function enable()
 	{
-		foreach (Input::get('ids') as $id) {
-			Attachment::find($id)->update(['disabled' => 0]);	
+		$data = Input::all();
+		if (isset($data['ids'])) {
+			foreach (Input::get('ids') as $id) {
+				Attachment::find($id)->update(['disabled' => 0]);	
+			}
+			if (count(Input::get('ids')) > 1) {
+				return Redirect::route('attachments.index')->with('message', 'Files enabled.');
+			}
+			else {
+				return Redirect::back()->with('message', 'File enabled.');
+			}
 		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('attachments.index')->with('message', 'Attachments enabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Attachment enabled.');
-		}
+		else return Redirect::back()->with('message_danger', 'You must select at least 1 file.');
 	}
 
 }

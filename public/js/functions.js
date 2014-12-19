@@ -84,7 +84,7 @@ $(document).ready(function() {
     
     // initialize tinymce
     tinymce.init({
-        selector: "textarea",
+        selector: ".wysiwyg",
         theme: "modern",
         relative_urls: false,
         plugins: [

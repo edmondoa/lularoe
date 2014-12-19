@@ -1,4 +1,10 @@
 @extends('layouts.default')
+@section('style')
+	<style>
+		.selected { position:absolute; top:0; right:0; bottom:0; left:0; background:rgba(255,0,0,.5); }
+		.semitransparent { opacity:.33; }
+	</style>
+@stop
 @section('content')
 <div ng-app="app" class="index">
     {{ Form::open(array('url' => 'attachments/disable', 'method' => 'POST')) }}
@@ -6,7 +12,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		                <h1 class="no-top pull-left no-pull-xs">All Attachments</h1>
+		                <h1 class="no-top pull-left no-pull-xs">Media Library</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
@@ -29,7 +35,7 @@
 			                                <option value="attachments/delete">Delete</option>
 			                            </select>
 			                            <div class="input-group-btn no-width">
-			                                <button class="btn btn-default applyAction" disabled>
+			                                <button class="btn btn-default">
 			                                    <i class="fa fa-check"></i>
 			                                </button>
 			                            </div>
@@ -54,9 +60,10 @@
 		            </div><!-- col -->
 		        </div><!-- row -->
 		    </div><!-- page-actions -->
+		    <br>
 	        <div class="row">
 	            <div class="col col-md-12">
-	                <table class="table">
+	                <!-- <table class="table">
 	                    <thead>
 	                        <tr>
 	                            <th>
@@ -64,24 +71,48 @@
 	                            </th>
 	                        </tr>
 	                    </thead>
-	                </table>
-                	<div class="link" ng-click="orderByField='type'; reverseSort = !reverseSort">Type
+	                </table> -->
+                	<!-- <div class="link" ng-click="orderByField='type'; reverseSort = !reverseSort">Filter by Type
                 		<span>
                 			<span ng-show="orderByField == 'type'">
                     			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
                     			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                 			</span>
                 		</span>
-            		</div>
+            		</div> -->
             		<ul class="tiles">
-	                    <li ng-click="" ng-mouseover="showOptions()" ng-mouseleave="hideOptions()" ng-class="{highlight: address.new == 1}" dir-paginate-start="attachment in attachments | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                    <li ng-click="show=!show" ng-mouseover="showOptions()" ng-mouseleave="hideOptions()" ng-class="{highlight: address.new == 1}" dir-paginate-start="attachment in attachments | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                        <div ng-click="checkbox()">
-	                        	<!-- <input class="bulk-check" type="hidden" name="ids[]" value="@include('_helpers.attachment_id')"> -->
+	                        	<div ng-if="show" class="selected">
+	                        		<input class="bulk-check" type="hidden" name="ids[]" value="@include('_helpers.attachment_id')">
+	                        	</div>
 	                        	<div class="options">
 		                        	<a target="_blank" href="/uploads/@include('_helpers.attachment_url')"><i class="fa fa-eye"></i></a>
 		                        	<a href="/attachments/@include('_helpers.attachment_id')"><i class="fa fa-info"></i></a>
 	                        	</div>
-	                        	<img width="150" src="/uploads/@include('_helpers.attachment_url')">
+	                        	<?php // image ?>
+	                        	<img ng-if="attachment.type == 'Image'" ng-class="{semitransparent : attachment.disabled}" src="/uploads/@include('_helpers.attachment_url')">
+	                        	<?php // document ?>
+	                        	<div class="file" ng-if="attachment.type == 'Document'">
+	                        		<i class="fa fa-file-word-o" ng-class="{semitransparent : attachment.disabled}"></i>
+	                        		<br>
+	                        		<div ng-if="attachment.title" class="file-title" ng-bind="attachment.title"></div>
+	                        		<div ng-if="!attachment.title" class="file-title">Untitled Document</div>
+	                        	</div>
+	                        	<?php // database ?>
+	                        	<div class="file" ng-if="attachment.type == 'Database'">
+	                        		<i class="fa fa-database" ng-class="{semitransparent : attachment.disabled}"></i>
+	                        		<br>
+	                        		<div ng-if="attachment.title" class="file-title" ng-bind="attachment.title"></div>
+	                        		<div ng-if="!attachment.title" class="file-title">Untitled Database</div>
+	                        	</div>
+	                        	<?php // image file ?>
+	                        	<div class="file" ng-if="attachment.type == 'Image file'">
+	                        		<i class="fa fa-image" ng-class="{semitransparent : attachment.disabled}"></i>
+	                        		<br>
+	                        		<div ng-if="attachment.title" class="file-title" ng-bind="attachment.title"></div>
+	                        		<div ng-if="!attachment.title" class="file-title">Untitled Image File</div>
+	                        	</div>
 	                        </div>
 	                    </li>
 	                    <li dir-paginate-end></li>

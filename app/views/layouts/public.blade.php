@@ -121,9 +121,11 @@
 										}
 										else $pages = Page::where('public_header', 1)->where('Public', 1)->get();
 				                    ?>
-									@foreach ($pages as $page)
-										<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
-									@endforeach
+				                    @if (isset($pages))
+										@foreach ($pages as $page)
+											<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+										@endforeach
+									@endif
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                                         @if (!Auth::check())
                                         	<a href="<?php echo url() ?>/login">Log In</a>
@@ -221,11 +223,13 @@
 								}
 								else $pages = Page::where('public_footer', 1)->where('Public', 1)->get();
 		                    ?>
-		                    <ul class="footer-menu">
-								@foreach ($pages as $page)
-									<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
-								@endforeach
-							</ul>
+		                    @if (isset($pages))
+			                    <ul class="footer-menu">
+									@foreach ($pages as $page)
+										<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+									@endforeach
+								</ul>
+							@endif
 							<br>
                             <p id="copyright-text">&copy; {{ date('Y') }} SociallyMobile</p>
 
