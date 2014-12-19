@@ -100,8 +100,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		$sponsor = User::where('id', 0)->first();
 		return View::make('opportunity.public', compact('opportunity','sponsor'));
 	});
-
-	Route::controller('api','DataOnlyController');
 		
 	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
@@ -163,7 +161,14 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
 		Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
-		Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+		
+		//put routes in here that we would like to cache
+		Route::group(['before' => 'cache.fetch'], function() {
+			Route::group(['after' => 'cache.put'], function() {
+				//Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+				Route::controller('api','DataOnlyController');
+			});
+		});
 
 		// userSites
 		Route::resource('user-sites', 'UserSiteController');
@@ -416,14 +421,19 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 # Testing and etc.
 ##############################################################################################
 
+Route::get('test-downline/{id}', 'DataOnlyController@getAllDownline')->before('cache.fetch')->after('cache.put');
+
 Route::get('test-steve', function() {
 	$date = date('Y-m-d H:i:s');
 	return Timezone::convertFromUTC($date, "Asia/Kolkata", 'F j, Y H:i:s');
 });
 
 Route::get('test', function() {
-	//return User::find(2001)->payments;
-	return User::take(25)->get();
+	//return User::find(2001);
+	return User::find(2001)->cacheTags(array('users'))->remember(10)->get();
+	//echo"<pre>"; print_r($users); echo"</pre>";
+	return $users;
+	return DB::getQueryLog();
 	return Payment::take(1)->get();
 	var_dump($payment);
 	exit;

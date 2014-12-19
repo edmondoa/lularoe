@@ -130,6 +130,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function getPublicGenderAttribute() {
+		if(!Auth::check()) return;
 		if (isset($this->gender)) {
 			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->gender;
 			return ($this->hide_gender != true)?$this->gender:'';
@@ -137,6 +138,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function getPublicDobAttribute() {
+		if(!Auth::check()) return;
 		if (isset($this->dob)) {
 			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->dob;
 			return ($this->hide_dob != true)?$this->dob:'';
@@ -144,6 +146,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function getPublicEmailAttribute() {
+		if(!Auth::check()) return;
 		if (isset($this->email)) {
 			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->email;
 			return ($this->hide_email != true)?$this->email:'';
@@ -151,6 +154,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function getPublicPhoneAttribute() {
+		if(!Auth::check()) return;
 		if (isset($this->phone)) {
 			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->phone;
 			return ($this->hide_phone != true)?$this->phone:'';
