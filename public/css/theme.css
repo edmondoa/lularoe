@@ -87,9 +87,12 @@ i { width:16px; } /* standardizes font awesome icons */
 .footer-links { text-decoration:none; padding:0; text-align:center; }
 .footer-links li { display:inline-block; margin:0 1em; }
 .tiles { padding:0; list-style:none; text-align:center; }
-.tiles li { display:inline-block; position:relative; margin:0 3px 10px 0; }
+.tiles li { vertical-align:top; display:inline-block; position:relative; margin:0 3px 10px 0; }
 .tiles li img { max-width:200px; max-height:200px; cursor:pointer; }
-.tiles li .options { display:none; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px; text-align:right; }
+.tiles li .file { cursor:pointer; display:table-cell; vertical-align:middle; box-sizing: border-box; width:200px; height:200px; background:rgb(235,235,235); } 
+.tiles li .file i { font-size:50px; position:relative; margin-left:-20px; }
+.tiles li .file-title { margin-top:5px; background:rgb(215,215,215); padding:5px 10px; border-radius:4px; display:inline-block; }
+.tiles li .options { z-index:1; display:none; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:right; }
 .tiles li .options a { color:white; }
 
 /* tinmce overrides */

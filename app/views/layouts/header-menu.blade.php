@@ -45,9 +45,11 @@
 							else $pages = Page::where('public_header', 1)->where('Public', 1)->get();
 	                    ?>
 	                @endif
-					@foreach ($pages as $page)
-						<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
-					@endforeach
+	                @if (isset($pages))
+						@foreach ($pages as $page)
+							<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+						@endforeach
+					@endif
 	                <li class="dropdown">
 	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 	                        {{ Auth::user()->first_name }}

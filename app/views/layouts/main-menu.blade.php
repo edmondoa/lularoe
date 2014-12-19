@@ -79,8 +79,12 @@
 					<!-- <a href="/carts" class="list-group-item"><i class="fa fa-shopping-cart"></i> Cart</a> -->
 					<!-- <a href="/commissions" class="list-group-item">Commissions</a> -->
 					<!-- <a href="/emailMessages" class="list-group-item"><i class="fa fa-envelope"></i> <span class="text">EmailMessages</span></a> -->
-					<!-- <a href="/attachments" class="list-group-item"><i class="fa fa-file-image-o"></i> <span class="text">Media</span></a> -->
-					<!-- <a href="/levels" class="list-group-item"><i class="fa fa-sitemap"></i> Levels</a> -->
+ 					<a href="javascript:void(0)" data-href="/attachments" class='list-group-item' data-toggle="popover" data-content="
+ 						<a href='/attachments'><i class='fa fa-file-image-o'></i> Media Library</a>
+ 						<a href='/attachments/create'><i class='fa fa-plus'></i> Upload Media</a>
+ 					">
+ 						<i class="fa fa-file-image-o"></i> <span class="text">Media</span>
+ 					</a>					<!-- <a href="/levels" class="list-group-item"><i class="fa fa-sitemap"></i> Levels</a> -->
 					<!-- <a href="/payments" class="list-group-item">Payments</a> -->
  					<!-- <a href="javascript:void(0)" data-href="/products" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/products'><i class='fa fa-mobile-phone'></i> All Products</a>

@@ -10,8 +10,8 @@
 	            </div>
 	            <div class="modal-body">
                     <div class="form-group">
-                    	<input type="hidden" name="something" value="whatever">
-                        <input type="file" id="attachment" name="image">
+                    	<input type="hidden" name="ajax" value="1">
+                        <input type="file" name="file">
                         <br>
                         <small>Max File Size: 1M</small>
                     </div>
@@ -26,24 +26,7 @@
 </div>
 <script>
 
-    // upload image through tinymce editor
-    // $('body').on({
-    	// submit: function(e) {
-	    	// alert('woop!');
-	        // $.ajax({
-	            // url : '/upload-attachment',
-	            // type : 'POST',
-	            // data : new FormData(this),
-	            // processData : false,
-	            // contentType : false,
-	            // success : function(response) {
-	            	// alert(response);
-	            // }
-	        // });
-	        // e.preventDefault();
-		// }
-    // }, '#dumb_test');
-
+	// upload attachment through AJAX
     $("body").on({
         click: function(e, data) {
         	e.preventDefault();
@@ -63,12 +46,5 @@
             });           
         }
     }, "#insertImage");
-    
-// Warning Duplicate IDs
-// $('[id]').each(function(){
-  // var ids = $('[id="'+this.id+'"]');
-  // if(ids.length>1 && ids[0]==this)
-    // console.warn('Multiple IDs #'+this.id);
-// });
     
 </script>

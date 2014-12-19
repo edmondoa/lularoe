@@ -32,11 +32,13 @@
 				}
 				else $pages = Page::where('back_office_footer', 1)->where('Public', 1)->get();
             ?>
-			<ul class="footer-links">
-				@foreach ($pages as $page)
-					<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
-				@endforeach
-			</ul>
+			@if (isset($pages))
+				<ul class="footer-links">
+					@foreach ($pages as $page)
+						<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+					@endforeach
+				</ul>
+			@endif
 			<p>&copy; {{Config::get('site.company_name')}} {{ date('Y') }}</p>
 		</footer>
 	</div><!--/col-->

@@ -178,7 +178,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
 
 		// upload attachment
-		Route::post('upload-attachment', 'AttachmentController@upload');
+		Route::post('upload-attachment', 'AttachmentController@store');
 
 		// userSites
 		Route::resource('user-sites', 'UserSiteController');
