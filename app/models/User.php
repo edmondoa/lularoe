@@ -13,7 +13,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var string
 	 */
 	protected $table = 'users';
-	// public $timestamps = false;
+	public $timestamps = false;
 
 	public static $rules = [
 		'email' => 'required|unique:users,email',
@@ -41,14 +41,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'key',
 		'image',
 		'disabled',
-		'hide_gender',
-		'hide_dob',
-		'hide_email',
-		'hide_phone',
-		'hide_billing_address',
-		'hide_shipping_address',
-		'block_email',
-		'block_sms',
+		'created_at',
+		'updated_at'
 	];
 
 	use UserTrait, RemindableTrait;
@@ -79,7 +73,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function frontline() {
-		return $frontline = $this -> hasMany('User', 'sponsor_id', 'id');
+		return $this -> hasMany('User', 'sponsor_id', 'id');
 	}
 
 	public function role() {
@@ -129,6 +123,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public function getFrontLineCountAttribute() {
 		return (int) (isset($this->frontlineCountRelation()->count))?$this->frontlineCountRelation()->count:0;
 	}
+
 
 	public function getPublicGenderAttribute() {
 		if(!Auth::check()) return;
@@ -188,6 +183,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return (int) (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
 	}
 
+
 	public function getAccountBalanceAttribute()
 	{
 	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(5,'user_'.$this->id.'_balance')->sum('amount');    
@@ -230,18 +226,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return substr($this->attributes['phone'], 0, 3)."-".substr($this->attributes['phone'], 3, 3)."-".substr($this->attributes['phone'],6);
 	}
 	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume','account_balance', 'public_gender', 'public_dob', 'public_email', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
-
 	##############################################################################################
 	# append custom Attribs
 	##############################################################################################
 	
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume');
+
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('password', 'remember_token', 'gender', 'dob', 'email', 'phone');
+	protected $hidden = array('password', 'remember_token');
 
 	##############################################################################################
 	# Password reminder methods
