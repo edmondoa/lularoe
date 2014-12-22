@@ -71,7 +71,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function descendants() {
-		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->withPivot('level');
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->remember(5,'user_'.$this->id.'_descendants')->withPivot('level');
 	}
 
 	public function leads() {
@@ -99,26 +99,27 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function ranks() {
-		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->withPivot('created_at');
+		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->remember(5,'user_'.$this->id.'_ranks')->withPivot('created_at');
 	}
 	
 	public function currentRank() {
-		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->first();
+		//return;
+		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->remember(5,'user_'.$this->id.'_rank')->first();
 	}
 	
 	public function descendantsCountRelation()
 	{
-		return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->first();
+		return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->remember(5,'user_'.$this->id.'_desc_count')->first();
 	}
 
 	public function frontlineCountRelation()
 	{
-		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->first();
+		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->remember(5,'user_'.$this->id.'_frontline_count')->first();
 	}
 
 	public function orgVolumeRelation()
 	{
-		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id')->first();
+		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id')->remember(5)->first();
 	}
 
 	##############################################################################################
@@ -189,11 +190,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function getAccountBalanceAttribute()
 	{
-	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->sum('amount');    
+	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(5,'user_'.$this->id.'_balance')->sum('amount');    
 	}
 
 	public function getVolumeAttribute() {
-		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->volume:0;
+		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->remember(5,'user_'.$this->id.'_volume')->volume:0;
 	}
 
 	public function getRankNameAttribute() {

@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Str;
 use Cache;
+use Config;
 
 class CacheFilter {
 
@@ -17,7 +18,7 @@ class CacheFilter {
 	public function put(Route $route, Request $request, Response $response) {
 		//return 'Putting Cache';
 		$key = $this->makeCacheKey($request->url());
-		if (!Cache::has($key)) Cache::put($key, $response->getContent(),60);
+		if (!Cache::has($key)) Cache::put($key, $response->getContent(),Config::get('site.cache_length'));
 	}
 
 	protected function makeCacheKey($url) {
