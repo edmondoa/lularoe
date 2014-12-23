@@ -21,7 +21,7 @@ function removeSubdomain($url) {
 	return preg_replace('/\/\/.*\./', '//', $url);
 }
 
-function processMedia($data, $media, $filename) {
+function processMedia($data, $file, $filename) {
 
     // upload and link to image
     $filename = '';
@@ -32,7 +32,7 @@ function processMedia($data, $media, $filename) {
 
 	$path = date('Y') . '/' . date('m') . '/';
     $fullPath = public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/';
-    $extension = $media->getClientOriginalExtension();
+    $extension = $file->getClientOriginalExtension();
 
 	// generate media name and check for existing
 	$url = $path . $filename;
@@ -40,8 +40,9 @@ function processMedia($data, $media, $filename) {
 	while (count($existing_file) > 0) {
 		$filename = str_random(20) . '.' . $extension;
 	}
-
-    $uploadSuccess = $media->move($fullPath, $filename);
+echo $file;
+exit;
+    $uploadSuccess = $file->move($fullPath, $filename);
 	
 	// common media types		
 	$raster_image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
@@ -60,7 +61,7 @@ function processMedia($data, $media, $filename) {
 	// determine media type
 	if (in_array($extension, $raster_image_extensions)) {
         // open an image media
-		$img = Image::make('uploads/' . $path . $filename);
+		$img = Input::make('uploads/' . $path . $filename);
 
         // now you are able to resize the instance
         $img->fit(800, 600);
