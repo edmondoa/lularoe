@@ -11,6 +11,7 @@ Thumbs.db
 *.pyc
 *.pyo
 /app/config/jake_local
+public/nfo.php
 /public/server_config
 /.htaccess
 /soc_mob_backup_2014_10_28_21.sql
