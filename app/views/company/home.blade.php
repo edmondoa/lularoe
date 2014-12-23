@@ -33,7 +33,7 @@
                                             <div class="content">
                                                 <h2>Next Website Update
                                                 <br>
-                                                01.09.2015</h2>
+                                                1.9.2015</h2>
                                                 <p class="transparent-bg" >
                                                     <span>Pre-launch Starts in:</span>
                                                 </p>
