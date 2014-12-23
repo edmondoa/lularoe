@@ -23,7 +23,6 @@ class mediaController extends \BaseController {
 		return View::make('media.index', compact('media', 'user_id'));
 	}
 
-
 	/**
 	 * Show the form for creating a new media
 	 *
@@ -33,7 +32,6 @@ class mediaController extends \BaseController {
 	{
 		return View::make('media.create');
 	}
-
 
 	/**
 	 * Upload media
@@ -59,14 +57,7 @@ class mediaController extends \BaseController {
 			}
 		}
 		
-		// process media
-        if (Input::file('media')) {
-			if (Input::hasFile('media')) {
-				$filename = basename($_FILES["media"]["name"]);
-				$media_file = Input::file('media');
-				$data = processMedia($data, $media_file, $filename);
-			}
-        }
+		include app_path() . '/helpers/processMedia.php';
 				
 		// format checkboxes for db
 		$data['reps'] = isset($data['reps']) ? 1 : 0;
@@ -131,26 +122,19 @@ class mediaController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 		
-		// process media
-        if (Input::file('media')) {
-			if (Input::hasFile('media')) {
-				$filename = basename($_FILES["media"]["name"]);
-				$media_file = Input::file('media');
-				$data = processMedia($data, $media_file, $filename);
-			}
-        }
-		
 		// format checkboxes for db
 		$data['reps'] = isset($data['reps']) ? 1 : 0;
 
-		// update db
-		$media->update($data);
-		
+		include app_path() . '/helpers/processMedia.php';
+
 		// if file exists, delete it
 		$old_file = $media->url;
 		if (is_file('uploads/' . $old_file)) {
 			unlink('uploads/' . $old_file);
 		}
+
+		// update db
+		$media->update($data);
 		
 		$user_id = Auth::user()->id;
 		return Redirect::route('media/user', compact('user_id'))->with('message', 'Media updated.');
