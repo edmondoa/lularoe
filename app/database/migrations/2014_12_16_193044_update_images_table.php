@@ -12,10 +12,7 @@ class UpdateImagesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('images', function(Blueprint $table)
-		{
-			$table->integer('user_id');			
-		});
+
 	}
 
 
@@ -26,10 +23,7 @@ class UpdateImagesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('images', function(Blueprint $table)
-		{
-			
-		});
+
 	}
 
 }

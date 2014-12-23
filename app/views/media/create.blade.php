@@ -9,13 +9,11 @@
 	</div>
 	<div class="row">
 		<div class="col col-lg-3 col-md-4 col-sm-6">
-		    {{ Form::open(array('url' => 'attachments', 'files' => true)) }}
+		    {{ Form::open(array('url' => 'media', 'files' => true)) }}
 			    
                 <div class="form-group">
-                	<input type="hidden" name="something" value="whatever">
-                    <input type="file" name="file">
-                    <br>
-                    <small>Max File Size: 1M</small>
+                    <input type="file" name="media">
+                    <!-- <small>Max Media Size: 1M</small> -->
                 </div>
                 
                 <div class="form-group">
@@ -27,6 +25,14 @@
                 	{{ Form::label('description', 'Description') }}
                 	{{ Form::textarea('description', null, ['class' => 'form-control']) }}
                 </div>
+                
+                @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+	                <div class="form-group">
+	                	<label>
+	                		{{ Form::checkbox('reps') }} Share with ISM's
+	                	</label>
+	                </div>
+	            @endif
 		
 			    {{ Form::submit('Upload Media', array('class' => 'btn btn-primary')) }}
 	
