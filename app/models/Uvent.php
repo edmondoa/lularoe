@@ -21,7 +21,7 @@ class Uvent extends \Eloquent
 	{
 		$updated_time = $this->attributes['date_start'];
 		$start_date_stamp =	date('Y-m-d G:i:s', $updated_time);
-		$this->attributes['timezone'] = (isset($this->attributes['timezone']))?$this->attributes['timezone']:'America/Denver';
+		$this->attributes['timezone'] = (!empty($this->attributes['timezone']))?$this->attributes['timezone']:'America/Denver';
 		return Timezone::convertFromUTC($start_date_stamp, $this->attributes['timezone'], 'F j, Y');
 	}
 	
