@@ -24,7 +24,7 @@ class SessionController extends \BaseController {
 	 	//dont' need a client to login twice so if they are logged in it will take them to their default area
 	 	if(Auth::check())
 		{
-			return Redirect::intended('/dashboard');
+			return Redirect::to('/dashboard');
 		}
 		$title = 'Log In';
 		return View::make('sessions.create', compact('title'));
@@ -47,7 +47,7 @@ class SessionController extends \BaseController {
 			], false);
 		if($attempt)
 		{
-			return Redirect::intended('dashboard');		
+			return Redirect::intended('/dashboard');		
 		} 
 		else
 		{

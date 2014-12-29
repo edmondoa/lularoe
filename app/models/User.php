@@ -13,7 +13,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var string
 	 */
 	protected $table = 'users';
-	// public $timestamps = false;
+	public $timestamps = false;
 
 	public static $rules = [
 		'email' => 'required|unique:users,email',
@@ -41,14 +41,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'key',
 		'image',
 		'disabled',
-		'hide_gender',
-		'hide_dob',
-		'hide_email',
-		'hide_phone',
-		'hide_billing_address',
-		'hide_shipping_address',
-		'block_email',
-		'block_sms',
+		'created_at',
+		'updated_at'
 	];
 
 	use UserTrait, RemindableTrait;
@@ -71,7 +65,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function descendants() {
-		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->withPivot('level');
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->remember(5,'user_'.$this->id.'_descendants')->withPivot('level');
 	}
 
 	public function leads() {
@@ -79,7 +73,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function frontline() {
-		return $frontline = $this -> hasMany('User', 'sponsor_id', 'id');
+		return $this -> hasMany('User', 'sponsor_id', 'id');
 	}
 
 	public function role() {
@@ -99,26 +93,27 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function ranks() {
-		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->withPivot('created_at');
+		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->remember(5,'user_'.$this->id.'_ranks')->withPivot('created_at');
 	}
 	
 	public function currentRank() {
-		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->first();
+		//return;
+		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->remember(5,'user_'.$this->id.'_rank')->first();
 	}
 	
 	public function descendantsCountRelation()
 	{
-		return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->first();
+		return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->remember(5,'user_'.$this->id.'_desc_count')->first();
 	}
 
 	public function frontlineCountRelation()
 	{
-		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->first();
+		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->remember(5,'user_'.$this->id.'_frontline_count')->first();
 	}
 
 	public function orgVolumeRelation()
 	{
-		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id')->first();
+		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id')->remember(5)->first();
 	}
 
 	##############################################################################################
@@ -129,7 +124,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return (int) (isset($this->frontlineCountRelation()->count))?$this->frontlineCountRelation()->count:0;
 	}
 
+
 	public function getPublicGenderAttribute() {
+		if(!Auth::check()) return;
 		if (isset($this->gender)) {
 			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->gender;
 			return ($this->hide_gender != true)?$this->gender:'';
@@ -137,6 +134,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function getPublicDobAttribute() {
+		if(!Auth::check()) return;
 		if (isset($this->dob)) {
 			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->dob;
 			return ($this->hide_dob != true)?$this->dob:'';
@@ -144,6 +142,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function getPublicEmailAttribute() {
+		if(!Auth::check()) return;
 		if (isset($this->email)) {
 			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->email;
 			return ($this->hide_email != true)?$this->email:'';
@@ -151,6 +150,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function getPublicPhoneAttribute() {
+		if(!Auth::check()) return;
 		if (isset($this->phone)) {
 			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->phone;
 			return ($this->hide_phone != true)?$this->phone:'';
@@ -183,13 +183,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return (int) (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
 	}
 
+
 	public function getAccountBalanceAttribute()
 	{
-	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->sum('amount');    
+	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(5,'user_'.$this->id.'_balance')->sum('amount');    
 	}
 
 	public function getVolumeAttribute() {
-		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->volume:0;
+		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->remember(5,'user_'.$this->id.'_volume')->volume:0;
 	}
 
 	public function getRankNameAttribute() {
@@ -231,16 +232,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	
 	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume','account_balance', 'public_gender', 'public_dob', 'full_name', 'public_email', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
 
+
 	##############################################################################################
 	# append custom Attribs
 	##############################################################################################
 	
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume');
+
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('password', 'remember_token', 'gender', 'dob', 'email', 'phone');
+	protected $hidden = array('password', 'remember_token');
 
 	##############################################################################################
 	# Password reminder methods

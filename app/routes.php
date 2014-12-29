@@ -175,7 +175,15 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
 		Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
-		Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+		
+		//Route::controller('api','DataOnlyController');
+		//put routes in here that we would like to cache
+		Route::group(['before' => 'cache.fetch'], function() {
+			Route::group(['after' => 'cache.put'], function() {
+				//Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+				Route::controller('api','DataOnlyController');
+			});
+		});
 
 		// upload attachment
 		Route::post('upload-attachment', 'AttachmentController@store');
@@ -430,57 +438,37 @@ Route::get('test-steve', function() {
 	return Timezone::convertFromUTC($date, "Asia/Kolkata", 'F j, Y H:i:s');
 });
 
-Route::get('test', function() {
-	//return User::find(2001)->payments;
-	return User::take(25)->get();
-	return Payment::take(1)->get();
-	var_dump($payment);
-	exit;
-	$reps = User::all();
-	foreach($reps as $rep)
-	{
-		foreach($rep->plans as $plan)
-		{
-			if($plan->price > 0)
-			{
-				$payment = Payment::Create([
-					'user_id'=>$rep->id,
-					'amount'=>$plan->price,
-					'details'=>'Test payment in the amount of '.$plan->price.' to figure out how to run commissions.'
-				]);
-				$payment->user()->associate($rep);
-				$payment->save();
-				//echo"<pre>"; print_r($payment->toArray()); echo"</pre>";
-			}
-			else
-			{
-				//echo"<pre>"; print_r($plan->toArray()); echo"</pre>";
-			}
-		}
-		
-	}
-	return $reps;
-	return User::find(2001)->plans;
+Route::get('test-cache/{id}', function($id) {
+	$users = User::find($id)->descendants;
+	//$result['users'] = $users;
+	echo "<h1> Found ".$users->count()." descendants.</h1>";
+	echo"<!-- <pre>"; print_r($users->toArray()); echo"</pre> -->";
+	$queries = DB::getQueryLog();
+	echo"<pre>"; print_r($queries); echo"</pre>";
+	//return $result;
+	return;
 });
 
-Route::get('test-payments', function() {
+Route::get('test', function() {
+	//return User::find(2001)->descendants;
+	$id = 2001;
+	return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
+});
+
+Route::get('test-orders', function() {
 	$reps = User::all();
 	foreach($reps as $rep)
 	{
+		$order = new Order;
 		foreach($rep->plans as $plan)
 		{
 			if($plan->price > 0)
 			{
-				//Payment::$timestamps = false;
-				$payment = Payment::Create([
-					'user_id'=>$rep->id,
-					'amount'=>$plan->price,
-					'details'=>'Test payment in the amount of '.$plan->price.' to figure out how to run commissions.',
-					//'created_at' => date('Y-m-d H:i:s',strtotime('last month'))
-				]);
-				$payment->user()->associate($rep);
-				$payment->save();
-				//echo"<pre>"; print_r($payment->toArray()); echo"</pre>";
+				//Order::$timestamps = false;
+				//foreach
+				$order->user()->associate($rep);
+				$order->save();
+				//echo"<pre>"; print_r($order->toArray()); echo"</pre>";
 			}
 			else
 			{

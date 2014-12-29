@@ -12,6 +12,7 @@ Thumbs.db
 *.pyo
 /app/config/jake_local
 /public/server_config
+/public/nfo.php
 /.htaccess
 /soc_mob_backup_2014_10_28_21.sql
 /soc_mob_backup_2014_10_29_21.sql
@@ -19,3 +20,6 @@ public/img/users/
 public/uploads/
 SociallyMobile.pem
 SociallyMobile.ppk
+public/nfo.php
+
+public/nfo.php
