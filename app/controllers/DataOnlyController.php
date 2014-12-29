@@ -104,10 +104,7 @@ class DataOnlyController extends \BaseController
 		return $opportunities = Opportunity::all();
 	}
 	
-	/*
-	 * Leads
-	 */
-
+	// leads
 	public function getAllLeads() {
 		return Lead::all();
 	}
@@ -115,10 +112,11 @@ class DataOnlyController extends \BaseController
 	public function getAllLeadsByRep($id) {
 		return User::find($id)->leads;
 	}
-
-	/*
-	 * Users
-	 */
+	
+	// products
+	public function getAllProducts(){
+		return Product::all();
+	}
 
 	// users
 	public function getAllUsers(){

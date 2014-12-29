@@ -66,24 +66,6 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='blurb'; reverseSort = !reverseSort">Blurb
-                            		<span>
-                            			<span ng-show="orderByField == 'blurb'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-                        		
-                            	<th class="link" ng-click="orderByField='description'; reverseSort = !reverseSort">Description
-                            		<span>
-                            			<span ng-show="orderByField == 'description'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-                        		
                             	<th class="link" ng-click="orderByField='price'; reverseSort = !reverseSort">Price
                             		<span>
                             			<span ng-show="orderByField == 'price'">
@@ -141,31 +123,23 @@
 					            </td>
 					            
 					            <td>
-					                <a href="/products/@include('_helpers.product_id')"><span ng-bind="product.blurb"></span></a>
+					                <span ng-bind="product.price | currency"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/products/@include('_helpers.product_id')"><span ng-bind="product.description"></span></a>
+					                <span ng-bind="product.quantity"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/products/@include('_helpers.product_id')"><span ng-bind="product.price"></span></a>
+					                <span ng-bind="product.category_id"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/products/@include('_helpers.product_id')"><span ng-bind="product.quantity"></span></a>
+					                <span ng-bind="product.disabled"></span>
 					            </td>
 					            
 					            <td>
-					                <a href="/products/@include('_helpers.product_id')"><span ng-bind="product.category_id"></span></a>
-					            </td>
-					            
-					            <td>
-					                <a href="/products/@include('_helpers.product_id')"><span ng-bind="product.disabled"></span></a>
-					            </td>
-					            
-					            <td>
-					            	<a href="/products/@include('_helpers.product_id')"><span ng-bind="product.updated_at"></span></a>
+					            	<span ng-bind="product.updated_at"></span>
 					            </td>
 	                        </tr>
 	                        <tr dir-paginate-end></tr>

@@ -102,24 +102,24 @@ $(document).ready(function() {
     });
     
     // add buttons to tinymce editor for inserting images
-    // $('body').on({
-        // click: function() {
-            // $('input#mceu_44-inp').before('' +
-                // '<div id="uploadImage" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" title="Upload Image" role="button" class="mce-btn">' +
-                    // '<button data-toggle="modal" data-target="#imageUpload" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" role="presentation" type="button" tabindex="-1">' +
-                        // '<img style="height:16px; width:16px;" src="/img/upload.svg">' +
-                    // '</button>' +
-                // '</div>' +
-                // '<div style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" title="Media Library" role="button" class="mce-btn">' +
+    $('body').on({
+        click: function() {
+            $('input#mceu_44-inp').before('' +
+                '<div id="uploadImage" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" title="Upload Image" role="button" class="mce-btn">' +
+                    '<button data-toggle="modal" data-target="#imageUpload" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" role="presentation" type="button" tabindex="-1">' +
+                        '<img style="height:16px; width:16px;" src="/img/upload.svg">' +
+                    '</button>' +
+                '</div>' +
+                // '<div data-toggle="modal" data-target="#media-library" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" title="Media Library" role="button" class="mce-btn">' +
                     // '<button style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" role="presentation" type="button" tabindex="-1">' +
                         // '<img style="height:16px; width:16px;" src="/img/tiles.svg">' +
                     // '</button>' +
                 // '</div>' +
-            // '');
-            // $('input#mceu_44-inp').addClass("mceu_44-inp-hack");
-            // $('#modals').load('/helpers/modals.php');
-        // }
-    // }, '#mceu_16');
+            '');
+            $('input#mceu_44-inp').addClass("mceu_44-inp-hack");
+            $('#modals').load('/helpers/modals.blade.php');
+        }
+    }, '#mceu_16');
     
     // close sidebar menu popovers when clicking outside
     $('[data-toggle="popover"]').popover();

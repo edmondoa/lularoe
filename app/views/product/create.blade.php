@@ -11,7 +11,8 @@
 		<div class="col col-lg-6">
 		    {{ Form::open(array('url' => 'products')) }}
 		
-			    
+				<button data-toggle="modal" data-target="#media-library" type="button" class="btn btn-default" id="media-library"><i class="fa fa-th-large"></i> Media Library</button>
+						    
 			    <div class="form-group">
 			        {{ Form::label('name', 'Name') }}
 			        {{ Form::text('name', Input::old('name'), array('class' => 'form-control')) }}
@@ -19,7 +20,7 @@
 			    
 			    <div class="form-group">
 			        {{ Form::label('blurb', 'Blurb') }}
-			        {{ Form::textarea('blurb', Input::old('blurb'), array('class' => 'wysiwyg form-control')) }}
+			        {{ Form::textarea('blurb', Input::old('blurb'), array('class' => 'form-control')) }}
 			    </div>
 			    
 			    <div class="form-group">

@@ -3,21 +3,6 @@
 class productController extends \BaseController {
 
 	/**
-	 * Data only
-	 */
-	public function getAllProducts(){
-		$products = Product::all();
-		foreach ($products as $product)
-		{
-			if (strtotime($product['created_at']) >= (time() - Config::get('site.new_time_frame') ))
-			{
-				$product['new'] = 1;
-			}
-		}
-		return $products;
-	}
-
-	/**
 	 * Display a listing of products
 	 *
 	 * @return Response
