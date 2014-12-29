@@ -1,17 +1,12 @@
 <?php
 
-class Attachment extends \Eloquent
+class Media extends \Eloquent
 {
 
- // Add your validation rules here
-	public static $rules = [
-		'file' => 'required|max:1000',
-	];
-
  // Don't forget to fill this array    
- protected $table = 'attachments';
+ protected $table = 'media';
  
-	protected $fillable = array('type','url','user_id','title','textarea','disabled');
+	protected $fillable = array('type','url','user_id','title','description','reps','disabled');
  
 	public function getOwnerAttribute() {
 		return User::find($this->user_id)->full_name;

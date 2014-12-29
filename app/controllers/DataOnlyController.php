@@ -5,10 +5,18 @@ class DataOnlyController extends \BaseController
 
 
 	/**
-	 * Attachments
+	 * Media
 	 */
-	public function getAllAttachments(){
-		return Attachment::all();
+	public function getAllMedia() {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Media::all();
+		if (Auth::user()->hasRole(['Rep'])) {
+			return Media::where('reps', 1)->get();
+		}
+	}
+
+	public function getMediaByUser($id) {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id);
+			return Media::where('user_id', $id)->get();
 	}
 
 	/*

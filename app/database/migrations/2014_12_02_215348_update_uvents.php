@@ -26,10 +26,7 @@ class UpdateUvents extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('uvents', function(Blueprint $table)
-		{
-			
-		});
+
 	}
 
 }

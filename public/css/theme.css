@@ -88,12 +88,13 @@ i { width:16px; } /* standardizes font awesome icons */
 .footer-links li { display:inline-block; margin:0 1em; }
 .tiles { padding:0; list-style:none; text-align:center; }
 .tiles li { vertical-align:top; display:inline-block; position:relative; margin:0 3px 10px 0; }
-.tiles li img { max-width:200px; max-height:200px; cursor:pointer; }
-.tiles li .file { cursor:pointer; display:table-cell; vertical-align:middle; box-sizing: border-box; width:200px; height:200px; background:rgb(235,235,235); } 
+.tiles li img { max-width:300px; max-height:150px; cursor:pointer; }
+.tiles li .file { padding:30px 10px 10px; cursor:pointer; box-sizing: border-box; width:150px; height:150px; background:white; box-shadow:1px 1px 8px rgba(0,0,0,.2); } 
 .tiles li .file i { font-size:50px; position:relative; margin-left:-20px; }
-.tiles li .file-title { margin-top:5px; background:rgb(215,215,215); padding:5px 10px; border-radius:4px; display:inline-block; }
-.tiles li .options { z-index:1; display:none; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:right; }
-.tiles li .options a { color:white; }
+.tiles li .file-title { font-size:10pt; max-width:130px; word-wrap:break-word; margin-top:8px; background:rgb(235,235,235); padding:5px 10px; border-radius:4px; display:inline-block; }
+.tiles li .options { z-index:1; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:right; }
+.tiles li .options a, .tiles li .options span { color:white; cursor:pointer; }
+.tiles li .options a i, .tiles li .options span i { width:24px; text-align:center; }
 
 /* tinmce overrides */
 .mceu_44-inp-hack { width:207px !important; border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; }

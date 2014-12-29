@@ -140,11 +140,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('events/delete', 'UventController@delete');
 		Route::get('past-events', 'UventController@indexPast');
 		
-		// media/attachments
-		Route::resource('attachments', 'AttachmentController');
-		Route::post('attachments/disable', 'AttachmentController@disable');
-		Route::post('attachments/enable', 'AttachmentController@enable');
-		Route::post('attachments/delete', 'AttachmentController@delete');
+		// Media
+		Route::resource('media', 'MediaController');
+		Route::get('media/user/{id}', ['as' => 'media/user', 'uses' => 'MediaController@user']);
+		Route::post('media/disable', 'MediaController@disable');
+		Route::post('media/enable', 'MediaController@enable');
+		Route::post('media/delete', 'MediaController@delete');
 		
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
@@ -185,8 +186,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			});
 		});
 
-		// upload attachment
-		Route::post('upload-attachment', 'AttachmentController@store');
+		// upload media
+		Route::post('upload-media', 'MediaController@store');
 
 		// userSites
 		Route::resource('user-sites', 'UserSiteController');
