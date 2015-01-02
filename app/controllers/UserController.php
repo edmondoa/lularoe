@@ -44,7 +44,7 @@ class userController extends \BaseController {
 		$rules['zip'] = 'required|digits_between:5,10';
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
 		$rules['password'] = 'required|confirmed|digits_between:8,12';
-		$rules['sponsor_id'] = 'required|numeric|exists:users';
+		$rules['sponsor_id'] = 'required|numeric';
 		$check_sponsor_id = User::where('public_id', $data['sponsor_id']);
 
 		$validator = Validator::make($data,$rules);
@@ -204,11 +204,32 @@ class userController extends \BaseController {
 			$data = Input::all();
 			if (isset($data['phone'])) $data['phone'] = formatPhone($data['phone']);
 			$validator = Validator::make($data, $rules);
+
+			// We cannot allow a circular reference in hierarchy
+			if($old_user_data->sponsor_id != $data['sponsor_id'])
+			{
+				if(Level::where('ancestor_id',$user->id)->where('user_id',$data['sponsor_id'])->first())
+				{
+					unset($data['sponsor_id']);
+					$validator->getMessageBag()->add('sponsor_id', 'Assigning this rep to that sponsor would cause the internet to break!');
+					return Redirect::back()->withErrors($validator)->withInput();
+				}
+			}
+
 			if ($validator->fails())
 			{
 				return Redirect::back()->withErrors($validator)->withInput();
 			}
-			$data['password'] = Hash::make($data['password']);
+			// before save we need to control a couple of things
+			// second, if the password was submitted blank we need to make sure it doesn't get saved
+			if(empty($data['password']))
+			{
+				unset($data['password']);
+			}
+			else
+			{
+				$data['password'] = Hash::make($data['password']);
+			}
 			$data['email'] = strtolower($data['email']);
 			$user->update($data);
 			if($old_user_data->sponsor_id != $user->sponsor_id)
