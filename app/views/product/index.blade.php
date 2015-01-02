@@ -56,6 +56,10 @@
 	                            <th>
 	                            	<input type="checkbox">
 	                            </th>
+
+	                            <th>
+	                            	Image
+	                            </th>
                             	
                             	<th class="link" ng-click="orderByField='name'; reverseSort = !reverseSort">Name
                             		<span>
@@ -84,18 +88,18 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='category_id'; reverseSort = !reverseSort">Category Id
+                            	<th class="link" ng-click="orderByField='category_name'; reverseSort = !reverseSort">Category
                             		<span>
-                            			<span ng-show="orderByField == 'category_id'">
+                            			<span ng-show="orderByField == 'category_name'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
+                            	<th class="link" ng-click="orderByField='tag_name'; reverseSort = !reverseSort">Tags
                             		<span>
-                            			<span ng-show="orderByField == 'disabled'">
+                            			<span ng-show="orderByField == 'tag_name'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
@@ -113,10 +117,14 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="product in products | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{ highlight : product.new == 1, semitransparent : product.disabled }" ng-class="{highlight: address.new == 1}" dir-paginate-start="product in products | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.product_id')">
 	                            </td>
+
+					            <td>
+					                <a href="/products/@include('_helpers.product_id')"><img class="thumb" src="/uploads/@include('_helpers.product_image')"></a>
+					            </td>
 								
 					            <td>
 					                <a href="/products/@include('_helpers.product_id')"><span ng-bind="product.name"></span></a>
@@ -131,11 +139,13 @@
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="product.category_id"></span>
+					                <span ng-bind="product.category_name"></span>
 					            </td>
 					            
-					            <td>
-					                <span ng-bind="product.disabled"></span>
+					            <td class="tag-list">
+					                <span class="label label-default" ng-repeat="tag in product.tags">
+					                	<span ng-bind="tag.name"></span>
+					                </span>
 					            </td>
 					            
 					            <td>

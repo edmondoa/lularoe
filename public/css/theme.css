@@ -43,7 +43,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
 .auto { width:auto; }
 .full { width:100%; }
 .inline-block { display:inline-block !important; }
-.width-auto { width:auto; }
+.width-auto { width:auto !important; }
 .tiny { font-size:7pt; display:block; }
 .clear { clear:both; }
 .margin-top-1 { margin-top:.25em; }
@@ -89,12 +89,16 @@ i { width:16px; } /* standardizes font awesome icons */
 .tiles { padding:0; list-style:none; text-align:center; }
 .tiles li { vertical-align:top; display:inline-block; position:relative; margin:0 3px 10px 0; }
 .tiles li img { max-width:300px; max-height:150px; cursor:pointer; }
+.tiles.tiles-small li img { max-width:150px; max-height:150px; }
 .tiles li .file { padding:30px 10px 10px; cursor:pointer; box-sizing: border-box; width:150px; height:150px; background:white; box-shadow:1px 1px 8px rgba(0,0,0,.2); } 
 .tiles li .file i { font-size:50px; position:relative; margin-left:-20px; }
 .tiles li .file-title { font-size:10pt; max-width:130px; word-wrap:break-word; margin-top:8px; background:rgb(235,235,235); padding:5px 10px; border-radius:4px; display:inline-block; }
 .tiles li .options { z-index:1; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:right; }
 .tiles li .options a, .tiles li .options span { color:white; cursor:pointer; }
 .tiles li .options a i, .tiles li .options span i { width:24px; text-align:center; }
+.tag-list { margin-top:.5em; }
+.tag-list .label { display:inline-block; margin-right:4px; }
+.thumb { max-width:50px; max-height:50px; }
 
 /* tinmce overrides */
 .mceu_44-inp-hack { width:207px !important; border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; }

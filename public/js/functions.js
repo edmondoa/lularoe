@@ -117,7 +117,7 @@ $(document).ready(function() {
                 // '</div>' +
             '');
             $('input#mceu_44-inp').addClass("mceu_44-inp-hack");
-            $('#modals').load('/helpers/modals.blade.php');
+            if ($('#modals').html() == '') $('#modals').load('/helpers/modals');
         }
     }, '#mceu_16');
     
@@ -130,6 +130,47 @@ $(document).ready(function() {
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
                 $(this).popover('hide');
             }
+        });
+    });
+    
+    // add tag
+
+	$(window).keydown(function(event) {
+		if(event.keyCode == 13 /* enter */ || event.keyCode == 9 /* tab */ || event.keyCode == 188 /* comma */) {
+			event.preventDefault();
+			addTag();
+		}
+	}); 
+	$('#addTag').click( function() {
+		addTag();
+	});
+	function addTag() {
+		if ($('#tagger').val() != '') {
+			var tag = $('#tagger').val();
+			$('.tag-list').append('' +
+				'<span class="label label-default">' +
+					tag + '&nbsp;' +
+					'<i class="fa fa-times simpleRemoveTag"></i>' +
+					'<input type="hidden" name="tag_names[]" value="' + tag + '">' +
+				'</span>' +
+			'');
+			$('#tagger').val('');
+		}
+	};
+	
+	// simple remove tag
+	$('body').on('click', '.simpleRemoveTag', function() {
+		$(this).parent().remove();
+	});
+    
+    // remove tag
+    $('.removeTag').click(function() {
+        var id = $(this).attr('data-tag-id');
+        $('[data-tag-id="' + id + '"]').remove();
+        $.ajax({
+            type: "POST",
+            url: "/product-tags/" + id,
+            data: { '_method' : 'delete' }
         });
     });
  

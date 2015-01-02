@@ -16,6 +16,10 @@
 		</div>
 		@section('content')
 		@show
+		<div id="modals">
+			@section('modals')
+			@show
+		</div>
 		<hr>
 		<footer>
             <?php

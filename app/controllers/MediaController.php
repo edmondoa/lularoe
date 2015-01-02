@@ -57,9 +57,6 @@ class mediaController extends \BaseController {
 			}
 		}
 		
-		echo '<pre>'; print_r($data); echo '</pre>';
-		exit;
-		
 		include app_path() . '/helpers/processMedia.php';
 				
 		// format checkboxes for db
