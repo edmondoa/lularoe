@@ -1,5 +1,5 @@
 <div id='div_session_write'></div>
-
+<div id="modals"></div>
 		{{ HTML::script('/js/jquery1.js') }}
 		{{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
 		{{ HTML::script('//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js') }}

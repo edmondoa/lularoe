@@ -6,7 +6,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		                <h1 class="no-top pull-left no-pull-xs">All Product Categories</h1>
+		                <h1 class="no-top pull-left no-pull-xs">All ProductCategories</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
@@ -66,14 +66,14 @@
                             		</span>
                         		</th>
                         		
-                            	<!-- <th class="link" ng-click="orderByField='parent_name'; reverseSort = !reverseSort">Parent
+                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
                             		<span>
-                            			<span ng-show="orderByField == 'parent_name'">
+                            			<span ng-show="orderByField == 'disabled'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
-                        		</th> -->
+                        		</th>
                         		
                             	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
                             		<span>
@@ -83,11 +83,10 @@
                             			</span>
                             		</span>
                         		</th>
-                        		
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{ highlight : productCategory.new == 1, semitransparent : productCategory.disabled }" dir-paginate-start="productCategory in productCategories | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="productCategory in productCategories | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.productCategory_id')">
 	                            </td>
@@ -96,9 +95,9 @@
 					                <a href="/productCategories/@include('_helpers.productCategory_id')"><span ng-bind="productCategory.name"></span></a>
 					            </td>
 					            
-					            <!-- <td>
-					                <a href="/productCategories/@include('_helpers.productCategory_parent_id')"><span ng-bind="productCategory.parent_name"></span></a>
-					            </td> -->
+					            <td>
+					                <a href="/productCategories/@include('_helpers.productCategory_id')"><span ng-bind="productCategory.disabled"></span></a>
+					            </td>
 					            
 					            <td>
 					            	<a href="/productCategories/@include('_helpers.productCategory_id')"><span ng-bind="productCategory.updated_at"></span></a>
@@ -124,9 +123,9 @@
 	
 	function ProductCategoryController($scope, $http) {
 	
-		$http.get('/api/all-product-categories').success(function(productCategories) {
+		$http.get('/api/all-productCategories').success(function(productCategories) {
 			$scope.productCategories = productCategories;
-			console.log($scope.productCategories);
+			
 			@include('_helpers.bulk_action_checkboxes')
 			
 		});

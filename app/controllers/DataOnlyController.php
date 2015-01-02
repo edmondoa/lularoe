@@ -3,38 +3,20 @@
 class DataOnlyController extends \BaseController
 {
 
+
 	/**
 	 * Media
 	 */
-	 
-	// all media
 	public function getAllMedia() {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Media::all();
 		if (Auth::user()->hasRole(['Rep'])) {
 			return Media::where('reps', 1)->get();
 		}
 	}
-	
-	// all images
-	public function getAllImages() {
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Media::where('type', 'Image')->get();
-		if (Auth::user()->hasRole(['Rep'])) {
-			return Media::where('reps', 1)->where('type','Image')->get();
-		}
-	}
-	
-	// all media by user
+
 	public function getMediaByUser($id) {
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id) {
-			return Media::where('user_id', $id)->where('type', 'Image')->get();
-		}
-	}
-	
-	// all images by user
-	public function getImagesByUser($id) {
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id) {
-			return Media::where('user_id', $id)->where('type', 'Image')->get();
-		}
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id);
+			return Media::where('user_id', $id)->get();
 	}
 
 	/*
@@ -133,12 +115,8 @@ class DataOnlyController extends \BaseController
 	
 	// products
 	public function getAllProducts(){
-		return Product::with('tags')->get();
+		return Product::all();
 	}
-	// productCateogires
-	public function getAllProductCategories(){
-		return ProductCategory::all();
-	}
 
 	// users
 	public function getAllUsers(){

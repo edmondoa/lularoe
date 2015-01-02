@@ -60,13 +60,13 @@
  					</a>
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor','Rep'])))
-  					<a href="javascript:void(0)" data-href="/media" class='list-group-item' data-toggle="popover" data-content="
+  					<!-- <a href="javascript:void(0)" data-href="/media" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/media/user/{{ Auth::user()->id }}'><i class='fa fa-th-large'></i> My Media</a>
  						<a href='/media'><i class='fa fa-th-large'></i> Media Library</a>
  						<a href='/media/create'><i class='fa fa-plus'></i> Upload Media</a>
  					">
  						<i class="fa fa-file-image-o"></i> <span class="text">Media</span>
- 					</a>
+ 					</a> -->
  				
  					<a href="javascript:void(0)" data-href="/opportunities" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/opportunities'><i class='fa fa-check'></i> All Opportunities</a>
@@ -91,14 +91,14 @@
 					<!-- <a href="/emailMessages" class="list-group-item"><i class="fa fa-envelope"></i> <span class="text">EmailMessages</span></a> -->
 					<!-- <a href="/levels" class="list-group-item"><i class="fa fa-sitemap"></i> Levels</a> -->
 					<!-- <a href="/payments" class="list-group-item">Payments</a> -->
- 					<a href="javascript:void(0)" data-href="/products" class='list-group-item' data-toggle="popover" data-content="
+ 					<!-- <a href="javascript:void(0)" data-href="/products" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/products'><i class='fa fa-mobile-phone'></i> All Products</a>
  						<a href='/productCategories'><i class='fa fa-mobile-phone'></i> All Product Categories</a>
  						<a href='/products/create'><i class='fa fa-plus'></i> New Product</a>
  						<a href='/productCategories/create'><i class='fa fa-plus'></i> New Product Category</a>
  					">
 						<i class="fa fa-mobile-phone"></i> <span class="text">Products</span>
-					</a>
+					</a> -->
 					<!-- <a href="/profiles" class="list-group-item"><i class="fa fa-user"></i> Profiles</a> -->
 					<!-- <a href="/ranks" class="list-group-item"><i class="fa fa-certificate"></i> Ranks</a> -->
 					<!-- <a href="/reviews" class="list-group-item"><i class="fa fa-comments"></i> Reviews</a> -->

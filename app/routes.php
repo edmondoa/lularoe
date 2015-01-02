@@ -146,12 +146,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('media/disable', 'MediaController@disable');
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
-		Route::get('helpers/modals', function() {
-			return View::make('_helpers.modals');
-		});
-		Route::get('helpers/media-library', function() {
-			return View::make('_helpers.media-library');
-		});
 		
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
@@ -191,9 +185,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 				Route::controller('api','DataOnlyController');
 			});
 		});
-
-		// tags
-		Route::resource('product-tags', 'ProductTagController');
 
 		// upload media
 		Route::post('upload-media', 'MediaController@store');
@@ -444,10 +435,8 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	$productCategories = ProductCategory::all();
-	foreach ($productCategories as $productCategory) {
-		echo $product = ProductCategory::find($productCategory->parent_id);
-	}
+	$date = date('Y-m-d H:i:s');
+	return Timezone::convertFromUTC($date, "Asia/Kolkata", 'F j, Y H:i:s');
 });
 
 Route::get('test-cache/{id}', function($id) {

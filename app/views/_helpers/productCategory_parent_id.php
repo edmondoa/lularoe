@@ -1,1 +1,0 @@
-{{ productCategory.parent_id }}
