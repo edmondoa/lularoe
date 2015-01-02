@@ -4,15 +4,15 @@ return array(
     /**
      * SID - Your Twilio Account SID #
      */
-    "sid" => "AC588fee81e10bbee8b9ab287af9418b3e",
+    "sid" => "ACec50444b2ae499a61e5b1ea50048b216",
 
     /**
      * token - Access token that can be found in your Twilio dashboard
      */
-    "token" => "5e6f0e042889d54bf7867e889865e8e8",
+    "token" => "3f60114bde1bd4af9faf94d4f3eb9af9",
 
     /**
      * from - The Phone number registered with Twilio that your SMS & Calls will come from
      */
-    "from" => "+13852194927"
+    "from" => "+12028001890"
 );
