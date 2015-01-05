@@ -116,4 +116,5 @@
 					<!-- <a href="/userRanks" class="list-group-item"><i class="fa fa-certificate"></i> UserRanks</a> -->
 					<!-- <a href="/smsMessages" class="list-group-item"><i class="fa fa-mobile-phone"></i> <span class="text">SmsMessages</span></a> -->
 				@endif
+				<a href="http://www.shopsociallymobile.com/" target="_blank" class="list-group-item"><i class="fa fa-shopping-cart"></i> <span class="text">Store</span></a>
  			</div>
