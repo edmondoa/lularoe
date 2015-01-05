@@ -19,4 +19,4 @@ chmod 755 "${backup_dir}"
 mysqldump ${additional_mysqldump_params} --user=${mysql_user}  --password='Yr*r,dAv$S?qE8,N' ${database} | gzip > "${backup_dir}/${database}.gz"
  
 #delete old files
-find "${backup_parent_dir}" -maxdepth 1 -type d -mtime +7 -exec rm -f {} \;
+find "${backup_parent_dir}" -maxdepth 1 -type d -mtime +7 -exec rm -Rf {} \;
