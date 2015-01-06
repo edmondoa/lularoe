@@ -1,0 +1,46 @@
+@extends('layouts.default')
+@section('content')
+<div class="show">
+	<div class="row page-actions">
+		@include('_helpers.breadcrumbs')
+		<h1 class="no-top">Viewing [model]</h1>
+		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+		    <div class="btn-group" id="record-options">
+			    <a class="btn btn-default" href="{{ url('[models]/'.$[model]->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
+			    @if ($[model]->disabled == 0)
+				    {{ Form::open(array('url' => '[models]/disable', 'method' => 'DISABLE')) }}
+				    	<input type="hidden" name="ids[]" value="{{ $[model]->id }}">
+				    	<button class="btn btn-default active" title="Currently enabled. Click to disable.">
+				    		<i class="fa fa-eye"></i>
+				    	</button>
+				    {{ Form::close() }}
+				@else
+				    {{ Form::open(array('url' => '[models]/enable', 'method' => 'ENABLE')) }}
+				    	<input type="hidden" name="ids[]" value="{{ $[model]->id }}">
+				    	<button class="btn btn-default" title="Currently disabled. Click to enable.">
+				    		<i class="fa fa-eye"></i>
+				    	</button>
+				    {{ Form::close() }}
+				@endif
+			    {{ Form::open(array('url' => '[models]/' . $[model]->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this [model]? This cannot be undone.");')) }}
+			    	<button class="btn btn-default" title="Delete">
+			    		<i class="fa fa-trash" title="Delete"></i>
+			    	</button>
+			    {{ Form::close() }}
+			</div>
+		@endif
+	</div><!-- row -->
+	<div class="row">
+		<div class="col col-md-6">
+		    <table class="table">
+		        [repeat]
+		        <tr>
+		            <th>[formatted_property]:</th>
+		            <td>{{ $[model]->[property] }}</td>
+		        </tr>
+		        [/repeat]
+		    </table>
+	    </div>
+	</div>
+</div>
+@stop

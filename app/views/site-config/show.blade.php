@@ -1,0 +1,1 @@
+/var/www/cp-sm.local/app/views/settings/show.blade.php

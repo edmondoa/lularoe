@@ -1,0 +1,1 @@
+{{ userProduct.id }}
