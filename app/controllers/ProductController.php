@@ -21,6 +21,7 @@ class productController extends \BaseController {
 	 */
 	public function create()
 	{
+<<<<<<< HEAD
 		$productCategories = ProductCategory::all();
 		$selectCategories = [];
 		foreach ($productCategories as $productCategory) {
@@ -28,6 +29,9 @@ class productController extends \BaseController {
 			$selectCategories[$productCategory->id] = /*$tab . */$productCategory->name;
 		}
 		return View::make('product.create', compact('selectCategories'));
+=======
+		return View::make('product.create');
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	}
 
 	/**
@@ -38,12 +42,17 @@ class productController extends \BaseController {
 	public function store()
 	{
 		$validator = Validator::make($data = Input::all(), Product::$rules);
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+<<<<<<< HEAD
 		// process image
 		if (isset($data['image']) || isset($data['image_url'])) {
 			if (!isset($data['image_url'])) {
@@ -68,6 +77,10 @@ class productController extends \BaseController {
 		
 		// clear cache
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
+=======
+		Product::create($data);
+
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		return Redirect::route('products.index')->with('message', 'Product created.');
 	}
 
@@ -93,6 +106,7 @@ class productController extends \BaseController {
 	public function edit($id)
 	{
 		$product = Product::find($id);
+<<<<<<< HEAD
 		$productCategories = ProductCategory::all();
 		$selectCategories = [];
 		foreach ($productCategories as $productCategory) {
@@ -101,6 +115,10 @@ class productController extends \BaseController {
 		}
 		$tags = Product::find($id)->tags;
 		return View::make('product.edit', compact('product', 'selectCategories', 'tags'));
+=======
+
+		return View::make('product.edit', compact('product'));
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	}
 
 	/**
@@ -120,6 +138,7 @@ class productController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+<<<<<<< HEAD
 		// process image
 		if (isset($data['image']) || isset($data['image_url'])) {
 			if (!isset($data['image_url'])) {
@@ -144,6 +163,10 @@ class productController extends \BaseController {
 		$product->update($data);
 		// clear cache
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
+=======
+		$product->update($data);
+
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		return Redirect::route('products.show', $id)->with('message', 'Product updated.');
 	}
 
@@ -155,6 +178,7 @@ class productController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
+<<<<<<< HEAD
 		// delete images
 		$product = Product::find($id);
 		unlink('uploads/' . $product->image);
@@ -163,6 +187,10 @@ class productController extends \BaseController {
 		Product::destroy($id);
 		// clear cache
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
+=======
+		Product::destroy($id);
+
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		return Redirect::route('products.index')->with('message', 'Product deleted.');
 	}
 	
@@ -172,6 +200,7 @@ class productController extends \BaseController {
 	public function delete()
 	{
 		foreach (Input::get('ids') as $id) {
+<<<<<<< HEAD
 			// delete images
 			$product = Product::find($id);
 			unlink('uploads/' . $product->image);
@@ -180,6 +209,10 @@ class productController extends \BaseController {
 			Product::destroy($id);
 		}
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
+=======
+			Product::destroy($id);
+		}
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		if (count(Input::get('ids')) > 1) {
 			return Redirect::route('products.index')->with('message', 'Products deleted.');
 		}
@@ -196,7 +229,10 @@ class productController extends \BaseController {
 		foreach (Input::get('ids') as $id) {
 			Product::find($id)->update(['disabled' => 1]);	
 		}
+<<<<<<< HEAD
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		if (count(Input::get('ids')) > 1) {
 			return Redirect::route('products.index')->with('message', 'Products disabled.');
 		}
@@ -213,7 +249,10 @@ class productController extends \BaseController {
 		foreach (Input::get('ids') as $id) {
 			Product::find($id)->update(['disabled' => 0]);	
 		}
+<<<<<<< HEAD
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		if (count(Input::get('ids')) > 1) {
 			return Redirect::route('products.index')->with('message', 'Products enabled.');
 		}

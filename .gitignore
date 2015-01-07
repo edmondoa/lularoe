@@ -11,6 +11,10 @@ Thumbs.db
 *.pyc
 *.pyo
 /app/config/jake_local
+<<<<<<< HEAD
+=======
+public/nfo.php
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 /public/server_config
 /public/nfo.php
 /.htaccess
