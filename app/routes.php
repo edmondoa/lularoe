@@ -451,19 +451,9 @@ Route::get('test-cache/{id}', function($id) {
 });
 
 Route::get('test', function() {
-<<<<<<< HEAD
-
-	Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
-});
-
-Route::get('clear-cache/{function}', function($function) {
-	Cache::forget('route_'.Str::slug(action('DataOnlyController@' . $function)));
-
-=======
 	//return User::find(2001)->descendants;
 	$id = 2001;
 	return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 });
 
 Route::get('test-orders', function() {
