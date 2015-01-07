@@ -2,6 +2,7 @@
 @section('content')
 <div class="create">
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{{ Form::open(array('url' => 'products', 'files' => true)) }}
 		<div class="row">
 			<div class="col col-md-12">
@@ -12,6 +13,8 @@
 		<div class="row">
 			<div class="col col-lg-6">			    
 =======
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	<div class="row">
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
@@ -24,6 +27,9 @@
 		
 				<button data-toggle="modal" data-target="#media-library" type="button" class="btn btn-default" id="media-library"><i class="fa fa-th-large"></i> Media Library</button>
 						    
+<<<<<<< HEAD
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
+=======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 			    <div class="form-group">
 			        {{ Form::label('name', 'Name') }}
@@ -32,7 +38,11 @@
 			    
 			    <div class="form-group">
 <<<<<<< HEAD
+<<<<<<< HEAD
 			        {{ Form::label('blurb', 'Brief Description') }}
+=======
+			        {{ Form::label('blurb', 'Blurb') }}
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
 			        {{ Form::label('blurb', 'Blurb') }}
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
@@ -40,6 +50,7 @@
 			    </div>
 			    
 			    <div class="form-group">
+<<<<<<< HEAD
 <<<<<<< HEAD
 			        {{ Form::label('description', 'Long Description') }}
 			        {{ Form::textarea('description', Input::old('description'), array('class' => 'wysiwyg form-control')) }}
@@ -115,6 +126,8 @@
 @section('modals')
 	@include('_helpers.modals')
 =======
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 			        {{ Form::label('description', 'Description') }}
 			        {{ Form::textarea('description', Input::old('description'), array('class' => 'wysiwyg form-control')) }}
 			    </div>
@@ -146,5 +159,8 @@
 	    </div>
 	</div>
 </div>
+<<<<<<< HEAD
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
+=======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 @stop

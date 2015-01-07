@@ -2,6 +2,7 @@
 @include('layouts.header')
 <div id="header-menu" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
 <<<<<<< HEAD
+<<<<<<< HEAD
     @include('layouts.header-menu')
 </div><!-- /.navbar -->
 <div id="main">
@@ -48,6 +49,8 @@
         </footer>
     </div><!--/col-->
 =======
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	@include('layouts.header-menu')
 </div><!-- /.navbar -->
 <div id="main">
@@ -89,6 +92,9 @@
 			<p>&copy; {{Config::get('site.company_name')}} {{ date('Y') }}</p>
 		</footer>
 	</div><!--/col-->
+<<<<<<< HEAD
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
+=======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 </div><!--/row-->
 @include('layouts.footer')

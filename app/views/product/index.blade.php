@@ -57,10 +57,13 @@
 	                            	<input type="checkbox">
 	                            </th>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	                            <th>
 	                            	Image
 	                            </th>
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
                             	
@@ -92,9 +95,15 @@
                         		</th>
                         		
 <<<<<<< HEAD
+<<<<<<< HEAD
                             	<th class="link" ng-click="orderByField='category_name'; reverseSort = !reverseSort">Category
                             		<span>
                             			<span ng-show="orderByField == 'category_name'">
+=======
+                            	<th class="link" ng-click="orderByField='category_id'; reverseSort = !reverseSort">Category Id
+                            		<span>
+                            			<span ng-show="orderByField == 'category_id'">
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
                             	<th class="link" ng-click="orderByField='category_id'; reverseSort = !reverseSort">Category Id
                             		<span>
@@ -107,9 +116,15 @@
                         		</th>
                         		
 <<<<<<< HEAD
+<<<<<<< HEAD
                             	<th class="link" ng-click="orderByField='tag_name'; reverseSort = !reverseSort">Tags
                             		<span>
                             			<span ng-show="orderByField == 'tag_name'">
+=======
+                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
+                            		<span>
+                            			<span ng-show="orderByField == 'disabled'">
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
                             	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
                             		<span>
@@ -133,6 +148,7 @@
 	                    </thead>
 	                    <tbody>
 <<<<<<< HEAD
+<<<<<<< HEAD
 	                        <tr ng-class="{ highlight : product.new == 1, semitransparent : product.disabled }" ng-class="{highlight: address.new == 1}" dir-paginate-start="product in products | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.product_id')">
@@ -142,10 +158,15 @@
 					                <a href="/products/@include('_helpers.product_id')"><img class="thumb" src="/uploads/@include('_helpers.product_image_sm')"></a>
 					            </td>
 =======
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="product in products | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.product_id')">
 	                            </td>
+<<<<<<< HEAD
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
+=======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 								
 					            <td>
@@ -162,6 +183,7 @@
 					            
 					            <td>
 <<<<<<< HEAD
+<<<<<<< HEAD
 					                <span ng-bind="product.category_name"></span>
 					            </td>
 					            
@@ -170,11 +192,16 @@
 					                	<span ng-bind="tag.name"></span>
 					                </span>
 =======
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 					                <span ng-bind="product.category_id"></span>
 					            </td>
 					            
 					            <td>
 					                <span ng-bind="product.disabled"></span>
+<<<<<<< HEAD
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
+=======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 					            </td>
 					            

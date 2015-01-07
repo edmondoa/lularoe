@@ -52,7 +52,11 @@ class DatabaseSeeder extends Seeder {
 		$this->call('OpportunitiesTableSeeder');
 		$this->call('LeadsTableSeeder');
 <<<<<<< HEAD
+<<<<<<< HEAD
 		// $this->call('MediaTableSeeder');
+=======
+		$this->call('MediaTableSeeder');
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
 		$this->call('MediaTableSeeder');
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5

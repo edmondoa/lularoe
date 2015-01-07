@@ -61,7 +61,11 @@
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor','Rep'])))
 <<<<<<< HEAD
+<<<<<<< HEAD
   					<a href="javascript:void(0)" data-href="/media" class='list-group-item' data-toggle="popover" data-content="
+=======
+  					<!-- <a href="javascript:void(0)" data-href="/media" class='list-group-item' data-toggle="popover" data-content="
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
   					<!-- <a href="javascript:void(0)" data-href="/media" class='list-group-item' data-toggle="popover" data-content="
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
@@ -71,7 +75,11 @@
  					">
  						<i class="fa fa-file-image-o"></i> <span class="text">Media</span>
 <<<<<<< HEAD
+<<<<<<< HEAD
  					</a>
+=======
+ 					</a> -->
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
  					</a> -->
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
@@ -100,7 +108,11 @@
 					<!-- <a href="/levels" class="list-group-item"><i class="fa fa-sitemap"></i> Levels</a> -->
 					<!-- <a href="/payments" class="list-group-item">Payments</a> -->
 <<<<<<< HEAD
+<<<<<<< HEAD
  					<a href="javascript:void(0)" data-href="/products" class='list-group-item' data-toggle="popover" data-content="
+=======
+ 					<!-- <a href="javascript:void(0)" data-href="/products" class='list-group-item' data-toggle="popover" data-content="
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
  					<!-- <a href="javascript:void(0)" data-href="/products" class='list-group-item' data-toggle="popover" data-content="
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
@@ -111,7 +123,11 @@
  					">
 						<i class="fa fa-mobile-phone"></i> <span class="text">Products</span>
 <<<<<<< HEAD
+<<<<<<< HEAD
 					</a>
+=======
+					</a> -->
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
 					</a> -->
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
@@ -133,6 +149,10 @@
 					<!-- <a href="/smsMessages" class="list-group-item"><i class="fa fa-mobile-phone"></i> <span class="text">SmsMessages</span></a> -->
 				@endif
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+				<a href="http://www.shopsociallymobile.com/" target="_blank" class="list-group-item"><i class="fa fa-shopping-cart"></i> <span class="text">Store</span></a>
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
 				<a href="http://www.shopsociallymobile.com/" target="_blank" class="list-group-item"><i class="fa fa-shopping-cart"></i> <span class="text">Store</span></a>
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5

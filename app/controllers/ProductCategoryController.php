@@ -4,7 +4,10 @@ class productCategoryController extends \BaseController {
 
 	/**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	 * Data only
 	 */
 	public function getAllProductCategories(){
@@ -20,6 +23,9 @@ class productCategoryController extends \BaseController {
 	}
 
 	/**
+<<<<<<< HEAD
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
+=======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	 * Display a listing of productCategories
 	 *
@@ -40,6 +46,7 @@ class productCategoryController extends \BaseController {
 	public function create()
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$productCategories = ProductCategory::all();
 		$selectCategories = [];
 		$selectCategories[''] = 'None';
@@ -53,6 +60,9 @@ class productCategoryController extends \BaseController {
 			$selectCategories[$productCategory->id] = /*$tab . */$productCategory->name;
 		}
 		return View::make('productCategory.create', compact('selectCategories'));
+=======
+		return View::make('productCategory.create');
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
 		return View::make('productCategory.create');
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
@@ -74,10 +84,15 @@ class productCategoryController extends \BaseController {
 
 		ProductCategory::create($data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
 		
 		return Redirect::route('productCategories.index')->with('message', 'Product Category created.');
+=======
+
+		return Redirect::route('productCategories.index')->with('message', 'ProductCategory created.');
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
 
 		return Redirect::route('productCategories.index')->with('message', 'ProductCategory created.');
@@ -130,9 +145,13 @@ class productCategoryController extends \BaseController {
 		$productCategory->update($data);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
 
 		return Redirect::route('productCategories.show', $id)->with('message', 'Product Category updated.');
+=======
+		return Redirect::route('productCategories.show', $id)->with('message', 'ProductCategory updated.');
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
 		return Redirect::route('productCategories.show', $id)->with('message', 'ProductCategory updated.');
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
@@ -148,8 +167,13 @@ class productCategoryController extends \BaseController {
 	{
 		ProductCategory::destroy($id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
 		return Redirect::route('productCategories.index')->with('message', 'Product Category deleted.');
+=======
+
+		return Redirect::route('productCategories.index')->with('message', 'ProductCategory deleted.');
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
 
 		return Redirect::route('productCategories.index')->with('message', 'ProductCategory deleted.');
@@ -165,6 +189,7 @@ class productCategoryController extends \BaseController {
 			ProductCategory::destroy($id);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
 		if (count(Input::get('ids')) > 1) {
 			return Redirect::route('productCategories.index')->with('message', 'Product Categories deleted.');
@@ -172,11 +197,16 @@ class productCategoryController extends \BaseController {
 		else {
 			return Redirect::back()->with('message', 'Product Category deleted.');
 =======
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		if (count(Input::get('ids')) > 1) {
 			return Redirect::route('productCategories.index')->with('message', 'ProductCategories deleted.');
 		}
 		else {
 			return Redirect::back()->with('message', 'ProductCategory deleted.');
+<<<<<<< HEAD
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
+=======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		}
 	}
@@ -190,6 +220,7 @@ class productCategoryController extends \BaseController {
 			ProductCategory::find($id)->update(['disabled' => 1]);	
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
 		if (count(Input::get('ids')) > 1) {
 			return Redirect::route('productCategories.index')->with('message', 'Product Categories disabled.');
@@ -197,11 +228,16 @@ class productCategoryController extends \BaseController {
 		else {
 			return Redirect::back()->with('message', 'Product Category disabled.');
 =======
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		if (count(Input::get('ids')) > 1) {
 			return Redirect::route('productCategories.index')->with('message', 'ProductCategories disabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'ProductCategory disabled.');
+<<<<<<< HEAD
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
+=======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		}
 	}
@@ -215,6 +251,7 @@ class productCategoryController extends \BaseController {
 			ProductCategory::find($id)->update(['disabled' => 0]);	
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
 		if (count(Input::get('ids')) > 1) {
 			return Redirect::route('productCategories.index')->with('message', 'Product Categories enabled.');
@@ -222,11 +259,16 @@ class productCategoryController extends \BaseController {
 		else {
 			return Redirect::back()->with('message', 'Product Category enabled.');
 =======
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		if (count(Input::get('ids')) > 1) {
 			return Redirect::route('productCategories.index')->with('message', 'ProductCategories enabled.');
 		}
 		else {
 			return Redirect::back()->with('message', 'ProductCategory enabled.');
+<<<<<<< HEAD
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
+=======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 		}
 	}

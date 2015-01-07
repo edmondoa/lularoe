@@ -20,7 +20,11 @@ mysqldump ${additional_mysqldump_params} --user=${mysql_user}  --password='Yr*r,
  
 #delete old files
 <<<<<<< HEAD
+<<<<<<< HEAD
 find "${backup_parent_dir}" -maxdepth 1 -type d -mtime +7 -exec rm -f {} \;
+=======
+find "${backup_parent_dir}" -maxdepth 1 -type d -mtime +7 -exec rm -Rf {} \;
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 =======
 find "${backup_parent_dir}" -maxdepth 1 -type d -mtime +7 -exec rm -Rf {} \;
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5

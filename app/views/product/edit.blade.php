@@ -2,6 +2,7 @@
 @section('content')
 <div class="edit">
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{{ Form::model($product, array('route' => array('products.update', $product->id), 'method' => 'PUT', 'files' => true)) }}
 		<div class="row">
 			<div class="col col-md-12">
@@ -105,6 +106,8 @@
 	@include('_helpers.modals')
 @stop
 =======
+=======
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	<div class="row">
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
@@ -156,4 +159,7 @@
 </div>
 @stop
 
+<<<<<<< HEAD
+>>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
+=======
 >>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
