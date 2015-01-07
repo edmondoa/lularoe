@@ -95,6 +95,7 @@ i { width:16px; } /* standardizes font awesome icons */
 .tiles li .options { z-index:1; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:right; }
 .tiles li .options a, .tiles li .options span { color:white; cursor:pointer; }
 .tiles li .options a i, .tiles li .options span i { width:24px; text-align:center; }
+.thumb { width:50px; }
 
 /* tinmce overrides */
 .mceu_44-inp-hack { width:207px !important; border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; }

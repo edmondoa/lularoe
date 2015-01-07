@@ -9,7 +9,7 @@
 
         <!--Shortcut icon-->
 
-        <title>{{ $title }} | SociallyMobile</title>
+        <title><?php if (isset($title)) echo $title . ' | ' ?>SociallyMobile</title>
 
         <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Feed" href="/feed/" />
         <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Comments Feed" href="/comments/feed/" />
