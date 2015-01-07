@@ -15,8 +15,6 @@ class Media extends \Eloquent
 	public function getNewRecordAttribute() {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
 	}
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 	public function getImageSmAttribute() {
 		$image_sm = explode('.', $this->url);
@@ -25,14 +23,6 @@ class Media extends \Eloquent
 	}
 
 	protected $appends = array('new_record', 'owner', 'image_sm');
-=======
-	
-	protected $appends = array('new_record', 'owner');
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
-	
-	protected $appends = array('new_record', 'owner');
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 
 
 }

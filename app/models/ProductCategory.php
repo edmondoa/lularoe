@@ -10,8 +10,6 @@ class ProductCategory extends \Eloquent
 
 	// Don't forget to fill this array    
 	protected $table = 'product_categories';
-<<<<<<< HEAD
-<<<<<<< HEAD
 	protected $fillable = array('name','parent_id','disabled');
 
 	public function getParentNameAttribute() {
@@ -21,25 +19,11 @@ class ProductCategory extends \Eloquent
 		}
 		else return '';
 	}
-=======
-	protected $fillable = array('name','disabled');
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
-	protected $fillable = array('name','disabled');
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 
 	public function getNewRecordAttribute() {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
 	}
 	
-<<<<<<< HEAD
-<<<<<<< HEAD
 	protected $appends = array('new_record', 'parent_name');
-=======
-	protected $appends = array('new_record');
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
-	protected $appends = array('new_record');
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 
 }

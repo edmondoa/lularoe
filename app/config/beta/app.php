@@ -126,13 +126,7 @@ return array(
 		'SociallyMobile\Payments\PaymentServiceProvider',
 		'SociallyMobile\Twilio\TwilioServiceProvider',
 		'SociallyMobile\Commission\CommissionServiceProvider',
-<<<<<<< HEAD
-<<<<<<< HEAD
 		'Intervention\Image\ImageServiceProvider',
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
     	'Camroncade\Timezone\TimezoneServiceProvider'
 
 	),
@@ -204,13 +198,7 @@ return array(
 		'Twilio'		  => 'SociallyMobile\Facades\Twilio',
 		'CMSPayment'	  => 'SociallyMobile\Facades\Payment',
 		'Commission'		=> 'SociallyMobile\Facades\Commission',
-<<<<<<< HEAD
-<<<<<<< HEAD
 		'Image'	  => 'Intervention\Image\Facades\Image'
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	),
 
 );

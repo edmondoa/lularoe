@@ -1,6 +1,4 @@
 <?php
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 		// process and store media
         if (Input::file('media') || Input::file('image')) {
@@ -16,20 +14,6 @@
                 	$file_type = 'image';
                 	$file = Input::file('image');
 				}
-=======
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-		// process and store media
-        if (Input::file('media')) {
-
-            // upload and link to image
-            $filename = '';
-            if (Input::hasFile('media')) {
-                $file = Input::file('media');
-<<<<<<< HEAD
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 				
 				if (!file_exists('/uploads/' . date('Y') . '/' . date('m'))) {
 				    mkdir('/uploads/' . date('Y') . '/' . date('m'), 0755, true);
@@ -40,8 +24,6 @@
                 $extension = $file->getClientOriginalExtension();
 
 				// generate media name and check for existing
-<<<<<<< HEAD
-<<<<<<< HEAD
 				$filename = basename($_FILES[$file_type]["name"]);
 				$filename = explode('.', $filename);
 				$filename = $filename[0];
@@ -50,18 +32,6 @@
 				$existing_file = Media::where('url', $url)->get();
 				if (count($existing_file) > 0) {
 					$filename = str_random(20);
-=======
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-				$filename = basename($_FILES["media"]["name"]);
-				$url = $path . $filename;
-				$existing_file = Media::where('url', $url)->get();
-				while (count($existing_file) > 0) {
-					$filename = str_random(20) . '.' . $extension;
-<<<<<<< HEAD
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 					$url = $path . $filename;
 				}
 
@@ -83,8 +53,6 @@
 						
 				// determine media type
 				if (in_array($extension, $raster_image_extensions)) {
-<<<<<<< HEAD
-<<<<<<< HEAD
 					// make thumbs directory if doesn't exist
 					if (!file_exists('/uploads/' . date('Y') . '/' . date('m') . '/thumbs')) {
 					    mkdir('/uploads/' . date('Y') . '/' . date('m') . '/thumbs', 0755, true);
@@ -97,21 +65,6 @@
 	                ->save('uploads/' . $path . $filename . '-sm' . '.' . $extension)
 					->destroy();
 					unlink('uploads/' . $path . $filename);
-=======
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-	                // open an image media
-					$img = Image::make('uploads/' . $path . $filename);
-	    
-	                // now you are able to resize the instance
-	                $img->fit(800, 600);
-	
-	                // finally we save the image as a new image
-	                $img->save('uploads/' . $path . $filename);
-<<<<<<< HEAD
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 					$data['type'] = 'Image';
 				}
 				elseif (in_array($extension, $image_extensions)) $data['type'] = 'Image media';
@@ -130,17 +83,9 @@
 				// assign values to data array
                 $data['url'] = $url;
 				$data['user_id'] = Auth::user()->id;
-<<<<<<< HEAD
-<<<<<<< HEAD
 				if (isset($data['title'])) {
 					if ($data['title'] == '') $data['title'] = $filename;
 				}
-=======
-				if ($data['title'] == '') $data['title'] = $filename;
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
-				if ($data['title'] == '') $data['title'] = $filename;
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 
             }
         }
