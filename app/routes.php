@@ -421,7 +421,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	});
 
 	// opportunities (public view)
-	Route::get('opportunity/{id}', function($subdomain, $domain, $id)
+	Route::get('opportunity/{id}', function($subdomain, $id)
 	{
 		$opportunity = Opportunity::findOrFail($id);
 		$sponsor = User::where('public_id', $subdomain)->first();
