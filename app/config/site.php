@@ -23,9 +23,7 @@ return [
 		'my',
 		'beta',
 		'www',
-		'llr',
-	]
-];
+		'llr'
 	],
 	'cache_length' => 10
 ];
