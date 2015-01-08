@@ -206,28 +206,12 @@ class userController extends \BaseController {
 			$validator = Validator::make($data, $rules);
 
 			// We cannot allow a circular reference in hierarchy
-<<<<<<< HEAD
-<<<<<<< HEAD
 			if (isset($data['sponsor_id']) && $old_user_data->sponsor_id != $data['sponsor_id'])
-=======
-			if($old_user_data->sponsor_id != $data['sponsor_id'])
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
-			if($old_user_data->sponsor_id != $data['sponsor_id'])
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 			{
 				if(Level::where('ancestor_id',$user->id)->where('user_id',$data['sponsor_id'])->first())
 				{
 					unset($data['sponsor_id']);
-<<<<<<< HEAD
-<<<<<<< HEAD
 					$validator->getMessageBag()->add('sponsor_id', 'Cannot assign to sponsor in downline.');
-=======
-					$validator->getMessageBag()->add('sponsor_id', 'Assigning this rep to that sponsor would cause the internet to break!');
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
-					$validator->getMessageBag()->add('sponsor_id', 'Assigning this rep to that sponsor would cause the internet to break!');
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 					return Redirect::back()->withErrors($validator)->withInput();
 				}
 			}
@@ -236,13 +220,6 @@ class userController extends \BaseController {
 			{
 				return Redirect::back()->withErrors($validator)->withInput();
 			}
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 			// before save we need to control a couple of things
 			// second, if the password was submitted blank we need to make sure it doesn't get saved
 			if(empty($data['password']))
