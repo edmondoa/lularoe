@@ -21,7 +21,8 @@
 		                <div class="pull-left">
 		                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('products/create') }}"><i class="fa fa-plus"></i></a>
 		                    <div class="pull-left">
-		                        <div class="input-group">
+		                    	<?php /* record actions */ ?>
+		                        <div class="input-group pull-left margin-right-2">
 		                            <select class="form-control selectpicker actions">
 		                                <option value="products/disable" selected>Disable</option>
 		                                <option value="products/enable">Enable</option>
@@ -33,6 +34,15 @@
 		                                </button>
 		                            </div>
 		                        </div>
+		                        <?php /* select categories */ ?>
+		                        <div class="pull-left">
+		                            <select ng-model="search" class="form-control">
+		                            	<option value="">All Categories</option>
+		                            	@foreach ($categories as $category)
+		                                	<option value="{{ $category->name }}">{{ $category->name }}</option>
+		                                @endforeach
+		                            </select>
+		                    	</div>
 		                    </div>
 		                </div>
 			        </div>
@@ -139,12 +149,12 @@
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="product.category_name"></span>
+					                <a class="link" ng-click="$parent.search=product.category_name"><span ng-bind="product.category_name"></span></a>
 					            </td>
 					            
 					            <td class="tag-list">
 					                <span class="label label-default" ng-repeat="tag in product.tags">
-					                	<span ng-bind="tag.name"></span>
+					                	<a class="link" ng-click="$parent.$parent.search=tag.name"><span ng-bind="tag.name"></span></a>
 					                </span>
 					            </td>
 					            
