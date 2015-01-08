@@ -3,6 +3,7 @@
 class DataOnlyController extends \BaseController
 {
 
+
 	/**
 	 * Media
 	 */
