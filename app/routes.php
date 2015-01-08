@@ -356,7 +356,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	# Secure Routes
 	##############################################################################################
 
-	Route::group(['before' => 'force.ssl'], function() {
+	// LLRDEV
+	// Route::group(['before' => 'force.ssl'], function() {
+	Route::group(array(), function() {
 		//Route::get('join', 'PreRegisterController@sponsor');
 		Route::get('join/{public_id}', 'PreRegisterController@create');
 		Route::get('join', 'PreRegisterController@create');

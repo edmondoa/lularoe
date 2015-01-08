@@ -10,7 +10,7 @@
                                 <div class="swiper-slide" style="background-image: url(http://themenectar.com/demo/salient/wp-content/uploads/2013/09/black-bg1.png);" data-bg-alignment="bottom" data-color-scheme="light" data-x-pos="centered" data-y-pos="middle">
                                     <div class="container">
                                         <div class="content">
-                                            <h2>We Are Socially Mobile</h2>
+                                            <h2>We Are LLRDEV</h2>
                                             <p  >
                                                 <span>join the conversation!</span>
                                             </p>
@@ -82,7 +82,7 @@
                         <div class="wpb_wrapper">
                             <h4><a href="/wp-content/uploads/2013/03/Contact-Image.jpg"><img class="aligncenter size-large wp-image-3072" src="/wp-content/uploads/2013/03/Contact-Image-1024x680.jpg" alt="young man using a smartphone outdoors" width="1024" height="680" /></a>Don&#8217;t hesitate to reach out!</h4>
                             <p>
-                                <strong>Customer Service: 1.615.679.3998</strong>
+                                <strong>Customer Service: 1.800.000.0000</strong>
                             </p>
                             <h2>
                         </div>

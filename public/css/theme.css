@@ -6,6 +6,7 @@
 #303030 - Black/Dark Grey
 */
 
+
 /* main-header */
 html, body { overflow-x: hidden; }
 #logo { position:relative; top:-2px; }
@@ -115,7 +116,7 @@ i { width:16px; } /* standardizes font awesome icons */
 #communication-options > form:nth-of-type(1) > .btn { border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-right:0 !important; }
 .btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
 .navbar-inverse {
-    background-image: linear-gradient(to bottom, #3C3C3C 0px, #303030 100%); background-repeat: repeat-x;
+    background-image: linear-gradient(to bottom, #63666A 0px, #303030 100%); background-repeat: repeat-x;
 }
 #main-menu .popover { background:#202020; box-shadow:none; }
 #main-menu .popover.right > .arrow:after { border-right-color:#202020; color:#202020; }
@@ -174,4 +175,9 @@ select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight
 }
 @media(min-width:1200px) {
     
+}
+
+.btn-primary:hover, .btn-primary:focus {
+	background-color: #8BB8E8;
+	background-position: 0 -15px;
 }

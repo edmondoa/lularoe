@@ -28,7 +28,7 @@
                         <div style="height: 650px" data-transition="fade" data-flexible-height="" data-fullscreen="true" data-autorotate="" data-parallax="true" data-full-width="true" class="nectar-slider-wrap " id="ns-id-546a4816767a8">
                             <div style="height: 650px" class="swiper-container" data-loop="true" data-height="650" data-min-height="" data-arrows="true" data-bullets="false" data-desktop-swipe="true" data-settings="">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide" style="background-image: url(/wp-content/uploads/2014/09/DPExample.jpg);" data-bg-alignment="center" data-color-scheme="dark" data-x-pos="centered" data-y-pos="middle">
+                                    <div class="swiper-slide" style="background-image: url(/img/llr-bg.jpg);" data-bg-alignment="center" data-color-scheme="dark" data-x-pos="centered" data-y-pos="middle">
                                         <div class="container">
                                             <div class="content">
                                                 <h2>Next Website Update

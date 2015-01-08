@@ -9,11 +9,11 @@
 
         <!--Shortcut icon-->
 
-        <title>{{ $title }} | SociallyMobile</title>
+        <title>{{ $title }} | LLRDEV</title>
 
-        <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Feed" href="/feed/" />
-        <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Comments Feed" href="/comments/feed/" />
-        <meta property='og:site_name' content='SociallyMobile'/>
+        <link rel="alternate" type="application/rss+xml" title="LLRDEV &raquo; Feed" href="/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="LLRDEV &raquo; Comments Feed" href="/comments/feed/" />
+        <meta property='og:site_name' content='LLRDEV'/>
         <meta property='og:url' content='/privacy-policy/'/>
         <meta property='og:title' content='Privacy Policy'/>
         <meta property='og:type' content='article'/>
@@ -91,7 +91,7 @@
 
                         <div class="col span_3">
 
-                            <a id="logo" href="/" > <img class=" dark-version" alt="SociallyMobile" src="/wp-content/uploads/2014/10/Socially-Mobile-with-tag-e1413399140125.png" /> </a>
+                            <a id="logo" href="/" > <img class=" dark-version" alt="LLRDEV" src="/img/llr-logo.png" /> </a>
 
                         </div><!--/span_3-->
 
@@ -227,7 +227,7 @@
 								@endforeach
 							</ul>
 							<br>
-                            <p id="copyright-text">&copy; {{ date('Y') }} SociallyMobile</p>
+                            <p id="copyright-text">&copy; {{ date('Y') }} LLRDEV</p>
 
                         </div><!--/span_5-->
 

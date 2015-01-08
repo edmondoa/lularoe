@@ -49,8 +49,8 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'soc_mob',
-			'username'  => 'soc_mob',
+			'database'  => 'llr_dev',
+			'username'  => 'llr_dev',
 			'password'  => '7U8$SAV*NEjuB$T%',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
