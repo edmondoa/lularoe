@@ -36,18 +36,17 @@
 		                        </div>
 		                        <?php /* select categories */ ?>
 		                        <div class="pull-left margin-right-1">
-		                            <select id="categories" ng-model="search" class="form-control">
+		                            <select ng-model="search" id="categories" class="form-control">
 		                            	<option value="">All Categories</option>
-		                                <option ng-repeat="productCategory in productCategories" value="@include('_helpers.productCategory_id')">@include('_helpers.productCategory_name')</option>
+		                                <option ng-repeat="productCategory in productCategories" data-index="@include('_helpers.index')">@include('_helpers.productCategory_name')</option>
 		                            </select>
 		                    	</div>
 		                        <?php /* select tags */ ?>
 		                        <div class="pull-left">
-		                            <!-- <select id="tags" ng-model="search" class="form-control">
+		                            <select ng-model="search" id="tags" class="form-control">
 		                            	<option value="">All Tags</option>
-		                                <option ng-repeat="tag in $scope.search.tags">@include('_helpers.productTag_name')</option>
-		                            </select> -->
-		                            <select ng-model="selectedSubCategory" ng-options="c for c in selectedSubCategoryValues" class="form-control"></select>
+		                                <option ng-repeat="productTag in selectedSubCategoryValues" value="@include('_helpers.productTag_name')">@include('_helpers.productTag_name')</option>
+		                            </select>
 		                    	</div>
 		                    </div>
 		                </div>
@@ -198,31 +197,25 @@
 			console.log($scope.productCategories);
 		});
 
-			$scope.currentPage = 1;
-			$scope.pageSize = 10;
-			$scope.meals = [];
+		$scope.currentPage = 1;
+		$scope.pageSize = 10;
+		$scope.meals = [];
 
-			$scope.pageChangeHandler = function(num) {
+		$scope.pageChangeHandler = function(num) {
 
-			};
+		};
 
-			$scope.$watch('search', function(newValue) {
-				alert(newValue);
-				alert($scope.productCategories[newValue].name);
-				for (var i = 0; i < $scope.newValue.tags.length; i++) {
-					alert($scope.newValue);
-					if ($scope.newValue.tags[i].name === newValue) {
-						$scope.selectedSubCategoryValues = $scope.newValue.tags[i].name;
-					}
-				}
-			});
+		$scope.$watch('search', function(newValue) {
+			index = jQuery('#categories option:selected').attr('data-index');
+			if (index != undefined) $scope.selectedSubCategoryValues = $scope.productCategories[index].tags;
+		});
 
-			}
+	}
 
-			function OtherController($scope) {
-				$scope.pageChangeHandler = function(num) {
-				};
-			}
+	function OtherController($scope) {
+		$scope.pageChangeHandler = function(num) {
+		};
+	}
 
 </script>
 @stop

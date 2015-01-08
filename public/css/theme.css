@@ -97,6 +97,8 @@ i { width:16px; } /* standardizes font awesome icons */
 .tiles li .options a, .tiles li .options span { color:white; cursor:pointer; }
 .tiles li .options a i, .tiles li .options span i { width:24px; text-align:center; }
 .thumb { width:50px; }
+.tag-list .label { margin:0 4px 4px 0; }
+.tag-list .label a { color:white !important; }
 
 /* tinmce overrides */
 .mceu_44-inp-hack { width:207px !important; border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; }
@@ -136,7 +138,7 @@ i { width:16px; } /* standardizes font awesome icons */
 #main-menu .popover a { border:none; display:block; margin-bottom:.5em; }
 #main-menu .popover a:last-child { margin-bottom:0; }
 #main-menu .popover a:hover { background:none !important; text-decoration:none; }
-.label .fa-times { cursor:pointer; }
+.label .fa-times { cursor:pointer;  }
 .table tbody th { text-align:right; }
 .navbar-inverse .dropdown-menu { background:#202020; }
 .navbar-inverse .dropdown-menu a { color:rgb(150,150,150) !important; }

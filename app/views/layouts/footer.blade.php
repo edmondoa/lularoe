@@ -41,7 +41,4 @@
 		@endif
 	</body>
 </html>
-<?php
-	// store pages for back buttons
-	Session::put('previous_page', Request::url());
-?>
+@include('_helpers.store_previous_pages')

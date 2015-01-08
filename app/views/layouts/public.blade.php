@@ -305,3 +305,4 @@ var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-
 		@show
     </body>
 </html>
+@include('_helpers.store_previous_pages')

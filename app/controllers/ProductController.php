@@ -53,6 +53,7 @@ class productController extends \BaseController {
 			}
 			else $data['image'] = $data['image_url'];
 		}
+		else unset($data['image']);
 
 		$product = Product::create($data);
 		
