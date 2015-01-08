@@ -72,12 +72,54 @@ $(document).ready(function() {
     });
     
     // initialize fraola WYSIWYG editor
-    $(function() {
-        $('.wysiwyg').editable({
-            inlineMode : false,
-            height: 300
-        });
+    // $(function() {
+        // $('.wysiwyg').editable({
+            // beautifyCode: true,
+            // height: 400,
+            // inlineMode: false,
+            // plainPaste: true,
+            // imageUploadURL: '/upload-image',
+        // });
+    // });
+    
+    // initialize tinymce
+    tinymce.init({
+        selector: ".wysiwyg",
+        theme: "modern",
+        relative_urls: false,
+        plugins: [
+            "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars code fullscreen",
+            "insertdatetime media nonbreaking save table contextmenu directionality",
+            "template paste textcolor colorpicker textpattern"
+        ],
+        toolbar1: "insertfile undo redo | styleselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media",
+        image_advtab: true,
+        templates: [
+            {title: 'Test template 1', content: 'Test 1'},
+            {title: 'Test template 2', content: 'Test 2'}
+        ]
     });
+    
+    // add buttons to tinymce editor for inserting images
+    $('body').on({
+        click: function() {
+            $('input#mceu_44-inp').before('' +
+                '<div id="uploadImage" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" title="Upload Image" role="button" class="mce-btn">' +
+                    '<button data-toggle="modal" data-target="#imageUpload" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" role="presentation" type="button" tabindex="-1">' +
+                        '<img style="height:16px; width:16px;" src="/img/upload.svg">' +
+                    '</button>' +
+                '</div>' +
+                // '<div data-toggle="modal" data-target="#media-library" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" title="Media Library" role="button" class="mce-btn">' +
+                    // '<button style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" role="presentation" type="button" tabindex="-1">' +
+                        // '<img style="height:16px; width:16px;" src="/img/tiles.svg">' +
+                    // '</button>' +
+                // '</div>' +
+            '');
+            $('input#mceu_44-inp').addClass("mceu_44-inp-hack");
+            if ($('#modals').html() == '') $('#modals').load('/helpers/modals');
+        }
+    }, '#mceu_16');
     
     // close sidebar menu popovers when clicking outside
     $('[data-toggle="popover"]').popover();
@@ -90,12 +132,51 @@ $(document).ready(function() {
             }
         });
     });
+    
+    // add tag
+
+	$(window).keydown(function(event) {
+		if ($('#tagger').is(':focus')) {
+			if(event.keyCode == 13 /* enter */ || event.keyCode == 9 /* tab */ || event.keyCode == 188 /* comma */) {
+				event.preventDefault();
+				addTag();
+			}
+		}
+	}); 
+	$('#addTag').click( function() {
+		addTag();
+	});
+	function addTag() {
+		if ($('#tagger').val() != '') {
+			var tag = $('#tagger').val();
+			$('.tag-list').append('' +
+				'<span class="label label-default">' +
+					tag + '&nbsp;' +
+					'<i class="fa fa-times simpleRemoveTag"></i>' +
+					'<input type="hidden" name="tag_names[]" value="' + tag + '">' +
+				'</span>' +
+			'');
+			$('#tagger').val('');
+		}
+	};
+	
+	// simple remove tag
+	$('body').on('click', '.simpleRemoveTag', function() {
+		$(this).parent().remove();
+	});
+    
+    // remove tag
+    $('.removeTag').click(function() {
+        var id = $(this).attr('data-tag-id');
+        $('[data-tag-id="' + id + '"]').remove();
+        $.ajax({
+            type: "POST",
+            url: "/product-tags/" + id,
+            data: { '_method' : 'delete' }
+        });
+    });
  
 });
-
-/*
- * functions
- */
 
 // clean URL
 function cleanURL(text) {

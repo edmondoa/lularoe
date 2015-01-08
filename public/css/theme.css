@@ -43,6 +43,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
 .align-center { text-align:center; }
 .auto { width:auto; }
 .full { width:100%; }
+.full-image { max-width:100% }
 .inline-block { display:inline-block !important; }
 .width-auto { width:auto; }
 .tiny { font-size:7pt; display:block; }
@@ -87,6 +88,19 @@ i { width:16px; } /* standardizes font awesome icons */
 .semitransparent { opacity:.5; }
 .footer-links { text-decoration:none; padding:0; text-align:center; }
 .footer-links li { display:inline-block; margin:0 1em; }
+.tiles { padding:0; list-style:none; text-align:center; }
+.tiles li { vertical-align:top; display:inline-block; position:relative; margin:0 3px 10px 0; }
+.tiles li img { max-width:300px; max-height:150px; cursor:pointer; }
+.tiles li .file { padding:30px 10px 10px; cursor:pointer; box-sizing: border-box; width:150px; height:150px; background:white; box-shadow:1px 1px 8px rgba(0,0,0,.2); } 
+.tiles li .file i { font-size:50px; position:relative; margin-left:-20px; }
+.tiles li .file-title { font-size:10pt; max-width:130px; word-wrap:break-word; margin-top:8px; background:rgb(235,235,235); padding:5px 10px; border-radius:4px; display:inline-block; }
+.tiles li .options { z-index:1; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:right; }
+.tiles li .options a, .tiles li .options span { color:white; cursor:pointer; }
+.tiles li .options a i, .tiles li .options span i { width:24px; text-align:center; }
+.thumb { width:50px; }
+
+/* tinmce overrides */
+.mceu_44-inp-hack { width:207px !important; border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
@@ -145,6 +159,10 @@ select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight
 .ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }
 .ui_tpicker_time_label, .ui_tpicker_time { display:none; }
 .ui-timepicker-div select { margin-bottom:0; }
+
+/* froala overrides */
+.froala-editor.f-basic { border:0 !important; }
+.froala-element textarea { height:370px !important; }
 
 /* media queries*/
 @media(max-width:767px) {

@@ -26,3 +26,6 @@ return [
 		'llr',
 	]
 ];
+	],
+	'cache_length' => 10
+];
