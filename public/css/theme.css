@@ -199,3 +199,5 @@ select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight
 	background-color: #8BB8E8;
 	background-position: 0 -15px;
 }
+#logo { overflow:hidden }
+#logo img { margin-top:-8px; }
