@@ -10,7 +10,7 @@
         jQuery(function() {
             jQuery('.transparent-bg > span:nth-child(1)').flipcountdown({
                 size : 'md',
-                beforeDateTime : '1/09/2015 00:00:01'
+                beforeDateTime : '1/09/2015 18:00:01'
             });
             // add labels to the timer
             // jQuery(document).ready(function() {
