@@ -444,8 +444,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	$date = date('Y-m-d H:i:s');
-	return Timezone::convertFromUTC($date, "Asia/Kolkata", 'F j, Y H:i:s');
+	return View::make('test');
 });
 
 Route::get('test-cache/{id}', function($id) {

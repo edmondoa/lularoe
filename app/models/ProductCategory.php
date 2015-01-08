@@ -12,6 +12,11 @@ class ProductCategory extends \Eloquent
 	protected $table = 'product_categories';
 	protected $fillable = array('name','parent_id','disabled');
 
+ 	public function tags()
+	{
+		return $this->hasMany('ProductTag', 'product_category_id', 'id');
+	}
+
 	public function getParentNameAttribute() {
 		if ($this->parent_id != 0) {
 			$parent = ProductCategory::find($this->parent_id);

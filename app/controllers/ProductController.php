@@ -11,7 +11,8 @@ class productController extends \BaseController {
 	{
 		$products = Product::all();
 		$categories = ProductCategory::all();
-		return View::make('product.index', compact('products', 'categories'));
+		$tags = ProductTag::all();
+		return View::make('product.index', compact('products', 'categories', 'tags'));
 	}
 
 	/**

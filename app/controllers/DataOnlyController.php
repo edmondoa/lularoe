@@ -138,7 +138,12 @@ class DataOnlyController extends \BaseController
 
 	// productCateogires
 	public function getAllProductCategories(){
-		return ProductCategory::all();
+		return ProductCategory::with('tags')->get();
+	}
+
+	// productTags
+	public function getAllProductTags(){
+		return ProductTag::all();
 	}
 
 	// users

@@ -35,13 +35,19 @@
 		                            </div>
 		                        </div>
 		                        <?php /* select categories */ ?>
-		                        <div class="pull-left">
-		                            <select ng-model="search" class="form-control">
+		                        <div class="pull-left margin-right-1">
+		                            <select id="categories" ng-model="search" class="form-control">
 		                            	<option value="">All Categories</option>
-		                            	@foreach ($categories as $category)
-		                                	<option value="{{ $category->name }}">{{ $category->name }}</option>
-		                                @endforeach
+		                                <option ng-repeat="productCategory in productCategories" value="@include('_helpers.productCategory_id')">@include('_helpers.productCategory_name')</option>
 		                            </select>
+		                    	</div>
+		                        <?php /* select tags */ ?>
+		                        <div class="pull-left">
+		                            <!-- <select id="tags" ng-model="search" class="form-control">
+		                            	<option value="">All Tags</option>
+		                                <option ng-repeat="tag in $scope.search.tags">@include('_helpers.productTag_name')</option>
+		                            </select> -->
+		                            <select ng-model="selectedSubCategory" ng-options="c for c in selectedSubCategoryValues" class="form-control"></select>
 		                    	</div>
 		                    </div>
 		                </div>
@@ -184,25 +190,39 @@
 	
 		$http.get('/api/all-products').success(function(products) {
 			$scope.products = products;
-			
 			@include('_helpers.bulk_action_checkboxes')
-			
 		});
 		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
+		$http.get('/api/all-product-categories').success(function(productCategories) {
+			$scope.productCategories = productCategories;
+			console.log($scope.productCategories);
+		});
+
+			$scope.currentPage = 1;
+			$scope.pageSize = 10;
+			$scope.meals = [];
+
+			$scope.pageChangeHandler = function(num) {
+
+			};
+
+			$scope.$watch('search', function(newValue) {
+				alert(newValue);
+				alert($scope.productCategories[newValue].name);
+				for (var i = 0; i < $scope.newValue.tags.length; i++) {
+					alert($scope.newValue);
+					if ($scope.newValue.tags[i].name === newValue) {
+						$scope.selectedSubCategoryValues = $scope.newValue.tags[i].name;
+					}
+				}
+			});
+
+			}
+
+			function OtherController($scope) {
+				$scope.pageChangeHandler = function(num) {
+				};
+			}
 
 </script>
 @stop
