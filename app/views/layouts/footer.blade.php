@@ -39,5 +39,18 @@
 			    // }
 			</script>
 		@endif
+		<!-- ShopSocially plugin -->
+		<script type='text/javascript'>
+		    SSConfig = {
+			partner_id: 'c951217223d677d6b72f8f839913a3b6' /*REQUIRED: Also known as Account ID */
+		    };
+		    _ssq = (typeof _ssq === 'undefined')?[]:_ssq;
+		    _ssq.push(['init', SSConfig]);
+		    (function() {
+			var ss = document.createElement('script');ss.src = '//shopsocially.com/js/all.js';
+			ss.type = 'text/javascript';ss.async = 'true';
+			var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ss, s);
+		    })();
+		</script>
 	</body>
 </html>
