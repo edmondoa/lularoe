@@ -7,7 +7,7 @@ mysql_select_db('llr_dev', $lnk);
 
 // Set up query details
 $row	= array();
-$Q		= "select ID,Firstname,Surname,Email,Password,Phone,DOB from ezb2562d_ss.Member order by ID";
+$Q		= "select ID,SponsorID, Firstname,Surname,Email,Password,Phone,DOB from ezb2562d_ss.Member order by ID";
 
 // fire off initial query
 $res	= mysql_query($Q);
@@ -32,6 +32,7 @@ while($row = mysql_fetch_assoc($res)) {
 		id			= '{$row['ID']}', 
 		first_name	= '{$row['Firstname']}', 
 		last_name	= '{$row['Surname']}', 
+		sponsor_id	= '{$row['SponsorID']}',
 		role_id		= '1',
 		rank_id		= '1',
 		email		= '{$row['Email']}', 
@@ -47,5 +48,6 @@ while($row = mysql_fetch_assoc($res)) {
 }
 
 // Set admin user
-$Q="update users set email='mfrederico@gmail.com',password='".'$2y$10$EMboFvDGvga/wfReIQ3RHO1lZNZBalak7N95iMcAT2M8kjXwPX1Ey'."' WHERE id=1";
+$Q="update users set email='mfrederico@gmail.com',role_id=5, password='".'$2y$10$EMboFvDGvga/wfReIQ3RHO1lZNZBalak7N95iMcAT2M8kjXwPX1Ey'."' WHERE id=1";
+$Q="update users set role_id=5, password='".'$2y$10$EMboFvDGvga/wfReIQ3RHO1lZNZBalak7N95iMcAT2M8kjXwPX1Ey'."' WHERE id=10095"; // admin@lularoe.com : test
 mysql_query($Q);
