@@ -73,7 +73,7 @@ small { opacity:.5; font-size:9pt; }
 .user-banner { width:100%; }
 .user-banner-container .avatar { position:relative; z-index:1; margin-top:-170px; margin-left:30px; border:10px solid white; border-radius:4px; box-shadow:1px 1px 3px rgba(0,0,0,.25) inset, 1px 1px 3px rgba(0,0,0,.25); }
 .user-banner-container h1 { margin:0; text-shadow:0 2px rgba(0,0,0,.25); }
-.user-banner-text { position:absolute; left:0; right:0; bottom:30px; background:rgba(0,0,0,.25); color:white; }
+.user-banner-text { position:absolute; left:0; right:0; bottom:30px; background:rgba(1,56,99,.75); color:white; }
 .user-banner-content { padding:20px 20px 20px 255px; text-shadow:0 1px rgba(0,0,0,.25); }
 .user-banner-content small { opacity:1; }
 .overflow-hidden { overflow:hidden; }
@@ -121,11 +121,12 @@ i { width:16px; } /* standardizes font awesome icons */
 /*.create form, .edit form { display:inline-block; }*/
 .panel table { width:100%; }
 .panel table tbody th { text-align:left; }
+.panel-default .panel-heading { background:#013863 !important; color:white; }
 .btn-group > form { display:inline-block; }
 #record-options > form:nth-of-type(1) > .btn { /*border-radius:0 !important;*/ margin:0 !important; border-right:0 !important; border-left:0 !important; }
 #communication-options > form:nth-of-type(1) > .btn { /*border-top-right-radius:0 !important; border-bottom-right-radius:0*/ !important; border-right:0 !important; }
 .btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
-.navbar-inverse { background-image: linear-gradient(to bottom, #3C3C3C 0px, #303030 100%); background-repeat: repeat-x; }
+.navbar-inverse { background:#013863 !important; background-repeat: repeat-x; }
 #main-menu .popover { background:#202020; box-shadow:none; }
 #main-menu .popover.right > .arrow:after { border-right-color:#202020; color:#202020; }
 #main-menu .popover a { border:none; display:block; margin-bottom:.5em; }
@@ -136,8 +137,8 @@ i { width:16px; } /* standardizes font awesome icons */
 .navbar-inverse .dropdown-menu { background:#202020; }
 .navbar-inverse .dropdown-menu a { color:rgb(150,150,150) !important; }
 .navbar-inverse .dropdown-menu a:hover { color:white !important; background:none !important; }
-.btn { border-radius:0 !important; }
-.btn.btn-primary { border-radius:0 !important; }
+.btn { border-radius:0 !important; border:0 !important; font-family:Arial, Helvetica, sans-serif !important; font-weight:bold !important; }
+.btn-primary { background:#fc5001 !important; }
 
 /* jquery-ui overrides */
 select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight:100; }
