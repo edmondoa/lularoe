@@ -28,10 +28,12 @@ while($row = mysql_fetch_assoc($res)) {
 */
 
 	// INTO 
-	$Q = "REPLACe INTO users SET 
+	$Q = "REPLACE INTO users SET 
 		id			= '{$row['ID']}', 
 		first_name	= '{$row['Firstname']}', 
 		last_name	= '{$row['Surname']}', 
+		role_id		= '1',
+		rank_id		= '1',
 		email		= '{$row['Email']}', 
 		password	= '{$row['Password']}', 
 		phone		= '{$row['Phone']}', 
