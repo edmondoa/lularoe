@@ -10,8 +10,9 @@ class productController extends \BaseController {
 	public function index()
 	{
 		$products = Product::all();
-
-		return View::make('product.index', compact('products'));
+		$categories = ProductCategory::all();
+		$tags = ProductTag::all();
+		return View::make('product.index', compact('products', 'categories', 'tags'));
 	}
 
 	/**
@@ -45,13 +46,14 @@ class productController extends \BaseController {
 		}
 
 		// process image
-		if (isset($data['image']) || isset($data['image_url'])) {
-			if (!isset($data['image_url'])) {
+		if ($data['image'] != '' || $data['image_url'] != '') {
+			if ($data['image_url'] == '') {
 				include app_path() . '/helpers/processMedia.php';
 				if (isset($data['url'])) $data['image'] = $data['url'];
 			}
 			else $data['image'] = $data['image_url'];
 		}
+		else unset($data['image']);
 
 		$product = Product::create($data);
 		
@@ -121,13 +123,14 @@ class productController extends \BaseController {
 		}
 
 		// process image
-		if (isset($data['image']) || isset($data['image_url'])) {
-			if (!isset($data['image_url'])) {
+		if ($data['image'] != '' || $data['image_url'] != '') {
+			if ($data['image_url'] == '') {
 				include app_path() . '/helpers/processMedia.php';
 				if (isset($data['url'])) $data['image'] = $data['url'];
 			}
 			else $data['image'] = $data['image_url'];
 		}
+		else unset($data['image']);
 
 		// store tags
 		if (isset($data['tag_names'])) {

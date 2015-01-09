@@ -21,7 +21,8 @@
 		                <div class="pull-left">
 		                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('products/create') }}"><i class="fa fa-plus"></i></a>
 		                    <div class="pull-left">
-		                        <div class="input-group">
+		                    	<?php /* record actions */ ?>
+		                        <div class="input-group pull-left margin-right-2">
 		                            <select class="form-control selectpicker actions">
 		                                <option value="products/disable" selected>Disable</option>
 		                                <option value="products/enable">Enable</option>
@@ -33,6 +34,20 @@
 		                                </button>
 		                            </div>
 		                        </div>
+		                        <?php /* select categories */ ?>
+		                        <div class="pull-left margin-right-1">
+		                            <select ng-model="search" id="categories" class="form-control">
+		                            	<option value="">All Categories</option>
+		                                <option ng-repeat="productCategory in productCategories" data-index="@include('_helpers.index')">@include('_helpers.productCategory_name')</option>
+		                            </select>
+		                    	</div>
+		                        <?php /* select tags */ ?>
+		                        <div class="pull-left">
+		                            <select ng-model="search" id="tags" class="form-control">
+		                            	<option value="">All Tags</option>
+		                                <option ng-repeat="productTag in selectedSubCategoryValues" value="@include('_helpers.productTag_name')">@include('_helpers.productTag_name')</option>
+		                            </select>
+		                    	</div>
 		                    </div>
 		                </div>
 			        </div>
@@ -56,16 +71,10 @@
 	                            <th>
 	                            	<input type="checkbox">
 	                            </th>
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 	                            <th>
 	                            	Image
 	                            </th>
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
                             	
                             	<th class="link" ng-click="orderByField='name'; reverseSort = !reverseSort">Name
                             		<span>
@@ -94,42 +103,18 @@
                             		</span>
                         		</th>
                         		
-<<<<<<< HEAD
-<<<<<<< HEAD
                             	<th class="link" ng-click="orderByField='category_name'; reverseSort = !reverseSort">Category
                             		<span>
                             			<span ng-show="orderByField == 'category_name'">
-=======
-                            	<th class="link" ng-click="orderByField='category_id'; reverseSort = !reverseSort">Category Id
-                            		<span>
-                            			<span ng-show="orderByField == 'category_id'">
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
-                            	<th class="link" ng-click="orderByField='category_id'; reverseSort = !reverseSort">Category Id
-                            		<span>
-                            			<span ng-show="orderByField == 'category_id'">
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-<<<<<<< HEAD
-<<<<<<< HEAD
                             	<th class="link" ng-click="orderByField='tag_name'; reverseSort = !reverseSort">Tags
                             		<span>
                             			<span ng-show="orderByField == 'tag_name'">
-=======
-                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
-                            		<span>
-                            			<span ng-show="orderByField == 'disabled'">
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
-                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
-                            		<span>
-                            			<span ng-show="orderByField == 'disabled'">
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
@@ -147,8 +132,6 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-<<<<<<< HEAD
-<<<<<<< HEAD
 	                        <tr ng-class="{ highlight : product.new == 1, semitransparent : product.disabled }" ng-class="{highlight: address.new == 1}" dir-paginate-start="product in products | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.product_id')">
@@ -157,17 +140,6 @@
 					            <td>
 					                <a href="/products/@include('_helpers.product_id')"><img class="thumb" src="/uploads/@include('_helpers.product_image_sm')"></a>
 					            </td>
-=======
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="product in products | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
-	                            <td ng-click="checkbox()">
-	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.product_id')">
-	                            </td>
-<<<<<<< HEAD
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 								
 					            <td>
 					                <a href="/products/@include('_helpers.product_id')"><span ng-bind="product.name"></span></a>
@@ -182,27 +154,13 @@
 					            </td>
 					            
 					            <td>
-<<<<<<< HEAD
-<<<<<<< HEAD
-					                <span ng-bind="product.category_name"></span>
+					                <a class="link" ng-click="$parent.search=product.category_name"><span ng-bind="product.category_name"></span></a>
 					            </td>
 					            
 					            <td class="tag-list">
 					                <span class="label label-default" ng-repeat="tag in product.tags">
-					                	<span ng-bind="tag.name"></span>
+					                	<a class="link" ng-click="$parent.$parent.search=tag.name"><span ng-bind="tag.name"></span></a>
 					                </span>
-=======
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-					                <span ng-bind="product.category_id"></span>
-					            </td>
-					            
-					            <td>
-					                <span ng-bind="product.disabled"></span>
-<<<<<<< HEAD
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 					            </td>
 					            
 					            <td>
@@ -231,21 +189,29 @@
 	
 		$http.get('/api/all-products').success(function(products) {
 			$scope.products = products;
-			
 			@include('_helpers.bulk_action_checkboxes')
-			
 		});
 		
+		$http.get('/api/all-product-categories').success(function(productCategories) {
+			$scope.productCategories = productCategories;
+			console.log($scope.productCategories);
+		});
+
 		$scope.currentPage = 1;
 		$scope.pageSize = 10;
 		$scope.meals = [];
-		
+
 		$scope.pageChangeHandler = function(num) {
-			
+
 		};
-		
+
+		$scope.$watch('search', function(newValue) {
+			index = jQuery('#categories option:selected').attr('data-index');
+			if (index != undefined) $scope.selectedSubCategoryValues = $scope.productCategories[index].tags;
+		});
+
 	}
-	
+
 	function OtherController($scope) {
 		$scope.pageChangeHandler = function(num) {
 		};

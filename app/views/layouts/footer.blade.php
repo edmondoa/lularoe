@@ -41,3 +41,4 @@
 		@endif
 	</body>
 </html>
+@include('_helpers.store_previous_pages')

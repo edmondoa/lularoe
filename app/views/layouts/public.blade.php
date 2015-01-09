@@ -9,7 +9,7 @@
 
         <!--Shortcut icon-->
 
-        <title>{{ $title }} | SociallyMobile</title>
+        <title><?php if (isset($title)) echo $title . ' | ' ?>SociallyMobile</title>
 
         <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Feed" href="/feed/" />
         <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Comments Feed" href="/comments/feed/" />
@@ -305,3 +305,4 @@ var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-
 		@show
     </body>
 </html>
+@include('_helpers.store_previous_pages')
