@@ -15,7 +15,7 @@
                 	$file = Input::file('image');
 				}
 				
-				if (!file_exists('/uploads/' . date('Y') . '/' . date('m'))) {
+				if (!file_exists(public_path() . '/uploads/' . date('Y') . '/' . date('m'))) {
 				    mkdir(public_path() . '/uploads/' . date('Y') . '/' . date('m'), 0755, true);
 				}
 
@@ -54,7 +54,7 @@
 				// determine media type
 				if (in_array($extension, $raster_image_extensions)) {
 					// make thumbs directory if doesn't exist
-					if (!file_exists('/uploads/' . date('Y') . '/' . date('m') . '/thumbs')) {
+					if (!file_exists(public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/thumbs')) {
 					    mkdir(public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/thumbs', 0755, true);
 					}
 	                // open an image media
