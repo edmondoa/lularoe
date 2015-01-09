@@ -15,12 +15,20 @@
                 	$file = Input::file('image');
 				}
 				
+				/*
 				if (!file_exists('/uploads/' . date('Y') . '/' . date('m'))) {
 				    mkdir('/uploads/' . date('Y') . '/' . date('m'), 0755, true);
 				}
-
+				*/
 				$path = date('Y') . '/' . date('m') . '/';
                 $fullPath = public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/';
+				if (!file_exists($fullPath)) {
+					@mkdir(public_path().'/uploads/');
+					@mkdir(public_path().'/uploads/'. date('Y'));
+					@mkdir($fullPath);
+					@mkdir($fullPath.'/thumbs');
+				}
+
                 $extension = $file->getClientOriginalExtension();
 
 				// generate media name and check for existing
@@ -54,9 +62,11 @@
 				// determine media type
 				if (in_array($extension, $raster_image_extensions)) {
 					// make thumbs directory if doesn't exist
+					/*
 					if (!file_exists('/uploads/' . date('Y') . '/' . date('m') . '/thumbs')) {
 					    mkdir('/uploads/' . date('Y') . '/' . date('m') . '/thumbs', 0755, true);
 					}
+					*/
 	                // open an image media
 					$img = Image::make('uploads/' . $path . $filename)
 	                // now you are able to resize the instance
