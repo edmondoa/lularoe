@@ -42,6 +42,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
 .align-center { text-align:center; }
 .auto { width:auto; }
 .full { width:100%; }
+.full-image { max-width:100% }
 .inline-block { display:inline-block !important; }
 .width-auto { width:auto; }
 .tiny { font-size:7pt; display:block; }
@@ -78,7 +79,7 @@ small { opacity:.5; font-size:9pt; }
 .overflow-hidden { overflow:hidden; }
 .align-right { text-align:right; }
 .big { font-size:1.25em; }
-.no-padding { padding:0; }
+.no-padding { padding:0; }s
 .nostyle { background:inherit !important; border:inherit !important; padding:inherit !important; }
 .downline-popover th { text-align:right; padding-right:.5em; }
 .no-width { width:0; }
@@ -95,17 +96,16 @@ i { width:16px; } /* standardizes font awesome icons */
 .tiles li .options { z-index:1; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:right; }
 .tiles li .options a, .tiles li .options span { color:white; cursor:pointer; }
 .tiles li .options a i, .tiles li .options span i { width:24px; text-align:center; }
+.thumb { width:50px; }
+.tag-list .label { margin:0 4px 4px 0; }
+.tag-list .label a { color:white !important; }
 
 /* tinmce overrides */
 .mceu_44-inp-hack { width:207px !important; border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; }
 
 /* bootstrap overrides */
 .btn { vertical-align:top; }
-.input-group .bootstrap-select .selectpicker {
-    border-top-right-radius: 0px !important;
-    border-bottom-right-radius: 0px !important;
-}
-
+.input-group .bootstrap-select .selectpicker { border-top-right-radius: 0px !important; border-bottom-right-radius: 0px !important; }
 .bs-callout { -moz-border-bottom-colors: none; -moz-border-left-colors: none; -moz-border-right-colors: none; -moz-border-top-colors: none; border-color: #eee; border-image: none; border-radius: 3px; border-style: solid; border-width: 1px 1px 1px 5px; margin: 20px 0; padding: 20px; }
 .bs-callout h4 { margin-bottom: 5px; margin-top: 0; }
 .bs-callout p:last-child { margin-bottom: 0 }
@@ -117,28 +117,27 @@ i { width:16px; } /* standardizes font awesome icons */
 .bs-callout-warning h4 { color: #f0ad4e }
 .bs-callout-info { border-left-color: #5bc0de }
 .bs-callout-info h4 { color: #5bc0de }
-
 .show .col > .table, .edit .col > .table { width:auto !important; }
 /*.create form, .edit form { display:inline-block; }*/
 .panel table { width:100%; }
 .panel table tbody th { text-align:left; }
 .btn-group > form { display:inline-block; }
-#record-options > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; border-right:0 !important; border-left:0 !important; }
-#communication-options > form:nth-of-type(1) > .btn { border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-right:0 !important; }
+#record-options > form:nth-of-type(1) > .btn { /*border-radius:0 !important;*/ margin:0 !important; border-right:0 !important; border-left:0 !important; }
+#communication-options > form:nth-of-type(1) > .btn { /*border-top-right-radius:0 !important; border-bottom-right-radius:0*/ !important; border-right:0 !important; }
 .btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
-.navbar-inverse {
-    background-image: linear-gradient(to bottom, #3C3C3C 0px, #303030 100%); background-repeat: repeat-x;
-}
+.navbar-inverse { background-image: linear-gradient(to bottom, #3C3C3C 0px, #303030 100%); background-repeat: repeat-x; }
 #main-menu .popover { background:#202020; box-shadow:none; }
 #main-menu .popover.right > .arrow:after { border-right-color:#202020; color:#202020; }
 #main-menu .popover a { border:none; display:block; margin-bottom:.5em; }
 #main-menu .popover a:last-child { margin-bottom:0; }
 #main-menu .popover a:hover { background:none !important; text-decoration:none; }
-.label .fa-times { cursor:pointer; }
+.label .fa-times { cursor:pointer;  }
 .table tbody th { text-align:right; }
 .navbar-inverse .dropdown-menu { background:#202020; }
 .navbar-inverse .dropdown-menu a { color:rgb(150,150,150) !important; }
 .navbar-inverse .dropdown-menu a:hover { color:white !important; background:none !important; }
+.btn { border-radius:0 !important; }
+.btn.btn-primary { border-radius:0 !important; }
 
 /* jquery-ui overrides */
 select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight:100; }

@@ -91,7 +91,7 @@
 
                         <div class="col span_3">
 
-                            <a id="logo" href="/" > <img class=" dark-version" alt="SociallyMobile" src="/wp-content/uploads/2014/10/Socially-Mobile-with-tag-e1413399140125.png" /> </a>
+                            <a id="logo" href="/" > <img class=" dark-version" alt="SociallyMobile" src="/img/socially-mobile-logo.png" /> </a>
 
                         </div><!--/span_3-->
 
