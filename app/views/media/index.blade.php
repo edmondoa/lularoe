@@ -36,9 +36,9 @@
 			                    <div class="pull-left">
 			                        <div class="input-group">
 			                            <select class="form-control selectpicker actions">
-			                                <option value="media/delete">Delete</option>
-			                                <option value="media/disable" selected>Disable</option>
-			                                <option value="media/enable">Enable</option>
+			                                <option value="/media/delete">Delete</option>
+			                                <option value="/media/disable" selected>Disable</option>
+			                                <option value="/media/enable">Enable</option>
 			                            </select>
 			                            <div class="input-group-btn no-width">
 			                                <button class="btn btn-default">
@@ -121,7 +121,7 @@
 			                        	<a href="/uploads/@include('_helpers.media_url')" download="/uploads/@include('_helpers.media_url')"><i class="fa fa-download"></i></a>
 		                        	</div>
 		                        	<?php // image ?>
-		                        	<img title="@include('_helpers.media_title')" ng-if="media.type == 'Image'" ng-class="{semitransparent : media.disabled}" src="/uploads/@include('_helpers.media_url')">
+		                        	<img title="@include('_helpers.media_title')" ng-if="media.type == 'Image'" ng-class="{semitransparent : media.disabled}" src="/uploads/@include('_helpers.media_image_sm')">
 		                        	<div class="file" ng-if="media.type != 'Image'">
 		                        		<i ng-if="media.type == 'Database'" class="fa fa-database" ng-class="{semitransparent : media.disabled}"></i>
 		                        		<i ng-if="media.type == 'Document'" class="fa fa-file-word-o" ng-class="{semitransparent : media.disabled}"></i>

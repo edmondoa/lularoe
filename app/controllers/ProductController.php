@@ -147,7 +147,7 @@ class productController extends \BaseController {
 		$product->update($data);
 		// clear cache
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
-		return Redirect::route('products.show', $id)->with('message', 'Product updated.');
+		return Redirect::route('products.index', $id)->with('message', 'Product updated.');
 	}
 
 	/**

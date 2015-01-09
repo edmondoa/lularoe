@@ -130,11 +130,12 @@ class mediaController extends \BaseController {
 
 		// if file exists, delete it
 		$old_file = $media->url;
-		if (is_file('uploads/' . $old_file)) {
-			unlink('uploads/' . $old_file);
+		if (is_file('/uploads/' . $old_file)) {
+			unlink('/uploads/' . $old_file);
 		}
 
 		// update db
+		if ($data['media'] == '') $data['url'] = $media->url;
 		$media->update($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 		$user_id = Auth::user()->id;
@@ -164,8 +165,8 @@ class mediaController extends \BaseController {
 			foreach (Input::get('ids') as $id) {
 				// delete media
 				$media = Media::find($id);
-				unlink('uploads/' . $media->image);
-				unlink('uploads/' . $media->image_sm);
+				unlink('/uploads/' . $media->image);
+				unlink('/uploads/' . $media->image_sm);
 				Media::destroy($id);
 			}
 			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));

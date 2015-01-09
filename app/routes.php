@@ -444,7 +444,8 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	return View::make('test');
+	echo url();
+	exit;
 });
 
 Route::get('test-cache/{id}', function($id) {
