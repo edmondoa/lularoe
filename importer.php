@@ -43,4 +43,9 @@ while($row = mysql_fetch_assoc($res)) {
 	mysql_query($Q);
 	if (mysql_error()) die('DEATH: '.mysql_error());
 	else print " OK\n";
+
 }
+
+// Set admin user
+$Q="update users set email='mfrederico@gmail.com',password='".'$2y$10$EMboFvDGvga/wfReIQ3RHO1lZNZBalak7N95iMcAT2M8kjXwPX1Ey'."' WHERE id=1";
+mysql_query($Q);
