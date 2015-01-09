@@ -90,8 +90,8 @@
                     <div class="row">
 
                         <div class="col span_3">
-
-                            <a id="logo" href="/" > <img class=" dark-version" alt="SociallyMobile" src="/img/socially-mobile-logo.png" /> </a>
+                        	
+                            <a id="logo" href="/" > <img class=" dark-version" alt="SociallyMobile" src="/img/socially-mobile-logo.png" height="48" width="169" /> <!-- <div id="lets-talk">Let's Talk.</div> --></a>
 
                         </div><!--/span_3-->
 
