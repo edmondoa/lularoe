@@ -4,10 +4,9 @@
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
 		<h1>{{ $user->first_name }} {{ $user->last_name }}</h1>
-	    <div class="btn-group" id="record-options">
+	    <div class="btn-group" id="communication-options">
 			@if (Auth::user()->id != $user->id)
 				@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-		    		<a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 				    @if ($user->disabled == 0)
 					    {{ Form::open(array('url' => 'users/disable', 'method' => 'DISABLE')) }}
 					    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
@@ -60,7 +59,7 @@
 		<div class="col col-md-6 col-sm-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 div class="panel-title">Information</h2>
+					<h2 div class="panel-title">Information<a class="pull-right" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil link"></i></a></h2>
 				</div>
 			    <table class="table table-striped">
 			        <tr>
@@ -139,7 +138,7 @@
 			@foreach ($addresses as $address)
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h2 div class="panel-title">{{ $address->label }} Address</h2>
+						<h2 div class="panel-title">{{ $address->label }} Address<a class="pull-right" href="{{ url('addresses/'.$address->id .'/edit') }}" title="Edit"><i class="fa fa-pencil link"></i></a></h2>
 					</div>
 				    <table class="table table-striped">
 				        <tr>

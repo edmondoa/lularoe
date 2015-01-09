@@ -15,8 +15,14 @@ class Media extends \Eloquent
 	public function getNewRecordAttribute() {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
 	}
-	
-	protected $appends = array('new_record', 'owner');
+
+	public function getImageSmAttribute() {
+		$image_sm = explode('.', $this->url);
+		if (isset($image_sm[1])) return $image_sm[0] . '-sm.' . $image_sm[1];
+		else return '';	
+	}
+
+	protected $appends = array('new_record', 'owner', 'image_sm');
 
 
 }

@@ -1,7 +1,9 @@
 <?php
 
-
-// bonusses
+Event::listen('illuminate.query', function($query){
+	//echo"<pre>"; print_r($query); echo"</pre>";
+});
+// bonuses
 Event::listen('reps.rank' , function($rep_id)
 {
 	
