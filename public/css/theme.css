@@ -1,9 +1,9 @@
 /* REFERENCE */
 /*
-#017dc5 - Standard Blue
-#0d3c6d - Dark Blue (shade from lower half of the icon)
-#7f7f7f - Grey
-#303030 - Black/Dark Grey
+#013863 - Dark Blue
+#003d98 - Lighter Blue
+#fc5001 - Dark Orange
+#feb451 - Light Orange
 */
 
 /* main-header */
@@ -17,7 +17,7 @@ body { position:absolute; top:0; right:0; bottom:0; left:0; }
 #content h1:first-of-type { margin-top:0; }
 
 /* sidebar */
-#sidebar { display:table-cell; background:black; width:205px; vertical-align:top; }
+#sidebar { display:table-cell; background:#013863; width:205px; vertical-align:top; }
 body.layout-default #main-menu > a:first-child { border-top-left-radius:0; border-top-right-radius:0; }
 #main-menu a { background:rgb(32,32,32) !important; color:gray; border:1px solid black; }
 #main-menu a:hover { background:rgb(64,64,64) !important; color:white; }
@@ -59,7 +59,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
 .currentPage { position:relative; top:7px; }
 .page-actions { margin:0 0 1em; }
 .breadcrumbs { display:block; margin-bottom:1em; }
-.link { cursor:pointer; color:#017dc5 !important; }
+.link { cursor:pointer; color:#003d98 !important; }
 .link:hover { text-decoration:underline !important; }
 .highlight { background:rgb(255,255,192); }
 .full { width:100%; }
@@ -104,6 +104,8 @@ i { width:16px; } /* standardizes font awesome icons */
 .mceu_44-inp-hack { width:207px !important; border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; }
 
 /* bootstrap overrides */
+body a { color:#003d98; }
+body a:hover { color:#003d98; }
 .btn { vertical-align:top; }
 .input-group .bootstrap-select .selectpicker { border-top-right-radius: 0px !important; border-bottom-right-radius: 0px !important; }
 .bs-callout { -moz-border-bottom-colors: none; -moz-border-left-colors: none; -moz-border-right-colors: none; -moz-border-top-colors: none; border-color: #eee; border-image: none; border-radius: 3px; border-style: solid; border-width: 1px 1px 1px 5px; margin: 20px 0; padding: 20px; }
@@ -123,8 +125,8 @@ i { width:16px; } /* standardizes font awesome icons */
 .panel table tbody th { text-align:left; }
 .panel-default .panel-heading { background:#013863 !important; color:white; }
 .btn-group > form { display:inline-block; }
-#record-options > form:nth-of-type(1) > .btn { /*border-radius:0 !important;*/ margin:0 !important; border-right:0 !important; border-left:0 !important; }
-#communication-options > form:nth-of-type(1) > .btn { /*border-top-right-radius:0 !important; border-bottom-right-radius:0*/ !important; border-right:0 !important; }
+#record-options > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; border-right:0 !important; border-left:0 !important; }
+#communication-options > form:nth-of-type(1) > .btn { border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-right:0 !important; }
 .btn-group > form:last-of-type > .btn { border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; position:relative; left:-4px; }
 .navbar-inverse { background:#013863 !important; background-repeat: repeat-x; }
 #main-menu .popover { background:#202020; box-shadow:none; }
@@ -137,8 +139,10 @@ i { width:16px; } /* standardizes font awesome icons */
 .navbar-inverse .dropdown-menu { background:#202020; }
 .navbar-inverse .dropdown-menu a { color:rgb(150,150,150) !important; }
 .navbar-inverse .dropdown-menu a:hover { color:white !important; background:none !important; }
-.btn { border-radius:0 !important; border:0 !important; font-family:Arial, Helvetica, sans-serif !important; font-weight:bold !important; }
-.btn-primary { background:#fc5001 !important; }
+.btn { font-family:Arial, Helvetica, sans-serif !important; font-weight:bold !important; }
+.btn-primary { border:0 !important; border-radius:0 !important; background:#fc5001 !important; }
+.pagination > .active > a { background:#fc5001 !important; border-color:#fc5001 !important; }
+.pagination > li > a { color:#fc5001; }
 
 /* jquery-ui overrides */
 select.ui-datepicker-year, select.ui-datepicker-month { color:black; font-weight:100; }
