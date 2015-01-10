@@ -90,7 +90,7 @@ class PreRegisterController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
-		$data['amount'] = Config::get('site.preregistration_fee');
+		$data['amount'] = Config::get('settings.pre-registration-fee');
 		$data['details'] = "Pre-registration";
 		$params = array(
 			"command" => "sale",
