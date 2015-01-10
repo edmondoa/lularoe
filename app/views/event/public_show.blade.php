@@ -10,12 +10,12 @@
 
 		        @if ($event->local_start_date == $event->local_end_date)
 			        <tr>
-			            <th>Local Date/Time:</th>
+			            <th width="130">Local Date/Time:</th>
 			            <td>{{ $event->local_start_date }}, {{ $event->local_start_time }} - {{ $event->local_end_time }}</td>
 			        </tr>
 		        @else
 			        <tr>
-			        	<th>Local Start Time:</th>
+			        	<th width="130">Local Start Time:</th>
 			        	<td>{{ $event->local_start_date }}, {{ $event->local_start_time }}</td>
 			        </tr>
 			        <tr>

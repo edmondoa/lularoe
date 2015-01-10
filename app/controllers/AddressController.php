@@ -96,7 +96,7 @@ class addressController extends \BaseController {
 
 		$address->update($data);
 
-		return Redirect::route('settings')->with('message', 'Address updated.');
+		return Redirect::to(Session::get('previous_page_2'))->with('message', 'Address updated.');
 	}
 
 	/**

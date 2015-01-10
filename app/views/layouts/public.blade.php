@@ -9,7 +9,7 @@
 
         <!--Shortcut icon-->
 
-        <title>{{ $title }} | SociallyMobile</title>
+        <title><?php if (isset($title)) echo $title . ' | ' ?>SociallyMobile</title>
 
         <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Feed" href="/feed/" />
         <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Comments Feed" href="/comments/feed/" />
@@ -90,8 +90,8 @@
                     <div class="row">
 
                         <div class="col span_3">
-
-                            <a id="logo" href="/" > <img class=" dark-version" alt="SociallyMobile" src="/wp-content/uploads/2014/10/Socially-Mobile-with-tag-e1413399140125.png" /> </a>
+                        	
+                            <a id="logo" href="/" > <img class=" dark-version" alt="SociallyMobile" src="/img/socially-mobile-logo.png" height="48" width="169" /> <!-- <div id="lets-talk">Let's Talk.</div> --></a>
 
                         </div><!--/span_3-->
 
@@ -305,3 +305,4 @@ var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-
 		@show
     </body>
 </html>
+@include('_helpers.store_previous_pages')

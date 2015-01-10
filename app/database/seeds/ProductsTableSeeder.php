@@ -9,7 +9,7 @@ class ProductsTableSeeder extends DatabaseSeeder
 
 		for($i = 1; $i <= 20; $i++) {
 			$product = array(
-				'name' => $faker->name,
+				'name' => $faker->sentence($nbWords = 6),
 				'blurb' => $faker->text,
 				'description' => $faker->text,
 				'price' => $faker->randomDigitNotNull,

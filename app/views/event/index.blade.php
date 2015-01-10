@@ -136,15 +136,6 @@
 	                            		</span>
 	                        		</th>-->
 	                        		
-	                            	<th class="link hidable-sm" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
-	                            		<span>
-	                            			<span ng-show="orderByField == 'disabled'">
-		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-		                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-	                            			</span>
-	                            		</span>
-	                        		</th>
-	                        		
 	                            	<th class="link hidable-sm" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
 	                            		<span>
 	                            			<span ng-show="orderByField == 'updated_at'">
@@ -158,7 +149,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="event in events | filter:search | orderBy:'<?php if ($range == 'past') echo '-' ?>date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{ highlight : event.new == 1, semitransparent : event.disabled }" dir-paginate-start="event in events | filter:search | orderBy:'<?php if ($range == 'past') echo '-' ?>date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 		                        
 		                        @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		                            <td ng-click="checkbox()">
@@ -198,10 +189,6 @@
 						            <td class="hidable-sm boolean border">
 						                <span ng-if="event.admin"><i class="fa fa-check"></i></span>
 						            </td>-->
-						            
-						            <td class="hidable-sm boolean border">
-						                <span ng-if="event.disabled"><i class="fa fa-check"></i></span>
-						            </td>
 						            
 						            <td class="hidable-sm">
 						            	<span ng-bind="event.updated_at"></span>

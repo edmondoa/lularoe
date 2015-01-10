@@ -10,7 +10,7 @@
         jQuery(function() {
             jQuery('.transparent-bg > span:nth-child(1)').flipcountdown({
                 size : 'md',
-                beforeDateTime : '1/09/2015 18:00:00'
+                beforeDateTime : '1/09/2015 18:00:01'
             });
             // add labels to the timer
             // jQuery(document).ready(function() {
@@ -28,10 +28,11 @@
                         <div style="height: 650px" data-transition="fade" data-flexible-height="" data-fullscreen="true" data-autorotate="" data-parallax="true" data-full-width="true" class="nectar-slider-wrap " id="ns-id-546a4816767a8">
                             <div style="height: 650px" class="swiper-container" data-loop="true" data-height="650" data-min-height="" data-arrows="true" data-bullets="false" data-desktop-swipe="true" data-settings="">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide" style="background-image: url(/wp-content/uploads/2014/09/DPExample.jpg);" data-bg-alignment="center" data-color-scheme="dark" data-x-pos="centered" data-y-pos="middle">
+                                    <div class="swiper-slide" style="background-image: url(/img/home/bg-02.jpg);" data-bg-alignment="center" data-color-scheme="dark" data-x-pos="centered" data-y-pos="middle">
                                         <div class="container">
                                             <div class="content">
-                                                <h2>Next Website Update
+                                            	<img style="cursor:pointer;" onclick="location.href='<?php echo url() ?>/join'" id="home-cta" src="/img/home/cta.png" alt="So fast. So simple. So social. Let's talk. Join Now.">
+                                                <!-- <h2>Next Website Update
                                                 <br>
                                                 1.9.2015</h2>
                                                 <p class="transparent-bg" >
@@ -41,7 +42,7 @@
                                                     <div class="button solid_color">
                                                         <a class="extra-color-1" href="<?php echo url() ?>/join">JOIN NOW</a>
                                                     </div>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div><!--/container-->
                                         <div class="video-texture active_texture">
