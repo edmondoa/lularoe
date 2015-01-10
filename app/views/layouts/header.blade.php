@@ -38,3 +38,4 @@
         </script>
     </head>
     <body class="layout-{{ $layout }} @yield('classes')">
+    @include('_helpers/analytics')

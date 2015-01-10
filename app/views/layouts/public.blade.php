@@ -53,7 +53,7 @@
     </head>
 
     <body class="@yield('classes')@show page page-id-3085 page-template-default wpb-js-composer js-comp-ver-3.7.3 vc_responsive" data-ajax-transitions="false" data-loading-animation="none" data-bg-header="false" data-ext-responsive="true" data-header-resize="1" data-header-color="light" data-transparent-header="false" data-smooth-scrolling="0" data-responsive="1" >
-
+        @include('_helpers/analytics')
         <div id="header-space"></div>
 
         <div id="header-outer"  data-cart="false" data-transparency-option="0" data-shrink-num="6" data-full-width="false" data-using-secondary="0" data-using-logo="1" data-logo-height="" data-padding="28" data-header-resize="1">
