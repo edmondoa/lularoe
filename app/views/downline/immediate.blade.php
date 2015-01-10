@@ -144,8 +144,8 @@
 	                    <tbody>
 	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 
-	                            <td ng-if="!user.block_email && !user.block_sms" ng-click="checkbox()">
-	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
+	                            <td  ng-click="checkbox()">
+	                            	<input ng-if="!user.block_email && !user.block_sms" class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
 
 	                            <td ng-if="user.block_email && user.block_sms"></td>
