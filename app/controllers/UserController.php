@@ -211,7 +211,9 @@ class userController extends \BaseController {
 				if(Level::where('ancestor_id',$user->id)->where('user_id',$data['sponsor_id'])->first())
 				{
 					unset($data['sponsor_id']);
+
 					$validator->getMessageBag()->add('sponsor_id', 'Cannot assign to sponsor in downline.');
+
 					return Redirect::back()->withErrors($validator)->withInput();
 				}
 			}
