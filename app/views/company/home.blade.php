@@ -31,7 +31,7 @@
                                     <div class="swiper-slide" style="background-image: url(/img/home/bg-02.jpg);" data-bg-alignment="center" data-color-scheme="dark" data-x-pos="centered" data-y-pos="middle">
                                         <div class="container">
                                             <div class="content">
-                                            	<img style="cursor:pointer;" onclick="location.href='<?php echo url() ?>/join'" id="home-cta" src="/img/home/cta-2.png" alt="So fast. So simple. So social. Let's talk. Join Now.">
+                                            	<img style="cursor:pointer;" onclick="location.href='<?php echo url() ?>/join'" id="home-cta" src="/img/home/cta-3.png" alt="So fast. So simple. So social. Let's talk. Join Now.">
                                                 <!-- <h2>Next Website Update
                                                 <br>
                                                 1.9.2015</h2>
