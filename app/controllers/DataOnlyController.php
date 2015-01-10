@@ -39,6 +39,14 @@ class DataOnlyController extends \BaseController
 	}
 
 	/*
+	 * Config
+	 */
+	
+	public function getAllConfig(){
+		return SiteConfig::all();
+	}	 
+
+	/*
 	 * Downline
 	 */
 	 
