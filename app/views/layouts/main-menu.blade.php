@@ -70,7 +70,9 @@
  				
  					<a href="javascript:void(0)" data-href="/opportunities" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/opportunities'><i class='fa fa-check'></i> All Opportunities</a>
- 						<a href='/opportunities/create'><i class='fa fa-plus'></i> New Opportunity</a>
+ 						@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
+ 							<a href='/opportunities/create'><i class='fa fa-plus'></i> New Opportunity</a>
+ 						@endif
  					">
  						<i class="fa fa-check"></i> <span class="text">Opportunities</span>
  					</a>

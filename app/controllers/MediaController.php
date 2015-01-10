@@ -57,9 +57,6 @@ class mediaController extends \BaseController {
 			}
 		}
 		
-		echo '<pre>'; print_r($data); echo '</pre>';
-		exit;
-		
 		include app_path() . '/helpers/processMedia.php';
 				
 		// format checkboxes for db
@@ -67,6 +64,7 @@ class mediaController extends \BaseController {
 
 		// store in db and redirect
 		$media = Media::create($data);
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 		if (isset($data['ajax'])) {
 			$response['success'] = true;
 			$response['url'] = '/uploads/' . $media->url;
@@ -132,13 +130,14 @@ class mediaController extends \BaseController {
 
 		// if file exists, delete it
 		$old_file = $media->url;
-		if (is_file('uploads/' . $old_file)) {
-			unlink('uploads/' . $old_file);
+		if (is_file('/uploads/' . $old_file)) {
+			unlink('/uploads/' . $old_file);
 		}
 
 		// update db
+		if ($data['media'] == '') $data['url'] = $media->url;
 		$media->update($data);
-		
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 		$user_id = Auth::user()->id;
 		return Redirect::route('media/user', compact('user_id'))->with('message', 'Media updated.');
 	}
@@ -152,7 +151,7 @@ class mediaController extends \BaseController {
 	public function destroy($id)
 	{
 		Media::destroy($id);
-
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 		return Redirect::route('media.index')->with('message', 'Media deleted.');
 	}
 	
@@ -164,8 +163,13 @@ class mediaController extends \BaseController {
 		$data = Input::all();
 		if (isset($data['ids'])) {
 			foreach (Input::get('ids') as $id) {
+				// delete media
+				$media = Media::find($id);
+				unlink('/uploads/' . $media->image);
+				unlink('/uploads/' . $media->image_sm);
 				Media::destroy($id);
 			}
+			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
 				return Redirect::route('media.index')->with('message', 'Media deleted.');
 			}
@@ -186,6 +190,7 @@ class mediaController extends \BaseController {
 			foreach (Input::get('ids') as $id) {
 				Media::find($id)->update(['disabled' => 1]);	
 			}
+			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
 				return Redirect::route('media.index')->with('message', 'Media disabled.');
 			}
@@ -206,6 +211,7 @@ class mediaController extends \BaseController {
 			foreach (Input::get('ids') as $id) {
 				Media::find($id)->update(['disabled' => 0]);	
 			}
+			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
 				return Redirect::route('media.index')->with('message', 'Media enabled.');
 			}
