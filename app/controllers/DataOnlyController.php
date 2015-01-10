@@ -75,7 +75,7 @@ class DataOnlyController extends \BaseController
 	// all downline
 	public function getAllDownline($id) {
 		DB::connection()->disableQueryLog();
-		set_time_limit (60);
+		set_time_limit (120);
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
 			return User::find(0)->descendants;
 		}
