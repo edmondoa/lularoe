@@ -190,6 +190,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function getVolumeAttribute() {
+		return false
 		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->remember(5,'user_'.$this->id.'_volume')->volume:0;
 	}
 
