@@ -254,11 +254,16 @@ small { color:gray; font-size:8pt !important; display:block; }
 #copyright-text { text-align:left !important; }
 .footer-menu { float:none !important; padding:0 !important; margin-bottom:1em !important; }
 .footer-menu li:nth-child(1) { margin-left:0 !important; }
+#home-cta { position:relative; right:-450px; }
 
 /* bootstrap overrides */
 .btn { border-radius:0 !important; border:0 !important; font-family:Arial, Helvetica, sans-serif !important; font-weight:bold !important; }
 .btn-primary { background:#fc5001 !important; }
 
+@media (max-width:1250px) {
+	#home-cta { right:-225px; }
+}
+
 @media (max-width:767px) {
-	#home-cta { width:75% !important; }
+	#home-cta { width:75% !important; right:0; }
 }
