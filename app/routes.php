@@ -453,6 +453,10 @@ Route::get('test-steve', function() {
 	exit;
 });
 
+Route::get('clear-cache/{function}', function($function) {
+	Cache::forget('route_'.Str::slug(action('DataOnlyController@' . $function)));
+});
+
 Route::get('test-cache/{id}', function($id) {
 	$users = User::find($id)->descendants;
 	//$result['users'] = $users;

@@ -61,11 +61,14 @@
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor','Rep'])))
   					<a href="javascript:void(0)" data-href="/media" class='list-group-item' data-toggle="popover" data-content="
- 						<a href='/media/user/{{ Auth::user()->id }}'><i class='fa fa-th-large'></i> My Media</a>
- 						<a href='/media'><i class='fa fa-th-large'></i> Media Library</a>
- 						<a href='/media/create'><i class='fa fa-plus'></i> Upload Media</a>
+ 						<a href='/media/user/{{ Auth::user()->id }}'><i class='fa fa-user'></i> My Resources</a>
+ 						@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
+ 							<a href='/media'><i class='fa fa-users'></i> ISM Resources</a>
+ 						@endif
+ 						<a href='/media'><i class='fa fa-th-large'></i> Resource Library</a>
+ 						<a href='/media/create'><i class='fa fa-plus'></i> Upload Resource</a>
  					">
- 						<i class="fa fa-file-image-o"></i> <span class="text">Media</span>
+ 						<i class="fa fa-file-image-o"></i> <span class="text">Resources</span>
  					</a>
  				
  					<a href="javascript:void(0)" data-href="/opportunities" class='list-group-item' data-toggle="popover" data-content="

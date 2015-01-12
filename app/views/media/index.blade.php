@@ -14,9 +14,9 @@
 		            <div class="col-md-12">
 		                <h1 class="no-top pull-left no-pull-xs">
 		                	@if (isset($user_id))
-		                		My Media
+		                		My Resources
 		                	@else
-		                		Media Library
+		                		Resource Library
 		                	@endif
 		                </h1>
 		            	<div ng-if="media.length > 10" class="pull-right hidable-xs">
@@ -34,7 +34,7 @@
 			                <div class="pull-left">
 			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-plus"></i></a>
 			                    <div class="pull-left">
-			                        <div class="input-group">
+			                        <div class="input-group pull-left margin-right-2">
 			                            <select class="form-control selectpicker actions">
 			                                <option value="/media/delete">Delete</option>
 			                                <option value="/media/disable" selected>Disable</option>
@@ -46,6 +46,19 @@
 			                                </button>
 			                            </div>
 			                        </div>
+			                        <?php /* select categories */ ?>
+			                        <div class="pull-left margin-right-1">
+			                            <select ng-model="search" id="categories" class="form-control">
+			                            	<option ng-repeat="count in media-counts"><span ng-bind="count.type"></span> <span ng-bind="count.count"></span></option>
+			                            </select>
+			                    	</div>
+			                        <?php /* select tags */ ?>
+			                        <!-- <div class="pull-left">
+			                            <select ng-model="search" id="tags" class="form-control">
+			                            	<option value="">All Tags</option>
+			                                <option ng-repeat="productTag in selectedSubCategoryValues" value="@include('_helpers.productTag_name')">@include('_helpers.productTag_name')</option>
+			                            </select>
+			                    	</div> -->
 			                    </div>
 			                </div>
 			        	</div>
@@ -184,6 +197,11 @@
 			
 			@include('_helpers.bulk_action_checkboxes')
 			
+		});
+		
+		$http.get('/api/all-media-counts').success(function(media_counts) {
+			$scope.media_counts = media_counts;
+			console.log($scope.media_counts);
 		});
 		
 		$scope.currentPage = 1;
