@@ -8,7 +8,7 @@
 	#dendrogram { position:absolute; top:0; right:0; bottom:0; left:0; overflow:auto !important; height:100%; }
 	hr, footer { display:none; }
 	
-	svg { width:2000px; height:750px; overflow:auto !important; }
+	svg { width:2000px; height:1800px; overflow:auto !important; }
 	
 	.node {
 	  cursor: pointer;
@@ -21,6 +21,7 @@
 	}
 	
 	.node text {
+	  padding:20px;
 	  font: 10px sans-serif;
 	}
 	
@@ -56,7 +57,7 @@
 	
 		var margin = {top: 20, right: 120, bottom: 20, left: 120},
 		    width = 2000 - margin.right - margin.left,
-		    height = 750 - margin.top - margin.bottom;
+		    height = 1750 - margin.top - margin.bottom;
 		    
 		var i = 0,
 		    duration = 750,
@@ -91,7 +92,7 @@
 		  update(root);
 		});
 		
-		d3.select(self.frameElement).style("height", "800px");
+		d3.select(self.frameElement).style("height", "1800px");
 		
 		function update(source) {
 		
