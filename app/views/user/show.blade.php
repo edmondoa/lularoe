@@ -4,7 +4,8 @@
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
 		<h1>{{ $user->first_name }} {{ $user->last_name }}</h1>
-	    <div class="btn-group" id="communication-options">
+	    <div class="btn-group" id="record-options">
+			<a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 			@if (Auth::user()->id != $user->id)
 				@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 				    @if ($user->disabled == 0)

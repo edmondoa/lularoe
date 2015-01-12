@@ -125,6 +125,11 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
 		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
+		
+		// helpers
+		Route::get('helpers/media-modals', function() {
+			return View::make('_helpers/modals');
+		});
 
 		// users
 		Route::resource('users', 'UserController');
