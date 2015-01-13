@@ -59,6 +59,19 @@ class DataOnlyController extends \BaseController
 		}
 	}
 	
+	// all media by reps
+	public function getMediaByReps() {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			$medias = Media::all();
+			foreach($medias as $key => $media) {
+				if ($media->user_role_name != 'Rep') {
+					unset($medias[$key]);
+				}
+			}
+			return $medias;
+		}
+	}
+	
 	// all images by user
 	public function getImagesByUser($id) {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id) {

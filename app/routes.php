@@ -148,6 +148,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		// Media
 		Route::resource('media', 'MediaController');
 		Route::get('media/user/{id}', ['as' => 'media/user', 'uses' => 'MediaController@user']);
+		Route::get('media-reps', 'MediaController@reps');
 		Route::post('media/disable', 'MediaController@disable');
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');

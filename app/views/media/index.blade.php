@@ -15,6 +15,8 @@
 		                <h1 class="no-top pull-left no-pull-xs">
 		                	@if (isset($user_id))
 		                		My Resources
+		                	@elseif (isset($reps))
+		                		ISM Resources
 		                	@else
 		                		Resource Library
 		                	@endif
@@ -30,7 +32,7 @@
 		        </div><!-- row -->
 		        <div class="row">
 		        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-			    		<div class="col-md-6 col-sm-6 col-xs-12 page-actions-left">
+			    		<div class="col-sm-8 col-xs-12 page-actions-left">
 			                <div class="pull-left">
 			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-plus"></i></a>
 			                    <div class="pull-left">
@@ -49,20 +51,52 @@
 			                        <?php /* select categories */ ?>
 			                        <div class="pull-left margin-right-1">
 			                            <select ng-model="search" id="categories" class="form-control">
-			                            	<option ng-repeat="count in media-counts"><span ng-bind="count.type"></span> <span ng-bind="count.count"></span></option>
+			                            	<option value="">All file types</option>
+			                            	<option value="@include('_helpers.media_count_type')" ng-if="count.count > 0" ng-repeat="count in media_counts">@include('_helpers.media_count_type')s (@include('_helpers.media_count_count'))</span></option>
 			                            </select>
 			                    	</div>
 			                        <?php /* select tags */ ?>
-			                        <!-- <div class="pull-left">
-			                            <select ng-model="search" id="tags" class="form-control">
-			                            	<option value="">All Tags</option>
-			                                <option ng-repeat="productTag in selectedSubCategoryValues" value="@include('_helpers.productTag_name')">@include('_helpers.productTag_name')</option>
-			                            </select>
-			                    	</div> -->
+			                        <div class="pull-left">
+			                        	<div class="btn-group">
+						                	<button type="button" class="btn btn-default active" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date
+						                		<span>
+						                			<span ng-show="orderByField == 'updated_at'">
+						                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+						                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+						                			</span>
+						                		</span>
+						            		</span>
+						                	<button type="button" class="btn btn-default" ng-click="orderByField='type'; reverseSort = !reverseSort">Type
+						                		<span>
+						                			<span ng-show="orderByField == 'type'">
+						                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+						                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+						                			</span>
+						                		</span>
+						            		</span>
+						                	<button type="button" class="btn btn-default" ng-click="orderByField='title'; reverseSort = !reverseSort">Name
+						                		<span>
+						                			<span ng-show="orderByField == 'title'">
+						                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+						                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+						                			</span>
+						                		</span>
+						            		</span>
+						            	</div>
+			                        	
+			                            <!-- <select ng-model="sort" class="form-control">
+											<option class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date Modified
+					                			<span ng-show="orderByField == 'updated_at'">
+					                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+					                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+					                			</span>
+							            	</option>
+			                            </select> -->
+			                    	</div>
 			                    </div>
 			                </div>
 			        	</div>
-			        	<div class="col-md-6 col-sm-6 col-xs-12">
+			        	<div class="col-sm-4 col-xs-12">
 					@elseif (isset($user_id))
 			    		<div class="col-md-6 col-sm-6 col-xs-12 page-actions-left">
 			                <div class="pull-left">
@@ -101,23 +135,6 @@
 		    <br>
 	        <div class="row">
 	            <div class="col col-md-12">
-	                <!-- <table class="table">
-	                    <thead>
-	                        <tr>
-	                            <th>
-	                            	<input type="checkbox">
-	                            </th>
-	                        </tr>
-	                    </thead>
-	                </table> -->
-                	<!-- <div class="link" ng-click="orderByField='type'; reverseSort = !reverseSort">Filter by Type
-                		<span>
-                			<span ng-show="orderByField == 'type'">
-                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                			</span>
-                		</span>
-            		</div> -->
             		<div ng-hide="val">
 	            		<ul class="tiles">
 		                    <li ng-click="show=!show" ng-mouseenter="hover(media)" ng-mouseleave="hover(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
@@ -176,12 +193,12 @@
 	
 		<?php
 			if (isset($user_id)) $url = '/api/media-by-user/' . $user_id;
+			elseif (isset($reps)) $url = '/api/media-by-reps';
 			else $url = '/api/all-media';
 		?>
 		
 		$http.get('{{ $url }}').success(function(media) {
 			$scope.media = media;
-			console.log($scope);
 			// hide if object empty
 			$scope.val = "";
 
@@ -201,7 +218,6 @@
 		
 		$http.get('/api/all-media-counts').success(function(media_counts) {
 			$scope.media_counts = media_counts;
-			console.log($scope.media_counts);
 		});
 		
 		$scope.currentPage = 1;
@@ -218,6 +234,12 @@
 		$scope.pageChangeHandler = function(num) {
 		};
 	}
+
+	// toggle sort buttons
+	$('.btn-group .btn').click(function() {
+		$(this).parent().children('.btn').removeClass('active');
+		$(this).addClass('active');
+	});
 
 </script>
 @stop

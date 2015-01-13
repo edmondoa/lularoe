@@ -63,7 +63,7 @@
   					<a href="javascript:void(0)" data-href="/media" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/media/user/{{ Auth::user()->id }}'><i class='fa fa-user'></i> My Resources</a>
  						@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
- 							<a href='/media'><i class='fa fa-users'></i> ISM Resources</a>
+ 							<a href='/media-reps'><i class='fa fa-users'></i> ISM Resources</a>
  						@endif
  						<a href='/media'><i class='fa fa-th-large'></i> Resource Library</a>
  						<a href='/media/create'><i class='fa fa-plus'></i> Upload Resource</a>

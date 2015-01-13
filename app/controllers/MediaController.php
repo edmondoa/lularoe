@@ -22,6 +22,17 @@ class mediaController extends \BaseController {
 		$user_id = $id;
 		return View::make('media.index', compact('media', 'user_id'));
 	}
+	
+	/**
+	 * Display a listing of media belonging to all reps
+	 *
+	 * @return Response
+	 */
+	public function reps()
+	{
+		$reps = true;
+		return View::make('media.index', compact('media', 'reps'));
+	}
 
 	/**
 	 * Show the form for creating a new media
@@ -65,13 +76,16 @@ class mediaController extends \BaseController {
 		// store in db and redirect
 		$media = Media::create($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser')));
 		if (isset($data['ajax'])) {
 			$response['success'] = true;
 			$response['url'] = '/uploads/' . $media->url;
 			return $response;
 		}
 		else {
-			return Redirect::route('media.index')->with('message', 'Media uploaded.');
+			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
+			else $user_id = Auth::user()->id;
+			return Redirect::route('media/user', compact('user_id'))->with('message', 'File updated.');
 		}
 
 	}
@@ -138,8 +152,10 @@ class mediaController extends \BaseController {
 		if ($data['media'] == '') $data['url'] = $media->url;
 		$media->update($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		$user_id = Auth::user()->id;
-		return Redirect::route('media/user', compact('user_id'))->with('message', 'Media updated.');
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser')));
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
+		else $user_id = Auth::user()->id;
+		return Redirect::route('media/user', compact('user_id'))->with('message', 'File updated.');
 	}
 
 	/**
@@ -152,7 +168,7 @@ class mediaController extends \BaseController {
 	{
 		Media::destroy($id);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		return Redirect::route('media.index')->with('message', 'Media deleted.');
+		return Redirect::route('media.index')->with('message', 'File deleted.');
 	}
 	
 	/**
@@ -171,10 +187,10 @@ class mediaController extends \BaseController {
 			}
 			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'Media deleted.');
+				return Redirect::route('media.index')->with('message', 'Files deleted.');
 			}
 			else {
-				return Redirect::back()->with('message', 'Media deleted.');
+				return Redirect::back()->with('message', 'File deleted.');
 			}
 		}
 		else return Redirect::back()->with('message_danger', 'You must select at least 1 file.');
@@ -192,10 +208,10 @@ class mediaController extends \BaseController {
 			}
 			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'Media disabled.');
+				return Redirect::route('media.index')->with('message', 'File disabled.');
 			}
 			else {
-				return Redirect::back()->with('message', 'Media disabled.');
+				return Redirect::back()->with('message', 'File disabled.');
 			}
 		}
 		else return Redirect::back()->with('message_danger', 'You must select at least 1 file.');
@@ -213,10 +229,10 @@ class mediaController extends \BaseController {
 			}
 			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'Media enabled.');
+				return Redirect::route('media.index')->with('message', 'File enabled.');
 			}
 			else {
-				return Redirect::back()->with('message', 'Media enabled.');
+				return Redirect::back()->with('message', 'File enabled.');
 			}
 		}
 		else return Redirect::back()->with('message_danger', 'You must select at least 1 file.');
