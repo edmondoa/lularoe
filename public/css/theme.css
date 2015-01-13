@@ -124,6 +124,7 @@ body a:hover { color:#003d98; }
 .panel table { width:100%; }
 .panel table tbody th { text-align:left; }
 .panel-default .panel-heading { background:#013863 !important; color:white; }
+.panel-default .panel-heading a:hover { color:white !important; opacity:.75; }
 .btn-group > form { display:inline-block; }
 #record-options > form:nth-of-type(1) > .btn { border-radius:0 !important; margin:0 !important; border-right:0 !important; border-left:0 !important; }
 #communication-options > form:nth-of-type(1) > .btn { border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-right:0 !important; }

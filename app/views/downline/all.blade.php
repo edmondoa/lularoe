@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => '/users/public_email', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
 	    <div ng-controller="DownlineController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
