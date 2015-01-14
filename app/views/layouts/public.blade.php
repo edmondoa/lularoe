@@ -18,8 +18,7 @@
         <meta property='og:title' content='Privacy Policy'/>
         <meta property='og:type' content='article'/>
         <link rel='stylesheet' id='js_composer_front-css'  href='/wp-content/themes/salient/wpbakery/js_composer/assets/css/js_composer_front.css?ver=3.7.3' type='text/css' media='all' />
-        <link rel='stylesheet' id='contact-form-7-css'  href='/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=4.0.1' type='text/css' media='all' />
-        <link rel='stylesheet' id='rgs-css'  href='/wp-content/themes/salient/css/rgs.css?ver=4.5.2' type='text/css' media='all' />
+         <link rel='stylesheet' id='rgs-css'  href='/wp-content/themes/salient/css/rgs.css?ver=4.5.2' type='text/css' media='all' />
         <link rel='stylesheet' id='font-awesome-css'  href='/wp-content/themes/salient/css/font-awesome.min.css?ver=4.0' type='text/css' media='all' />
         <link rel='stylesheet' id='steadysets-css'  href='/wp-content/themes/salient/css/steadysets.css?ver=4.0' type='text/css' media='all' />
         <link rel='stylesheet' id='linecon-css'  href='/wp-content/themes/salient/css/linecon.css?ver=4.0' type='text/css' media='all' />
@@ -261,13 +260,6 @@ var MyAcSearch = {"url":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-ajax
 /* ]]> */
         </script>
         <script type='text/javascript' src='/wp-content/themes/salient/nectar/assets/functions/ajax-search/wpss-search-suggest.js'></script>
-        <script type='text/javascript' src='/wp-content/plugins/contact-form-7/includes/js/jquery.form.min.js?ver=3.51.0-2014.06.20'></script>
-        <script type='text/javascript'>
-/* <![CDATA[ */
-var _wpcf7 = {"loaderUrl":"http:\/\/sociallymobile-wordpress\/wp-content\/plugins\/contact-form-7\/images\/ajax-loader.gif","sending":"Sending ...","cached":"1"};
-/* ]]> */
-        </script>
-        <script type='text/javascript' src='/wp-content/plugins/contact-form-7/includes/js/scripts.js?ver=4.0.1'></script>
         <script type='text/javascript' src='/wp-content/themes/salient/js/superfish.js?ver=1.4.8'></script>
         <script type='text/javascript' src='/wp-content/themes/salient/js/respond.js?ver=1.1'></script>
         <script type='text/javascript' src='/wp-content/themes/salient/js/sticky.js?ver=1.0'></script>
