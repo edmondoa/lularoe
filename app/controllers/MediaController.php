@@ -148,8 +148,8 @@ class mediaController extends \BaseController {
 
 		// if file exists, delete it
 		$old_file = $media->url;
-		if (is_file('/uploads/' . $old_file)) {
-			unlink('/uploads/' . $old_file);
+		if (is_file(public_path() . '/uploads/' . $old_file)) {
+			unlink(public_path() . '/uploads/' . $old_file);
 		}
 
 		// ensure that the file doesn't get saved over with an empty value
@@ -191,8 +191,8 @@ class mediaController extends \BaseController {
 			foreach (Input::get('ids') as $id) {
 				// delete media
 				$media = Media::find($id);
-				unlink('/uploads/' . $media->image);
-				unlink('/uploads/' . $media->image_sm);
+				unlink(public_path() . '/uploads/' . $media->url);
+				unlink(public_path() . '/uploads/' . $media->image_sm);
 				Media::destroy($id);
 			}
 			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));

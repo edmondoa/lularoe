@@ -14,7 +14,7 @@
 		            <div class="col-md-12">
 		                <h1 class="no-top pull-left no-pull-xs">
 		                	@if (isset($user->id))
-		                		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && Auth::user()->id != $user->id)
+		                		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && Auth::user()->id != $user->id || (Auth::user()->id == 0 && $user->id == 0))
 		                			{{ $user->full_name }}'s Resources
 		                		@else
 		                			My Resources
