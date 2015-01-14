@@ -80,6 +80,7 @@ class mediaController extends \BaseController {
 		$media = Media::create($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser')));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser')));
 		if (isset($data['ajax'])) {
 			$response['success'] = true;
 			$response['url'] = '/uploads/' . $media->url;
@@ -161,6 +162,7 @@ class mediaController extends \BaseController {
 		$media->update($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser')));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser')));
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
 		else $user_id = Auth::user()->id;
 		return Redirect::route('media/user', compact('user_id'))->with('message', 'File updated.');

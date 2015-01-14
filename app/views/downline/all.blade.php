@@ -19,9 +19,9 @@
 			            	@endif
 			            	<span class="badge">
 				            	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-				            		{{ $total_users }}
+				            		{{ number_format($total_users) }}
 				            	@else
-				            		{{ $user->descendant_count }}
+				            		{{ number_format($user->descendant_count) }}
 				            	@endif
 			            	</span>
 		            	</h1>

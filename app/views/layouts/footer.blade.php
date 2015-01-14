@@ -1,5 +1,8 @@
-<div id='div_session_write'></div>
-<div id="modals"></div>
+		<div id='div_session_write'></div>
+		<div id="modals">
+		    @section('modals')
+		    @show
+		</div>
 		{{ HTML::script('/js/jquery1.js') }}
 		{{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
 		{{ HTML::script('//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js') }}
@@ -16,16 +19,8 @@
 		{{ HTML::script('js/functions.js') }}
 		{{ HTML::script('/js/controllers/datepickerController.js') }}
 		{{ HTML::script('/packages/jquery-ui/timepicker.js') }}
-		<!--[javascript]-->
-		@section('scripts')
-		@show
 		{{ HTML::script('/packages/dirpagination/dirPagination.js') }}
 		{{ HTML::script('/packages/tinymce/tinymce.min.js') }}
-		<!-- <script src="/packages/froala/js/froala_editor.min.js"></script> -->
-		<!--[if lt IE 9]>
-		<!-- Include IE8 JS. -->
-		<!-- <script src="/packages/froala/js/froala_editor_ie8.min.js"></script> -->
-		<![endif]-->
 		@if (!Session::has('timezone'))
 			<!-- get timezone -->
 			<script>
@@ -51,7 +46,14 @@
 			ss.type = 'text/javascript';ss.async = 'true';
 			var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ss, s);
 		    })();
-		</script>
+		</script>		@section('scripts1')
+		@show
+		@section('scripts')
+		@show
+		@section('scripts2')
+		@show
+		@section('scripts3')
+		@show
 	</body>
 </html>
 @include('_helpers.store_previous_pages')

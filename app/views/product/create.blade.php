@@ -95,5 +95,5 @@
 </div>
 @stop
 @section('modals')
-	@include('_helpers.modals')
+	@include('_helpers.wysiwyg_modals')
 @stop

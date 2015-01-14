@@ -32,7 +32,7 @@
 				$existing_file = Media::where('url', $url)->get();
 				if (count($existing_file) > 0) {
 					$filename = str_random(20);
-					$url = $path . $filename;
+					$url = $path . $filename . '.' . $extension;
 				}
 
                 $uploadSuccess = $file->move($fullPath, $filename);
