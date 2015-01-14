@@ -17,7 +17,7 @@ class DataOnlyController extends \BaseController
 	}
 	
 	// all media
-	public function getAllMediaCounts() {
+	public function getMediaCounts($type) {
 		$file_types = [
 			0 => ['type' => 'Archive', 'count' => 0],
 			1 => ['type' => 'Audio', 'count' => 0],
@@ -32,8 +32,37 @@ class DataOnlyController extends \BaseController
 			10 => ['type' => 'Text', 'count' => 0],
 			11 => ['type' => 'Video', 'count' => 0],
 		];
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $medias = Media::all();
-		if (Auth::user()->hasRole(['Rep'])) $medias = Media::where('reps', 1)->get();
+		
+		// count reps media
+		if ($type == 'reps') {
+			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+				$medias = Media::all();
+				foreach($medias as $key => $media) {
+					if (!User::find($media->user_id)->hasRole(['Rep'])) {
+						unset($medias[$key]);
+					}
+				}
+			}
+		}
+		
+		// count a specific user's media
+		elseif (is_numeric($type)) {
+			$id = $type;
+			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->hasRole(['Rep']) && Auth::user()->id == $id) {
+				$medias = Media::where('user_id', $id)->get();
+			}
+		}
+		
+		// count all media
+		elseif ($type == 'all') {
+			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+				$medias = Media::all();
+			}
+			elseif (Auth::user()->hasRole(['Rep'])) {
+				$medias = Media::where('reps', 1)->get();
+			}
+		}
+		
 		foreach ($medias as $media) {
 			foreach($file_types as $key => $file_type) {
 				if ($media->type == $file_type['type']) {
@@ -54,8 +83,8 @@ class DataOnlyController extends \BaseController
 	
 	// all media by user
 	public function getMediaByUser($id) {
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id) {
-			return Media::where('user_id', $id)->where('type', 'Image')->get();
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->hasRole(['Rep']) && Auth::user()->id == $id) {
+			return Media::where('user_id', $id)->get();
 		}
 	}
 	
@@ -63,12 +92,18 @@ class DataOnlyController extends \BaseController
 	public function getMediaByReps() {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
 			$medias = Media::all();
-			foreach($medias as $key => $media) {
-				if ($media->user_role_name != 'Rep') {
-					unset($medias[$key]);
+			$media_with_reps = [];
+			foreach($medias as $media) {
+				if (User::find($media->user_id)->hasRole(['Rep'])) {
+					$media_with_reps[] = $media;
 				}
 			}
-			return $medias;
+			// foreach($medias as $key => $media) {
+				// if (!User::find($media->user_id)->hasRole(['Rep'])) {
+					// unset($medias[$key]);
+				// }
+			// }
+			return $media_with_reps;
 		}
 	}
 	

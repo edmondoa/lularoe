@@ -9,7 +9,7 @@ class mediaController extends \BaseController {
 	 */
 	public function index()
 	{
-		return View::make('media.index', compact('media'));
+		return View::make('media.index');
 	}
 	
 	/**
@@ -19,8 +19,8 @@ class mediaController extends \BaseController {
 	 */
 	public function user($id)
 	{
-		$user_id = $id;
-		return View::make('media.index', compact('media', 'user_id'));
+		$user = User::findOrFail($id);
+		return View::make('media.index', compact('media', 'user'));
 	}
 	
 	/**
@@ -73,6 +73,9 @@ class mediaController extends \BaseController {
 		// format checkboxes for db
 		$data['reps'] = isset($data['reps']) ? 1 : 0;
 
+		// if role is Superadmin, Admin, or Editor, set owner id to 0
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $data['user_id'] = 0;
+		
 		// store in db and redirect
 		$media = Media::create($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
@@ -148,8 +151,13 @@ class mediaController extends \BaseController {
 			unlink('/uploads/' . $old_file);
 		}
 
-		// update db
+		// ensure that the file doesn't get saved over with an empty value
 		if ($data['media'] == '') $data['url'] = $media->url;
+		
+		// if role is Superadmin, Admin, or Editor, set owner id to 0
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $data['user_id'] = 0;
+		
+		// update db
 		$media->update($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser')));

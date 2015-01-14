@@ -37,7 +37,6 @@ $(document).ready(function() {
     });
     
     // jQUery UI
-    
     var today = new Date();
     var firstYear = today.getFullYear() - 18;
     $('.datepicker').datetimepicker({
@@ -70,17 +69,6 @@ $(document).ready(function() {
     $('.form-group .label .fa-times').click(function() {
        $(this).parent().remove(); 
     });
-    
-    // initialize fraola WYSIWYG editor
-    // $(function() {
-        // $('.wysiwyg').editable({
-            // beautifyCode: true,
-            // height: 400,
-            // inlineMode: false,
-            // plainPaste: true,
-            // imageUploadURL: '/upload-image',
-        // });
-    // });
     
     // initialize tinymce
     tinymce.init({
@@ -131,15 +119,15 @@ $(document).ready(function() {
     
     // close sidebar menu popovers when clicking outside
     $('[data-toggle="popover"]').popover();
-    // $('body').on('click', function (e) {
-        // $('[data-toggle="popover"]').each(function () {
-            // //the 'is' for buttons that trigger popups
-            // //the 'has' for icons within a button that triggers a popup
-            // if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-                // $(this).popover('hide');
-            // }
-        // });
-    // });
+    $('body').on('click', function (e) {
+        $('[data-toggle="popover"]').each(function () {
+            //the 'is' for buttons that trigger popups
+            //the 'has' for icons within a button that triggers a popup
+            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                $(this).popover('hide');
+            }
+        });
+    });
     
     // add tag
 

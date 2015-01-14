@@ -94,7 +94,8 @@ i { width:16px; } /* standardizes font awesome icons */
 .tiles li .file i { font-size:50px; position:relative; margin-left:-20px; }
 .tiles li .file-title { font-size:10pt; max-width:130px; word-wrap:break-word; margin-top:8px; background:rgb(235,235,235); padding:5px 10px; border-radius:4px; display:inline-block; }
 .tiles li .options { z-index:1; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:right; }
-.tiles li .options a, .tiles li .options span { color:white; cursor:pointer; }
+.tiles li .owner { z-index:1; position:absolute; bottom:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:left; }
+.tiles li .options a, .tiles li .options span, .tiles li .owner a { color:white; cursor:pointer; }
 .tiles li .options a i, .tiles li .options span i { width:24px; text-align:center; }
 .thumb { width:50px; }
 .tag-list .label { margin:0 4px 4px 0; }
