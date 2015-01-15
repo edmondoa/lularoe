@@ -79,8 +79,8 @@ class mediaController extends \BaseController {
 		// store in db and redirect
 		$media = Media::create($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser')));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser', $id)));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser', $id)));
 		if (isset($data['ajax'])) {
 			$response['success'] = true;
 			$response['url'] = '/uploads/' . $media->url;
@@ -161,8 +161,8 @@ class mediaController extends \BaseController {
 		// update db
 		$media->update($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser')));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser', $id)));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser', $id)));
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
 		else $user_id = Auth::user()->id;
 		return Redirect::route('media/user', compact('user_id'))->with('message', 'File updated.');

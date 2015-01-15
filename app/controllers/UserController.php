@@ -36,7 +36,7 @@ class userController extends \BaseController {
 		$data = Input::all();
 		$data['phone'] = formatPhone($data['phone']);
 		$rules = User::$rules;
-		$rules['email'] = 'required|unique:users,email';
+		$rules['email'] = 'required|email|unique:users';
 		$rules['address_1'] = 'required';
 		$rules['address_2'] = 'sometimes';
 		$rules['city'] = 'required';
@@ -198,7 +198,7 @@ class userController extends \BaseController {
 			$user = User::findOrFail($id);
 			$old_user_data = $user;
 			$rules = User::$rules;
-			$rules['email'] = 'unique:users,email,' . $user->id;
+			$rules['email'] = 'required|email|unique:users';
 			$rules['password'] = 'sometimes|confirmed|digits_between:8,25';
 			//$rules['sponsor_id'] = 'required|digits';
 			$data = Input::all();
