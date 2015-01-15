@@ -35,6 +35,7 @@
 
 			        //'Asia/Kolhata' for Indian Time.
 			        $.post('/set-timezone', { timezone : timezone }, function(result) {
+			        	alert('Result!');
 			        	console.log('result: ' + result);
 			        });
 			        console.log('Ran AJAX');
