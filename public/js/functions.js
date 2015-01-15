@@ -37,7 +37,6 @@ $(document).ready(function() {
     });
     
     // jQUery UI
-    
     var today = new Date();
     var firstYear = today.getFullYear() - 18;
     $('.datepicker').datetimepicker({
@@ -71,17 +70,6 @@ $(document).ready(function() {
        $(this).parent().remove(); 
     });
     
-    // initialize fraola WYSIWYG editor
-    // $(function() {
-        // $('.wysiwyg').editable({
-            // beautifyCode: true,
-            // height: 400,
-            // inlineMode: false,
-            // plainPaste: true,
-            // imageUploadURL: '/upload-image',
-        // });
-    // });
-    
     // initialize tinymce
     tinymce.init({
         selector: ".wysiwyg",
@@ -109,22 +97,23 @@ $(document).ready(function() {
                     '<img style="height:16px; width:16px;" src="/img/upload.svg">' +
                 '</button>' +
             '</div>' +
-            '<div data-toggle="modal" data-target="#media-library" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" title="Media Library" role="button" class="mce-btn">' +
+            '<div data-toggle="modal" data-target="#mediaLibrary" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" title="Media Library" role="button" class="mce-btn">' +
                 '<button style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" role="presentation" type="button" tabindex="-1">' +
                     '<img style="height:16px; width:16px;" src="/img/tiles.svg">' +
                 '</button>' +
             '</div>' +
         '');
         $('input#mceu_44-inp').addClass("mceu_44-inp-hack");
-        // alert('#modals').html();
-        $('#modals').load('/helpers/media-modals');
         addedMediaButtons = true;
 	}
-    $('body').on({
-        click: function() {
-			addMediaButtons();
-        }
-    }, '#mceu_16');
+    $('body').on('click', '#mceu_16', function() {
+		addMediaButtons();
+    });
+    
+    // load media modals if WYISYG editor exists
+    // if ($('.wysiwyg').length > 0) {
+    	// if ($('#modals').html() == '') $('#modals').load('/helpers/media-modals');
+    // }
     
     // close sidebar menu popovers when clicking outside
     $('[data-toggle="popover"]').popover();
@@ -133,7 +122,7 @@ $(document).ready(function() {
             //the 'is' for buttons that trigger popups
             //the 'has' for icons within a button that triggers a popup
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-                $(this).popover('hide');
+               	$(this).popover('hide');
             }
         });
     });

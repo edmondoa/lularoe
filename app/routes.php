@@ -148,6 +148,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		// Media
 		Route::resource('media', 'MediaController');
 		Route::get('media/user/{id}', ['as' => 'media/user', 'uses' => 'MediaController@user']);
+		Route::get('media-reps', 'MediaController@reps');
 		Route::post('media/disable', 'MediaController@disable');
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
@@ -451,6 +452,10 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 Route::get('test-steve', function() {
 	echo url();
 	exit;
+});
+
+Route::get('clear-cache/{function}', function($function) {
+	Cache::forget('route_'.Str::slug(action('DataOnlyController@' . $function)));
 });
 
 Route::get('test-cache/{id}', function($id) {

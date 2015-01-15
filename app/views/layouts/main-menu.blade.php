@@ -61,11 +61,19 @@
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor','Rep'])))
   					<a href="javascript:void(0)" data-href="/media" class='list-group-item' data-toggle="popover" data-content="
- 						<a href='/media/user/{{ Auth::user()->id }}'><i class='fa fa-th-large'></i> My Media</a>
- 						<a href='/media'><i class='fa fa-th-large'></i> Media Library</a>
- 						<a href='/media/create'><i class='fa fa-plus'></i> Upload Media</a>
+ 						@if ((Auth::check())&&(Auth::user()->hasRole(['Rep'])))
+ 							<a href='/media/user/{{ Auth::user()->id }}'><i class='fa fa-user'></i> My Resources</a>
+ 						@endif
+ 						@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
+ 							<a href='/media/user/0'><i class='fa fa-th-large'></i> Company Resources</a>
+ 							<a href='/media-reps'><i class='fa fa-users'></i> ISM Resources</a>
+ 						@endif
+ 						@if ((Auth::check())&&(Auth::user()->hasRole(['Rep'])))
+ 							<a href='/media'><i class='fa fa-th-large'></i> Resource Library</a>
+ 						@endif
+ 						<a href='/media/create'><i class='fa fa-plus'></i> Upload Resource</a>
  					">
- 						<i class="fa fa-file-image-o"></i> <span class="text">Media</span>
+ 						<i class="fa fa-file-image-o"></i> <span class="text">Resources</span>
  					</a>
  				
  					<a href="javascript:void(0)" data-href="/opportunities" class='list-group-item' data-toggle="popover" data-content="

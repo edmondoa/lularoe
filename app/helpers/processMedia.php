@@ -32,7 +32,7 @@
 				$existing_file = Media::where('url', $url)->get();
 				if (count($existing_file) > 0) {
 					$filename = str_random(20);
-					$url = $path . $filename;
+					$url = $path . $filename . '.' . $extension;
 				}
 
                 $uploadSuccess = $file->move($fullPath, $filename);
@@ -84,7 +84,7 @@
                 $data['url'] = $url;
 				$data['user_id'] = Auth::user()->id;
 				if (isset($data['title'])) {
-					if ($data['title'] == '') $data['title'] = $filename;
+					if ($data['title'] == '') $data['title'] = $filename . '.' . $extension;
 				}
 
             }
