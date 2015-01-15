@@ -24,14 +24,21 @@
 		@if (!Session::has('timezone'))
 			<!-- get timezone -->
 			<script>
+				console.log('Running script');
 			    // if (localStorage['timezone'] == undefined) {
 			        // get timezone
 			        var tz = jstz.determine();
+			        console.log('var tz = ' + tz);
 			        // Determines the time zone of the browser client
 			        var timezone = tz.name();
+			        console.log('var timezone = ' + timezone);
 
 			        //'Asia/Kolhata' for Indian Time.
-			        $.post('/set-timezone', { timezone : timezone });
+			        $.post('/set-timezone', { timezone : timezone }, function(result) {
+			        	alert('Result!');
+			        	console.log('result: ' + result);
+			        });
+			        console.log('Ran AJAX');
 
 			    // }
 			</script>
