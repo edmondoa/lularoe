@@ -1,6 +1,8 @@
  			<div class="list-group" id="main-menu">
- 				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin'])))
+ 				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin', 'Editor'])))
  					<a title="Dashboard" href="/dashboard" class="list-group-item"><i class="fa fa-dashboard"></i> <span class="text">Dashboard</span></a>
+ 				@endif
+ 				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin'])))
  					<a href="javascript:void(0)" data-href="/downline" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/downline/immediate/0'><i class='fa fa-arrow-down'></i> Immediate Downline</a>
  						<a href='/downline/all/0'><i class='fa fa-bars'></i> All Downline</a>
@@ -28,7 +30,7 @@
  						<i class="fa fa-user"></i> <span class="text">My Leads</span>
  					</a>
  				@endif
- 				@if ((Auth::check())&&(Auth::user()->hasRole(['Editor', 'Rep', 'Customer'])))
+ 				@if ((Auth::check())&&(Auth::user()->hasRole(['Rep'])))
  					<a href="javascript:void(0)" data-href="/user-sites" class='list-group-item' data-toggle="popover" data-content="
  						<a target='_blank' href='//{{ Auth::user()->public_id }}.{{ Config::get("site.base_domain") }}'><i class='fa fa-eye'></i> View Site</a>
  						<a href='/user-sites/{{ Auth::user()->id }}/edit'><i class='fa fa-pencil'></i> Edit Site</a>
@@ -93,7 +95,7 @@
 						<i class="fa fa-file"></i> <span class="text">Pages</span>
  					</a>
  				@endif
- 				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin'])))
+ 				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
 					<!-- <a href="/addresses" class="list-group-item"><i class="fa fa-home"></i> <span class="text">Addresses</span></a> -->
 					<!-- <a href="/bonuses" class="list-group-item"><i class="fa fa-certificate"></i> Bonuses</a> -->
 					<!-- <a href="/carts" class="list-group-item"><i class="fa fa-shopping-cart"></i> Cart</a> -->
@@ -115,6 +117,8 @@
 					<!-- <a href="/roles" class="list-group-item"><i class="fa fa-user"></i> Roles</a> -->
 					<!-- <a href="/sales" class="list-group-item"><i class="fa fa-dollar"></i> Sales</a> -->
  					<!-- <a title="Users" href='/users' class="list-group-item"><i class='fa fa-user'></i> <span class="text">Users</span></a> -->
+ 				@endif
+ 				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin'])))
  					<a href="javascript:void(0)" data-href="/users" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/users'><i class='fa fa-user'></i> All Users</a>
  						<a href='/users/create'><i class='fa fa-plus'></i> New User</a>

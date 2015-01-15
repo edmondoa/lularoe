@@ -442,7 +442,10 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 		$title = $event->name;
 		return View::make('event.public_show', compact('event','title','sponsor'));
 	});
-
+	
+	//timezone
+	Route::post('set-timezone', 'TimezoneController@setTimezone');
+	
 });
 
 ##############################################################################################
