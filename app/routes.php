@@ -437,6 +437,8 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	// event (public view)
 	Route::get('public-events/{id}', function($subdomain, $id)
 	{
+		return Session::get('timezone');
+		exit;
 		$event = Uvent::findOrFail($id);
 		$sponsor = User::where('public_id', $subdomain)->first();
 		$title = $event->name;
