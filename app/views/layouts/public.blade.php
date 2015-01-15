@@ -90,7 +90,7 @@
 
                         <div class="col span_3">
                         	
-                            <a id="logo" href="/" > <img class=" dark-version" alt="SociallyMobile" src="/img/socially-mobile-logo.png" height="48" width="169" /> <!-- <div id="lets-talk">Let's Talk.</div> --></a>
+                            <a id="logo" href="//{{ Config::get('site.domain') }}" > <img class=" dark-version" alt="SociallyMobile" src="/img/socially-mobile-logo.png" height="48" width="169" /> <!-- <div id="lets-talk">Let's Talk.</div> --></a>
 
                         </div><!--/span_3-->
 
@@ -101,10 +101,10 @@
                             <nav>
                                 <ul class="sf-menu">
                                     <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074">
-                                        <a href="/contact-us/">Contact Us</a>
+                                        <a href="//{{ Config::get('site.domain') }}/contact-us/">Contact Us</a>
                                     </li>
                                     <li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
-                                        <a href="/public-events">Events</a>
+                                        <a href="//{{ Config::get('site.domain') }}/public-events">Events</a>
                                     </li>
 				                    <?php
 				                    	if (Auth::check()) {
@@ -127,9 +127,9 @@
 									@endif
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                                         @if (!Auth::check())
-                                        	<a href="<?php echo url() ?>/login">Log In</a>
+                                        	<a href="//{{ Config::get('site.domain') }}/login">Log In</a>
                                         @else
-                                        	<a href="/dashboard">Dashboard</a>
+                                        	<a href="//{{ Config::get('site.domain') }}/dashboard">Dashboard</a>
                                         @endif
                                     </li>
                                     <!-- <li id="search-btn">
@@ -167,9 +167,9 @@
 					@endforeach
                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                         @if (!Auth::check())
-                        	<a href="<?php echo url() ?>/login">Log In</a>
+                        	<a href="//{{ Config::get('site.domain') }}/login">Log In</a>
                         @else
-                        	<a href="/dashboard">Dashboard</a>
+                        	<a href="//{{ Config::get('site.domain') }}/dashboard">Dashboard</a>
                         @endif
                     </li>
                     <!-- <li id="search-btn">
@@ -225,7 +225,7 @@
 		                    @if (isset($pages))
 			                    <ul class="footer-menu">
 									@foreach ($pages as $page)
-										<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+										<li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
 									@endforeach
 								</ul>
 							@endif
