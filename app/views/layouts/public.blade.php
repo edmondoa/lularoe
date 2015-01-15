@@ -122,7 +122,7 @@
 				                    ?>
 				                    @if (isset($pages))
 										@foreach ($pages as $page)
-											<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+											<li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
 										@endforeach
 									@endif
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
