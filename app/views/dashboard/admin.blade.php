@@ -5,7 +5,7 @@
 		<h1>Dashboard</h1>
 		@if ($beta_service_link->value == 1)
 			<div class="alert alert-success inline-block">
-				<a href="https://imsociallymobile.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Click here to sign up for beta service</a>
+				<a href="https://www.evopointe.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Click here to sign up for mobile service</a>
 			</div>
 			<br>
 		@endif
