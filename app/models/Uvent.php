@@ -29,8 +29,6 @@ class Uvent extends \Eloquent
 	{
 		$updated_time = $this->attributes['date_start'];
 		$start_date_stamp =	date('Y-m-d G:i:s', $updated_time);
-		return Session::get('timezone');
-		exit;
 		return Timezone::convertFromUTC($start_date_stamp, Session::get('timezone'), 'g:i A');
 	}
 

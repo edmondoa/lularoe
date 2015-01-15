@@ -106,8 +106,6 @@ class uventController extends \BaseController {
 	 */
 	public function publicShow($id)
 	{
-		return Session::get('timezone');
-		exit;
 		$event = Uvent::findOrFail($id);
 		$title = $event->name;
 		return View::make('event.public_show', compact('event', 'title'));
