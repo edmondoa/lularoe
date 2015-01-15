@@ -408,6 +408,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	function ($subdomain){
 	};
 
+
 	Route::get('/', function($subdomain)
 	{
 		$user = User::where('public_id', $subdomain)->first();

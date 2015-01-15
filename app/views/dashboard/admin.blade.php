@@ -22,7 +22,7 @@
 			<table class="table table-striped">
 				<tr>
 					<th>Total ISM's</th>
-					<td><a href="/downline/all/0">{{ $reps }}</a></td>
+					<td><a href="/downline/all/{{ $user->id }}">{{ $reps }}</a></td>
 				</tr>
 				<tr>
 					<th>Top Level ISM's</th>
