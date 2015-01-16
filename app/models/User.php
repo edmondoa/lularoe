@@ -113,9 +113,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function orgVolumeRelation()
 	{
-		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id')->remember(5)->first();
-	}
+		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id' )->remember(5)->first();
+		}
 
+	public function new_descendants() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime(' 30 days ago')));
+	}
+	
 	##############################################################################################
 	# Custom Attributes
 	##############################################################################################

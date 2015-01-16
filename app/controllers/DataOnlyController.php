@@ -141,6 +141,11 @@ class DataOnlyController extends \BaseController
 	 */
 	 
 	// immediate downline
+	public function getNewDownline($id) {
+		return User::find($id)->new_descendants()->get();
+	}	
+	 
+	// immediate downline
 	public function getFirstBranch() {
 		return;
 	}

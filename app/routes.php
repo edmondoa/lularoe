@@ -122,6 +122,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('settings', ['as' => 'settings', 'uses' => 'DashboardController@settings']);
 
 		// downline
+		Route::get('/downline/new/{id}', 'DownlineController@newDownline');
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
 		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
@@ -214,6 +215,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-products', 'DataOnlyController@getAllProducts');
 		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
 		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
+		Route::get('api/new-downline', 'DataOnlyController@getNewDownline');
 		
 
 		// upload media

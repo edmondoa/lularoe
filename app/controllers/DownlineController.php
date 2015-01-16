@@ -3,6 +3,14 @@
 class DownlineController extends \BaseController
 {
 	
+	public function newDownline($id)
+	{
+		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id || Auth::user()->hasRole(array('Superadmin', 'Admin'))) {
+			$user = User::findOrFail($id);
+			return View::make('downline.new', compact('user'));
+		}
+	}
+	
 	public function immediateDownline($id)
 	{
 		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id || Auth::user()->hasRole(array('Superadmin', 'Admin'))) {
