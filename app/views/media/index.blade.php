@@ -21,6 +21,8 @@
 		                		@endif
 		                	@elseif (isset($reps))
 		                		ISM Resources
+		                	@elseif (isset($shared_with_reps))
+		                		Resources Shared with ISM's
 		                	@else
 		                		Resource Library
 		                	@endif
@@ -38,7 +40,7 @@
 		    		<div class="col-sm-8 col-xs-12 page-actions-left">
 		                <div class="pull-left">
 		                	@if ((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-plus"></i></a>
+			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-upload"></i></a>
 			                    <div class="pull-left">
 			                        <div class="input-group pull-left margin-right-2">
 			                            <select class="form-control selectpicker actions">
@@ -189,6 +191,10 @@
 			elseif (isset($reps)) {
 				$media_url = '/api/media-by-reps';
 				$count_url = '/api/media-counts/reps';
+			}
+			elseif (isset($shared_with_reps)) {
+				$media_url = '/api/media-shared-with-reps';
+				$count_url = '/api/media-counts/shared-with-reps';
 			}
 			else {
 				$media_url = '/api/all-media';

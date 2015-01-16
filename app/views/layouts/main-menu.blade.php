@@ -68,12 +68,13 @@
  						@endif
  						@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
  							<a href='/media/user/0'><i class='fa fa-th-large'></i> Company Resources</a>
- 							<a href='/media-reps'><i class='fa fa-users'></i> ISM Resources</a>
+ 							<a href='/media-shared-with-reps'><i class='fa fa-th-large'></i> Resources Shared with ISM's</a>
+ 							<a href='/media-reps'><i class='fa fa-users'></i> Resources Uploaded by ISM's</a>
  						@endif
  						@if ((Auth::check())&&(Auth::user()->hasRole(['Rep'])))
  							<a href='/media'><i class='fa fa-th-large'></i> Resource Library</a>
  						@endif
- 						<a href='/media/create'><i class='fa fa-plus'></i> Upload Resource</a>
+ 						<a href='/media/create'><i class='fa fa-upload'></i> Upload Resource</a>
  					">
  						<i class="fa fa-file-image-o"></i> <span class="text">Resources</span>
  					</a>

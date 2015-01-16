@@ -20,7 +20,7 @@ class mediaController extends \BaseController {
 	public function user($id)
 	{
 		$user = User::findOrFail($id);
-		return View::make('media.index', compact('media', 'user'));
+		return View::make('media.index', compact('user'));
 	}
 	
 	/**
@@ -31,7 +31,18 @@ class mediaController extends \BaseController {
 	public function reps()
 	{
 		$reps = true;
-		return View::make('media.index', compact('media', 'reps'));
+		return View::make('media.index', compact('reps'));
+	}
+
+	/**
+	 * Display a listing of media shared with reps
+	 *
+	 * @return Response
+	 */
+	public function sharedWithReps()
+	{
+		$shared_with_reps = true;
+		return View::make('media.index', compact('shared_with_reps'));
 	}
 
 	/**
@@ -161,8 +172,8 @@ class mediaController extends \BaseController {
 		// update db
 		$media->update($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser', Auth::user()->id)));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser', Auth::user()->id)));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser', $id)));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser', $id)));
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
 		else $user_id = Auth::user()->id;
 		return Redirect::route('media/user', compact('user_id'))->with('message', 'File updated.');
