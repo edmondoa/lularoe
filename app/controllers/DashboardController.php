@@ -22,7 +22,7 @@ class DashboardController extends \BaseController
 			$user = User::findOrFail(Auth::user()->id);
 			$reps = User::all()->count();
 			$beta_service_link = SiteConfig::where('key', 'beta-service-link')->first();
-			$new_downline = User::find(Auth::user()->id)->new_descendants()->get()->take(10);
+			$new_downline = User::find(Auth::user()->id)->new_descendants()->orderBy('created_at', 'DESC')->get()->take(10);
 			$new_downline_count = User::find($user->id)->new_descendants()->count();
 			return View::make('dashboard.admin', compact('user', 'reps', 'beta_service_link', 'new_downline', 'new_downline_count'));
 		}

@@ -54,7 +54,9 @@
 			</table>
 			@if ($new_downline_count > 10)
 				<div class="panel-body">
-					<a href="/downline/new/{{ Auth::user()->id }}" class="btn btn-primary" class="btn btn-primary pull-right">View All <i class="fa fa-angle-right"></i></a>
+					<div class="pull-right">
+						<a href="/downline/new/{{ Auth::user()->id }}" class="btn btn-primary" class="btn btn-primary">View All <i class="fa fa-angle-right"></i></a>
+					</div>
 				</div>
 			@endif
 		</div><!-- panel -->

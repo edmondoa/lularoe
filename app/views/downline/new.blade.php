@@ -83,6 +83,15 @@
 	                            		</span>
 	                        		</th>
 	                        	@endif
+                            	          
+                            	<th class="link" ng-click="orderByField='created_at'; reverseSort = !reverseSort">Sign Up Time
+                            		<span>
+                            			<span ng-show="orderByField == 'created_at'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
                             	                     			
                             	<th class="link" ng-click="orderByField='last_name'; reverseSort = !reverseSort">Name
                             		<span>
@@ -150,10 +159,14 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | filter:greaterThan('created_at', startDate) | orderBy: 'last_name' | orderBy: 'pivot.level' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | filter:greaterThan('created_at', startDate) | orderBy: -'created_at' | orderBy: 'pivot.level' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
+	                            
+					            <td>
+					                <span ng-bind="user.created_at"></span>
+					            </td>
 	                            
 	                            @if (Auth::user()->hasRole(['Rep']))
 		                            <td>
