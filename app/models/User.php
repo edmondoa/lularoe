@@ -98,7 +98,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	
 	public function currentRank() {
 		//return;
-		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->remember(5,'user_'.$this->id.'_rank')->first();
+		return $this->ranks()->orderBy('rank_user.created_at', 'DESC')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_rank2')->first();
 	}
 	
 	public function descendantsCountRelation()
@@ -287,5 +287,46 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		if(!Auth::check()) return false;
 		$rep = $this->descendants()->where('levels.user_id',$repId)->first();
 		return ($rep)?true:false;
+	}
+
+	public function sumOrgOrders() {
+		if(!Auth::check()) return false;
+		$total = 0;
+		foreach($this->descendants as $descendant)
+		{
+			$total += $descendant->account_balance;
+		}
+		//exit;
+		return $total;
+	}
+
+	public function clearUserCache(){
+		if(isset($this->id)){
+			$keys = [
+				'user_'.$this->id.'_descendants',
+				'user_'.$this->id.'_ancestors',
+				'user_'.$this->id.'_roles',
+				'user_'.$this->id.'_stats',
+				'user_'.$this->id.'_ranks',
+				'user_'.$this->id.'_rank',
+				'user_'.$this->id.'_plan',
+				'user_'.$this->id.'_rank2',
+				'user_'.$this->id.'_desc_count',
+				'user_'.$this->id.'_frontline_count',
+				'user_'.$this->id.'_org_volume',
+				'user_'.$this->id.'_balance',
+				'user_'.$this->id.'_volume',
+				'route_'.Str::slug(action('DataOnlyController@getAllDownline',$this->id)),
+			];
+			//return $keys;
+			foreach($keys as $key)
+			{
+				if(Cache::has($key))
+				{
+					Cache::forget($key);
+				}
+			}
+			return true;
+		}
 	}
 }

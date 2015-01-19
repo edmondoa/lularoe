@@ -502,6 +502,30 @@ Route::get('test', function() {
 	//return User::find(2001)->descendants;
 	$id = 2001;
 	return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
+	$start = microtime (true);
+	$response['result'] = Commission::free_service(2001);
+	//$response['result'] = User::find(2001)->plans;
+	$response['lapsed'] = round((microtime (true) - $start),5);
+	return $response;
+	exit;
+	return User::take(150)->remember(1,'first125')->get();
+
+	$start = microtime (true);
+	$response['result'] = Commission::infinity(2024);
+	//$response['result'] = User::find(2024)->ancestors()->whereNotNull('users.sponsor_id')->get();
+	$response['lapsed'] = round((microtime (true) - $start),5);
+	return $response;
+
+	##############################################################################################
+	# loading commission non-statically
+	##############################################################################################
+	
+	$commission = new \SociallyMobile\Commission\Commission;
+	$commission->setCommissionPeriod(date('Y-m-d',strtotime('last month')));
+	$response['result'] = $commission->setRank(2001,true);
+	$response['lapsed'] = round((microtime (true) - $start),5);
+	return Response::json($response);
+	return User::find(2001);
 });
 
 Route::get('test-orders', function() {

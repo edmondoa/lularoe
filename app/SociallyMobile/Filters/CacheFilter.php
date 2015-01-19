@@ -12,8 +12,16 @@ class CacheFilter {
 	public function fetch(Route $route, Request $request) {
 		//return 'Fetching Cache';
 		$key = $this->makeCacheKey($request->url());
+<<<<<<< Updated upstream
 		//return $key;
 		if(Cache::has($key)) return Cache::get($key);
+||||||| merged common ancestors
+		//return $key;
+		//if(Cache::has($key)) return Cache::get($key);
+=======
+		return $key;
+		//if(Cache::has($key)) return Cache::get($key);
+>>>>>>> Stashed changes
 	}
 
 	public function put(Route $route, Request $request, Response $response) {

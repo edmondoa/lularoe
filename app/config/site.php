@@ -24,5 +24,7 @@ return [
 		'beta',
 		'www',
 	],
-	'cache_length' => 10
+	'cache_length' => 10,
+	//'cache_query_length' => 2880,
+	'cache_query_length' => 1,
 ];
