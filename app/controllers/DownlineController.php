@@ -7,7 +7,10 @@ class DownlineController extends \BaseController
 	{
 		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id || Auth::user()->hasRole(array('Superadmin', 'Admin'))) {
 			$user = User::findOrFail($id);
-			return View::make('downline.new', compact('user'));
+			$new_descendants_count_30 = User::find($user->id)->new_descendants_count_30();
+			$new_descendants_count_7 = User::find($user->id)->new_descendants_count_7();
+			$new_descendants_count_1 = User::find($user->id)->new_descendants_count_1();
+			return View::make('downline.new', compact('user', 'new_descendants_count_30', 'new_descendants_count_7', 'new_descendants_count_1'));
 		}
 	}
 	

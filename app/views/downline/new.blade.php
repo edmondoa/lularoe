@@ -45,9 +45,9 @@
 		                    </div>
 		                    <div class="pull-left">
 	                            <select class="form-control">
-	                                <option ng-click="getStartDate(1)">Last 24 Hours</option>
-	                                <option ng-click="getStartDate(7)" selected>Last 7 Days</option>
-	                                <option ng-click="getStartDate(30)">Last 30 Days</option>
+	                                <option ng-click="getStartDate(1)">Last 24 Hours ({{ $new_descendants_count_1 }})</option>
+	                                <option ng-click="getStartDate(7)" selected>Last 7 Days ({{ $new_descendants_count_7 }})</option>
+	                                <option ng-click="getStartDate(30)">Last 30 Days ({{ $new_descendants_count_30 }})</option>
 	                            </select>
 		                    </div>
 		                </div>
