@@ -5,15 +5,15 @@ Event::listen('illuminate.query', function($query){
 	if(Session::has('queries'))
 	{
 		$saved_queries = Session::get('queries');
-		echo"<pre>"; print_r($saved_queries); echo"</pre>\r\n";
+		//echo"<pre>"; print_r($saved_queries); echo"</pre>\r\n";
 	}
 	else
 	{
 		$saved_queries = [];
 	}
 	$saved_queries[] = $query;
-	Session::flash('queries',$query);
-
+	Session::flash('queries',$saved_queries);
+	//dd(Session::get('queries'));
 });
 // bonuses
 Event::listen('reps.rank' , function($rep_id)

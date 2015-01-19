@@ -238,7 +238,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		# Superadmin only routes
 		##############################################################################################
 		Route::group(array('before' => 'Superadmin'), function() {
-
+			Route::controller('sa','SuperAdminTasksController');
 		});
 		##############################################################################################
 		# Admin only routes
@@ -499,12 +499,36 @@ Route::get('test-cache/{id}', function($id) {
 });
 
 Route::get('test', function() {
-	//return User::find(2001)->descendants;
-	$id = 2001;
-	return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
+	set_time_limit (120);
+	DB::connection()->disableQueryLog();
+	return User::find(0)->role->created_at;
+	$reps = User::where('created_at','0000-00-00 00:00:00')->get();
+	return $reps;
+	foreach($reps as $rep)
+	{
+		if(isset($rep->addresses[0]))
+		{
+			$rep->created_at = $rep->addresses[0]->created_at;
+			$rep->save();
+		}
+		else
+		{
+			$rep->created_at_alt = 'unknown';
+		}
+	}
+	return $reps;
+
 	$start = microtime (true);
-	$response['result'] = Commission::free_service(2001);
+	$rep_id = 2001;
+	$rep = User::find($rep_id);
+
+	$response['result'] = $rep;
+	$response['queries'] = Session::get('queries');
+	$response['result_cache_clear'] = $rep->clearUserCache();
+	//$id = 2001;
+	//return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
 	//$response['result'] = User::find(2001)->plans;
+	//$response['result'] = Commission::free_service(2001);
 	$response['lapsed'] = round((microtime (true) - $start),5);
 	return $response;
 	exit;

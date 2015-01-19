@@ -13,7 +13,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var string
 	 */
 	protected $table = 'users';
-	public $timestamps = false;
+	//public $timestamps = false;
 
 	public static $rules = [
 		'email' => 'required|email|unique:users',
@@ -302,6 +302,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function clearUserCache(){
 		if(isset($this->id)){
+			$forgotten_keys = [];
 			$keys = [
 				'user_'.$this->id.'_descendants',
 				'user_'.$this->id.'_ancestors',
@@ -324,9 +325,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 				if(Cache::has($key))
 				{
 					Cache::forget($key);
+					$forgotten_keys[] = $key;
 				}
 			}
 			return true;
+		}
+		else
+		{
+			return "no id set";
 		}
 	}
 }
