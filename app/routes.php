@@ -23,7 +23,7 @@
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
-Route::post('pass/{id}', 'ExternalAuthController@auth');
+Route::get('auth/{id}', 'ExternalAuthController@auth');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
