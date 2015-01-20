@@ -21,6 +21,8 @@
 		                		@endif
 		                	@elseif (isset($reps))
 		                		ISM Resources
+		                	@elseif (isset($shared_with_reps))
+		                		Resources Shared with ISM's
 		                	@else
 		                		Resource Library
 		                	@endif
@@ -38,7 +40,7 @@
 		    		<div class="col-sm-8 col-xs-12 page-actions-left">
 		                <div class="pull-left">
 		                	@if ((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-plus"></i></a>
+			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-upload"></i></a>
 			                    <div class="pull-left">
 			                        <div class="input-group pull-left margin-right-2">
 			                            <select class="form-control selectpicker actions">
@@ -122,12 +124,14 @@
 	            <div class="col col-md-12">
             		<div ng-hide="val">
 	            		<ul class="tiles">
-		                    <li ng-click="show=!show" ng-mouseenter="hover(media)" ng-mouseleave="hover(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+		                    <li ng-click="show=!show; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 		                        <div ng-click="checkbox()">
-		                        	<div ng-if="show" class="selected" ng-mouseenter="hover(media)" ng-mouseleave="hover(media)">
-		                        		<input class="bulk-check" type="hidden" name="ids[]" value="@include('_helpers.media_id')">
-		                        	</div>
-		                        	<div class="options" ng-show="media.showOptions">
+		                        	<div class="options" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
+			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
+										    <form action="/media/@include('_helpers.media_id')'" method="DELETE" onsubmit="return confirm('Are you sure you want to delete this file? This cannot be undone.')">
+										    	<button class="form-link pull-left"><i class="fa fa-trash" title="Delete"></i></button>
+										    </form>
+										@endif
 			                        	<a target="_blank" href="/uploads/@include('_helpers.media_url')"><i class="fa fa-eye"></i></a>
 			                        	<a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a>
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
@@ -135,11 +139,14 @@
 			                        	@endif
 			                        	<a href="/uploads/@include('_helpers.media_url')" download="/uploads/@include('_helpers.media_url')"><i class="fa fa-download"></i></a>
 		                        	</div>
-		                        	@if (!isset($user->id))
+		                        	@if (!isset($user->id) && !isset($shared_with_reps) && (!isset($user->id) && !Auth::user()->hasRole(['Rep'])))
 			                        	<div class="owner" ng-show="media.showOptions">
 				                        	<a href="/media/user/@include('_helpers.media_user_id')"><i class="fa fa-user"></i> <span ng-bind="media.owner"></span></a>
 			                        	</div>
 			                        @endif
+		                        	<div ng-if="show" class="selected" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)">
+		                        		<input class="bulk-check" type="hidden" name="ids[]" value="@include('_helpers.media_id')">
+		                        	</div>
 		                        	<?php // image ?>
 		                        	<img title="@include('_helpers.media_title')" ng-if="media.type == 'Image'" ng-class="{semitransparent : media.disabled}" src="/uploads/@include('_helpers.media_image_sm')">
 		                        	<div class="file" ng-if="media.type != 'Image'">
@@ -190,6 +197,10 @@
 				$media_url = '/api/media-by-reps';
 				$count_url = '/api/media-counts/reps';
 			}
+			elseif (isset($shared_with_reps)) {
+				$media_url = '/api/media-shared-with-reps';
+				$count_url = '/api/media-counts/shared-with-reps';
+			}
 			else {
 				$media_url = '/api/all-media';
 				$count_url = '/api/media-counts/all';
@@ -202,8 +213,11 @@
 			$scope.val = "";
 
 			// Shows/hides the options on hover
-			$scope.hover = function(media) {
-				return media.showOptions = ! media.showOptions;
+			$scope.hoverOn = function(media) {
+				return media.showOptions = true;
+			};
+			$scope.hoverOff = function(media) {
+				return media.showOptions = false;
 			};
 			
 			// download file

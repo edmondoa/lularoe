@@ -13,10 +13,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var string
 	 */
 	protected $table = 'users';
-	public $timestamps = false;
+	// public $timestamps = false;
 
 	public static $rules = [
-		'email' => 'required|unique:users,email',
+		'email' => 'required|email|unique:users',
 		'first_name' => 'required|alpha',
 		'last_name' => 'required|alpha',
 		'phone' => 'required',
@@ -113,9 +113,25 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function orgVolumeRelation()
 	{
-		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id')->remember(5)->first();
+		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id' )->remember(5)->first();
+		}
+
+	public function new_descendants() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('30 days ago')));
+	}
+	
+	public function new_descendants_count_30() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('30 days ago')))->count();
+	}
+	
+	public function new_descendants_count_7() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('7 days ago')))->count();
 	}
 
+	public function new_descendants_count_1() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('1 day ago')))->count();
+	}
+	
 	##############################################################################################
 	# Custom Attributes
 	##############################################################################################

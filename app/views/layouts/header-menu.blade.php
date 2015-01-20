@@ -5,7 +5,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" id="logo" href="/"><img src="/img/socially-mobile-logo.png" width="100" alt="Socially Mobile"></a>
+			<a class="navbar-brand" id="logo" href="//{{ Config::get('site.domain') }}"><img src="/img/socially-mobile-logo.png" width="100" alt="Socially Mobile"></a>
 		</div>
 		<div class="collapse navbar-collapse">
 			@if (!Auth::check())
@@ -47,7 +47,7 @@
 	                @endif
 	                @if (isset($pages))
 						@foreach ($pages as $page)
-							<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+							<li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
 						@endforeach
 					@endif
 	                <li class="dropdown">

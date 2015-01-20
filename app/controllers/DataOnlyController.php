@@ -63,6 +63,13 @@ class DataOnlyController extends \BaseController
 			}
 		}
 		
+		// count all media
+		elseif ($type == 'shared-with-reps') {
+			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+				$medias = Media::where('reps', 1)->get();
+			}
+		}
+		
 		foreach ($medias as $media) {
 			foreach($file_types as $key => $file_type) {
 				if ($media->type == $file_type['type']) {
@@ -107,6 +114,13 @@ class DataOnlyController extends \BaseController
 		}
 	}
 	
+	// all media by reps
+	public function getMediaSharedWithReps() {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			return Media::where('reps', 1)->get();
+		}
+	}
+	
 	// all images by user
 	public function getImagesByUser($id) {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id) {
@@ -125,6 +139,11 @@ class DataOnlyController extends \BaseController
 	/*
 	 * Downline
 	 */
+	 
+	// immediate downline
+	public function getNewDownline($id) {
+		return User::find($id)->new_descendants()->get();
+	}
 	 
 	// immediate downline
 	public function getFirstBranch() {

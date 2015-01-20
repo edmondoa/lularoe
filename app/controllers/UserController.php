@@ -36,14 +36,14 @@ class userController extends \BaseController {
 		$data = Input::all();
 		$data['phone'] = formatPhone($data['phone']);
 		$rules = User::$rules;
-		$rules['email'] = 'required|unique:users,email';
+		$rules['email'] = 'required|email|unique:users';
 		$rules['address_1'] = 'required';
 		$rules['address_2'] = 'sometimes';
 		$rules['city'] = 'required';
 		$rules['state'] = 'required';
 		$rules['zip'] = 'required|digits_between:5,10';
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
-		$rules['password'] = 'required|confirmed|digits_between:8,12';
+		$rules['password'] = 'required|confirmed|digits_between:8,25';
 		$rules['sponsor_id'] = 'required|numeric';
 		$check_sponsor_id = User::where('public_id', $data['sponsor_id']);
 
@@ -198,7 +198,7 @@ class userController extends \BaseController {
 			$user = User::findOrFail($id);
 			$old_user_data = $user;
 			$rules = User::$rules;
-			$rules['email'] = 'unique:users,email,' . $user->id;
+			$rules['email'] = 'required|email|unique:users,email,' . $user->id;
 			$rules['password'] = 'sometimes|confirmed|digits_between:8,25';
 			//$rules['sponsor_id'] = 'required|digits';
 			$data = Input::all();

@@ -55,6 +55,7 @@
 		@if (!$user->block_email && !$user->block_sms)
 			</div>
 		@endif
+		<a class="btn btn-primary" href="//{{ $user->public_id }}.{{ Config::get('site.base_domain') }}" target="_blank"><i class="fa fa-globe"></i> View Site</a>
 	</div><!-- row -->
 	<div class="row">
 		<div class="col col-md-6 col-sm-12">
@@ -72,6 +73,14 @@
 			            	@endif
 			            </th>
 			            <td>{{ $user->id }}</td>
+			        </tr>
+			        <tr>
+			            <th>
+			            	Public ID:
+			            </th>
+			            <td>
+			            	{{ $user->public_id }}
+			            </td>
 			        </tr>
 			        <tr>
 			            <th>

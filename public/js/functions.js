@@ -67,7 +67,7 @@ $(document).ready(function() {
     
     // delete label
     $('.form-group .label .fa-times').click(function() {
-       $(this).parent().remove(); 
+       $(this).parent().parent().remove();
     });
     
     // initialize tinymce

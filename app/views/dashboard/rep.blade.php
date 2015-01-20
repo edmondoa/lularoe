@@ -15,7 +15,37 @@
 			<a href="{{ url() }}/join/{{ $user->public_id }}">{{ url() }}/join/{{ $user->public_id }}</a>
 		</div>
 	</div>
-	<div class="col col-md-6">
+	<div class="col col-md-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h2 class="panel-title">New Downline<!-- <span class="badge">{{ $new_downline_count_30 }}</span>--></h2>
+			</div>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Sign up Time</th>
+						<th>Name</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach ($new_downline as $user)
+						<tr>
+							<td>{{ date('M d, H:i a', strtotime($user->created_at)) }}</td>
+							<td><a href="/users/{{ $user->id }}">{{ $user->full_name }}</a></td>
+						</tr>
+					@endforeach
+				</tbody>
+			</table>
+			@if ($new_downline_count_30 > 10)
+				<div class="panel-body">
+					<div class="pull-right">
+						<a href="/downline/new/{{ Auth::user()->id }}" class="btn btn-primary" class="btn btn-primary">View All <i class="fa fa-angle-right"></i></a>
+					</div>
+				</div>
+			@endif
+		</div><!-- panel -->
+	</div><!-- col -->
+	<div class="col col-md-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h2 class="panel-title">Overview</h2>
@@ -71,7 +101,7 @@
 			</div><!-- panel -->
 		@endif
 	</div><!-- col -->
-	<div class="col col-md-6">
+	<div class="col col-md-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h2 class="panel-title">Quick Links</h2>

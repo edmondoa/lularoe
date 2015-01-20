@@ -20,7 +20,7 @@ class mediaController extends \BaseController {
 	public function user($id)
 	{
 		$user = User::findOrFail($id);
-		return View::make('media.index', compact('media', 'user'));
+		return View::make('media.index', compact('user'));
 	}
 	
 	/**
@@ -31,7 +31,18 @@ class mediaController extends \BaseController {
 	public function reps()
 	{
 		$reps = true;
-		return View::make('media.index', compact('media', 'reps'));
+		return View::make('media.index', compact('reps'));
+	}
+
+	/**
+	 * Display a listing of media shared with reps
+	 *
+	 * @return Response
+	 */
+	public function sharedWithReps()
+	{
+		$shared_with_reps = true;
+		return View::make('media.index', compact('shared_with_reps'));
 	}
 
 	/**
@@ -79,8 +90,8 @@ class mediaController extends \BaseController {
 		// store in db and redirect
 		$media = Media::create($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser')));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser', Auth::user()->id)));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser', Auth::user()->id)));
 		if (isset($data['ajax'])) {
 			$response['success'] = true;
 			$response['url'] = '/uploads/' . $media->url;
@@ -144,16 +155,16 @@ class mediaController extends \BaseController {
 		// format checkboxes for db
 		$data['reps'] = isset($data['reps']) ? 1 : 0;
 
-		include app_path() . '/helpers/processMedia.php';
+		// process file
+		if ($data['media'] != '') {
+			include app_path() . '/helpers/processMedia.php';
 
-		// if file exists, delete it
-		$old_file = $media->url;
-		if (is_file(public_path() . '/uploads/' . $old_file)) {
-			unlink(public_path() . '/uploads/' . $old_file);
+			// if old file exists, delete it
+			$old_file = $media->url;
+			if (is_file(public_path() . '/uploads/' . $old_file)) {
+				unlink(public_path() . '/uploads/' . $old_file);
+			}
 		}
-
-		// ensure that the file doesn't get saved over with an empty value
-		if ($data['media'] == '') $data['url'] = $media->url;
 		
 		// if role is Superadmin, Admin, or Editor, set owner id to 0
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $data['user_id'] = 0;
@@ -161,8 +172,8 @@ class mediaController extends \BaseController {
 		// update db
 		$media->update($data);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser')));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser', $id)));
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser', $id)));
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
 		else $user_id = Auth::user()->id;
 		return Redirect::route('media/user', compact('user_id'))->with('message', 'File updated.');
@@ -191,8 +202,12 @@ class mediaController extends \BaseController {
 			foreach (Input::get('ids') as $id) {
 				// delete media
 				$media = Media::find($id);
-				unlink(public_path() . '/uploads/' . $media->url);
-				unlink(public_path() . '/uploads/' . $media->image_sm);
+				if (file_exists(public_path() . '/uploads/' . $media->url)) {
+					unlink(public_path() . '/uploads/' . $media->url);
+				}
+				if (file_exists(public_path() . '/uploads/' . $media->image_sm)) {
+					unlink(public_path() . '/uploads/' . $media->image_sm);
+				}
 				Media::destroy($id);
 			}
 			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));

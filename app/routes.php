@@ -122,6 +122,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('settings', ['as' => 'settings', 'uses' => 'DashboardController@settings']);
 
 		// downline
+		Route::get('/downline/new/{id}', 'DownlineController@newDownline');
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
 		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
@@ -149,6 +150,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::resource('media', 'MediaController');
 		Route::get('media/user/{id}', ['as' => 'media/user', 'uses' => 'MediaController@user']);
 		Route::get('media-reps', 'MediaController@reps');
+		Route::get('media-shared-with-reps', 'MediaController@sharedWithReps');
 		Route::post('media/disable', 'MediaController@disable');
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
@@ -180,17 +182,41 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-states', 'StateController@getAllStates');
 		Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 		Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
-		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
-		Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 		
 		//Route::controller('api','DataOnlyController');
 		//put routes in here that we would like to cache
 		Route::group(['before' => 'cache.fetch'], function() {
 			Route::group(['after' => 'cache.put'], function() {
-				//Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
-				Route::controller('api','DataOnlyController');
+				Route::get('api/all-downline', 'DataOnlyController@getAllDownline');
+				Route::get('api/immediate-downline', 'DataOnlyController@getImmediateDownline');
+				Route::get('api/all-users', 'DataOnlyController@getAllUsers');
 			});
 		});
+		
+		// DataOnly functions that shouldn't be cached
+		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
+		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
+		Route::get('api/all-images', 'DataOnlyController@getAllImages');
+		Route::get('api/media-by-user', 'DataOnlyController@getMediaByUser');
+		Route::get('api/media-by-reps', 'DataOnlyController@getMediaByReps');
+		Route::get('api/images-by-user', 'DataOnlyController@getImagesByUser');
+		Route::get('api/all-config', 'DataOnlyController@getAllConfig');
+		Route::get('api/first-branch', 'DataOnlyController@getFirstBranch');
+		Route::get('api/all-branches', 'DataOnlyController@getAllBranches');
+		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
+		Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
+		Route::get('api/all-past-events', 'DataOnlyController@getAllPastEvents');
+		Route::get('api/all-past-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
+		Route::get('api/all-past-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
+		Route::get('api/all-opportunities', 'DataOnlyController@getAllOpportunities');
+		Route::get('api/all-leads', 'DataOnlyController@getAllLeads');
+		Route::get('api/all-leads-by-rep', 'DataOnlyController@getAllLeadsByRep');
+		Route::get('api/all-pages', 'DataOnlyController@getAllPages');
+		Route::get('api/all-products', 'DataOnlyController@getAllProducts');
+		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
+		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
+		Route::get('api/new-downline', 'DataOnlyController@getNewDownline');
+		
 
 		// upload media
 		Route::post('upload-media', 'MediaController@store');
@@ -442,7 +468,10 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 		$title = $event->name;
 		return View::make('event.public_show', compact('event','title','sponsor'));
 	});
-
+	
+	//timezone
+	Route::post('set-timezone', 'TimezoneController@setTimezone');
+	
 });
 
 ##############################################################################################
