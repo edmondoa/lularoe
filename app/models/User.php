@@ -65,7 +65,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function descendants() {
-		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->remember(5,'user_'.$this->id.'_descendants')->withPivot('level');
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_descendants')->withPivot('level');
+	}
+
+	public function ancestors() {
+		return $this -> belongsToMany('User', 'levels', 'user_id','ancestor_id')->orderBy('level','desc')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_ancestors')->whereNotNull('sponsor_id')->withPivot('level');
 	}
 
 	public function leads() {
@@ -77,7 +81,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function role() {
-		return $this->belongsTo('Role');
+		return $this->belongsTo('Role')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_role');
 	}
 	
 	public function plans() {
@@ -93,7 +97,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function ranks() {
-		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->remember(5,'user_'.$this->id.'_ranks')->withPivot('created_at');
+		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_ranks')->withPivot('created_at');
 	}
 	
 	public function currentRank() {
@@ -103,12 +107,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	
 	public function descendantsCountRelation()
 	{
-		return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->remember(5,'user_'.$this->id.'_desc_count')->first();
+		return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_desc_count')->first();
 	}
 
 	public function frontlineCountRelation()
 	{
-		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->remember(5,'user_'.$this->id.'_frontline_count')->first();
+		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_frontline_count')->first();
 	}
 
 	public function orgVolumeRelation()
@@ -190,12 +194,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function getAccountBalanceAttribute()
 	{
-	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(5,'user_'.$this->id.'_balance')->sum('amount');    
+	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_balance')->sum('amount');    
 	}
 
 	public function getVolumeAttribute() {
 		return false;
-		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->remember(5,'user_'.$this->id.'_volume')->volume:0;
+		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_volume')->volume:0;
 	}
 
 	public function getRankNameAttribute() {
@@ -304,6 +308,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		if(isset($this->id)){
 			$forgotten_keys = [];
 			$keys = [
+				'user_'.$this->id.'_role',
 				'user_'.$this->id.'_descendants',
 				'user_'.$this->id.'_ancestors',
 				'user_'.$this->id.'_roles',
@@ -318,6 +323,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 				'user_'.$this->id.'_balance',
 				'user_'.$this->id.'_volume',
 				'route_'.Str::slug(action('DataOnlyController@getAllDownline',$this->id)),
+				'route_'.Str::slug(action('DataOnlyController@getImmediateDownline',$this->id)),
 			];
 			//return $keys;
 			foreach($keys as $key)

@@ -107,7 +107,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('pages/enable', 'PageController@enable');
 	Route::post('pages/delete', 'PageController@delete');
 	
-	Route::controller('api','DataOnlyController');
+	//Route::controller('api','DataOnlyController');
 		
 	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
@@ -187,9 +187,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		//put routes in here that we would like to cache
 		Route::group(['before' => 'cache.fetch'], function() {
 			Route::group(['after' => 'cache.put'], function() {
-				Route::get('api/all-downline', 'DataOnlyController@getAllDownline');
-				Route::get('api/immediate-downline', 'DataOnlyController@getImmediateDownline');
+				Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+				Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 				Route::get('api/all-users', 'DataOnlyController@getAllUsers');
+				Route::get('cache-testing',function(){
+					return 'jake_'.date('H:i:s');
+				});
 			});
 		});
 		
@@ -499,32 +502,27 @@ Route::get('test-cache/{id}', function($id) {
 });
 
 Route::get('test', function() {
-	set_time_limit (120);
-	DB::connection()->disableQueryLog();
-	return User::find(0)->role->created_at;
-	$reps = User::where('created_at','0000-00-00 00:00:00')->get();
-	return $reps;
-	foreach($reps as $rep)
+	$key = 'route_'.Str::slug('http://sm.local/api/all-downline/0');
+	if(Cache::has($key))
 	{
-		if(isset($rep->addresses[0]))
-		{
-			$rep->created_at = $rep->addresses[0]->created_at;
-			$rep->save();
-		}
-		else
-		{
-			$rep->created_at_alt = 'unknown';
-		}
+		return Cache::get($key);
 	}
-	return $reps;
-
+	else
+	{
+		return 'doh!!!:'.$key;
+	}
 	$start = microtime (true);
-	$rep_id = 2001;
-	$rep = User::find($rep_id);
+	$rep_id = 2005;
+	if(Session::has('queries'))
+	{
+		Session::forget('queries');
+	}
+	//User::find($rep_id)->clearUserCache();
 
-	$response['result'] = $rep;
-	$response['queries'] = Session::get('queries');
-	$response['result_cache_clear'] = $rep->clearUserCache();
+	$response['result'] = User::find($rep_id)->clearUserCache();
+	//$response['queries'] = Session::get('queries');
+	//$response['queries'] = DB::getQueryLog();;
+	//$response['result_cache_clear'] = $rep->clearUserCache();
 	//$id = 2001;
 	//return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
 	//$response['result'] = User::find(2001)->plans;

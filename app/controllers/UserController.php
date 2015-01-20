@@ -198,7 +198,7 @@ class userController extends \BaseController {
 			$user = User::findOrFail($id);
 			$old_user_data = $user;
 			$rules = User::$rules;
-			$rules['email'] = 'required|email|unique:users';
+			$rules['email'] = 'required|email|unique:users,email,'.$id;
 			$rules['password'] = 'sometimes|confirmed|digits_between:8,25';
 			//$rules['sponsor_id'] = 'required|digits';
 			$data = Input::all();
@@ -239,7 +239,7 @@ class userController extends \BaseController {
 			{
 				Event::fire('sponsor.update', array('rep_id' => $user->id));
 			}
-	
+			Event::fire('rep.update', array('rep_id' => $user->id));
 			return Redirect::route('users.show', $id)->with('message', 'Updates saved.');
 		}
 	}
