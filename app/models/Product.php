@@ -31,6 +31,7 @@ class Product extends \Eloquent
 	}
 	
 	public function getCategoryNameAttribute() {
+		if (!isset($this->category)) App::abort(404,'Cannot display products - No categories defined!');
 		return $this->category->name;
 	}
 	
