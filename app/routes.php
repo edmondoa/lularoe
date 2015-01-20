@@ -107,6 +107,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('pages/enable', 'PageController@enable');
 	Route::post('pages/delete', 'PageController@delete');
 	
+	// posts
+	Route::resource('posts', 'PostController');
+	Route::post('posts/disable', 'PostController@disable');
+	Route::post('posts/enable', 'PostController@enable');
+	Route::post('posts/delete', 'PostController@delete');
+	
 	Route::controller('api','DataOnlyController');
 		
 	//timezone
@@ -160,6 +166,13 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('opportunities/disable', 'OpportunityController@disable');
 		Route::post('opportunities/enable', 'OpportunityController@enable');
 		Route::post('opportunities/delete', 'OpportunityController@delete');
+
+		// posts
+		Route::resource('posts', 'PostController');
+		Route::post('posts/disable', 'PostController@disable');
+		Route::post('posts/enable', 'PostController@enable');
+		Route::post('posts/delete', 'PostController@delete');
+		Route::get('past-posts', 'PostController@indexPast');
 
 		// API
 		Route::get('api/all-addresses', 'AddressController@getAllAddresses');

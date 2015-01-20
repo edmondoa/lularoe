@@ -61,7 +61,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
 .breadcrumbs { display:block; margin-bottom:1em; }
 .link { cursor:pointer; color:#003d98 !important; }
 .link:hover { text-decoration:underline !important; }
-.highlight { background:rgb(255,255,192); }
+.highlight { background:rgb(255,255,192) !important; }
 .full { width:100%; }
 .center { text-align:center; }
 .boolean { text-align:center; border-left:1px solid rgba(0,0,0,.1); }

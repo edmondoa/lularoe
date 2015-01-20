@@ -1,0 +1,114 @@
+@extends('layouts.public')
+@section('content')
+<div ng-app="app" class="index">
+    <div ng-controller="postController" class="my-controller">
+    	<div class="post-actions">
+	        <div class="row">
+	            <div class="col col-md-8">
+	                <h1 class="no-top">Upcoming Posts</h1>
+	            </div>
+	            <div class="col col-md-4">
+	                <div>
+	                    <div class="input-group">
+	                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(post)" type="text">
+	                        <span class="input-group-btn">
+	                            <button class="btn btn-default" type="button">
+	                                <i class="fa fa-search"></i>
+	                            </button>
+	                        </span>
+	                    </div>
+	                </div>
+	                <br>
+	                <!-- <div class="pull-right">
+	                    <div class="input-group">
+	                        <span class="input-group-addon">Count</span>
+	                        <input type="number" min="1" class="form-control itemsPerPost" ng-model="postSize">
+	                    </div>
+	                </div>
+	                <h4 class="pull-right no-top currentPost margin-right-1">Post <span ng-bind="currentPost"></span></h4> -->
+	            </div>
+	        </div><!-- row -->
+	    </div><!-- post-actions -->
+        <div class="row">
+            <div class="col col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+	                        
+                        	<th class="link hidable-xs" ng-click="orderByField='date_start'; reverseSort = !reverseSort">Date
+                        		<span>
+                        			<span ng-show="orderByField == 'date_start'">
+                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                        			</span>
+                        		</span>
+                    		</th>
+                        	
+                        	<th class="link" ng-click="orderByField='name'; reverseSort = !reverseSort">Name
+                        		<span>
+                        			<span ng-show="orderByField == 'name'">
+                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                        			</span>
+                        		</span>
+                    		</th>
+                        	
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="post in posts | filter:search | orderBy: 'date_start' | orderBy:orderByField:reverseSort | itemsPerPost: postSize" current-post="currentPost">
+							
+				            <td class="date-col">
+				                <span ng-bind="post.local_start_date"></span>
+				            </td>
+							
+				            <td>
+				                <a href="/public-posts/@include('_helpers.post_id')"><span ng-bind="post.name"></span></a>
+				            </td>
+					    	
+                        </tr>
+                        <tr dir-paginate-end></tr>
+                    </tbody>
+                </table>
+                @include('_helpers.loading')
+                <div ng-controller="OtherController" class="other-controller">
+                    <div class="text-center">
+                        <dir-pagination-controls boundary-links="true" on-post-change="postChangeHandler(newPostNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
+                    </div>
+                </div>
+            </div><!-- col -->
+        </div><!-- row -->
+    </div><!-- app -->
+@stop
+@section('scripts')
+	{{ HTML::script('/js/jquery1.js') }}
+	<script>
+	
+		var app = angular.module('app', ['angularUtils.directives.dirPagination']);
+		
+		function postController($scope, $http) {
+			
+			$http.get('/api/all-upcoming-posts').success(function(posts) {
+				$scope.posts = posts;
+				console.log($scope.posts);
+				@include('_helpers.bulk_action_checkboxes')
+	
+			});
+			
+			$scope.currentPost = 1;
+			$scope.postSize = 10;
+			$scope.meals = [];
+			
+			$scope.postChangeHandler = function(num) {
+				
+			};
+			
+		}
+		
+		function OtherController($scope) {
+			$scope.postChangeHandler = function(num) {
+			};
+		}
+	
+	</script>
+@stop

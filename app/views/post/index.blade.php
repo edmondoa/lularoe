@@ -1,31 +1,31 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'pages/disable', 'method' => 'POST')) }}
-	    <div ng-controller="PageController" class="my-controller">
-	    	<div class="page-actions">
+    {{ Form::open(array('url' => 'posts/disable', 'method' => 'POST')) }}
+	    <div ng-controller="PostController" class="my-controller">
+	    	<div class="post-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		                <h1 class="no-top pull-left no-pull-xs">All Pages</h1>
+		                <h1 class="no-top pull-left no-pull-xs">All Posts</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
-		                    	<input class="form-control itemsPerPage width-auto" ng-model="pageSize" type="number" min="1">
+		                    	<input class="form-control itemsPerPage width-auto" ng-model="postSize" type="number" min="1">
 		                    </div>
-		                    <h4 class="pull-right margin-right-1">Page <span ng-bind="currentPage"></span></h4>
+		                    <h4 class="pull-right margin-right-1">Page <span ng-bind="currentPost"></span></h4>
 		            	</div>
 			    	</div>
 		        </div><!-- row -->
 		        <div class="row">
-		            <div class="col-md-6 col-sm-6 col-xs-12 page-actions-left">
+		            <div class="col-md-6 col-sm-6 col-xs-12 post-actions-left">
 		                <div class="pull-left">
-		                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('pages/create') }}"><i class="fa fa-plus"></i></a>
+		                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('posts/create') }}"><i class="fa fa-plus"></i></a>
 		                    <div class="pull-left">
 		                        <div class="input-group">
 		                            <select class="form-control selectpicker actions">
-		                                <option value="pages/disable" selected>Disable</option>
-		                                <option value="pages/enable">Enable</option>
-		                                <option value="pages/delete">Delete</option>
+		                                <option value="posts/disable" selected>Disable</option>
+		                                <option value="posts/enable">Enable</option>
+		                                <option value="posts/delete">Delete</option>
 		                            </select>
 		                            <div class="input-group-btn no-width">
 		                                <button class="btn btn-default applyAction" disabled>
@@ -47,7 +47,7 @@
 		                </div>
 		            </div><!-- col -->
 		        </div><!-- row -->
-		    </div><!-- page-actions -->
+		    </div><!-- post-actions -->
 	        <div class="row">
 	            <div class="col col-md-12">
 	                <table class="table">
@@ -114,33 +114,33 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{ highlight : page.new == 1, semitransparent : page.disabled }" dir-paginate-start="page in pages | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{ highlight : post.new == 1, semitransparent : post.disabled }" dir-paginate-start="post in posts | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: postSize" current-post="currentPost">
 	                            <td ng-click="checkbox()">
-	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.page_id')">
+	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.post_id')">
 	                            </td>
 								
 					            <td>
-					            	<a href="/pages/@include('_helpers.page_id')/edit"><span ng-bind="page.title"></span></a>
+					            	<a href="/posts/@include('_helpers.post_id')/edit"><span ng-bind="post.title"></span></a>
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="page.url"></span>
+					                <span ng-bind="post.url"></span>
 					            </td>
 					            
 					            <td>
-					                 <span ng-if="page.public"><i class="fa fa-check"></i></span>
+					                 <span ng-if="post.public"><i class="fa fa-check"></i></span>
 					            </td>
 					            
 					            <td>
-					                 <span ng-if="page.reps"><i class="fa fa-check"></i></span>
+					                 <span ng-if="post.reps"><i class="fa fa-check"></i></span>
 					            </td>
 					            
 					            <td>
-					                 <span ng-if="page.customers"><i class="fa fa-check"></i></span>
+					                 <span ng-if="post.customers"><i class="fa fa-check"></i></span>
 					            </td>
 
 					            <td>
-					            	<span ng-bind="page.updated_at"></span>
+					            	<span ng-bind="post.updated_at"></span>
 					            </td>
 	                        </tr>
 	                        <tr dir-paginate-end></tr>
@@ -148,7 +148,7 @@
 	                </table>
 	                @include('_helpers.loading')<div ng-controller="OtherController" class="other-controller">
 	                    <div class="text-center">
-	                        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
+	                        <dir-pagination-controls boundary-links="true" on-post-change="postChangeHandler(newPostNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
 	                    </div>
 	                </div>
 	            </div><!-- col -->
@@ -161,27 +161,27 @@
 
 	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 	
-	function PageController($scope, $http) {
+	function PostController($scope, $http) {
 	
-		$http.get('/api/all-pages').success(function(pages) {
-			$scope.pages = pages;
-			
+		$http.get('/api/all-posts').success(function(posts) {
+			$scope.posts = posts;
+			console.log($scope.posts);
 			@include('_helpers.bulk_action_checkboxes')
 			
 		});
 		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
+		$scope.currentPost = 1;
+		$scope.postSize = 10;
 		$scope.meals = [];
 		
-		$scope.pageChangeHandler = function(num) {
+		$scope.postChangeHandler = function(num) {
 			
 		};
 		
 	}
 	
 	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
+		$scope.postChangeHandler = function(num) {
 		};
 	}
 
