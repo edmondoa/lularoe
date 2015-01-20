@@ -81,7 +81,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function role() {
-		return $this->belongsTo('Role')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_role');
+		return $this->belongsTo('Role');
 	}
 	
 	public function plans() {

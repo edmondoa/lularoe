@@ -502,6 +502,8 @@ Route::get('test-cache/{id}', function($id) {
 });
 
 Route::get('test', function() {
+	return User::find(2422);
+
 	$key = 'route_'.Str::slug('http://sm.local/api/all-downline/0');
 	if(Cache::has($key))
 	{
