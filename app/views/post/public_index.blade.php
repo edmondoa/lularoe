@@ -2,10 +2,10 @@
 @section('content')
 <div ng-app="app" class="index">
     <div ng-controller="postController" class="my-controller">
-    	<div class="post-actions">
+    	<div class="page-actions">
 	        <div class="row">
 	            <div class="col col-md-8">
-	                <h1 class="no-top">Upcoming Posts</h1>
+	                <h1 class="no-top">Public Announcements</h1>
 	            </div>
 	            <div class="col col-md-4">
 	                <div>
@@ -22,13 +22,13 @@
 	                <!-- <div class="pull-right">
 	                    <div class="input-group">
 	                        <span class="input-group-addon">Count</span>
-	                        <input type="number" min="1" class="form-control itemsPerPost" ng-model="postSize">
+	                        <input type="number" min="1" class="form-control itemsPerPage" ng-model="pageSize">
 	                    </div>
 	                </div>
-	                <h4 class="pull-right no-top currentPost margin-right-1">Post <span ng-bind="currentPost"></span></h4> -->
+	                <h4 class="pull-right no-top currentPage margin-right-1">Page <span ng-bind="currentPage"></span></h4> -->
 	            </div>
 	        </div><!-- row -->
-	    </div><!-- post-actions -->
+	    </div><!-- page-actions -->
         <div class="row">
             <div class="col col-md-12">
                 <table class="table">
@@ -44,7 +44,7 @@
                         		</span>
                     		</th>
                         	
-                        	<th class="link" ng-click="orderByField='name'; reverseSort = !reverseSort">Name
+                        	<th class="link" ng-click="orderByField='name'; reverseSort = !reverseSort">Title
                         		<span>
                         			<span ng-show="orderByField == 'name'">
                             			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -56,14 +56,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="post in posts | filter:search | orderBy: 'date_start' | orderBy:orderByField:reverseSort | itemsPerPost: postSize" current-post="currentPost">
+                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="post in posts | filter:search | orderBy: 'date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 							
 				            <td class="date-col">
-				                <span ng-bind="post.local_start_date"></span>
+				                <span ng-bind="post.formatted_date"></span>
 				            </td>
 							
 				            <td>
-				                <a href="/public-posts/@include('_helpers.post_id')"><span ng-bind="post.name"></span></a>
+				                <a href="/public-posts/@include('_helpers.post_url')"><span ng-bind="post.title"></span></a>
 				            </td>
 					    	
                         </tr>
@@ -73,7 +73,7 @@
                 @include('_helpers.loading')
                 <div ng-controller="OtherController" class="other-controller">
                     <div class="text-center">
-                        <dir-pagination-controls boundary-links="true" on-post-change="postChangeHandler(newPostNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
+                        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
                     </div>
                 </div>
             </div><!-- col -->
@@ -88,25 +88,25 @@
 		
 		function postController($scope, $http) {
 			
-			$http.get('/api/all-upcoming-posts').success(function(posts) {
+			$http.get('/api/public-posts').success(function(posts) {
 				$scope.posts = posts;
 				console.log($scope.posts);
 				@include('_helpers.bulk_action_checkboxes')
 	
 			});
 			
-			$scope.currentPost = 1;
-			$scope.postSize = 10;
+			$scope.currentPage = 1;
+			$scope.pageSize = 10;
 			$scope.meals = [];
 			
-			$scope.postChangeHandler = function(num) {
+			$scope.pageChangeHandler = function(num) {
 				
 			};
 			
 		}
 		
 		function OtherController($scope) {
-			$scope.postChangeHandler = function(num) {
+			$scope.pageChangeHandler = function(num) {
 			};
 		}
 	

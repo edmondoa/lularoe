@@ -55,7 +55,7 @@ footer { text-align:center; color:gray; font-size:8pt; }
 .display-table { display:table; }
 .display-table-cell { display:table-cell; }
 .no-top { margin-top:0; }
-.no-bottom { margin-top:0; }
+.no-bottom { margin-bottom:0; }
 .currentPage { position:relative; top:7px; }
 .page-actions { margin:0 0 1em; }
 .breadcrumbs { display:block; margin-bottom:1em; }

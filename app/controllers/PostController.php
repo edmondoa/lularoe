@@ -9,10 +9,18 @@ class postController extends \BaseController {
 	 */
 	public function index()
 	{
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-			$posts = Post::all();
-			return View::make('post.index', compact('posts'));
-		}
+		$posts = Post::all();
+		return View::make('post.index', compact('posts'));
+	}
+
+	/**
+	 * Display a listing of public posts
+	 *
+	 * @return Response
+	 */
+	public function publicPosts()
+	{
+		return View::make('post.public_index');
 	}
 
 	/**

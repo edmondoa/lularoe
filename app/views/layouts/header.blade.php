@@ -16,9 +16,6 @@
         {{ HTML::style('packages/bootstrap-select/bootstrap-select.min.css') }}
         {{ HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css') }}
         {{ HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css') }}
-        <!-- Include Editor style. -->
-        <link href="/packages/froala/css/froala_editor.min.css" rel="stylesheet" type="text/css" />
-        <link href="/packages/froala/css/froala_style.min.css" rel="stylesheet" type="text/css" />
         @yield('style')
         <script>
             // This is only for JavaScript that doesn't work in the footer

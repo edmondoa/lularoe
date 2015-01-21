@@ -46,12 +46,12 @@
  					">
 	 					<i class="fa fa-calendar"></i> <span class="text">Events</span>
 	 				</a>
- 					<!-- <a href="javascript:void(0)" data-href="/posts" class='list-group-item' data-toggle="popover" data-content="
- 						<a target='_blank' href='/public-posts'><i class='fa fa-globe'></i> Public Posts</a>
- 						<a href='/posts'><i class='fa fa-user'></i> Posts for ISM's</a>
+ 					<a href="javascript:void(0)" data-href="/posts" class='list-group-item' data-toggle="popover" data-content="
+ 						<a target='_blank' href='/public-posts'><i class='fa fa-globe'></i> Public Announcements</a>
+ 						<a href='/posts'><i class='fa fa-user'></i> Announcements for ISM's</a>
  					">
-	 					<i class="fa fa-thumb-tack"></i> <span class="text">Posts</span>
-	 				</a> -->
+	 					<i class="fa fa-thumb-tack"></i> <span class="text">Announcements</span>
+	 				</a>
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin'])))
  					<a href="javascript:void(0)" data-href="/events" class='list-group-item' data-toggle="popover" data-content="
@@ -105,13 +105,13 @@
  					</a>
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
- 					<!-- <a href="javascript:void(0)" data-href="/posts" class='list-group-item' data-toggle="popover" data-content="
- 						<a target='_blank' href='/public-posts'><i class='fa fa-globe'></i> View Public Posts</a>
- 						<a href='/posts'><i class='fa fa-thumb-tack'></i> All Posts</a>
- 						<a href='/posts/create'><i class='fa fa-plus'></i> New Post</a>
+ 					<a href="javascript:void(0)" data-href="/posts" class='list-group-item' data-toggle="popover" data-content="
+ 						<a target='_blank' href='/public-posts'><i class='fa fa-globe'></i> Public Announcements Page</a>
+ 						<a href='/posts'><i class='fa fa-thumb-tack'></i> All Announcements</a>
+ 						<a href='/posts/create'><i class='fa fa-plus'></i> New Announcement</a>
  					">
-						<i class="fa fa-thumb-tack"></i> <span class="text">Posts</span>
- 					</a> -->
+						<i class="fa fa-thumb-tack"></i> <span class="text">Announcements</span>
+ 					</a>
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
 					<!-- <a href="/addresses" class="list-group-item"><i class="fa fa-home"></i> <span class="text">Addresses</span></a> -->

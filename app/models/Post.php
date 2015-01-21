@@ -16,6 +16,12 @@ class Post extends \Eloquent
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
 	}
 	
-	protected $appends = array('new_record');
+	public function getFormattedDateAttribute() {
+		if ($this->publish_date > 0) $date = $this->publish_date;
+		else $date = $this->created_at;
+		return date('M d Y', strtotime($date));
+	}
+	
+	protected $appends = array('new_record', 'formatted_date');
 
 }

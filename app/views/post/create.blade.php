@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
-		    <h1 class="no-top">New Post</h1>
+		    <h1 class="no-top">New Announcement</h1>
 		</div>
 	</div>
 	<div class="row">
@@ -99,7 +99,7 @@
 			    	</div>
 			    </div><!-- panel -->
 			    
-			    {{ Form::submit('Add Post', array('class' => 'btn btn-primary')) }}
+			    {{ Form::submit('Add Announcement', array('class' => 'btn btn-primary')) }}
 			    
 			</div><!-- col -->
 	    {{ Form::close() }}
