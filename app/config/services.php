@@ -15,7 +15,7 @@ return array(
 	*/
 
 	'mailgun' => array(
-		'domain' => 'sociallymobile.com',
+		'domain' => 'mylularoe.com',
 		'secret' => 'key-3a8c594730e4a044712e2a05ae8df3f3',
 	),
 
