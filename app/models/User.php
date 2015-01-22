@@ -245,15 +245,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public function getFormattedPhoneAttribute($value)
 	{
 		if (!empty($this->phone)) {
-			// clean up phone numbers that may have been stored with illegal characters
-			// $phone = formatPhone($phone);
-			// User::find($this->id)->save($phone);
 			return substr($this->phone, 0, 3)."-".substr($this->phone, 3, 3)."-".substr($this->phone,6);
 		}
 	
 	}
 	
-
+    public function setPhoneAttribute($value)
+    {
+        $this->attributes['phone'] = preg_replace('/\D+/', '', $value);
+    }
 
 	##############################################################################################
 	# append custom Attribs

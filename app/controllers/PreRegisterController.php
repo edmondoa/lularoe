@@ -169,6 +169,10 @@ class PreRegisterController extends \BaseController {
 			$role = Role::where('name','Rep')->first();
 			//echo"<pre>"; print_r($role); echo"</pre>";
 			$user->role()->associate($role);
+			
+			// format phone number
+			$user->phone = formatPhone($user->phone);
+			
 			$user->save();
 			//exit('we got to here');
 		}
