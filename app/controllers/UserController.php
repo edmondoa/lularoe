@@ -89,6 +89,14 @@ class userController extends \BaseController {
 				$address->update(['label' => 'Billing']);
 			}
 			
+			// clean up phone numbers that may have been stored with illegal characters
+			if (!empty($this->phone)) {
+				if ((strpos($user->phone, '-') !== false) || (strpos($user->phone, '(') !== false) || (strpos($user->phone, '.') !== false) || (strpos($user->phone, ' ') !== false)) {
+					$phone = formatPhone($user->phone);
+					$user->save($phone);
+				}
+			}
+			
 			// make array of addresses set as visible by target user or viewable by current user
 			$addresses = [];
 			if (Address::where('addressable_id', $id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Billing')->first();
@@ -96,6 +104,10 @@ class userController extends \BaseController {
 			// echo '<pre>'; print_r($user); echo '</pre>';
 			// exit;
 			return View::make('user.show', compact('user', 'addresses'));
+		}
+		else {
+			if (Auth::user()->hasRepInDownline($id)) echo 'true';
+			else return 'Doh!';
 		}
 	}
 
@@ -239,7 +251,7 @@ class userController extends \BaseController {
 			{
 				Event::fire('sponsor.update', array('rep_id' => $user->id));
 			}
-	
+			Event::fire('rep.update', array('rep_id' => $user->id));
 			return Redirect::route('users.show', $id)->with('message', 'Updates saved.');
 		}
 	}

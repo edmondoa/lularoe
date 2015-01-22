@@ -47,6 +47,7 @@ class SessionController extends \BaseController {
 			], false);
 		if($attempt)
 		{
+			Auth::user()->clearUserCache();
 			return Redirect::intended('/dashboard');		
 		} 
 		else

@@ -114,7 +114,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('posts/enable', 'PostController@enable');
 	Route::post('posts/delete', 'PostController@delete');
 	
-	Route::controller('api','DataOnlyController');
+	//Route::controller('api','DataOnlyController');
+
 		
 	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
@@ -133,6 +134,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
 		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
+		Route::get('/downline/states/{id}', 'DownlineController@states');
 		
 		// helpers
 		Route::get('helpers/media-modals', function() {
@@ -194,9 +196,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		//put routes in here that we would like to cache
 		Route::group(['before' => 'cache.fetch'], function() {
 			Route::group(['after' => 'cache.put'], function() {
-				Route::get('api/all-downline', 'DataOnlyController@getAllDownline');
-				Route::get('api/immediate-downline', 'DataOnlyController@getImmediateDownline');
+				Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+				Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 				Route::get('api/all-users', 'DataOnlyController@getAllUsers');
+				Route::get('cache-testing',function(){
+					return 'jake_'.date('H:i:s');
+				});
 			});
 		});
 		
@@ -245,7 +250,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		# Superadmin only routes
 		##############################################################################################
 		Route::group(array('before' => 'Superadmin'), function() {
-
+			Route::controller('sa','SuperAdminTasksController');
 		});
 		##############################################################################################
 		# Admin only routes
@@ -486,8 +491,12 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	echo url();
+	return Config::get('site');
+	Auth::user()->clearUserCache();
 	exit;
+	foreach (User::all() as $user) {
+		$user->clearUserCache();
+	}
 });
 
 Route::get('clear-cache/{function}', function($function) {
@@ -506,9 +515,54 @@ Route::get('test-cache/{id}', function($id) {
 });
 
 Route::get('test', function() {
-	//return User::find(2001)->descendants;
-	$id = 2001;
-	return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
+	return User::find(2422);
+
+	$key = 'route_'.Str::slug('http://sm.local/api/all-downline/0');
+	if(Cache::has($key))
+	{
+		return Cache::get($key);
+	}
+	else
+	{
+		return 'doh!!!:'.$key;
+	}
+	$start = microtime (true);
+	$rep_id = 2005;
+	if(Session::has('queries'))
+	{
+		Session::forget('queries');
+	}
+	//User::find($rep_id)->clearUserCache();
+
+	$response['result'] = User::find($rep_id)->clearUserCache();
+	//$response['queries'] = Session::get('queries');
+	//$response['queries'] = DB::getQueryLog();;
+	//$response['result_cache_clear'] = $rep->clearUserCache();
+	//$id = 2001;
+	//return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
+	//$response['result'] = User::find(2001)->plans;
+	//$response['result'] = Commission::free_service(2001);
+	$response['lapsed'] = round((microtime (true) - $start),5);
+	return $response;
+	exit;
+	return User::take(150)->remember(1,'first125')->get();
+
+	$start = microtime (true);
+	$response['result'] = Commission::infinity(2024);
+	//$response['result'] = User::find(2024)->ancestors()->whereNotNull('users.sponsor_id')->get();
+	$response['lapsed'] = round((microtime (true) - $start),5);
+	return $response;
+
+	##############################################################################################
+	# loading commission non-statically
+	##############################################################################################
+	
+	$commission = new \SociallyMobile\Commission\Commission;
+	$commission->setCommissionPeriod(date('Y-m-d',strtotime('last month')));
+	$response['result'] = $commission->setRank(2001,true);
+	$response['lapsed'] = round((microtime (true) - $start),5);
+	return Response::json($response);
+	return User::find(2001);
 });
 
 Route::get('test-orders', function() {

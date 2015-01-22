@@ -7,6 +7,7 @@
  						<a href='/downline/new/0'><i class='fa fa-certificate'></i> New Downline</a>
  						<a href='/downline/immediate/0'><i class='fa fa-arrow-down'></i> Immediate Downline</a>
  						<a href='/downline/all/0'><i class='fa fa-bars'></i> All Downline</a>
+ 						<a href='/downline/state/0'><i class='fa fa-bars'></i> Downline by State</a>
  						<a href='/downline/visualization/0'><i class='fa fa-sitemap'></i> Visualization</a>
  					">
  						<i class="fa fa-sitemap"></i> <span class="text">Downline</span>
