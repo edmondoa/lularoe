@@ -61,7 +61,11 @@
 		<div class="col col-md-6 col-sm-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 div class="panel-title">Information<a class="pull-right" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a></h2>
+					<h2 div class="panel-title">Information
+						@if (Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->id == $user->id)
+							<a class="pull-right" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
+						@endif
+					</h2>
 				</div>
 			    <table class="table table-striped">
 			        <tr>
@@ -148,7 +152,11 @@
 			@foreach ($addresses as $address)
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h2 div class="panel-title">{{ $address->label }} Address<a class="pull-right" href="{{ url('addresses/'.$address->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a></h2>
+						<h2 div class="panel-title">{{ $address->label }} Address
+							@if (Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->id == $user->id)
+								<a class="pull-right" href="{{ url('addresses/'.$address->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
+							@endif
+						</h2>
 					</div>
 				    <table class="table table-striped">
 				        <tr>

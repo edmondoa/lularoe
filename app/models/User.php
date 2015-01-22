@@ -174,7 +174,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		if(!Auth::check()) return;
 		if (isset($this->phone)) {
 			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->phone;
-			return ($this->hide_phone != true)?$this->phone:'';
+			if ($this->hide_phone != true) {
+				return substr($this->phone, 0, 3)."-".substr($this->phone, 3, 3)."-".substr($this->phone,6);
+			}
+			else {
+				return '';
+			}
 		}
 	}
 

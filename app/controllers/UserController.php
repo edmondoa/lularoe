@@ -105,6 +105,10 @@ class userController extends \BaseController {
 			// exit;
 			return View::make('user.show', compact('user', 'addresses'));
 		}
+		else {
+			if (Auth::user()->hasRepInDownline($id)) echo 'true';
+			else return 'Doh!';
+		}
 	}
 
 	/**

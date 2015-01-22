@@ -28,10 +28,10 @@
 					</tr>
 				</thead>
 				<tbody>
-					@foreach ($new_downline as $user)
+					@foreach ($new_downline as $new_user)
 						<tr>
-							<td>{{ date('M d, H:i a', strtotime($user->created_at)) }}</td>
-							<td><a href="/users/{{ $user->id }}">{{ $user->full_name }}</a></td>
+							<td>{{ date('M d, H:i a', strtotime($new_user->created_at)) }}</td>
+							<td><a href="/users/{{ $user->id }}">{{ $new_user->full_name }}</a></td>
 						</tr>
 					@endforeach
 				</tbody>
