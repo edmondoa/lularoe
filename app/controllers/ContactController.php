@@ -27,7 +27,12 @@ class ContactController extends BaseController {
             $data_object = (object) $data;
             // echo"<pre>"; print_r($data_object); echo"</pre>";
             // exit;
-            $data_object->email = 'sgashler@controlpad.com';
+
+			// LLRDEV This is where to set up contact email info
+			// This should be in config somewhere?
+			$data_object->email = 'mfrederico@gmail.com';
+			$data_object->user_id = 10095;
+
             $message_data['data'] = Input::all();
 			// get user
             Mail::send('emails.contact',$message_data, function($message) use ($data_object) {
