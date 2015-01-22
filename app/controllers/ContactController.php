@@ -30,16 +30,18 @@ class ContactController extends BaseController {
 
 			// LLRDEV This is where to set up contact email info
 			// This should be in config somewhere?
-			$data_object->email = 'mfrederico@gmail.com';
-			$data_object->user_id = 10095;
 
             $message_data['data'] = Input::all();
 			// get user
             Mail::send('emails.contact',$message_data, function($message) use ($data_object) {
-            	$user = User::find($data_object->user_id);
+            	// $user = User::find($data_object->user_id);
+				$user = (object) array(); 
 				// echo $user->email;
 				// exit;
                 //email 'From' field: Get users email and name
+				$user->email		= Config::get('site.contact_email');
+				$user->first_name	= Config::get('site.contact_first_name');
+				$user->last_name	= Config::get('site.contact_last_name');
                 $message->from($data_object->email, $data_object->name);
                 //email 'To' field: cahnge this to emails that you want to be notified.
                 $message->to($user->email, $user->first_name . ' ' . $user->last_name)->subject(Config::get('site.company_name') . ' contact form: ' . $data_object->subject_line);
