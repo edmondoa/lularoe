@@ -43,6 +43,6 @@
 			@endforeach
 		</ul>
 	@endif
-	<p>&copy; SociallyMobile 2014</p>
+	<p>&copy; LulaRoe 2014</p>
 </footer>
 @include('layouts.footer')

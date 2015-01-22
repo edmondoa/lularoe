@@ -9,11 +9,11 @@
 
         <!--Shortcut icon-->
 
-        <title><?php if (isset($title)) echo $title . ' | ' ?>LLRDEV</title>
+        <title><?php if (isset($title)) echo $title . ' | ' ?>LulaRoe</title>
 
-        <link rel="alternate" type="application/rss+xml" title="LLRDEV &raquo; Feed" href="/feed/" />
-        <link rel="alternate" type="application/rss+xml" title="LLRDEV &raquo; Comments Feed" href="/comments/feed/" />
-        <meta property='og:site_name' content='LLRDEV'/>
+        <link rel="alternate" type="application/rss+xml" title="LulaRoe &raquo; Feed" href="/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="LulaRoe &raquo; Comments Feed" href="/comments/feed/" />
+        <meta property='og:site_name' content='LulaRoe'/>
         <meta property='og:url' content='/privacy-policy/'/>
         <meta property='og:title' content='Privacy Policy'/>
         <meta property='og:type' content='article'/>
@@ -91,7 +91,7 @@
 
                         <div class="col span_3">
 
-                            <a id="logo" href="/" > <img class=" dark-version" alt="LLRDEV" src="/img/llr-logo.png" /> </a>
+                            <a id="logo" href="/" > <img class=" dark-version" alt="LulaRoe" src="/img/llr-logo.png" /> </a>
 
                         </div><!--/span_3-->
 
@@ -231,7 +231,7 @@
 								</ul>
 							@endif
 							<br>
-                            <p id="copyright-text">&copy; {{ date('Y') }} LLRDEV</p>
+                            <p id="copyright-text">&copy; {{ date('Y') }} LulaRoe</p>
 
                         </div><!--/span_5-->
 
