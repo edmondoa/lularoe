@@ -5,7 +5,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" id="logo" href="/"><img src="/img/llr-logo.png" height="55" alt="LLRDEV"></a>
+			<a class="navbar-brand" id="logo" href="/"><img src="/img/llr-logo.png" height="55" alt="LulaRoe"></a>
 		</div>
 		<div class="collapse navbar-collapse">
 			@if (!Auth::check())

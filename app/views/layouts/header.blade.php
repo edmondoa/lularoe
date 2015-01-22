@@ -5,7 +5,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>LLRDEV</title>
+        <title>LulaRoe</title>
         {{ HTML::style('bootstrap/css/bootstrap.min.css') }}
         {{ HTML::style('bootstrap/css/bootstrap-theme.min.css') }}
         <!--[if lt IE 9]>
