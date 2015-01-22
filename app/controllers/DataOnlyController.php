@@ -241,6 +241,11 @@ class DataOnlyController extends \BaseController
 		return Page::all();
 	}
 	
+	// posts
+	public function getAllPosts(){
+		return Post::all();
+	}
+	
 	// products
 	public function getAllProducts(){
 		return Product::with('tags')->get();
