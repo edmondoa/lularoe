@@ -7,11 +7,13 @@
     <link rel="stylesheet" type="text/css" href="/wp-content/themes/salient/packages/flipcountdown/jquery.flipcountdown.css">
     <script>
         // initialize timer
+	/*
         jQuery(function() {
             jQuery('.transparent-bg > span:nth-child(1)').flipcountdown({
                 size : 'md',
-                beforeDateTime : '1/09/2015 00:00:01'
+                beforeDateTime : '03/01/2015 00:00:01'
             });
+			*/
             // add labels to the timer
             // jQuery(document).ready(function() {
             // jQuery('.xdsoft_digit:nth-child(1)').prepend('<h1>Days</h1>');
@@ -31,12 +33,14 @@
                                     <div class="swiper-slide" style="background-image: url(/img/llr-bg.jpg);" data-bg-alignment="center" data-color-scheme="dark" data-x-pos="centered" data-y-pos="middle">
                                         <div class="container">
                                             <div class="content">
+											<!--
                                                 <h2>Next Website Update
                                                 <br>
                                                 1.9.2015</h2>
                                                 <p class="transparent-bg" >
                                                     <span>Pre-launch Starts in:</span>
                                                 </p>
+												-->
                                                 <div class="buttons">
                                                     <div class="button solid_color">
                                                         <a class="extra-color-1" href="<?php echo url() ?>/join">JOIN NOW</a>
