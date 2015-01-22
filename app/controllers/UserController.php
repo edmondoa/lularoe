@@ -239,7 +239,7 @@ class userController extends \BaseController {
 			{
 				Event::fire('sponsor.update', array('rep_id' => $user->id));
 			}
-	
+			Event::fire('rep.update', array('rep_id' => $user->id));
 			return Redirect::route('users.show', $id)->with('message', 'Updates saved.');
 		}
 	}

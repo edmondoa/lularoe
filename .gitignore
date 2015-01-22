@@ -21,5 +21,4 @@ public/img/users/
 SociallyMobile.pem
 SociallyMobile.ppk
 public/nfo.php
-
-public/nfo.php
+app/models/User_OLD.php
