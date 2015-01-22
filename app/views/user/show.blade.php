@@ -106,7 +106,7 @@
 				        <tr>
 				            <th>Phone:</th>
 				            <td>
-				            	{{ $user->phone }}
+				            	{{ $user->formatted_phone }}
 				            	@if ($user->block_sms)
 				            		<br>
 				            		<span class="label label-warning">
