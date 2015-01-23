@@ -214,12 +214,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
 		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
 		Route::get('api/all-images', 'DataOnlyController@getAllImages');
-		Route::get('api/media-by-user', 'DataOnlyController@getMediaByUser');
+		Route::get('api/media-by-user/{id}', 'DataOnlyController@getMediaByUser');
 		Route::get('api/media-by-reps', 'DataOnlyController@getMediaByReps');
 		Route::get('api/images-by-user', 'DataOnlyController@getImagesByUser');
 		Route::get('api/all-config', 'DataOnlyController@getAllConfig');
 		Route::get('api/first-branch', 'DataOnlyController@getFirstBranch');
-		Route::get('api/all-branches', 'DataOnlyController@getAllBranches');
+		Route::get('api/all-branches/{id}', 'DataOnlyController@getAllBranches');
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
 		Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
 		Route::get('api/all-past-events', 'DataOnlyController@getAllPastEvents');
@@ -227,8 +227,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-past-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
 		Route::get('api/all-opportunities', 'DataOnlyController@getAllOpportunities');
 		Route::get('api/all-leads', 'DataOnlyController@getAllLeads');
-		Route::get('api/all-leads-by-rep', 'DataOnlyController@getAllLeadsByRep');
+		Route::get('api/all-leads-by-rep/{id}', 'DataOnlyController@getAllLeadsByRep');
 		Route::get('api/all-pages', 'DataOnlyController@getAllPages');
+		Route::get('api/all-posts', 'DataOnlyController@getAllPosts');
 		Route::get('api/all-products', 'DataOnlyController@getAllProducts');
 		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
 		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');

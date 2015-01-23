@@ -54,10 +54,10 @@ class postController extends \BaseController {
 			$data['reps'] = isset($data['reps']) ? 1 : 0;
 			if ($data['public'] == 0 && $data['customers'] == 0 && $data['public'] == 0) $data['public'] = 1;
 			if ($data['customers'] == 1 || $data['reps'] == 1) $data['public'] = 0;
-			$data['public_header'] = isset($data['public_header']) ? 1 : 0;
-			$data['public_footer'] = isset($data['public_footer']) ? 1 : 0;
-			$data['back_office_header'] = isset($data['back_office_header']) ? 1 : 0;
-			$data['back_office_footer'] = isset($data['back_office_footer']) ? 1 : 0;
+			// format date
+			if (isset($date['publish_date'])) {
+				$data['publish_date'] = date('Y-m-d h:i:s', strtotime($data['publish_date']));
+			}
 			
 			$post = Post::create($data);
 			return Redirect::route('posts.edit', $post->id)->with('message', 'Post created.');
