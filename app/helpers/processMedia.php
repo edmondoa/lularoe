@@ -35,7 +35,7 @@
 					$url = $path . $filename . '.' . $extension;
 				}
 
-                $uploadSuccess = $file->move($fullPath, $filename);
+                $uploadSuccess = $file->move($fullPath, $filename . '.' . $extension);
 				
 				// common media types		
 				$raster_image_extensions = ['jpg', 'jpeg', 'png', 'gif'];

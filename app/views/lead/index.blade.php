@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<div ng-app="app" class="index">
+<div ng-app="app" ng-controller="LeadController" class="index">
     {{ Form::open(array('url' => 'users/email', 'method' => 'POST')) }}
     	{{ Form::hidden('leads', 1) }}
 	    	<div class="page-actions">
@@ -209,7 +209,7 @@
 	
 		$http.get('/api/all-leads-by-rep/{{ Auth::user()->id }}').success(function(leads) {
 			$scope.leads = leads;
-			
+			console.log($scope.leads);
 			@include('_helpers.bulk_action_checkboxes')
 			
 		});
