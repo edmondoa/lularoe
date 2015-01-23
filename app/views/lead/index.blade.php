@@ -207,9 +207,14 @@
 	
 	function LeadController($scope, $http) {
 	
-		$http.get('/api/all-leads-by-rep/{{ Auth::user()->id }}').success(function(leads) {
+		<?php
+			if (Auth::user()->hasRole(['Superadmin', 'Admin'])) $object = 'all-leads';
+			else $object = 'all-leads-by-rep/' . Auth::user()->$id;
+		?>
+	
+		$http.get('/api/{{ $object }}').success(function(leads) {
 			$scope.leads = leads;
-			console.log($scope.leads);
+			
 			@include('_helpers.bulk_action_checkboxes')
 			
 		});
