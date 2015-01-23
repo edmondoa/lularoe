@@ -228,7 +228,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-products', 'DataOnlyController@getAllProducts');
 		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
 		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
-		Route::get('api/new-downline', 'DataOnlyController@getNewDownline');
+		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline');
 		
 
 		// upload media
