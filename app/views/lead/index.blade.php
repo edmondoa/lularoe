@@ -209,7 +209,7 @@
 	
 		<?php
 			if (Auth::user()->hasRole(['Superadmin', 'Admin'])) $object = 'all-leads';
-			else $object = 'all-leads-by-rep/' . Auth::user()->$id;
+			else $object = 'all-leads-by-rep/' . Auth::user()->id;
 		?>
 	
 		$http.get('/api/{{ $object }}').success(function(leads) {
