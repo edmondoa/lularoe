@@ -6,19 +6,16 @@ class Server extends \BaseController {
 	{
 		//return "Beta works!";
 		SSH::into('beta')->run(array(
+			// back up db
+			"php artisan down",
+			"mysqldump -u root --password='Yr*r,dAv$S?qE8,N' soc_mob > /var/www/html/soc_mob_backup_" . date('Y_m_d_h_m') . ".sql",
 			'cd /var/www/html',
-			'ls -la',
-			//'echo $HOSTNAME',
-			'git checkout develop',
-			'git reset --hard origin/develop',
-			'git pull -f',
+			// 'ls -la',
+			'git pull',
 			//'sudo chmod -R 777 app/storage',
-			//'mysqldump -u  --password="" --no-data  | grep ^DROP | mysql -u   --password="" database',
-			'composer install',
-			//'php artisan migrate:refresh --seed --env=beta --force'
-			//'php artisan migrate --force',
-			//'php artisan migrate:refresh --force',
-			//'php artisan db:seed --force',
+			'composer install --no-dev',
+			'php artisan migrate',
+			"php artisan up"
 		), function($line){
 		 
 			echo $line.PHP_EOL; // outputs server feedback
@@ -30,12 +27,16 @@ class Server extends \BaseController {
 	{
 		//return "Deploying";
 		SSH::into('production')->run(array(
+			// back up db
+			"php artisan down",
+			"mysqldump -u root --password='Yr*r,dAv$S?qE8,N' soc_mob > /var/www/html/soc_mob_backup_" . date('Y_m_d_h_m') . ".sql",
 			'cd /var/www/html',
 			// 'ls -la',
 			'git pull',
 			//'sudo chmod -R 777 app/storage',
 			'composer install --no-dev',
-			'php artisan migrate'
+			'php artisan migrate',
+			"php artisan up"
 		), function($line){
 		 
 			echo $line.PHP_EOL; // outputs server feedback
