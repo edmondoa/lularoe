@@ -260,16 +260,23 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	
 	}
 	
+
+	public function getFormattedCreatedAtAttribute($value)
+	{
+		return date('M d Y, h:i a', strtotime($this->created_at));
+	}
+
     public function setPhoneAttribute($value)
     {
         $this->attributes['phone'] = preg_replace('/\D+/', '', $value);
     }
 
+
 	##############################################################################################
 	# append custom Attribs
 	##############################################################################################
 	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume','account_balance', 'public_gender', 'public_dob', 'full_name', 'public_email', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume','account_balance', 'public_gender', 'public_dob', 'full_name', 'public_email', 'formatted_created_at', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
 
 	/**
 	 * The attributes excluded from the model's JSON form.

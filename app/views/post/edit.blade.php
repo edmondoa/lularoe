@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col col-md-12">
             @include('_helpers.breadcrumbs')
-            <h1>Edit Post</h1>
+            <h1>Edit Announcement</h1>
             <div class="btn-group" id="record-options">
                 @if ($post->disabled == 0)
                 {{ Form::open(array('url' => 'posts/disable', 'method' => 'DISABLE')) }}
@@ -133,7 +133,7 @@
 			    	</div>
 			    </div><!-- panel -->
 			    
-			    {{ Form::submit('Add Post', array('class' => 'btn btn-primary')) }}
+			    {{ Form::submit('Update Announcement', array('class' => 'btn btn-primary')) }}
 			    
 			</div><!-- col -->
         {{Form::close()}}

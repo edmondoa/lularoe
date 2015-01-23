@@ -243,7 +243,23 @@ class DataOnlyController extends \BaseController
 	
 	// posts
 	public function getAllPosts(){
-		return Post::all();
+		if (Auth::user() && Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			return Post::all();
+		}
+		elseif (Auth::user() && Auth::user()->hasRole(['Rep'])) {
+			return Post::where('Reps', 1)->where('publish_date', '<', date('Y-m-d h:i:s'))->orWhere('created_at', '<', date('Y-m-d h:i:s'))->orderBy('publish_date')->orderBy('created_at')->get();
+		}
+		elseif (Auth::user() && Auth::user()->hasRole(['Customer'])) {
+			return Post::where('Customers', 1)->where('publish_date', '<', date('Y-m-d h:i:s'))->orWhere('created_at', '<', date('Y-m-d h:i:s'))->orderBy('publish_date')->orderBy('created_at')->get();
+		}
+		else {
+			return Post::where('Public', 1)->where('publish_date', '<', date('Y-m-d h:i:s'))->orWhere('created_at', '<', date('Y-m-d h:i:s'))->orderBy('publish_date')->orderBy('created_at')->get();
+		}
+	}
+	
+	// public posts
+	public function getPublicPosts(){
+		return Post::where('Public', 1)->where('publish_date', '<', date('Y-m-d h:i:s'))->orWhere('created_at', '<', date('Y-m-d h:i:s'))->orderBy('publish_date')->orderBy('created_at')->get();
 	}
 	
 	// products

@@ -109,6 +109,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	
 	// posts
 	Route::resource('posts', 'PostController');
+	Route::get('public-posts', 'PostController@publicPosts');
 	Route::post('posts/disable', 'PostController@disable');
 	Route::post('posts/enable', 'PostController@enable');
 	Route::post('posts/delete', 'PostController@delete');
@@ -133,6 +134,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
 		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
+		Route::get('/downline/states/{id}', 'DownlineController@states');
 		
 		// helpers
 		Route::get('helpers/media-modals', function() {
@@ -167,13 +169,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('opportunities/disable', 'OpportunityController@disable');
 		Route::post('opportunities/enable', 'OpportunityController@enable');
 		Route::post('opportunities/delete', 'OpportunityController@delete');
-
-		// posts
-		Route::resource('posts', 'PostController');
-		Route::post('posts/disable', 'PostController@disable');
-		Route::post('posts/enable', 'PostController@enable');
-		Route::post('posts/delete', 'PostController@delete');
-		Route::get('past-posts', 'PostController@indexPast');
 
 		// API
 		Route::get('api/all-addresses', 'AddressController@getAllAddresses');

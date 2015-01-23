@@ -164,15 +164,15 @@
 	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
 	                            
-					            <td>
-					                <span ng-bind="user.created_at"></span>
-					            </td>
-	                            
 	                            @if (Auth::user()->hasRole(['Rep']))
 		                            <td>
 						                <span ng-bind="user.pivot.level"></span></a>
 		                            </td>
 	                            @endif
+	                            
+					            <td>
+					                <span ng-bind="user.formatted_created_at"></span>
+					            </td>
 	                            
 	                            <td>
 					                <a href="/users/@include('_helpers.user_id')" title="View Details"><span ng-bind="user.last_name"></span>, <span ng-bind="user.first_name"></span></a>

@@ -8,4 +8,4 @@
 				else $('.applyAction').attr('disabled', 'disabled');
 			};
 			
-			$('.loading').remove();
+			jQuery('.loading').remove();

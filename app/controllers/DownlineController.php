@@ -43,5 +43,15 @@ class DownlineController extends \BaseController
 			return View::make('downline.visualization', compact('user', 'name'));
 		}
 	}
+	
+	public function states($id)
+	{
+		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id || Auth::user()->hasRole(array('Superadmin', 'Admin'))) {
+			$user = User::find($id);
+			if ($user->id == Auth::user()->id) $name = 'My';
+			else $name = $user->first_name . ' ' . $user->last_name . "'s";
+			return View::make('downline.states', compact('user', 'name'));
+		}
+	}
 
 }
