@@ -40,12 +40,12 @@
                                                 <p class="transparent-bg" >
                                                     <span>Pre-launch Starts in:</span>
                                                 </p>
-												-->
                                                 <div class="buttons">
                                                     <div class="button solid_color">
                                                         <a class="extra-color-1" href="<?php echo url() ?>/join">JOIN NOW</a>
                                                     </div>
                                                 </div>
+												-->
                                             </div>
                                         </div><!--/container-->
                                         <div class="video-texture active_texture">
