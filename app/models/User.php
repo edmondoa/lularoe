@@ -276,4 +276,5 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		$rep = $this->descendants()->where('levels.user_id',$repId)->first();
 		return ($rep)?true:false;
 	}
+    
 }
