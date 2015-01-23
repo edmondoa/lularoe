@@ -11,7 +11,6 @@ class DashboardController extends \BaseController
          $reps = User::all()->count();
         echo "<pre>".print_r(compact("a","b","id","reps"),true)."</pre>";
         
-        /*
 		if (Auth::user()->hasRole(['Editor', 'Rep'])) {
             try{
                 $user = User::findOrFail(Auth::user()->id);
@@ -24,7 +23,7 @@ class DashboardController extends \BaseController
 			$ranks = User::find($user->id)->ranks;
 			$beta_service_link = SiteConfig::where('key', 'beta-service-link')->first();
 			return View::make('dashboard.rep', compact('user', 'sponsor', 'children', 'ranks', 'beta_service_link'));
-		}*/
+		}
 		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
             try{
 			    $user = User::findOrFail(Auth::user()->id);
