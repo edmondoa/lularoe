@@ -8,7 +8,8 @@
         "intervention/image": "2.*",
 		"twilio/sdk": "dev-master",
 		"guzzlehttp/guzzle": "~4.0",
-        "camroncade/timezone": "dev-master"
+        "camroncade/timezone": "dev-master",
+		"beelab/bowerphp": "0.1.*@alpha"
 	},
 	"autoload": {
 		"classmap": [

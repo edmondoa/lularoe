@@ -3,6 +3,41 @@
 class DataOnlyController extends \BaseController
 {
 
+
+	/**
+	 * Media
+	 */
+	 
+	// all media
+	public function getAllMedia() {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Media::all();
+		if (Auth::user()->hasRole(['Rep'])) {
+			return Media::where('reps', 1)->get();
+		}
+	}
+	
+	// all images
+	public function getAllImages() {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Media::where('type', 'Image')->get();
+		if (Auth::user()->hasRole(['Rep'])) {
+			return Media::where('reps', 1)->where('type','Image')->get();
+		}
+	}
+	
+	// all media by user
+	public function getMediaByUser($id) {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id) {
+			return Media::where('user_id', $id)->where('type', 'Image')->get();
+		}
+	}
+	
+	// all images by user
+	public function getImagesByUser($id) {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id) {
+			return Media::where('user_id', $id)->where('type', 'Image')->get();
+		}
+	}
+
 	/*
 	 * Downline
 	 */
@@ -12,14 +47,14 @@ class DataOnlyController extends \BaseController
 		return;
 	}
 	
-	public function getAllBranches($id) {
+	public function getAllBranches() {
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			$result = Commission::get_org_tree($id);
+			$result = Commission::get_org_tree(Auth::user()->id);
 			$response = Response::make(json_encode($result, JSON_PRETTY_PRINT), 200);
 			$response->header('Content-Type', 'application/json');
 			return $response;
 		}
-		$result = Commission::get_org_tree($id);
+		$result = Commission::get_org_tree(Auth::user()->id);
 		$response = Response::make(json_encode($result, JSON_PRETTY_PRINT), 200);
 		$response->header('Content-Type', 'application/json');
 		return $response;
@@ -40,11 +75,13 @@ class DataOnlyController extends \BaseController
 	// all downline
 	public function getAllDownline($id) {
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			return User::find(0)->descendants;
+			return User::find(Auth::user()->id)->descendants;
 		}
+		/*
 		if ($id == 0) {
 			return User::find(0)->descendants;
 		}
+		*/
 		return User::find($id)->descendants;
 	}
 
@@ -67,18 +104,20 @@ class DataOnlyController extends \BaseController
 	// all upcoming events by role
 	public function getAllUpcomingEventsByRole() {
 		if (!Auth::check()) $events = Uvent::where('public', 1)->where('date_start', '>', time())->get();
-		elseif (Auth::user()->hasRole(['Customer'])) $events = Uvent::where('customers', 1)->where('date_start', '>', time())->get();
-		elseif (Auth::user()->hasRole(['Rep'])) $events = Uvent::where('reps', 1)->where('date_start', '>', time())->get();
-		elseif (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $events = Uvent::where('date_start', '>', time())->get();
+		elseif (Auth::user()->role_name == 'Customer') $events = Uvent::where('customers', 1)->where('date_start', '>', time())->get();
+		elseif (Auth::user()->role_name == 'Rep') $events = Uvent::where('reps', 1)->where('date_start', '>', time())->get();
+		elseif (Auth::user()->role_name == 'Editor') $events = Uvent::where('editors', 1)->where('date_start', '>', time())->get();
+		elseif (Auth::user()->role_name == 'Admin') $events = Uvent::where('admins', 1)->where('date_start', '>', time())->get();
 		return $events;
 	}
 	
 	// all past events by role
 	public function getAllPastEventsByRole() {
 		if (!Auth::check()) $events = Uvent::where('public', 1)->where('date_start', '<', time())->get();
-		elseif (Auth::user()->hasRole(['Customer'])) $events = Uvent::where('customers', 1)->where('date_start', '<', time())->get();
-		elseif (Auth::user()->hasRole(['Rep'])) $events = Uvent::where('reps', 1)->where('date_start', '<', time())->get();
-		elseif (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $events = Uvent::where('date_start', '<', time())->get();
+		elseif (Auth::user()->role_name == 'Customer') $events = Uvent::where('customers', 1)->where('date_start', '<', time())->get();
+		elseif (Auth::user()->role_name == 'Rep') $events = Uvent::where('reps', 1)->where('date_start', '<', time())->get();
+		elseif (Auth::user()->role_name == 'Editor') $events = Uvent::where('editors', 1)->where('date_start', '<', time())->get();
+		elseif (Auth::user()->role_name == 'Admin') $events = Uvent::where('admins', 1)->where('date_start', '<', time())->get();
 		return $events;
 	}
 
@@ -86,10 +125,7 @@ class DataOnlyController extends \BaseController
 		return $opportunities = Opportunity::all();
 	}
 	
-	/*
-	 * Leads
-	 */
-
+	// leads
 	public function getAllLeads() {
 		return Lead::all();
 	}
@@ -97,10 +133,16 @@ class DataOnlyController extends \BaseController
 	public function getAllLeadsByRep($id) {
 		return User::find($id)->leads;
 	}
+	
+	// products
+	public function getAllProducts(){
+		return Product::with('tags')->get();
+	}
 
-	/*
-	 * Users
-	 */
+	// productCateogires
+	public function getAllProductCategories(){
+		return ProductCategory::all();
+	}
 
 	// users
 	public function getAllUsers(){
@@ -109,22 +151,4 @@ class DataOnlyController extends \BaseController
 		}
 	}
 
-	// users
-	public function getAllConfig(){
-		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			return SiteConfig::all();
-		}
-	}
-
-
-	/*
-	 * Pages
-	 */
-	 
-	public function getAllPages(){
-		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			return Page::all();
-		}
-	}
-	 
 }

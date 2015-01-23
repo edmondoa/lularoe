@@ -5,7 +5,7 @@
 		<h1>Dashboard</h1>
 		@if ($beta_service_link->value == 1)
 			<div class="alert alert-success inline-block">
-				<a href="https://imsociallymobile.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Click here to sign up for beta service</a>
+				<a href="https://my.llr.controlpad.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Click here to sign up for beta service</a>
 			</div>
 			<br>
 		@endif
@@ -22,7 +22,7 @@
 			<table class="table table-striped">
 				<tr>
 					<th>Total ISM's</th>
-					<td><a href="/downline/all/0">{{ $reps }}</a></td>
+					<td><a href="/downline/all/{{ $user->id }}">{{ $reps }}</a></td>
 				</tr>
 				<tr>
 					<th>Top Level ISM's</th>

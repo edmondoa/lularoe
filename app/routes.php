@@ -23,8 +23,7 @@
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
-Route::pattern('id', '[0-9]+');
-Route::post('pass/{id}', 'ExternalAuthController@auth');
+Route::get('auth/{id}', 'ExternalAuthController@auth');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
@@ -105,6 +104,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		return View::make('opportunity.public', compact('opportunity','sponsor'));
 	});
 
+	// pages
+	Route::resource('pages', 'PageController');
+	Route::post('pages/disable', 'PageController@disable');
+	Route::post('pages/enable', 'PageController@enable');
+	Route::post('pages/delete', 'PageController@delete');
+	
 	Route::controller('api','DataOnlyController');
 		
 	//timezone
@@ -138,6 +143,13 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('events/delete', 'UventController@delete');
 		Route::get('past-events', 'UventController@indexPast');
 		
+		// Media
+		Route::resource('media', 'MediaController');
+		Route::get('media/user/{id}', ['as' => 'media/user', 'uses' => 'MediaController@user']);
+		Route::post('media/disable', 'MediaController@disable');
+		Route::post('media/enable', 'MediaController@enable');
+		Route::post('media/delete', 'MediaController@delete');
+		
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
 		Route::post('opportunities/disable', 'OpportunityController@disable');
@@ -167,7 +179,18 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
 		Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
-		Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+		
+		//Route::controller('api','DataOnlyController');
+		//put routes in here that we would like to cache
+		Route::group(['before' => 'cache.fetch'], function() {
+			Route::group(['after' => 'cache.put'], function() {
+				//Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+				Route::controller('api','DataOnlyController');
+			});
+		});
+
+		// upload media
+		Route::post('upload-media', 'MediaController@store');
 
 		// userSites
 		Route::resource('user-sites', 'UserSiteController');
@@ -249,12 +272,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::post('mobilePlans/disable', 'MobilePlanController@disable');
 			Route::post('mobilePlans/enable', 'MobilePlanController@enable');
 			Route::post('mobilePlans/delete', 'MobilePlanController@delete');
-			
-			// pages
-			Route::resource('pages', 'PageController');
-			Route::post('pages/disable', 'PageController@disable');
-			Route::post('pages/enable', 'PageController@enable');
-			Route::post('pages/delete', 'PageController@delete');
 			
 			// products
 			Route::resource('products', 'ProductController');
@@ -357,7 +374,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	# Secure Routes
 	##############################################################################################
 
-	Route::group(['before' => 'force.ssl'], function() {
+	// LLRDEV
+	// Route::group(['before' => 'force.ssl'], function() {
+	Route::group(array(), function() {
 		//Route::get('join', 'PreRegisterController@sponsor');
 		Route::get('join/{public_id}', 'PreRegisterController@create');
 		Route::get('join', 'PreRegisterController@create');
@@ -389,6 +408,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	function ($subdomain){
 	};
 
+
 	Route::get('/', function($subdomain)
 	{
 		$user = User::where('public_id', $subdomain)->first();
@@ -407,11 +427,20 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	});
 
 	// opportunities (public view)
-	Route::get('opportunity/{id}', function($subdomain, $domain, $id)
+	Route::get('opportunity/{id}', function($subdomain, $id)
 	{
 		$opportunity = Opportunity::findOrFail($id);
 		$sponsor = User::where('public_id', $subdomain)->first();
 		return View::make('opportunity.public', compact('opportunity','sponsor'));
+	});
+	
+	// event (public view)
+	Route::get('public-events/{id}', function($subdomain, $id)
+	{
+		$event = Uvent::findOrFail($id);
+		$sponsor = User::where('public_id', $subdomain)->first();
+		$title = $event->name;
+		return View::make('event.public_show', compact('event','title','sponsor'));
 	});
 
 });
@@ -425,57 +454,37 @@ Route::get('test-steve', function() {
 	return Timezone::convertFromUTC($date, "Asia/Kolkata", 'F j, Y H:i:s');
 });
 
-Route::get('test', function() {
-	//return User::find(2001)->payments;
-	return User::take(25)->get();
-	return Payment::take(1)->get();
-	var_dump($payment);
-	exit;
-	$reps = User::all();
-	foreach($reps as $rep)
-	{
-		foreach($rep->plans as $plan)
-		{
-			if($plan->price > 0)
-			{
-				$payment = Payment::Create([
-					'user_id'=>$rep->id,
-					'amount'=>$plan->price,
-					'details'=>'Test payment in the amount of '.$plan->price.' to figure out how to run commissions.'
-				]);
-				$payment->user()->associate($rep);
-				$payment->save();
-				//echo"<pre>"; print_r($payment->toArray()); echo"</pre>";
-			}
-			else
-			{
-				//echo"<pre>"; print_r($plan->toArray()); echo"</pre>";
-			}
-		}
-		
-	}
-	return $reps;
-	return User::find(2001)->plans;
+Route::get('test-cache/{id}', function($id) {
+	$users = User::find($id)->descendants;
+	//$result['users'] = $users;
+	echo "<h1> Found ".$users->count()." descendants.</h1>";
+	echo"<!-- <pre>"; print_r($users->toArray()); echo"</pre> -->";
+	$queries = DB::getQueryLog();
+	echo"<pre>"; print_r($queries); echo"</pre>";
+	//return $result;
+	return;
 });
 
-Route::get('test-payments', function() {
+Route::get('test', function() {
+	//return User::find(2001)->descendants;
+	$id = 2001;
+	return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
+});
+
+Route::get('test-orders', function() {
 	$reps = User::all();
 	foreach($reps as $rep)
 	{
+		$order = new Order;
 		foreach($rep->plans as $plan)
 		{
 			if($plan->price > 0)
 			{
-				//Payment::$timestamps = false;
-				$payment = Payment::Create([
-					'user_id'=>$rep->id,
-					'amount'=>$plan->price,
-					'details'=>'Test payment in the amount of '.$plan->price.' to figure out how to run commissions.',
-					//'created_at' => date('Y-m-d H:i:s',strtotime('last month'))
-				]);
-				$payment->user()->associate($rep);
-				$payment->save();
-				//echo"<pre>"; print_r($payment->toArray()); echo"</pre>";
+				//Order::$timestamps = false;
+				//foreach
+				$order->user()->associate($rep);
+				$order->save();
+				//echo"<pre>"; print_r($order->toArray()); echo"</pre>";
 			}
 			else
 			{

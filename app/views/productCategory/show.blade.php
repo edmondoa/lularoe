@@ -3,7 +3,7 @@
 <div class="show">
 	<div class="row page-actions">
 		@include('_helpers.breadcrumbs')
-		<h1 class="no-top">Viewing productCategory</h1>
+		<h1 class="no-top">Viewing Product Category</h1>
 	    <div class="btn-group">
 		    <a class="btn btn-default" href="{{ url('productCategories/'.$productCategory->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 		    @if ($productCategory->disabled == 0)

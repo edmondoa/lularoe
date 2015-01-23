@@ -9,11 +9,11 @@
 
         <!--Shortcut icon-->
 
-        <title>{{ $title }} | SociallyMobile</title>
+        <title><?php if (isset($title)) echo $title . ' | ' ?>LulaRoe</title>
 
-        <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Feed" href="/feed/" />
-        <link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Comments Feed" href="/comments/feed/" />
-        <meta property='og:site_name' content='SociallyMobile'/>
+        <link rel="alternate" type="application/rss+xml" title="LulaRoe &raquo; Feed" href="/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="LulaRoe &raquo; Comments Feed" href="/comments/feed/" />
+        <meta property='og:site_name' content='LulaRoe'/>
         <meta property='og:url' content='/privacy-policy/'/>
         <meta property='og:title' content='Privacy Policy'/>
         <meta property='og:type' content='article'/>
@@ -91,7 +91,7 @@
 
                         <div class="col span_3">
 
-                            <a id="logo" href="/" > <img class=" dark-version" alt="SociallyMobile" src="/wp-content/uploads/2014/10/Socially-Mobile-with-tag-e1413399140125.png" /> </a>
+                            <a id="logo" href="/" > <img class=" dark-version" alt="LulaRoe" src="/img/llr-logo.png" /> </a>
 
                         </div><!--/span_3-->
 
@@ -110,20 +110,22 @@
 				                    <?php
 				                    	if (Auth::check()) {
 											if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-					                    		$pages = Page::where('public_header', 1)->where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->get();
+					                    		$pages = Page::where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->where('public_header', 1)->get();
 											}
 											elseif (Auth::user()->hasRole(['Customer'])) {
-					                    		$pages = Page::where('public_header', 1)->where('Customers', 1)->orWhere('Public', 1)->get();
+					                    		$pages = Page::where('Customers', 1)->orWhere('Public', 1)->where('public_header', 1)->get();
 											}
 											elseif (Auth::user()->hasRole(['Rep'])) {
-					                    		$pages = Page::where('public_header', 1)->where('Reps', 1)->orWhere('Public', 1)->get();
+					                    		$pages = Page::where('Reps', 1)->orWhere('Public', 1)->where('public_header', 1)->get();
 											}
 										}
 										else $pages = Page::where('public_header', 1)->where('Public', 1)->get();
 				                    ?>
-									@foreach ($pages as $page)
-										<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
-									@endforeach
+				                    @if (isset($pages))
+										@foreach ($pages as $page)
+											<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+										@endforeach
+									@endif
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                                         @if (!Auth::check())
                                         	<a href="<?php echo url() ?>/login">Log In</a>
@@ -155,26 +157,26 @@
 
             <div class="container">
                 <ul>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074">
+                    <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074">
                         <a href="/contact-us/">Contact Us</a>
                     </li>
-                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
+                    <li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
                         <a href="/public-events">Events</a>
                     </li>
 					@foreach ($pages as $page)
 						<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
 					@endforeach
-                    <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
+                    <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                         @if (!Auth::check())
                         	<a href="<?php echo url() ?>/login">Log In</a>
                         @else
                         	<a href="/dashboard">Dashboard</a>
                         @endif
                     </li>
-                    <!-- <li id="mobile-search">
-                        <form action="/" method="GET">
-                            <input type="text" name="s" value="" placeholder="Search.." />
-                        </form>
+                    <!-- <li id="search-btn">
+                        <div>
+                            <a href="#searchbox"><span class="icon-salient-search" aria-hidden="true"></span></a>
+                        </div>
                     </li> -->
                 </ul>
             </div>
@@ -210,24 +212,26 @@
 		                    <?php
 		                    	if (Auth::check()) {
 									if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-			                    		$pages = Page::where('public_footer', 1)->where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->get();
+			                    		$pages = Page::where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->where('public_footer', 1)->get();
 									}
 									elseif (Auth::user()->hasRole(['Customer'])) {
-			                    		$pages = Page::where('public_footer', 1)->where('Customers', 1)->orWhere('Public', 1)->get();
+			                    		$pages = Page::where('Customers', 1)->orWhere('Public', 1)->where('public_footer', 1)->get();
 									}
 									elseif (Auth::user()->hasRole(['Rep'])) {
-			                    		$pages = Page::where('public_footer', 1)->where('Reps', 1)->orWhere('Public', 1)->get();
+			                    		$pages = Page::where('Reps', 1)->orWhere('Public', 1)->where('public_footer', 1)->get();
 									}
 								}
 								else $pages = Page::where('public_footer', 1)->where('Public', 1)->get();
 		                    ?>
-		                    <ul class="footer-menu">
-								@foreach ($pages as $page)
-									<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
-								@endforeach
-							</ul>
+		                    @if (isset($pages))
+			                    <ul class="footer-menu">
+									@foreach ($pages as $page)
+										<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+									@endforeach
+								</ul>
+							@endif
 							<br>
-                            <p id="copyright-text">&copy; {{ date('Y') }} SociallyMobile</p>
+                            <p id="copyright-text">&copy; {{ date('Y') }} LulaRoe</p>
 
                         </div><!--/span_5-->
 

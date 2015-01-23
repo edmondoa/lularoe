@@ -13,11 +13,11 @@
 <!--Shortcut icon-->
 
 
-<title> Events |  SociallyMobile</title>
+<title> Events |  LulaRoe</title>
 
-<link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Feed" href="/feed/" />
-<link rel="alternate" type="application/rss+xml" title="SociallyMobile &raquo; Comments Feed" href="/comments/feed/" />
-<meta property='og:site_name' content='SociallyMobile'/><meta property='og:url' content='/2014/11/12/live-events/'/><meta property='og:title' content='SociallyMobile'/><meta property='og:type' content='website'/><link rel='stylesheet' id='js_composer_front-css'  href='/wp-content/themes/salient/wpbakery/js_composer/assets/css/js_composer_front.css?ver=3.7.3' type='text/css' media='all' />
+<link rel="alternate" type="application/rss+xml" title="LulaRoe &raquo; Feed" href="/feed/" />
+<link rel="alternate" type="application/rss+xml" title="LulaRoe &raquo; Comments Feed" href="/comments/feed/" />
+<meta property='og:site_name' content='LulaRoe'/><meta property='og:url' content='/2014/11/12/live-events/'/><meta property='og:title' content='LulaRoe'/><meta property='og:type' content='website'/><link rel='stylesheet' id='js_composer_front-css'  href='/wp-content/themes/salient/wpbakery/js_composer/assets/css/js_composer_front.css?ver=3.7.3' type='text/css' media='all' />
 <link rel='stylesheet' id='contact-form-7-css'  href='/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=4.0.1' type='text/css' media='all' />
 <link rel='stylesheet' id='mediaelement-css'  href='/wp-includes/js/mediaelement/mediaelementplayer.min.css?ver=2.15.0' type='text/css' media='all' />
 <link rel='stylesheet' id='wp-mediaelement-css'  href='/wp-includes/js/mediaelement/wp-mediaelement.css?ver=4.0' type='text/css' media='all' />
@@ -63,7 +63,7 @@
 		     <div id="search-box">
 		     	
 		     	<div class="col span_12">
-			      	<form action="https://my.sociallymobile.com" method="GET">
+			      	<form action="https://my.llr.controlpad.com" method="GET">
 			      		<input type="text" name="s" id="s" value="Start Typing..." data-placeholder="Start Typing..." />
 			      	</form>
 			      			        </div><!--/span_12-->
@@ -85,9 +85,9 @@
 				  
 				<div class="col span_3">
 					
-					<a id="logo" href="https://my.sociallymobile.com" >
+					<a id="logo" href="https://my.llr.controlpad.com" >
 						
-						<img class=" dark-version" alt="SociallyMobile" src="/wp-content/uploads/2014/10/Socially-Mobile-with-tag-e1413399140125.png" /> 
+						<img class=" dark-version" alt="LulaRoe" src="/wp-content/uploads/2014/10/Socially-Mobile-with-tag-e1413399140125.png" /> 
 					</a>
 
 				</div><!--/span_3-->
@@ -134,7 +134,7 @@
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3089"><a href="/privacy-policy/">Privacy Policy</a></li>
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215"><a href="<?php echo url() ?>/login">LOG IN</a></li>
 <li id="mobile-search">  
-					<form action="https://my.sociallymobile.com" method="GET">
+					<form action="https://my.llr.controlpad.com" method="GET">
 			      		<input type="text" name="s" value="" placeholder="Search.." />
 					</form> 
 					</li>		
@@ -402,7 +402,7 @@ Tina Wilson &#8211; San Diego, CA</p>
 				
 				<div class="col span_5">
 					
-											<p>&copy; 2014 SociallyMobile.  </p>
+											<p>&copy; 2014 LulaRoe.  </p>
 										
 				</div><!--/span_5-->
 				
@@ -434,14 +434,14 @@ Tina Wilson &#8211; San Diego, CA</p>
 <script type='text/javascript' src='/wp-includes/js/jquery/ui/jquery.ui.autocomplete.min.js?ver=1.10.4'></script>
 <script type='text/javascript'>
 /* <![CDATA[ */
-var MyAcSearch = {"url":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-ajax.php"};
+var MyAcSearch = {"url":"http:\/\/llr.controlpad-wordpress\/wp-admin\/admin-ajax.php"};
 /* ]]> */
 </script>
 <script type='text/javascript' src='/wp-content/themes/salient/nectar/assets/functions/ajax-search/wpss-search-suggest.js'></script>
 <script type='text/javascript' src='/wp-content/plugins/contact-form-7/includes/js/jquery.form.min.js?ver=3.51.0-2014.06.20'></script>
 <script type='text/javascript'>
 /* <![CDATA[ */
-var _wpcf7 = {"loaderUrl":"http:\/\/sociallymobile-wordpress\/wp-content\/plugins\/contact-form-7\/images\/ajax-loader.gif","sending":"Sending ...","cached":"1"};
+var _wpcf7 = {"loaderUrl":"http:\/\/llr.controlpad-wordpress\/wp-content\/plugins\/contact-form-7\/images\/ajax-loader.gif","sending":"Sending ...","cached":"1"};
 /* ]]> */
 </script>
 <script type='text/javascript' src='/wp-content/plugins/contact-form-7/includes/js/scripts.js?ver=4.0.1'></script>
@@ -466,7 +466,7 @@ var _wpmejsSettings = {"pluginPath":"\/wp-includes\/js\/mediaelement\/"};
 <script type='text/javascript' src='/wp-includes/js/mediaelement/wp-mediaelement.js?ver=4.0'></script>
 <script type='text/javascript'>
 /* <![CDATA[ */
-var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-ajax.php","postID":"3248","rooturl":"http:\/\/sociallymobile-wordpress","pluginPages":[],"disqusComments":"false"};
+var nectarLove = {"ajaxurl":"http:\/\/llr.controlpad-wordpress\/wp-admin\/admin-ajax.php","postID":"3248","rooturl":"http:\/\/llr.controlpad-wordpress","pluginPages":[],"disqusComments":"false"};
 /* ]]> */
 </script>
 <script type='text/javascript' src='/wp-content/themes/salient/nectar/love/js/nectar-love.js?ver=1.0'></script>

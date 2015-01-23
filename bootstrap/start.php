@@ -37,6 +37,7 @@ $env = $app->detectEnvironment(function(){
 		//'hostname'=>'environment', 
 		'Jake-PC'=>'jake_local', 
 		'Owner-PC'=>'steve_local',
+		'gashler-laptop'=>'steve_local',
 		'jakus1-MacBookPro'=>'jake_local',
 		'linux-rocks'=>'jake_local',
 		'ip-172-31-23-154'=>'production',

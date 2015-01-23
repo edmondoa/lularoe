@@ -1,4 +1,5 @@
 <div id='div_session_write'></div>
+<div id="modals"></div>
 		{{ HTML::script('/js/jquery1.js') }}
 		{{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
 		{{ HTML::script('//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js') }}
@@ -19,10 +20,11 @@
 		@section('scripts')
 		@show
 		{{ HTML::script('/packages/dirpagination/dirPagination.js') }}
-		<script src="/packages/froala/js/froala_editor.min.js"></script>
+		{{ HTML::script('/packages/tinymce/tinymce.min.js') }}
+		<!-- <script src="/packages/froala/js/froala_editor.min.js"></script> -->
 		<!--[if lt IE 9]>
 		<!-- Include IE8 JS. -->
-		<script src="/packages/froala/js/froala_editor_ie8.min.js"></script>
+		<!-- <script src="/packages/froala/js/froala_editor_ie8.min.js"></script> -->
 		<![endif]-->
 		@if (!Session::has('timezone'))
 			<!-- get timezone -->
@@ -39,3 +41,7 @@
 		@endif
 	</body>
 </html>
+<?php
+	// store pages for back buttons
+	Session::put('previous_page', Request::url());
+?>
