@@ -14,6 +14,9 @@ class DownlineController extends \BaseController
 	
 	public function allDownline($id)
 	{
+        $al = Input::all();
+        $bl = ($id == 0);
+        echo "<pre>".print_r(compact("id","al","bl"),true)."</pre>";
 		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id || Auth::user()->hasRole(array('Superadmin', 'Admin'))) {
             $id = ($id == 0) ? Auth::user()->id : $id; 
 			$user = User::findOrFail($id);
