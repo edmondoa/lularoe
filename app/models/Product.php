@@ -31,7 +31,10 @@ class Product extends \Eloquent
 	}
 	
 	public function getCategoryNameAttribute() {
-		return $this->category->name;
+		if (isset($this->category->name)) {
+			return $this->category->name;
+		}
+		else return '';
 	}
 	
 	public function getImageSmAttribute() {
