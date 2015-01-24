@@ -148,6 +148,7 @@ class DataOnlyController extends \BaseController
 	public function getAllUsers($page=1,$limit=10){
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
             $offset = ($page - 1) * $limit;
+            error_log(print_r(compact("offset","page","limit"),true));
 			return [
                         "count"=>User::count(),
                         "data" =>User::skip($offset)->take($limit)->get()
