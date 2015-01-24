@@ -190,7 +190,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users.data | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
@@ -269,26 +269,36 @@
 	
 	function UserController($scope, $http) {
 	
-		$http.get('/api/all-users').success(function(users) {
-			$scope.users = users;
-			
-			@include('_helpers.bulk_action_checkboxes')
-
-		});
+        $scope.currentPage = 1;
+        $scope.pageSize = 10;
+        $scope.countItems = 0;
+        $scope.meals = [];
 		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
+        var mUser = function(curPage,  limit){
+            $http.get('/api/all-users/'+curPage).success(function(users) {
+                $scope.users = users;
+                
+                $scope.countItems = users.count;
+                @include('_helpers.bulk_action_checkboxes')
+
+            });    
+        }
 		
 		$scope.pageChangeHandler = function(num) {
-			
+            console.log("UserController - pageChangeHandler: " +num+" curPage: "+$scope.currentPage);    
+		    
 		};
 	
+        $scope.$watch("currentPage", function(n, o){
+            mUser(n, $scope.pageSize);
+            console.log("currentPage changed: n["+n+"]"+" o:["+o+"]");
+        });
 		
 	}
 	
 	function OtherController($scope) {
 		$scope.pageChangeHandler = function(num) {
+            console.log("OtherController - pageChangeHandler: " +num+" curPage: "+$scope.currentPage);    
 		};
 	}
 	

@@ -25,7 +25,6 @@
 ##############################################################################################
 Route::pattern('id', '[0-9]+');
 Route::get('auth/{id}', 'ExternalAuthController@auth');
-
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
 	##############################################################################################
