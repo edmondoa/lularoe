@@ -44,7 +44,7 @@ else
 		|
 		*/
 
-		'domain' => 'my.llr.controlpad.com',
+		'domain' 		=> 'my.llr.controlpad.com',
 		'mwl_api'		=> 'http://mwl.controlpad.com:8080/cms/',
 		'mwl_db'		=> 'llr',
 		'base_domain' => 'llr.controlpad.com',

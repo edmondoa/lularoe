@@ -6,6 +6,8 @@ class externalAuthController extends \BaseController {
 	{
 		// BLOCKING - this doesn't work correctly with how mike is encodign
 		// die(base64_encode(md5($cid.$pass, true)));
+		// $a = unpack('C*', $cid.$pass);
+		return(base64_encode('[B@'.md5($cid.$pass)));
 		return(base64_encode(md5($cid.$pass, true)));
 	}
 
