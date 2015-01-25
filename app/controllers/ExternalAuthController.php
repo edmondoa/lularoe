@@ -2,6 +2,47 @@
 
 class externalAuthController extends \BaseController {
 
+	private function midcrypt($cid, $pass)
+	{
+		// BLOCKING - this doesn't work correctly with how mike is encodign
+		// die(base64_encode(md5($cid.$pass, true)));
+		return(base64_encode(md5($cid.$pass, true)));
+	}
+
+	private function midauth($tid, $username, $password)
+	{
+		// Pull this out into an actual class for MWL php api
+		$ch = curl_init();
+
+		$username = urlencode($username);
+		$password = base64_encode($password);
+
+		// Set this to HTTPS TLS / SSL
+		curl_setopt($ch, CURLOPT_URL, Config::get('site.mwl_api').'/login/'.Config::get('site.mwl_db')."/?username={$username}&password={$password}");
+		echo Config::get('site.mwl_api').'/login/'.Config::get('site.mwl_db')."/?username={$username}&password={$password}";
+
+		/* 
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "username={$username}&password={$password}");
+		*/
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$server_output = curl_exec ($ch);
+
+		if ($errno = curl_errno($ch)) {
+			die('Something went wrong connecting to inventory system: '.$errno);
+			return(false);
+		}
+		curl_close ($ch);
+		die("Server: {$server_output}");
+
+		if (!$server_output) return(false);
+		else return($server_output);
+		
+	}
+
+
 	public function auth($id)
 	{
 		$pass	= trim(Input::get('pass'));
@@ -10,7 +51,7 @@ class externalAuthController extends \BaseController {
 		$data   = [];
 
 		 // Find them here
-        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'password', 'first_name', 'last_name', 'image'));
+        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image'));
 		
 		//$lastq = DB::getQueryLog();
 		//print_r(end($lastq));
@@ -19,6 +60,8 @@ class externalAuthController extends \BaseController {
         if (!isset($mbr[0])) {
             $mbr	= null;
             $status = 'User '.strip_tags($id).' not found';
+			// Also check here if they exist in FISHBOWL!
+			
         }
 		else if (Hash::check($pass, $mbr[0]['attributes']['password'])) {
         	$error  = false;
@@ -27,8 +70,22 @@ class externalAuthController extends \BaseController {
 				'id'			=> $mbr[0]['attributes']['id'],
 				'first_name'	=> $mbr[0]['attributes']['first_name'],
 				'last_name'		=> $mbr[0]['attributes']['last_name'],
-				'image'			=> $mbr[0]['attributes']['image']
+				'image'			=> $mbr[0]['attributes']['image'],
+				'tid'			=> '1', 	//STUB $mbr[0]['attributes']['key'],
+				'email'			=> 'admin'  //STUB $mbr[0]['attributes']['email']
 			);
+
+			// Return the user is able to log in, but shut out of MWL
+			$sessionkey = Self::midauth($data['tid'],$data['email'], Self::midcrypt('llr', $pass));
+
+			// if we don't get a sessionkey back - something is wrong
+			if (!$sessionkey)
+			{
+				$status .= '; cannot retrieve key from payment system';
+				$data['tid'] = null;
+
+				// Also perform a logging notify here in papertrail or syslog?
+			}
 		}
 		else
 		{
@@ -41,3 +98,4 @@ class externalAuthController extends \BaseController {
 	}
 
 }
+
