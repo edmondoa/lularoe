@@ -156,6 +156,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('opportunities/enable', 'OpportunityController@enable');
 		Route::post('opportunities/delete', 'OpportunityController@delete');
 
+		// API for IOS App
+		Route::get('api/get-inventory', 'ExternalAuthController@getInventory');
+		Route::get('api/purchase', 		'ExternalAuthController@purchase');
+
 		// API
 		Route::get('api/all-addresses', 'AddressController@getAllAddresses');
 		Route::get('api/all-bonuses', 'BonusController@getAllBonuses');

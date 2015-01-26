@@ -2,6 +2,19 @@
 
 class externalAuthController extends \BaseController {
 
+	public function getInventory()
+	{
+		// STUB
+		return(false);
+	}
+
+	public function purchase
+	{
+		// STUB
+		return(false);
+	}
+
+
 	private function midcrypt($cid, $pass)
 	{
 		$penc = base64_encode(md5($pass,true));

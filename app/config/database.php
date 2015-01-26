@@ -7,7 +7,7 @@
 // Author: Matt Frederico
 
 // Main site
-if (preg_match('/mylularoe.com/',$_SERVER['HTTP_HOST']))
+if (preg_match('/mylularoe.com$/',$_SERVER['HTTP_HOST']))
 {
 	return array(
 
