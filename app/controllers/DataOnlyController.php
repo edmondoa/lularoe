@@ -172,7 +172,13 @@ class DataOnlyController extends \BaseController
 	// immediate downline
 	public function getImmediateDownline($id) {
 		if (!Auth::check()) return;
-		return User::find($id)->frontline;
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			return User::find($id)->frontline;
+		}
+		elseif(Auth::user()->hasRole(['Rep']) && (Auth::user()->hasRepInDownline($id)) || Auth::user()->id == $id) {
+			return User::find($id)->frontline;
+		}
+		return [];
 	}
 	
 	// all downline
