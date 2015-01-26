@@ -19,7 +19,7 @@
 		Route::get('/{' . $path . '}', 'PageController@show');
 	}
 	*/
-//if((Auth::check())&&(Auth::user()->hasRole('Rep'))) Auth::logout();
+//if((Auth::check())&&(Auth::user()->hasRole(['Rep']))) Auth::logout();
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
@@ -259,6 +259,17 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 				Auth::loginUsingId($id);
 				return Redirect::to('/dashboard');
 			});
+			Route::get('clear-all-cache', function() {
+				$users = DB::table('users')->get(['id']);
+				$count = 0;
+				foreach($users as $user)
+				{
+					User::find($user->id)->clearUserCache();
+					$count++;
+				}
+				return "Cache cleared for ".$count." users";
+			});
+
 		});
 		##############################################################################################
 		# Admin only routes
@@ -507,7 +518,7 @@ Route::get('test-steve', function() {
 	}
 });
 
-Route::get('clear-cache/{function}', function($function) {
+Route::get('clear-all-cache/{function}', function($function) {
 	Cache::forget('route_'.Str::slug(action('DataOnlyController@' . $function)));
 });
 
