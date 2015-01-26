@@ -18,11 +18,7 @@
 			                	{{ $user->first_name }} {{ $user->last_name }}'s Entire Downline
 			            	@endif
 			            	<span class="badge">
-				            	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-				            		{{ number_format($total_users) }}
-				            	@else
-				            		{{ number_format($user->descendant_count) }}
-				            	@endif
+				            	{{ number_format($user->descendant_count) }}
 			            	</span>
 		            	</h1>
 		            	<div class="pull-right hidable-xs">

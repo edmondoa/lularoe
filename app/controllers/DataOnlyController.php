@@ -176,16 +176,16 @@ class DataOnlyController extends \BaseController
 	}
 	
 	// all downline
-	public function getAllDownline($id) {
+ 	public function getAllDownline($id = 0) {
 		DB::connection()->disableQueryLog();
 		set_time_limit (120);
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-			return User::find(0)->descendants;
+			return User::find($id)->descendants;
 		}
-		if ($id == 0) {
-			return User::find(0)->descendants;
+		elseif(Auth::user()->hasRole(['Rep']) && (Auth::user()->hasRepInDownline($id)) || Auth::user()->id == $id) {
+			return User::find($id)->descendants;
 		}
-		return User::find($id)->descendants;
+		return [];
 	}
 
 	/*
