@@ -4,11 +4,10 @@ class externalAuthController extends \BaseController {
 
 	private function midcrypt($cid, $pass)
 	{
-		// BLOCKING - this doesn't work correctly with how mike is encodign
-		// die(base64_encode(md5($cid.$pass, true)));
-		// $a = unpack('C*', $cid.$pass);
-		return(base64_encode('[B@'.md5($cid.$pass)));
-		return(base64_encode(md5($cid.$pass, true)));
+		$penc = base64_encode(md5($pass,true));
+		$penc = base64_encode(md5('admin',true));
+		
+		return($penc);
 	}
 
 	private function midauth($tid, $username, $password)
@@ -17,7 +16,7 @@ class externalAuthController extends \BaseController {
 		$ch = curl_init();
 
 		$username = urlencode($username);
-		$password = base64_encode($password);
+		$password = Self::midcrypt('llr', $password);
 
 		// Set this to HTTPS TLS / SSL
 		curl_setopt($ch, CURLOPT_URL, Config::get('site.mwl_api').'/login/'.Config::get('site.mwl_db')."/?username={$username}&password={$password}");
@@ -37,7 +36,7 @@ class externalAuthController extends \BaseController {
 			return(false);
 		}
 		curl_close ($ch);
-		die("Server: {$server_output}");
+		die("<Br />Server returned: {$server_output}");
 
 		if (!$server_output) return(false);
 		else return($server_output);
