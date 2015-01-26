@@ -1,7 +1,9 @@
 <?php
 
 Event::listen('illuminate.query', function($query){
-	//echo""; print_r($query); echo"\r\n";
+	
+	\Log::info($query);
+	// /echo""; print_r($query); echo"\r\n";
 /*	if(Session::has('queries'))
 	{
 		$saved_queries = Session::get('queries');

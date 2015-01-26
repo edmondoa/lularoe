@@ -192,7 +192,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 		Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
 		
-		//Route::controller('api','DataOnlyController');
 		//put routes in here that we would like to cache
 		Route::group(['before' => 'cache.fetch'], function() {
 			Route::group(['after' => 'cache.put'], function() {
@@ -200,11 +199,11 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 				Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 				Route::get('api/all-users', 'DataOnlyController@getAllUsers');
 				Route::get('cache-testing',function(){
-					return 'jake_'.date('H:i:s');
+					return 'jake_jake_jake_jake_jake_jake_jake_ '.date('Y-m-d H:i:s');
 				});
 			});
 		});
-		
+
 		// DataOnly functions that shouldn't be cached
 		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
 		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
@@ -264,7 +263,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 				$count = 0;
 				foreach($users as $user)
 				{
-					User::find($user->id)->clearUserCache();
+					$user = User::find($user->id);
+					$user->clearUserCache();
 					$count++;
 				}
 				return "Cache cleared for ".$count." users";
@@ -534,34 +534,16 @@ Route::get('test-cache/{id}', function($id) {
 });
 
 Route::get('test', function() {
-	if(User::find(2422)->hasRole(['Superadmin']))
-	{
-		return "Has the permission.";
-	}
-	else
-	{
-		return "nope";
-	}
-	return User::find(2001)->hasRole('Superadmin');
-
-	$key = 'route_'.Str::slug('http://sm.local/api/all-downline/0');
-	if(Cache::has($key))
-	{
-		return Cache::get($key);
-	}
-	else
-	{
-		return 'doh!!!:'.$key;
-	}
 	$start = microtime (true);
-	$rep_id = 2005;
-	if(Session::has('queries'))
+	$response['result'] = $rep = User::find(2266);
+	$rep->clearUserCache();
+/*	if(Cache::has('user_'.$rep->id.'_descendants'))
 	{
-		Session::forget('queries');
+		Cache::forget('user_'.$rep->id.'_descendants');
+		//return Cache::get('user_'.$rep->id.'_descendants');
 	}
-	//User::find($rep_id)->clearUserCache();
-
-	$response['result'] = User::find($rep_id)->clearUserCache();
+*/	$response['desc'] = $rep = User::find(2266)->descendants;
+	//$response['result'] = User::find($rep_id)->clearUserCache();
 	//$response['queries'] = Session::get('queries');
 	//$response['queries'] = DB::getQueryLog();;
 	//$response['result_cache_clear'] = $rep->clearUserCache();
@@ -623,3 +605,19 @@ if(is_file(app_path().'/controllers/Server.php')){
 	Route::get('deploy-beta',['as'=>'deploy', 'uses'=>'Server@deploy_beta']);
 	Route::get('deploy-production',['as'=>'deploy', 'uses'=>'Server@deploy_production']);
 }
+
+Route::get('routes', function() {
+$routeCollection = Route::getRoutes();
+
+echo "<table style='width:100%'>";
+	foreach ($routeCollection as $value) {
+		echo "<tr>";
+			echo "<td>" . implode(",",$value->getMethods()) . "</td>";
+			echo "<td>" . $value->getPath() . "</td>";
+			echo "<td>" . $value->getActionName() . "</td>";
+			echo "<td>" . $value->getUri() . "</td>";
+			echo "<td>" . $value->getName() . "</td>";
+		echo "</tr>";
+	}
+echo "</table>";
+});
