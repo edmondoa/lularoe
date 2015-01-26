@@ -32,6 +32,10 @@ class DownlineController extends \BaseController
 			}
 			return View::make('downline.all', compact('user'));
 		}
+		else
+		{
+			return 'doh';
+		}
 	}
 
 	public function visualization($id)
