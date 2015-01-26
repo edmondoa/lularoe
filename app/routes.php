@@ -253,7 +253,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::controller('sa','SuperAdminTasksController');
 			Route::get('login-as/{id}',function($id){
 				//first log out the admin
-				if(!Auth::user()->hasRole('Superadmin')) return;
+				if(!Auth::user()->hasRole(['Superadmin'])) return;
 				Auth::logout();
 				//then login automatically as the requested user
 				Auth::loginUsingId($id);
@@ -523,7 +523,15 @@ Route::get('test-cache/{id}', function($id) {
 });
 
 Route::get('test', function() {
-	return User::find(2422);
+	if(User::find(2422)->hasRole(['Superadmin']))
+	{
+		return "Has the permission.";
+	}
+	else
+	{
+		return "nope";
+	}
+	return User::find(2001)->hasRole('Superadmin');
 
 	$key = 'route_'.Str::slug('http://sm.local/api/all-downline/0');
 	if(Cache::has($key))
