@@ -535,14 +535,7 @@ Route::get('test-cache/{id}', function($id) {
 
 Route::get('test', function() {
 	$start = microtime (true);
-	$response['result'] = $rep = User::find(2266);
-	$rep->clearUserCache();
-/*	if(Cache::has('user_'.$rep->id.'_descendants'))
-	{
-		Cache::forget('user_'.$rep->id.'_descendants');
-		//return Cache::get('user_'.$rep->id.'_descendants');
-	}
-*/	$response['desc'] = $rep = User::find(2266)->descendants;
+	$response['result'] = $rep = User::find(2001);
 	//$response['result'] = User::find($rep_id)->clearUserCache();
 	//$response['queries'] = Session::get('queries');
 	//$response['queries'] = DB::getQueryLog();;

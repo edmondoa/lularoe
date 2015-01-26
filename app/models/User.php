@@ -320,8 +320,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function hasRepInDownline($repId) {
 		if(!Auth::check()) return false;
-		$rep = $this->descendants()->where('levels.user_id',$repId)->first();
-		return ($rep)?true:false;
+		$descendency = Level::where('user_id',$repId)->where('ancestor_id',$this->id)->first();
+		return ($descendency)?true:false;
 	}
 
 	public function sumOrgOrders() {
