@@ -16,6 +16,7 @@ if (preg_match('/mylularoe.com$/',$_SERVER['HTTP_HOST']))
 
 			'domain' => 'www.mylularoe.com',
 			'contact_email' => 'mfrederico@gmail.com',
+			'admin_uid'		=> 10095,
 			'contact_first_name' => 'Matt',
 			'contact_last_name'  => 'Frederico',
 			'base_domain' => 'www.mylularoe.com',
@@ -47,6 +48,7 @@ else
 		'domain' 		=> 'my.llr.controlpad.com',
 		'mwl_api'		=> 'http://mwl.controlpad.com:8080/cms/',
 		'mwl_db'		=> 'llr',
+		'admin_uid'		=> 10095,
 		'base_domain' => 'llr.controlpad.com',
 		'preregistration_fee' => 100.00,
 		'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
