@@ -251,7 +251,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		Route::group(array('before' => 'Superadmin'), function() {
 			Route::controller('sa','SuperAdminTasksController');
-			Route::get('alt-login/{id}',function($id){
+			Route::get('login-as/{id}',function($id){
 				//first log out the admin
 				Auth::logout();
 				//then login automatically as the requested user
