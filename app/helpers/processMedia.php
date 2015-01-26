@@ -58,13 +58,13 @@
 					    mkdir(public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/thumbs', 0755, true);
 					}
 	                // open an image media
-					$img = Image::make(public_path() . '/uploads/' . $path . $filename)
+					$img = Image::make(public_path() . '/uploads/' . $path . $filename . '.' . $extension)
 	                // now you are able to resize the instance
 	                ->save(public_path() . '/uploads/' . $path . $filename . '.' . $extension)
 					->fit(200, 150)
 	                ->save(public_path() . '/uploads/' . $path . $filename . '-sm' . '.' . $extension)
 					->destroy();
-					unlink(public_path() . '/uploads/' . $path . $filename);
+					// unlink(public_path() . '/uploads/' . $path . $filename);
 					$data['type'] = 'Image';
 				}
 				elseif (in_array($extension, $image_extensions)) $data['type'] = 'Image media';
