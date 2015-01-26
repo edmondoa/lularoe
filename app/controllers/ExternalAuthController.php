@@ -5,13 +5,22 @@ class externalAuthController extends \BaseController {
 	public function getInventory()
 	{
 		// STUB
-		return(false);
+		return(file_get_contents('SampleInventory.json'));
 	}
 
-	public function purchase
+	public function purchase($cart = array())
 	{
 		// STUB
-		return(false);
+		$subtotal 	= 199.99;
+		$tax		= $subtotal * .08;
+		$total 		= $subtotal + $tax;
+
+		$purchase = array(	'errors'	=> false,
+							'subtotal'	=> $subtotal,
+							'tax'		=> $tax,
+							'total'		=> $total);
+
+		return(json_encode($purchase));
 	}
 
 
@@ -33,7 +42,7 @@ class externalAuthController extends \BaseController {
 
 		// Set this to HTTPS TLS / SSL
 		curl_setopt($ch, CURLOPT_URL, Config::get('site.mwl_api').'/login/'.Config::get('site.mwl_db')."/?username={$username}&password={$password}");
-		echo Config::get('site.mwl_api').'/login/'.Config::get('site.mwl_db')."/?username={$username}&password={$password}";
+		// echo Config::get('site.mwl_api').'/login/'.Config::get('site.mwl_db')."/?username={$username}&password={$password}";
 
 		/* 
 		curl_setopt($ch, CURLOPT_POST, 1);
@@ -49,7 +58,6 @@ class externalAuthController extends \BaseController {
 			return(false);
 		}
 		curl_close ($ch);
-		die("<Br />Server returned: {$server_output}");
 
 		if (!$server_output) return(false);
 		else return($server_output);
@@ -86,7 +94,8 @@ class externalAuthController extends \BaseController {
 				'last_name'		=> $mbr[0]['attributes']['last_name'],
 				'image'			=> $mbr[0]['attributes']['image'],
 				'tid'			=> '1', 	//STUB $mbr[0]['attributes']['key'],
-				'email'			=> 'admin'  //STUB $mbr[0]['attributes']['email']
+				'email'			=> 'admin',  //STUB $mbr[0]['attributes']['email']
+				'session'		=> Session::getId()
 			);
 
 			// Return the user is able to log in, but shut out of MWL
@@ -99,6 +108,9 @@ class externalAuthController extends \BaseController {
 				$data['tid'] = null;
 
 				// Also perform a logging notify here in papertrail or syslog?
+			}
+			else {
+				Session::put('mwl_id', $sessionkey);
 			}
 		}
 		else

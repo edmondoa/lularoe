@@ -1,0 +1,67 @@
+[
+    {
+        "quantities": {
+            "M": 1,
+            "S": 1,
+            "L": 1
+        },
+        "img_name": "CASSIE_525",
+        "name": "Cassie"
+    },
+    {
+        "quantities": {
+            "S": 3,
+            "L": 3
+        },
+        "img_name": "ANA_525",
+        "name": "Ana"
+    },
+    {
+        "quantities": {
+            "M": 4,
+            "XXS": 1
+        },
+        "img_name": "AMELIA_525",
+        "name": "Amelia"
+    },
+    {
+        "quantities": {
+            "M": 11,
+            "XXXL": 1,
+            "L": 3
+        },
+        "img_name": "MADISON_525",
+        "name": "Madison"
+    },
+    {
+        "quantities": {},
+        "img_name": "JILL_525",
+        "name": "Jill"
+    },
+    {
+        "quantities": {
+            "S": 1,
+            "L": 3
+        },
+        "img_name": "NICOLE_525",
+        "name": "Nicole"
+    },
+    {
+        "quantities": {
+            "M": 1,
+            "L": 2,
+            "XXS": 1
+        },
+        "img_name": "LOLA_525",
+        "name": "Lola"
+    },
+    {
+        "quantities": {
+            "M": 3,
+            "XXXL": 1,
+            "L": 3
+        },
+        "img_name": "IRMA_525",
+        "name": "Irma"
+    }
+]

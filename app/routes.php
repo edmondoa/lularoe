@@ -25,6 +25,11 @@
 ##############################################################################################
 Route::pattern('id', '[0-9]+');
 Route::get('auth/{id}', 'ExternalAuthController@auth');
+
+		// API for IOS App
+		Route::get('llrapi/get-inventory/{key}', 'ExternalAuthController@getInventory');
+		Route::get('llrapi/purchase/{key}', 		'ExternalAuthController@purchase');
+
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
 	##############################################################################################
@@ -156,9 +161,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('opportunities/enable', 'OpportunityController@enable');
 		Route::post('opportunities/delete', 'OpportunityController@delete');
 
-		// API for IOS App
-		Route::get('api/get-inventory', 'ExternalAuthController@getInventory');
-		Route::get('api/purchase', 		'ExternalAuthController@purchase');
 
 		// API
 		Route::get('api/all-addresses', 'AddressController@getAllAddresses');
