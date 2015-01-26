@@ -239,7 +239,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		# Superadmin, Admin, Editor routes
 		##############################################################################################
-		Route::group(array('before' => ['Superadmin','Admin','Editor']), function() {
+		Route::group(array('before' => ['superadmin','admin','editor']), function() {
 			Route::post('leads/disable', 'LeadController@disable');
 			Route::post('leads/enable', 'LeadController@enable');
 			Route::post('leads/delete', 'LeadController@delete');
@@ -249,10 +249,11 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		# Superadmin only routes
 		##############################################################################################
-		Route::group(array('before' => 'Superadmin'), function() {
+		Route::group(array('before' => 'superadmin'), function() {
 			Route::controller('sa','SuperAdminTasksController');
 			Route::get('login-as/{id}',function($id){
 				//first log out the admin
+				if(!Auth::user()->hasRole('Superadmin')) return;
 				Auth::logout();
 				//then login automatically as the requested user
 				Auth::loginUsingId($id);
@@ -262,7 +263,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		# Admin only routes
 		##############################################################################################
-		Route::group(array('before' => 'Admin'), function() {
+		Route::group(array('before' => 'admin'), function() {
 			
 			// site-config
 			Route::resource('config', 'SiteConfigController');
