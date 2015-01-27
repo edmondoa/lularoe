@@ -9,11 +9,11 @@
 
         <!--Shortcut icon-->
 
-        <title><?php if (isset($title)) echo $title . ' | ' ?>LulaRoe</title>
+        <title><?php if (isset($title)) echo $title . ' | ' ?>{{ Config::get('site.company_name') }}</title>
 
-        <link rel="alternate" type="application/rss+xml" title="LulaRoe &raquo; Feed" href="/feed/" />
-        <link rel="alternate" type="application/rss+xml" title="LulaRoe &raquo; Comments Feed" href="/comments/feed/" />
-        <meta property='og:site_name' content='LulaRoe'/>
+        <link rel="alternate" type="application/rss+xml" title="{{ Config::get('site.company_name') }} &raquo; Feed" href="/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="{{ Config::get('site.company_name') }} &raquo; Comments Feed" href="/comments/feed/" />
+        <meta property='og:site_name' content='{{ Config::get('site.company_name') }}'/>
         <meta property='og:url' content='/privacy-policy/'/>
         <meta property='og:title' content='Privacy Policy'/>
         <meta property='og:type' content='article'/>
@@ -90,7 +90,7 @@
 
                         <div class="col span_3">
                         	
-                            <a id="logo" href="//{{ Config::get('site.domain') }}" > <img class=" dark-version" alt="SociallyMobile" src="/img/socially-mobile-logo.png" height="48" width="169" /> <!-- <div id="lets-talk">Let's Talk.</div> --></a>
+                            <a id="logo" href="//{{ Config::get('site.domain') }}" > <img class=" dark-version" alt="{{ Config::get('site.company_name') }}" src="{{ Config::get('site.company_logo') }}" height="48" width="169" /> <!-- <div id="lets-talk">Let's Talk.</div> --></a>
 
                         </div><!--/span_3-->
 
@@ -230,7 +230,7 @@
 								</ul>
 							@endif
 							<br>
-                            <p id="copyright-text">&copy; {{ date('Y') }} LulaRoe</p>
+                            <p id="copyright-text">&copy; {{ date('Y') }} {{ Config::get('site.company_name') }}</p>
 
                         </div><!--/span_5-->
 

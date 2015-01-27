@@ -579,6 +579,12 @@ Route::get('test', function() {
 	return User::find(2001);
 });
 
+Route::get('testfunction', function() {
+	print '<pre>'.session_id();
+	print_r($_SERVER);
+	Die('This is television');
+});
+
 Route::get('test-orders', function() {
 	$reps = User::all();
 	foreach($reps as $rep)

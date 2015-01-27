@@ -5,7 +5,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" id="logo" href="//{{ Config::get('site.domain') }}"><img src="{{ Config::get('site.logo') }}" width="100" alt="{{ Config::get('site.company_name') }}"></a>
+			<a class="navbar-brand" id="logo" href="//{{ Config::get('site.domain') }}"><img src="{{ Config::get('site.company_logo') }}" width="150" alt="{{ Config::get('site.company_name') }}"></a>
 		</div>
 		<div class="collapse navbar-collapse">
 			@if (!Auth::check())

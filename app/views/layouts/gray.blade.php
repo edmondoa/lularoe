@@ -43,6 +43,6 @@
 			@endforeach
 		</ul>
 	@endif
-	<p>&copy; LulaRoe 2014</p>
+	<p>&copy; {{ Config::get('site.company_name') }} 2014</p>
 </footer>
 @include('layouts.footer')

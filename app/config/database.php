@@ -7,7 +7,7 @@
 // Author: Matt Frederico
 
 // Main site
-if (preg_match('/mylularoe.local$/',$_SERVER['HTTP_HOST']))
+if (isset($_SERVER['HTTP_HOST']) && preg_match('/mylularoe.local$/',$_SERVER['HTTP_HOST']))
 {
 	return array(
 
@@ -42,7 +42,7 @@ if (preg_match('/mylularoe.local$/',$_SERVER['HTTP_HOST']))
 
 	);
 }
-elseif (preg_match('/mylularoe.com$/',$_SERVER['HTTP_HOST']))
+elseif (isset($_SERVER['HTTP_HOST']) && preg_match('/mylularoe.com$/',$_SERVER['HTTP_HOST']))
 {
 	return array(
 

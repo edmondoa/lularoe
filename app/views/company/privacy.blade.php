@@ -1,6 +1,6 @@
 @extends('layouts.public')
 @section('content')	
-	<h1>SociallyMobile Privacy Policy</h1>
+	<h1>{{ Config::get('site.company_name') }} Privacy Policy</h1>
 	<h2>Our Commitment to Privacy</h2>
 	<p>Our Privacy Policy has been developed as an extension of our commitment to combine quality products and services with integrity in dealing with users. The Policy is designed to assist you in the understanding of how we collect, use and protect the personal information provided to us.</p>
 	<h2>What Information Do We Collect?</h2>
