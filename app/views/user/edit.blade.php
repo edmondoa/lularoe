@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<div class="edit">
+<div class="edit" ng-app="app">
 	<div class="row">
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
@@ -11,7 +11,7 @@
 		    @endif
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" ng-controller="UserController">
 		<div class="col col-lg-3 col-md-4 col-sm-6">
 		    {{ Form::model($user, array('route' => array('users.update', $user->id), 'method' => 'PUT')) }}
 		
@@ -79,10 +79,14 @@
 				    ), null, array('class' => 'selectpicker')) }}
 			    </div>
 		    
-			    <div class="form-group">
+			    <div class="form-group dropdown">
 			        {{ Form::label('sponsor_id', 'Sponsor Id') }}
-			        {{ Form::text('sponsor_id', null, array('class' => 'form-control')) }}
+			        {{ Form::text('sponsor_id', null, array('ng-model'=>'sponsor','option'=>'names','item'=>'sponsor','class' => 'form-control autoComplete dropdown-toggle','url'=>'/api/all-users/1/','id'=>'dropdownMenu1','data-toggle'=>'dropdown','aria-expanded'=>'true')) }}
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" >
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#"  ng-repeat="name in names">@{{name}}</a></li>
+                      </ul>
 			    </div>
+                <div>@{{sponsor}}</div>
 			    
 			    <!-- <div class="form-group">
 			        {{ Form::label('mobile_plan_id', 'Mobile Plan Id') }}
@@ -112,4 +116,78 @@
 	</div>
 </div>
 @stop
+@section('scripts')
+<script>
 
+    var app = angular.module('app', []).directive('autoComplete', ['$http','$q',function($http, $q) {
+        return {
+            restrict:'AEC',
+            scope:{
+                data: '=item',
+                list: '=option'
+            },
+            link:function(scope,elem,attrs){
+                scope.suggestions=[];
+
+                scope.selectedTags=[];
+                
+                scope.selectedIndex=-1;
+
+                scope.removeTag=function(index){
+                    scope.selectedTags.splice(index,1);
+                }
+
+                scope.addToSelectedTags=function(index){
+                    if(scope.selectedTags.indexOf(scope.suggestions[index])===-1){
+                        scope.selectedTags.push(scope.suggestions[index]);
+                        scope.searchText='';
+                        scope.suggestions=[];
+                    }
+                }
+
+                scope.checkKeyDown=function(event){
+                    if(event.keyCode===40){
+                        event.preventDefault();
+                        if(scope.selectedIndex+1 !== scope.suggestions.length){
+                            scope.selectedIndex++;
+                        }
+                    }
+                    else if(event.keyCode===38){
+                        event.preventDefault();
+                        if(scope.selectedIndex-1 !== -1){
+                            scope.selectedIndex--;
+                        }
+                    }
+                    else if(event.keyCode===13){
+                        scope.addToSelectedTags(scope.selectedIndex);
+                    }
+                }
+
+                scope.$watch('selectedIndex',function(val){
+                    console.log('called selectedIndex' );
+                    console.log(val);
+                    if(val!==-1) {
+                        scope.searchText = scope.suggestions[scope.selectedIndex];
+                    }
+                });
+                
+                scope.$watch('data', function(val){
+                    if(val != undefined && val.length >= 3){
+                        $http.get(attrs.url+'?q='+scope.data).success(function(v){
+                            scope.list = v.data.map(function(a){
+                                return a.full_name;
+                            });
+                        });        
+                    }
+                });
+                
+            }
+        }
+    }]);
+    
+    function UserController($scope){
+        //$scope.names = ["john", "bill", "charlie", "robert", "alban", "oscar", "marie", "celine", "brad", "drew", "rebecca", "michel", "francis", "jean", "paul", "pierre", "nicolas", "alfred", "gerard", "louis", "albert", "edouard", "benoit", "guillaume", "joseph"];
+        console.log("called user cont");
+    }
+</script>
+@stop    
