@@ -35,12 +35,17 @@
 		                            </div>
 		                        </div>
 		                        <?php /* select categories */ ?>
-		                        <div class="pull-left">
-		                            <select ng-model="search" class="form-control">
+		                        <div class="pull-left margin-right-1">
+		                            <select ng-model="search" id="categories" class="form-control">
 		                            	<option value="">All Categories</option>
-		                            	@foreach ($categories as $category)
-		                                	<option value="{{ $category->name }}">{{ $category->name }}</option>
-		                                @endforeach
+		                                <option ng-repeat="productCategory in productCategories" data-index="@include('_helpers.index')">@include('_helpers.productCategory_name')</option>
+		                            </select>
+		                    	</div>
+		                        <?php /* select tags */ ?>
+		                        <div class="pull-left">
+		                            <select ng-model="search" id="tags" class="form-control">
+		                            	<option value="">All Tags</option>
+		                                <option ng-repeat="productTag in selectedSubCategoryValues" value="@include('_helpers.productTag_name')">@include('_helpers.productTag_name')</option>
 		                            </select>
 		                    	</div>
 		                    </div>
@@ -184,21 +189,29 @@
 	
 		$http.get('/api/all-products').success(function(products) {
 			$scope.products = products;
-			
 			@include('_helpers.bulk_action_checkboxes')
-			
 		});
 		
+		$http.get('/api/all-product-categories').success(function(productCategories) {
+			$scope.productCategories = productCategories;
+			console.log($scope.productCategories);
+		});
+
 		$scope.currentPage = 1;
 		$scope.pageSize = 10;
 		$scope.meals = [];
-		
+
 		$scope.pageChangeHandler = function(num) {
-			
+
 		};
-		
+
+		$scope.$watch('search', function(newValue) {
+			index = jQuery('#categories option:selected').attr('data-index');
+			if (index != undefined) $scope.selectedSubCategoryValues = $scope.productCategories[index].tags;
+		});
+
 	}
-	
+
 	function OtherController($scope) {
 		$scope.pageChangeHandler = function(num) {
 		};

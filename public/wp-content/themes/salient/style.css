@@ -951,7 +951,7 @@ header#top #logo img {
 	max-width: none;
 	width: auto;
 	margin-bottom: 0px;
-	display: block;
+	/*display: block;*/
 	transition: opacity 0.4s ease;
 }
 

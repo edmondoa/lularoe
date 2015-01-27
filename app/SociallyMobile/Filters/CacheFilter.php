@@ -10,15 +10,31 @@ use Config;
 class CacheFilter {
 
 	public function fetch(Route $route, Request $request) {
-		//return 'Fetching Cache';
 		$key = $this->makeCacheKey($request->url());
-		if(Cache::has($key)) return Cache::get($key);
+		//Cache::forget($key);
+		//return $key;
+		if(Cache::has($key))
+		{
+			//return "Fetching:".$key;
+			$cached_content = Cache::get($key);
+			if(strlen($cached_content) > 50)
+			{
+				//echo $cached_content."".strlen($cached_content);
+				//exit;
+				return $cached_content;
+			}
+			else
+			{
+				\Log::info("########################################## Cache was too short:".$key);
+				Cache::forget($key);
+			}
+		}
 	}
 
 	public function put(Route $route, Request $request, Response $response) {
-		//return 'Putting Cache';
 		$key = $this->makeCacheKey($request->url());
-		if (!Cache::has($key)) Cache::put($key, $response->getContent(),Config::get('site.cache_length'));
+		//return $key;
+		if ((!Cache::has($key))&&(null !== $response->getContent())&&(!$response->getContent() instanceof Illuminate\Http\Response\Redirect)&&(strlen($response->getContent()) > 50)) Cache::put($key, $response->getContent(),10);
 	}
 
 	protected function makeCacheKey($url) {

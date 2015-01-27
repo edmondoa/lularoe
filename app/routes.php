@@ -19,7 +19,7 @@
 		Route::get('/{' . $path . '}', 'PageController@show');
 	}
 	*/
-
+//if((Auth::check())&&(Auth::user()->hasRole(['Rep']))) Auth::logout();
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
@@ -115,7 +115,15 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('pages/enable', 'PageController@enable');
 	Route::post('pages/delete', 'PageController@delete');
 	
-	Route::controller('api','DataOnlyController');
+	// posts
+	Route::resource('posts', 'PostController');
+	Route::get('public-posts', 'PostController@publicPosts');
+	Route::post('posts/disable', 'PostController@disable');
+	Route::post('posts/enable', 'PostController@enable');
+	Route::post('posts/delete', 'PostController@delete');
+	
+	//Route::controller('api','DataOnlyController');
+
 		
 	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
@@ -130,9 +138,16 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('settings', ['as' => 'settings', 'uses' => 'DashboardController@settings']);
 
 		// downline
+		Route::get('/downline/new/{id}', 'DownlineController@newDownline');
 		Route::get('/downline/immediate/{id}', 'DownlineController@immediateDownline');
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
 		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
+		Route::get('/downline/states/{id}', 'DownlineController@states');
+		
+		// helpers
+		Route::get('helpers/media-modals', function() {
+			return View::make('_helpers/modals');
+		});
 
 		// users
 		Route::resource('users', 'UserController');
@@ -151,6 +166,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		// Media
 		Route::resource('media', 'MediaController');
 		Route::get('media/user/{id}', ['as' => 'media/user', 'uses' => 'MediaController@user']);
+		Route::get('media-reps', 'MediaController@reps');
+		Route::get('media-shared-with-reps', 'MediaController@sharedWithReps');
 		Route::post('media/disable', 'MediaController@disable');
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
@@ -183,17 +200,43 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-states', 'StateController@getAllStates');
 		Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 		Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
-		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
-		Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
 		
-		//Route::controller('api','DataOnlyController');
 		//put routes in here that we would like to cache
 		Route::group(['before' => 'cache.fetch'], function() {
 			Route::group(['after' => 'cache.put'], function() {
-				//Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
-				Route::controller('api','DataOnlyController');
+				Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+				Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
+				Route::get('api/all-users', 'DataOnlyController@getAllUsers');
+				Route::get('cache-testing',function(){
+					return 'jake_jake_jake_jake_jake_jake_jake_ '.date('Y-m-d H:i:s');
+				});
 			});
 		});
+
+		// DataOnly functions that shouldn't be cached
+		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
+		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
+		Route::get('api/all-images', 'DataOnlyController@getAllImages');
+		Route::get('api/media-by-user/{id}', 'DataOnlyController@getMediaByUser');
+		Route::get('api/media-by-reps', 'DataOnlyController@getMediaByReps');
+		Route::get('api/images-by-user', 'DataOnlyController@getImagesByUser');
+		Route::get('api/all-config', 'DataOnlyController@getAllConfig');
+		Route::get('api/first-branch', 'DataOnlyController@getFirstBranch');
+		Route::get('api/all-branches/{id}', 'DataOnlyController@getAllBranches');
+		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
+		Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
+		Route::get('api/all-past-events', 'DataOnlyController@getAllPastEvents');
+		Route::get('api/all-past-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
+		Route::get('api/all-past-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
+		Route::get('api/all-opportunities', 'DataOnlyController@getAllOpportunities');
+		Route::get('api/all-leads', 'DataOnlyController@getAllLeads');
+		Route::get('api/all-leads-by-rep/{id}', 'DataOnlyController@getAllLeadsByRep');
+		Route::get('api/all-pages', 'DataOnlyController@getAllPages');
+		Route::get('api/all-posts', 'DataOnlyController@getAllPosts');
+		Route::get('api/all-products', 'DataOnlyController@getAllProducts');
+		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
+		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
+		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline');		
 
 		// upload media
 		Route::post('upload-media', 'MediaController@store');
@@ -204,7 +247,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		# Superadmin, Admin, Editor routes
 		##############################################################################################
-		Route::group(array('before' => ['Superadmin','Admin','Editor']), function() {
+		Route::group(array('before' => ['superadmin','admin','editor']), function() {
 			Route::post('leads/disable', 'LeadController@disable');
 			Route::post('leads/enable', 'LeadController@enable');
 			Route::post('leads/delete', 'LeadController@delete');
@@ -214,13 +257,33 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		# Superadmin only routes
 		##############################################################################################
-		Route::group(array('before' => 'Superadmin'), function() {
+		Route::group(array('before' => 'superadmin'), function() {
+			Route::controller('sa','SuperAdminTasksController');
+			Route::get('login-as/{id}',function($id){
+				//first log out the admin
+				if(!Auth::user()->hasRole(['Superadmin'])) return;
+				Auth::logout();
+				//then login automatically as the requested user
+				Auth::loginUsingId($id);
+				return Redirect::to('/dashboard');
+			});
+			Route::get('clear-all-cache', function() {
+				$users = DB::table('users')->get(['id']);
+				$count = 0;
+				foreach($users as $user)
+				{
+					$user = User::find($user->id);
+					$user->clearUserCache();
+					$count++;
+				}
+				return "Cache cleared for ".$count." users";
+			});
 
 		});
 		##############################################################################################
 		# Admin only routes
 		##############################################################################################
-		Route::group(array('before' => 'Admin'), function() {
+		Route::group(array('before' => 'admin'), function() {
 			
 			// site-config
 			Route::resource('config', 'SiteConfigController');
@@ -448,7 +511,10 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 		$title = $event->name;
 		return View::make('event.public_show', compact('event','title','sponsor'));
 	});
-
+	
+	//timezone
+	Route::post('set-timezone', 'TimezoneController@setTimezone');
+	
 });
 
 ##############################################################################################
@@ -456,8 +522,16 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	$date = date('Y-m-d H:i:s');
-	return Timezone::convertFromUTC($date, "Asia/Kolkata", 'F j, Y H:i:s');
+	return Config::get('site');
+	Auth::user()->clearUserCache();
+	exit;
+	foreach (User::all() as $user) {
+		$user->clearUserCache();
+	}
+});
+
+Route::get('clear-all-cache/{function}', function($function) {
+	Cache::forget('route_'.Str::slug(action('DataOnlyController@' . $function)));
 });
 
 Route::get('test-cache/{id}', function($id) {
@@ -472,9 +546,37 @@ Route::get('test-cache/{id}', function($id) {
 });
 
 Route::get('test', function() {
-	//return User::find(2001)->descendants;
-	$id = 2001;
-	return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
+	$start = microtime (true);
+	$response['result'] = $rep = User::find(2001);
+	//$response['result'] = User::find($rep_id)->clearUserCache();
+	//$response['queries'] = Session::get('queries');
+	//$response['queries'] = DB::getQueryLog();;
+	//$response['result_cache_clear'] = $rep->clearUserCache();
+	//$id = 2001;
+	//return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
+	//$response['result'] = User::find(2001)->plans;
+	//$response['result'] = Commission::free_service(2001);
+	$response['lapsed'] = round((microtime (true) - $start),5);
+	return $response;
+	exit;
+	return User::take(150)->remember(1,'first125')->get();
+
+	$start = microtime (true);
+	$response['result'] = Commission::infinity(2024);
+	//$response['result'] = User::find(2024)->ancestors()->whereNotNull('users.sponsor_id')->get();
+	$response['lapsed'] = round((microtime (true) - $start),5);
+	return $response;
+
+	##############################################################################################
+	# loading commission non-statically
+	##############################################################################################
+	
+	$commission = new \SociallyMobile\Commission\Commission;
+	$commission->setCommissionPeriod(date('Y-m-d',strtotime('last month')));
+	$response['result'] = $commission->setRank(2001,true);
+	$response['lapsed'] = round((microtime (true) - $start),5);
+	return Response::json($response);
+	return User::find(2001);
 });
 
 Route::get('test-orders', function() {
@@ -508,3 +610,19 @@ if(is_file(app_path().'/controllers/Server.php')){
 	Route::get('deploy-beta',['as'=>'deploy', 'uses'=>'Server@deploy_beta']);
 	Route::get('deploy-production',['as'=>'deploy', 'uses'=>'Server@deploy_production']);
 }
+
+Route::get('routes', function() {
+$routeCollection = Route::getRoutes();
+
+echo "<table style='width:100%'>";
+	foreach ($routeCollection as $value) {
+		echo "<tr>";
+			echo "<td>" . implode(",",$value->getMethods()) . "</td>";
+			echo "<td>" . $value->getPath() . "</td>";
+			echo "<td>" . $value->getActionName() . "</td>";
+			echo "<td>" . $value->getUri() . "</td>";
+			echo "<td>" . $value->getName() . "</td>";
+		echo "</tr>";
+	}
+echo "</table>";
+});

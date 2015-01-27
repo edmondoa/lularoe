@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => '/users/public_email', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
 	    <div ng-controller="DownlineController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
@@ -18,11 +18,7 @@
 			                	{{ $user->first_name }} {{ $user->last_name }}'s Entire Downline
 			            	@endif
 			            	<span class="badge">
-				            	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-				            		{{ $total_users }}
-				            	@else
-				            		{{ $user->descendant_count }}
-				            	@endif
+				            	{{ number_format($user->descendant_count) }}
 			            	</span>
 		            	</h1>
 		            	<div class="pull-right hidable-xs">

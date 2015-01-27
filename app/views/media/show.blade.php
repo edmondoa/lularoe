@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			@include('_helpers.breadcrumbs')
-			<h1 class="no-top">Media Details</h1>
+			<h1 class="no-top">Resource Details</h1>
 			@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
 				<div class="page-actions">
 				    <div class="btn-group" id="record-options">

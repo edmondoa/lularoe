@@ -11,25 +11,15 @@ class PreRegisterController extends \BaseController {
 	 */
 	public function create($public_id = '')
 	{
-		//return dd($public_id);
 		if (empty($public_id)) return View::make('pre-register.sponsor');
 		$sponsor = User::where('public_id',$public_id)->first();
+		if (!isset($sponsor->id)) return View::make('pre-register.sponsor')->with('message_danger', 'Missing or incorrect sponsor ID');
+		
 		if($sponsor->disabled)
 		{
 			return View::make('pre-register.sponsor')->with('message_danger', 'The sponsor you entered has been disabled');
 		}
-		//echo"<pre>"; print_r($sponsor); echo"</pre>";
-		//exit;
-		//return $sponsor;
-		if(isset($sponsor->id))
-		{
-			return View::make('pre-register.create',compact('sponsor'));
-		}
-		else
-		{
-			return View::make('pre-register.sponsor')->with('message_danger', 'Missing or incorrect sponsor ID');
-		}
-		//return View::make('pre-register.create');
+		return View::make('pre-register.create',compact('sponsor'));
 	}
 
 	/**
@@ -90,7 +80,7 @@ class PreRegisterController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
-		$data['amount'] = Config::get('site.preregistration_fee');
+		$data['amount'] = Config::get('settings.pre-registration-fee');
 		$data['details'] = "Pre-registration";
 		$params = array(
 			"command" => "sale",

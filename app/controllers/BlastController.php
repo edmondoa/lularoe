@@ -23,7 +23,7 @@ class BlastController extends \BaseController {
 	{
 		$data = Input::all();
 		if (isset($data['leads'])) {
-			$users = Lead::whereIn('id', Input::get('user_ids'))->where('block_sms', '!=', true)->get();
+			$users = Lead::whereIn('id', Input::get('user_ids'))->get();
 			$leads = 1;
 		}
 		else {
@@ -123,7 +123,7 @@ class BlastController extends \BaseController {
 	{
 		$data = Input::all();
 		if (isset($data['leads'])) {
-			$users = Lead::whereIn('id', Input::get('user_ids'))->where('block_email', '!=', true)->get();
+			$users = Lead::whereIn('id', Input::get('user_ids'))->get();
 			$leads = 1;
 		}
 		else {
@@ -180,7 +180,7 @@ class BlastController extends \BaseController {
 		}
 		else
 		{
-			if ($count == 1) return Redirect::back()->with('message','The email message was sent sent.');
+			if ($count == 1) return Redirect::back()->with('message','The email message was sent.');
 			else return Redirect::route('dashboard')->with('message','The email message was sent to '. $count .' users');
 		}
 		//return Redirect::back()->with('message','The email message was sent successfully to '. $count .' users');

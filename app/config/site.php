@@ -1,5 +1,4 @@
 <?php
-
 if (preg_match('/mylularoe.local$/',$_SERVER['HTTP_HOST']))
 {
 	return [
@@ -86,4 +85,3 @@ else
 		'cache_length' => 10
 	];
 }
-
