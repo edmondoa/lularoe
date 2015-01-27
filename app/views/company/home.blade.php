@@ -18,7 +18,7 @@
             // jQuery(document).ready(function() {
             // jQuery('.xdsoft_digit:nth-child(1)').prepend('<h1>Days</h1>');
             // });
-        });
+     //   });
 
     </script>
 
