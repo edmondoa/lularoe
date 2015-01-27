@@ -1,4 +1,4 @@
-@extends(empty(Auth::user()) || !Auth::user()->hasRole(array('Superadmin', 'Admin')) ? 'layouts.public' :'layouts.default' )
+@extends(Auth::user()==false || !Auth::user()->hasRole(array('Superadmin', 'Admin')) ? 'layouts.public' :'layouts.default' )
 @section('content')
 <div class="row">
     <div class="col col-md-8">
