@@ -9,17 +9,16 @@
 
         <!--Shortcut icon-->
 
-        <title><?php if (isset($title)) echo $title . ' | ' ?>LulaRoe</title>
+        <title><?php if (isset($title)) echo $title . ' | ' ?>{{ Config::get('site.company_name') }}</title>
 
-        <link rel="alternate" type="application/rss+xml" title="LulaRoe &raquo; Feed" href="/feed/" />
-        <link rel="alternate" type="application/rss+xml" title="LulaRoe &raquo; Comments Feed" href="/comments/feed/" />
-        <meta property='og:site_name' content='LulaRoe'/>
+        <link rel="alternate" type="application/rss+xml" title="{{ Config::get('site.company_name') }} &raquo; Feed" href="/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="{{ Config::get('site.company_name') }} &raquo; Comments Feed" href="/comments/feed/" />
+        <meta property='og:site_name' content='{{ Config::get('site.company_name') }}'/>
         <meta property='og:url' content='/privacy-policy/'/>
         <meta property='og:title' content='Privacy Policy'/>
         <meta property='og:type' content='article'/>
         <link rel='stylesheet' id='js_composer_front-css'  href='/wp-content/themes/salient/wpbakery/js_composer/assets/css/js_composer_front.css?ver=3.7.3' type='text/css' media='all' />
-        <link rel='stylesheet' id='contact-form-7-css'  href='/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=4.0.1' type='text/css' media='all' />
-        <link rel='stylesheet' id='rgs-css'  href='/wp-content/themes/salient/css/rgs.css?ver=4.5.2' type='text/css' media='all' />
+         <link rel='stylesheet' id='rgs-css'  href='/wp-content/themes/salient/css/rgs.css?ver=4.5.2' type='text/css' media='all' />
         <link rel='stylesheet' id='font-awesome-css'  href='/wp-content/themes/salient/css/font-awesome.min.css?ver=4.0' type='text/css' media='all' />
         <link rel='stylesheet' id='steadysets-css'  href='/wp-content/themes/salient/css/steadysets.css?ver=4.0' type='text/css' media='all' />
         <link rel='stylesheet' id='linecon-css'  href='/wp-content/themes/salient/css/linecon.css?ver=4.0' type='text/css' media='all' />
@@ -53,7 +52,7 @@
     </head>
 
     <body class="@yield('classes')@show page page-id-3085 page-template-default wpb-js-composer js-comp-ver-3.7.3 vc_responsive" data-ajax-transitions="false" data-loading-animation="none" data-bg-header="false" data-ext-responsive="true" data-header-resize="1" data-header-color="light" data-transparent-header="false" data-smooth-scrolling="0" data-responsive="1" >
-
+        @include('_helpers/analytics')
         <div id="header-space"></div>
 
         <div id="header-outer"  data-cart="false" data-transparency-option="0" data-shrink-num="6" data-full-width="false" data-using-secondary="0" data-using-logo="1" data-logo-height="" data-padding="28" data-header-resize="1">
@@ -90,8 +89,8 @@
                     <div class="row">
 
                         <div class="col span_3">
-
-                            <a id="logo" href="/" > <img class=" dark-version" alt="LulaRoe" src="/img/llr-logo.png" /> </a>
+                        	
+                            <a id="logo" href="//{{ Config::get('site.domain') }}" > <img class=" dark-version" alt="{{ Config::get('site.company_name') }}" src="{{ Config::get('site.company_logo') }}" height="48" width="169" /> <!-- <div id="lets-talk">Let's Talk.</div> --></a>
 
                         </div><!--/span_3-->
 
@@ -102,10 +101,10 @@
                             <nav>
                                 <ul class="sf-menu">
                                     <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074">
-                                        <a href="/contact-us/">Contact Us</a>
+                                        <a href="//{{ Config::get('site.domain') }}/contact-us/">Contact Us</a>
                                     </li>
                                     <li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
-                                        <a href="/public-events">Events</a>
+                                        <a href="//{{ Config::get('site.domain') }}/public-events">Events</a>
                                     </li>
 				                    <?php
 				                    	if (Auth::check()) {
@@ -123,14 +122,14 @@
 				                    ?>
 				                    @if (isset($pages))
 										@foreach ($pages as $page)
-											<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+											<li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
 										@endforeach
 									@endif
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                                         @if (!Auth::check())
-                                        	<a href="<?php echo url() ?>/login">Log In</a>
+                                        	<a href="//{{ Config::get('site.domain') }}/login">Log In</a>
                                         @else
-                                        	<a href="/dashboard">Dashboard</a>
+                                        	<a href="//{{ Config::get('site.domain') }}/dashboard">Dashboard</a>
                                         @endif
                                     </li>
                                     <!-- <li id="search-btn">
@@ -168,9 +167,9 @@
 					@endforeach
                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
                         @if (!Auth::check())
-                        	<a href="<?php echo url() ?>/login">Log In</a>
+                        	<a href="//{{ Config::get('site.domain') }}/login">Log In</a>
                         @else
-                        	<a href="/dashboard">Dashboard</a>
+                        	<a href="//{{ Config::get('site.domain') }}/dashboard">Dashboard</a>
                         @endif
                     </li>
                     <!-- <li id="search-btn">
@@ -226,12 +225,12 @@
 		                    @if (isset($pages))
 			                    <ul class="footer-menu">
 									@foreach ($pages as $page)
-										<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+										<li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
 									@endforeach
 								</ul>
 							@endif
 							<br>
-                            <p id="copyright-text">&copy; {{ date('Y') }} LulaRoe</p>
+                            <p id="copyright-text">&copy; {{ date('Y') }} {{ Config::get('site.company_name') }}</p>
 
                         </div><!--/span_5-->
 
@@ -261,13 +260,6 @@ var MyAcSearch = {"url":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-ajax
 /* ]]> */
         </script>
         <script type='text/javascript' src='/wp-content/themes/salient/nectar/assets/functions/ajax-search/wpss-search-suggest.js'></script>
-        <script type='text/javascript' src='/wp-content/plugins/contact-form-7/includes/js/jquery.form.min.js?ver=3.51.0-2014.06.20'></script>
-        <script type='text/javascript'>
-/* <![CDATA[ */
-var _wpcf7 = {"loaderUrl":"http:\/\/sociallymobile-wordpress\/wp-content\/plugins\/contact-form-7\/images\/ajax-loader.gif","sending":"Sending ...","cached":"1"};
-/* ]]> */
-        </script>
-        <script type='text/javascript' src='/wp-content/plugins/contact-form-7/includes/js/scripts.js?ver=4.0.1'></script>
         <script type='text/javascript' src='/wp-content/themes/salient/js/superfish.js?ver=1.4.8'></script>
         <script type='text/javascript' src='/wp-content/themes/salient/js/respond.js?ver=1.1'></script>
         <script type='text/javascript' src='/wp-content/themes/salient/js/sticky.js?ver=1.0'></script>
@@ -305,3 +297,4 @@ var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-
 		@show
     </body>
 </html>
+@include('_helpers.store_previous_pages')

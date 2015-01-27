@@ -1,112 +1,114 @@
 <?php
+/*****************************/
+//* NOTICE:
+/*****************************/
+// Please create a preg_match for your database/domain settings 
+// when developping on your local database
+// Author: Matt Frederico
 
-return array(
+// Main site
+if (isset($_SERVER['HTTP_HOST']) && preg_match('/mylularoe.local$/',$_SERVER['HTTP_HOST']))
+{
+	return array(
 
-	/*
-	|--------------------------------------------------------------------------
-	| PDO Fetch Style
-	|--------------------------------------------------------------------------
-	|
-	| By default, database results will be returned as instances of the PHP
-	| stdClass object; however, you may desire to retrieve records in an
-	| array format for simplicity. Here you can tweak the fetch style.
-	|
-	*/
+			'fetch' => PDO::FETCH_CLASS,
+			'default' => 'mysql',
+			'connections' => array(
+					'mysql' => array(
+							'driver'    => 'mysql',
+							'host'      => 'localhost',
+							'database'  => 'llr_dev',
+							'username'  => 'llr_dev',
+							'password'  => '7U8$SAV*NEjuB$T%',
+							'charset'   => 'utf8',
+							'collation' => 'utf8_unicode_ci',
+							'prefix'    => '',
+					),
 
-	'fetch' => PDO::FETCH_CLASS,
+			),
 
-	/*
-	|--------------------------------------------------------------------------
-	| Default Database Connection Name
-	|--------------------------------------------------------------------------
-	|
-	| Here you may specify which of the database connections below you wish
-	| to use as your default connection for all database work. Of course
-	| you may use many connections at once using the Database library.
-	|
-	*/
+			'migrations' => 'migrations',
+			'redis' => array(
 
-	'default' => 'mysql',
+					'cluster' => false,
 
-	/*
-	|--------------------------------------------------------------------------
-	| Database Connections
-	|--------------------------------------------------------------------------
-	|
-	| Here are each of the database connections setup for your application.
-	| Of course, examples of configuring each database platform that is
-	| supported by Laravel is shown below to make development simple.
-	|
-	|
-	| All database work in Laravel is done through the PHP PDO facilities
-	| so make sure you have the driver for your particular database of
-	| choice installed on your machine before you begin development.
-	|
-	*/
+					'default' => array(
+							'host'     => '127.0.0.1',
+							'port'     => 6379,
+							'database' => 0,
+					),
 
-	'connections' => array(
-/*
-		'mysql' => array(
-			'driver'    => 'mysql',
-			'host'      => 'localhost',
-			'database'  => 'soc_mob',
-			'username'  => 'soc_mob',
-			'password'  => '7U8$SAV*NEjuB$T%',
-			'charset'   => 'utf8',
-			'collation' => 'utf8_unicode_ci',
-			'prefix'    => '',
-		),
-		
-		*/
-		'mysql' => array(
-			'driver'    => 'mysql',
-			'host'      => 'localhost',
-			'database'  => 'llr_dev',
-			'username'  => 'root',
-			'password'  => 'b0X42!!!',
-			'charset'   => 'utf8',
-			'collation' => 'utf8_unicode_ci',
-			'prefix'    => '',
-		),
-		
-		
+			),
 
-	),
+	);
+}
+elseif (isset($_SERVER['HTTP_HOST']) && preg_match('/mylularoe.com$/',$_SERVER['HTTP_HOST']))
+{
+	return array(
 
-	/*
-	|--------------------------------------------------------------------------
-	| Migration Repository Table
-	|--------------------------------------------------------------------------
-	|
-	| This table keeps track of all the migrations that have already run for
-	| your application. Using this information, we can determine which of
-	| the migrations on disk haven't actually been run in the database.
-	|
-	*/
+			'fetch' => PDO::FETCH_CLASS,
+			'default' => 'mysql',
+			'connections' => array(
+					'mysql' => array(
+							'driver'    => 'mysql',
+							'host'      => 'mwl.controlpad.com',
+							'database'  => 'llr_web',
+							'username'  => 'llr_web',
+							'password'  => '7U8$SAV*NEjuB$T%',
+							'charset'   => 'utf8',
+							'collation' => 'utf8_unicode_ci',
+							'prefix'    => '',
+					),
 
-	'migrations' => 'migrations',
+			),
 
-	/*
-	|--------------------------------------------------------------------------
-	| Redis Databases
-	|--------------------------------------------------------------------------
-	|
-	| Redis is an open source, fast, and advanced key-value store that also
-	| provides a richer set of commands than a typical key-value systems
-	| such as APC or Memcached. Laravel makes it easy to dig right in.
-	|
-	*/
+			'migrations' => 'migrations',
+			'redis' => array(
 
-	'redis' => array(
+					'cluster' => false,
 
-		'cluster' => false,
+					'default' => array(
+							'host'     => '127.0.0.1',
+							'port'     => 6379,
+							'database' => 0,
+					),
 
-		'default' => array(
-			'host'     => '127.0.0.1',
-			'port'     => 6379,
-			'database' => 0,
+			),
+
+	);
+}
+// This is the default connection
+else
+{
+	return array(
+		'fetch' => PDO::FETCH_CLASS,
+		'default' => 'mysql',
+		'connections' => array(
+
+			'mysql' => array(
+				'driver'    => 'mysql',
+				'host'      => 'localhost',
+				'database'  => 'llr_dev',
+				'username'  => 'llr_dev',
+				'password'  => '7U8$SAV*NEjuB$T%',
+				'charset'   => 'utf8',
+				'collation' => 'utf8_unicode_ci',
+				'prefix'    => '',
+			),
 		),
 
-	),
+		'migrations' => 'migrations',
+		'redis' => array(
 
-);
+			'cluster' => false,
+
+			'default' => array(
+				'host'     => '127.0.0.1',
+				'port'     => 6379,
+				'database' => 0,
+			),
+
+		),
+
+	);
+}

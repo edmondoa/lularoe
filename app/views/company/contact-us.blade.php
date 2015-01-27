@@ -10,7 +10,7 @@
                                 <div class="swiper-slide" style="background-image: url(http://themenectar.com/demo/salient/wp-content/uploads/2013/09/black-bg1.png);" data-bg-alignment="bottom" data-color-scheme="light" data-x-pos="centered" data-y-pos="middle">
                                     <div class="container">
                                         <div class="content">
-                                            <h2>We Are LulaRoe</h2>
+                                            <h2>We Are {{ Config::get('site.company_name') }}</h2>
                                             <p  >
                                                 <span>join the conversation!</span>
                                             </p>

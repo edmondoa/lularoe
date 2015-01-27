@@ -101,15 +101,6 @@
                             			</span>
                             		</span>
                         		</th>
-                        		
-                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
-                            		<span>
-                            			<span ng-show="orderByField == 'disabled'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
                         		                      		
                             	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
                             		<span>
@@ -123,7 +114,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="page in pages | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{ highlight : page.new == 1, semitransparent : page.disabled }" dir-paginate-start="page in pages | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.page_id')">
 	                            </td>
@@ -146,10 +137,6 @@
 					            
 					            <td>
 					                 <span ng-if="page.customers"><i class="fa fa-check"></i></span>
-					            </td>
-
-					            <td>
-					                <span ng-if="page.disabled"><i class="fa fa-check"></i></span>
 					            </td>
 
 					            <td>

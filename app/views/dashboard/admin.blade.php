@@ -3,35 +3,35 @@
 <div class="row">
 	<div class="col col-md-12">
 		<h1>Dashboard</h1>
-		@if ($beta_service_link->value == 1)
-			<div class="alert alert-success inline-block">
-				<a href="https://my.llr.controlpad.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Click here to sign up for beta service</a>
-			</div>
-			<br>
-		@endif
 		<div class="alert alert-success inline-block">
 			Copy and paste the following link and send it to anyone whom you'd like to join your team:<br>
 			<a href="{{ url() }}/join/{{ $user->public_id }}">{{ url() }}/join/{{ $user->public_id }}</a>
 		</div>
 	</div>
-	<div class="col col-md-6">
+	<div class="col col-md-3 col-sm-4">
+		@include('dashboard.widgets.recent_post')
+	</div><!-- col -->
+	<div class="col col-md-3 col-sm-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h2 class="panel-title">Company Statistics</h2>
 			</div>
 			<table class="table table-striped">
 				<tr>
-					<th>Total ISM's</th>
-					<td><a href="/downline/all/{{ $user->id }}">{{ $reps }}</a></td>
+					<th>Total Rep's</th>
+					<td><a href="/downline/all/{{ Config::get('site.admin_uid') }}">{{ $reps }}</a></td>
 				</tr>
 				<tr>
-					<th>Top Level ISM's</th>
+					<th>Top Level Rep's</th>
 					<td><a href="/downline/immediate/{{ $user->id }}">{{ $user->front_line_count }}</a></td>
 				</tr>
 			</table>
 		</div><!-- panel -->
 	</div><!-- col -->
-	<div class="col col-md-6">
+	<div class="col col-md-3 col-sm-4">
+		@include('dashboard.widgets.new_downline')
+	</div><!-- col -->
+	<div class="col col-md-3 col-sm-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h2 class="panel-title">Quick Links</h2>

@@ -42,3 +42,6 @@
 		</div>
 	</div>
 @stop
+@section('modals')
+	@include('_helpers.wysiwyg_modals')
+@stop

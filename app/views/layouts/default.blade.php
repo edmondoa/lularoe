@@ -16,10 +16,6 @@
         </div>
         @section('content')
         @show
-        <div id="modals">
-            @section('modals')
-            @show
-        </div>
         <hr>
         <footer>
             <?php
@@ -39,7 +35,7 @@
             @if (isset($pages))
                 <ul class="footer-links">
                     @foreach ($pages as $page)
-                        <li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
+                        <li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
                     @endforeach
                 </ul>
             @endif

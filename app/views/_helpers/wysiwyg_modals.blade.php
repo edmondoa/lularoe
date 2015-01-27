@@ -18,7 +18,7 @@
                     </div>
 	            </div>
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-primary" data-dismiss="modal" id="insertImage">Insert File</button>
+	                <button type="button" class="btn btn-primary" data-dismiss="modal" id="insertImage">Upload File</button>
 	                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 	            </div><!-- modal-footer -->
 	        </div><!-- modal-content -->
@@ -43,59 +43,36 @@
                     </div>
 	            </div>
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-primary" data-dismiss="modal" id="insertImage" ng-click="insertImage()">Insert File</button>
+	                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="chooseImage()">Insert File</button>
 	                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 	            </div><!-- modal-footer -->
 	        </div><!-- modal-content -->
         </form>
     </div><!-- modal-dialog -->
 </div>
-
-
-<script>
-
-	// upload attachment through AJAX
-    $("body").on({
-        click: function(e, data) {
-        	e.preventDefault();
-        	file = ($('#media:file'))[0].files[0];
-            var form_data = new FormData();
-            form_data.append('media', file);
-            form_data.append('ajax', 1);
-            $.ajax({
-                type: "post",
-                url: "/upload-media",
-                data: form_data,
-                success: function(response) {
-                	console.log(response);
-                    $("input#mceu_44-inp").attr("value", response.url);
-                },
-                cache: false,
-                contentType: false,
-                processData: false
-            });           
-        }
-    }, "#insertImage");
-    
-	// upload attachment through AJAX
-    // $("body").on({
-        // click: function(e, data) {
-        	// e.preventDefault();
-        	// file = ($('#attachment:file'))[0].files[0];
-            // var form_data = new FormData();
-            // form_data.append('image', file);
-            // $.ajax({
-                // type: "post",
-                // url: "/upload-attachment",
-                // data: form_data,
-                // success: function(response) {
-                    // $("input#mceu_44-inp").attr("value", response.url);
-                // },
-                // cache: false,
-                // contentType: false,
-                // processData: false
-            // });           
-        // }
-    // }, "#media-library");
-    
-</script>
+@section('scripts2')
+	<script>
+	
+		// upload attachment through AJAX
+	    $("body").on("click", "#insertImage", function(e, data){
+	    	e.preventDefault();
+	    	file = ($('#media:file'))[0].files[0];
+	        var form_data = new FormData();
+	        form_data.append('media', file);
+	        form_data.append('ajax', 1);
+	        $.ajax({
+	            type: "post",
+	            url: "/upload-media",
+	            data: form_data,
+	            success: function(response) {
+	            	console.log(response);
+	                $(".mce-combobox.mce-last.mce-abs-layout-item input.mce-textbox.mce-placeholder").attr("value", response.url);
+	            },
+	            cache: false,
+	            contentType: false,
+	            processData: false
+	        });           
+	    });
+	    
+	</script>
+@stop

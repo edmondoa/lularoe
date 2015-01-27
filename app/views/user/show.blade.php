@@ -5,9 +5,9 @@
 		@include('_helpers.breadcrumbs')
 		<h1>{{ $user->first_name }} {{ $user->last_name }}</h1>
 	    <div class="btn-group" id="record-options">
+			<a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 			@if (Auth::user()->id != $user->id)
 				@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-		    		<a class="btn btn-default" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 				    @if ($user->disabled == 0)
 					    {{ Form::open(array('url' => 'users/disable', 'method' => 'DISABLE')) }}
 					    	<input type="hidden" name="ids[]" value="{{ $user->id }}">
@@ -55,12 +55,17 @@
 		@if (!$user->block_email && !$user->block_sms)
 			</div>
 		@endif
+		<a class="btn btn-primary" href="//{{ $user->public_id }}.{{ Config::get('site.base_domain') }}" target="_blank"><i class="fa fa-globe"></i> View Site</a>
 	</div><!-- row -->
 	<div class="row">
 		<div class="col col-md-6 col-sm-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 div class="panel-title">Information</h2>
+					<h2 div class="panel-title">Information
+						@if (Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->id == $user->id)
+							<a class="pull-right" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
+						@endif
+					</h2>
 				</div>
 			    <table class="table table-striped">
 			        <tr>
@@ -72,6 +77,14 @@
 			            	@endif
 			            </th>
 			            <td>{{ $user->id }}</td>
+			        </tr>
+			        <tr>
+			            <th>
+			            	Public ID:
+			            </th>
+			            <td>
+			            	{{ $user->public_id }}
+			            </td>
 			        </tr>
 			        <tr>
 			            <th>
@@ -97,7 +110,7 @@
 				        <tr>
 				            <th>Phone:</th>
 				            <td>
-				            	{{ $user->phone }}
+				            	{{ $user->formatted_phone }}
 				            	@if ($user->block_sms)
 				            		<br>
 				            		<span class="label label-warning">
@@ -139,7 +152,11 @@
 			@foreach ($addresses as $address)
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h2 div class="panel-title">{{ $address->label }} Address</h2>
+						<h2 div class="panel-title">{{ $address->label }} Address
+							@if (Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->id == $user->id)
+								<a class="pull-right" href="{{ url('addresses/'.$address->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
+							@endif
+						</h2>
 					</div>
 				    <table class="table table-striped">
 				        <tr>

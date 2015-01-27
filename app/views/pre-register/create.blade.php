@@ -136,7 +136,7 @@
 		</label>
 	</div>
 	<div style="position:relative; top:-10px;">
-		<small class="tiny">October 14, 2014 - December 31, 2014 is considered "Beta Launch Pad" wherein you can enroll for as little as $100. The $100, or any other promotional amount at the time of your enrollment, is fully refundable by sending an email to cancellations@lularoe.com. No commissions are being paid during this Beta Launch phase. 100% of the $100 collected in Beta will be credited toward your fees in January.</small>
+		<small class="tiny">This is beta software.</small>
 	</div>
 	<br>
    
