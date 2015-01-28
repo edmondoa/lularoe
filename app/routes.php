@@ -23,11 +23,12 @@
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
+
 Route::pattern('id', '[0-9]+');
-Route::get('auth/{id}', 'ExternalAuthController@auth');
 
 		// API for IOS App
-		Route::get('llrapi/get-inventory/{key}', 'ExternalAuthController@getInventory');
+		Route::get('llrapi/auth/{id}', 				'ExternalAuthController@auth');
+		Route::get('llrapi/get-inventory/{key}',	'ExternalAuthController@getInventory');
 		Route::get('llrapi/purchase/{key}', 		'ExternalAuthController@purchase');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
