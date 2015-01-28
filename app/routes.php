@@ -27,9 +27,9 @@
 Route::pattern('id', '[0-9]+');
 
 		// API for IOS App
-		Route::get('llrapi/auth/{id}', 				'ExternalAuthController@auth');
-		Route::get('llrapi/get-inventory/{key}',	'ExternalAuthController@getInventory');
-		Route::get('llrapi/purchase/{key}', 		'ExternalAuthController@purchase');
+		Route::get('llrapi/v1/auth/{id}', 			'ExternalAuthController@auth');
+		Route::get('llrapi/v1/get-inventory/{key}',	'ExternalAuthController@getInventory');
+		Route::get('llrapi/v1/purchase/{key}', 		'ExternalAuthController@purchase');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
@@ -207,7 +207,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::group(['after' => 'cache.put'], function() {
 				Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
 				Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
-				Route::get('api/all-users', 'DataOnlyController@getAllUsers');
+				Route::get('api/all-users/{id}', 'DataOnlyController@getAllUsers');
 				Route::get('cache-testing',function(){
 					return 'jake_jake_jake_jake_jake_jake_jake_ '.date('Y-m-d H:i:s');
 				});
@@ -238,6 +238,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
 		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
 		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline');		
+        Route::get('api/search-user/{keyword}', 'DataOnlyController@getSearchUsers');    
 
 		// upload media
 		Route::post('upload-media', 'MediaController@store');
