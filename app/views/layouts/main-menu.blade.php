@@ -76,7 +76,7 @@
  							<a href='/media/user/{{ Auth::user()->id }}'><i class='fa fa-user'></i> My Resources</a>
  						@endif
  						@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
- 							<a href='/media/user/0'><i class='fa fa-th-large'></i> Company Resources</a>
+ 							<a href='/media/user/{{ Config::get('site.admin_uid') }}'><i class='fa fa-th-large'></i> Company Resources</a>
  							<a href='/media-shared-with-reps'><i class='fa fa-th-large'></i> Resources Shared with ISM's</a>
  							<a href='/media-reps'><i class='fa fa-users'></i> Resources Uploaded by ISM's</a>
  						@endif
