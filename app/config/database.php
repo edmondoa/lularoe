@@ -89,8 +89,8 @@ else
 				'driver'    => 'mysql',
 				'host'      => 'localhost',
 				'database'  => 'llr_dev',
-				'username'  => 'root',/*'llr_dev',*/
-				'password'  => 'b0X42!!!',/* '7U8$SAV*NEjuB$T%',*/
+				'username'  => 'llr_dev',
+				'password'  => '7U8$SAV*NEjuB$T%',
 				'charset'   => 'utf8',
 				'collation' => 'utf8_unicode_ci',
 				'prefix'    => '',
