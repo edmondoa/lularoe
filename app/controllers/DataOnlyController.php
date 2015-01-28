@@ -288,12 +288,24 @@ class DataOnlyController extends \BaseController
 	public function getAllUsers($page=1,$limit=10){
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
             $offset = ($page - 1) * $limit;
-            error_log(print_r(compact("offset","page","limit"),true));
 			return [
-                        "count"=>User::count(),
-                        "data" =>User::skip($offset)->take($limit)->get()
+                        'count'=>User::count(),
+                        'data' =>User::skip($offset)->take($limit)->get()
                    ];
 		}
 	}
+    
+    //search users
+    public function getSearchUsers($keyword){
+         $limit = 10;
+         $data = User::whereRaw('first_name LIKE "%'.$keyword.'%" OR last_name LIKE "%'.$keyword.'%" OR id = "'.$keyword.'"')->take($limit)->get()->map(function($user) use (&$temp){
+             $name = $user->id.' - '.$user->full_name;
+             return ["id"=>$user->id,"name"=>$name];
+         });
+                    
+         return [
+            'data' => $data
+         ];
+    }
 
 }
