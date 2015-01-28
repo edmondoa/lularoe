@@ -14,8 +14,8 @@ class externalAuthController extends \BaseController {
 		$ch = curl_init();
 
 		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').'/locationgroups/'.Config::get('site.mwl_db')."?sessionkey=".$key;
-		die($curlstring);
+		$curlstring = Config::get('site.mwl_api').'/fishbowl/locationgroups?sessionkey='.$key;
+		echo $curlstring;
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		/* If we ever decide to 'POST'
