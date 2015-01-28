@@ -35,6 +35,7 @@ $env = $app->detectEnvironment(function(){
 	//if not look in the hostname and map it to an environment
 	$environments = [
 		//'hostname'=>'environment', 
+		'mattzilla'=>'mattzilla', 
 		'Jake-PC'=>'jake_local', 
 		'Owner-PC'=>'steve_local',
 		'gashler-laptop'=>'steve_local',
