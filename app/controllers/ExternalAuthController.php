@@ -126,13 +126,18 @@ class externalAuthController extends \BaseController {
 				'session'		=> Session::getId()
 			);
 
-			// If we already have a sesionable mwl_id
+			// Initialize these two
+			$tstamp		= 0;
+			$sessionkey = '';
+
+			// If we already have a sesionable mwl_id with timestamp ..
 			if (Session::has('mwl_id'))
 			{
-				$sessionkey		= Session::get('mwl_id');
+				list($tstamp, $sessionkey)		= explode('|',Session::get('mwl_id'));
 			}
 
-			if (empty($sessionkey))
+			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
+			if (empty($sessionkey) || $tstamp < (time() - 10))
 			{
 				// Return the user is able to log in, but shut out of MWL
 				$sessionkey = Self::midauth($data['tid'],$data['email'], $pass);
@@ -146,7 +151,7 @@ class externalAuthController extends \BaseController {
 					// Also perform a logging notify here in papertrail or syslog?
 				}
 				else {
-					Session::put('mwl_id', $sessionkey);
+					Session::put('mwl_id', time().'|'.$sessionkey);
 				}
 			}
 		}

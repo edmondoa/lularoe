@@ -124,8 +124,11 @@
 		function MediaController($scope, $http) {
 		
 			<?php
+				/*
 				if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $id = 0;
 				else $id = Auth::user()->id;
+				*/
+				$id = Auth::user()->id;
 			?>
 			
 			$http.get('/api/images-by-user/{{ $id }}').success(function(media) {
