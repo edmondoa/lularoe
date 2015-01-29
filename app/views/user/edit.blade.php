@@ -134,6 +134,7 @@
             
             var promise = request.then(
                 function( response ) {
+                    isLoading = false;
                     return( response.data );
                 },
                 function( response ) {
@@ -150,7 +151,7 @@
             
             promise.finally(
                 function() {
-                    console.log( "Cleaning up object references." );
+                    //console.log( "Cleaning up object references." );
                     canceller = request = promise = null;
                 }
             );
@@ -178,7 +179,7 @@
             link:function(scope,elem,attrs){
                 scope.$watch('data', function(val){
                     if(val != undefined && val.length >= 2){                       
-                        if(shared.requestPromise && shared.getIsLoading){
+                        if(shared.requestPromise && shared.getIsLoading()){
                             shared.requestPromise.abort();    
                         }
                         shared.requestPromise = shared.requestData(attrs.url+scope.data);
