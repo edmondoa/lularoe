@@ -285,12 +285,18 @@ class DataOnlyController extends \BaseController
 	}
 
 	// users
-	public function getAllUsers($page=1,$limit=10){
+	public function getAllUsers($page=1){
+        $l = Input::get('l');
+        $o = Input::get('o');
+        $s = Input::get('s');
+        $limit = $l ? $l : 10;
+        $order = $o ? $o : "last_name";
+        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
             $offset = ($page - 1) * $limit;
 			return [
                         'count'=>User::count(),
-                        'data' =>User::skip($offset)->take($limit)->get()
+                        'data' =>User::orderBy("updated_at", "DESC")->orderBy($order, $sequence)->skip($offset)->take($limit)->get()
                    ];
 		}
 	}

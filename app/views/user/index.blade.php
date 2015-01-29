@@ -264,90 +264,208 @@
 @stop
 @section('scripts')
 <script>
-
 	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function UserController($scope, $http) {
-	    var defaultLimit = 10;
-        
+    app.service("shared", function($http, $q){
+        var isLoading = false;
+        var requestPromise = null;
+        var requestData = function(url){
+            isLoading = true;
+            var canceller = $q.defer();
+
+            var request = $http.get(url, { timeout: canceller.promise});
+            
+            var promise = request.then(
+                function( response ) {
+                    isLoading = false;
+                    return( response.data );
+                },
+                function( response ) {
+                    return( $q.reject( "Something went wrong" ) );
+                }
+            );
+            
+            promise.abort = function() {
+                isLoading = false;
+                if(canceller){
+                    canceller.resolve();
+                }
+            };
+            
+            promise.finally(
+                function() {
+                    /*console.log( "Cleaning up object references." );*/
+                    canceller = request = promise = null;
+                }
+            );
+            
+            return( promise );
+            
+        };
+
+        return {
+            getIsLoading: function () {
+                return isLoading;
+            },
+            requestPromise :requestPromise,
+            requestData : requestData
+        };
+    });
+    
+	function UserController($scope, $http, shared, $q, $interval) {
+	    var defaultLimit = 10,
+            defaultOrderField = "last_name";
+        $scope.orderByField = defaultOrderField;
         $scope.users = [];
+        $scope.usersData = [];
         $scope.currentPage = 1;
         $scope.pageSize = defaultLimit;
         $scope.countItems = 0;
         $scope.meals = [];
-		
-        var mUser = function(curPage,  limit){
+        $scope.loadedPages = [];
+        $scope.stop = undefined;
+        $scope.prevJump = false;
+        $scope.jumpData = [];
+        
+        $scope.counter = 0;
+        
+        var mUser = function(curPage,  limit, orderByField, sequence){
             var path = '/api/all-users/'+curPage;
+            path += '?a=1';
             if(limit != defaultLimit){
-                path += '/'+limit;
+                path += '&l='+limit;
             }
-            $http.get(path).success(function(users) {
-                /**/
-                console.log("from net");
-                console.log(users);
-                console.log("scope var");
-                console.log($scope.users);
-                var lSize = users.data.length;
-                    //for(var i =0; i< lSize; i++){
-                        $scope.users = users.data.splice(0);
-                        //$scope.users.push(users.data.pop());
-                        console.log($scope.users);        
-                    //}
-                /**/
-                //$scope.users = users.data;
-                $scope.countItems = users.count;
-                
-                var totalPages = Math.ceil(users.count/limit);
-                console.log("total-pages: "+ totalPages);
-                console.log("users.length: "+ $scope.users.length);
-                
+            if(orderByField != undefined && orderByField != defaultOrderField){
+                path += '&o='+orderByField;
+            }
+            if(sequence != undefined && sequence != 'asc'){
+                path += '&s='+sequence;
+            }
+            
+            if(shared.requestPromise && shared.getIsLoading()){
+                shared.requestPromise.abort();    
+            }
+            shared.requestPromise = shared.requestData(path);
+            var promise = shared.requestPromise.then(function(v){
+                $scope.loadedPages.push(curPage);
+                $scope.countItems = v.count;
+                var totalPages = Math.ceil($scope.countItems/limit);
                 var tempPages = Math.ceil($scope.users.length/limit);
-                console.log("tempPages:  "+tempPages);
-                /**/if(tempPages < 2){/**//*totalPages){*/
-                /**/    //mUser(tempPages+1, limit);
-                }/**/
+
+                var res = [];
+                var res = v.data.map(function(user, i){
+                    var a = [],offset = (curPage -1) * limit + i;
+                    a = $scope.users.filter(function(n){
+                        return n.id == user.id;
+                    });
+                    
+                    if(!a.length){
+                        var i= $scope.users.length;  
+                        for(;i <= offset; i++){
+                            $scope.users.splice(i,0,user);
+                        }    
+                        
+                        $scope.users.splice(offset,1,user);    
+                    }
+
+                    return user;    
+                });
+                
+                $scope.usersData.push({'page':curPage,'data':res});
                 
                 @include('_helpers.bulk_action_checkboxes')
                 
-                //console.log("users");
-                console.log($scope.users);
-            });    
+                return v;
+            },function(r){
+                return( $q.reject( "Something went wrong" ) );
+            });
+            
+            return promise;    
         }
 		
 		$scope.pageChangeHandler = function(num) {
-            console.log("UserController - pageChangeHandler: " +num+" curPage: "+$scope.currentPage);    
-		    
+            
 		};
-	
+        
+        $scope.stopRequestPages = function() {
+          if (angular.isDefined($scope.stop)) {
+            $interval.cancel($scope.stop);
+            $scope.stop = undefined;
+          }
+        };
+        
+        $scope.checkLoadedPages = function(curPage){
+            var beenLoaded = [];
+            beenLoaded = $scope.loadedPages.filter(function(n){
+                return n == curPage;  
+            });
+            
+            return !beenLoaded.length; 
+        };
+        
+	     
         $scope.$watch("pageSize", function(n, o){
             if(n != o){
-                mUser($scope.currentPage, n);
-                console.log("pageSize changed: n["+n+"]"+" o:["+o+"]");
+                $scope.stopRequestPages();
+                var promise = mUser($scope.currentPage, n, $scope.orderByField, $scope.reverseSort);
+                //console.log("pagesize currentpage: "+$scope.currentPage);
             }
         });
     
         $scope.$watch("currentPage", function(n, o){
             var totalPages = Math.ceil($scope.countItems/$scope.pageSize);
             var tempPages = Math.ceil($scope.users.length/$scope.pageSize);
-            console.log("totalPages: "+totalPages +" tempPages: "+ tempPages);
-            console.log("l: "+$scope.users.length);
-            console.log("ln: "+$scope.countItems);
-            console.log("users.length: "+ $scope.users.length);
-            console.log($scope.users);
-            
-            //if(!$scope.countItems || tempPages < totalPages)
-            //if($scope.countItems == 0)
-            //{
-                mUser(n, $scope.pageSize);
-                console.log("currentPage changed: n["+n+"]"+" o:["+o+"]");
-            //}
+            if(n!= undefined && o != undefined && n-1 != o && n != o ){
+                $scope.prevJump = true;
+            }
+        
+            if($scope.checkLoadedPages(n) && (!$scope.countItems || tempPages < totalPages))
+            {
+                var promise = mUser(n, $scope.pageSize,$scope.orderByField, $scope.reverseSort);
+                promise.then(function(v){
+                    var totalPages = Math.ceil($scope.countItems/$scope.pageSize);
+                    var curPage = n; 
+                    
+                    if ( angular.isDefined($scope.stop) ) {
+                        return;   
+                    }
+                    
+                    $scope.stop = $interval(function() {
+                        if(!shared.getIsLoading()){
+                            curPage++;
+                            if($scope.prevJump){
+                                curPage = 1;
+                                $scope.prevJump = false;    
+                            }
+                            if ($scope.checkLoadedPages(curPage) && curPage <= totalPages) {
+                                mUser(curPage, $scope.pageSize,$scope.orderByField,$scope.reverseSort);
+                            }
+                        }
+                        
+                        if($scope.loadedPages.length == totalPages){
+                            $scope.stopRequestPages();
+                        }
+                        
+                    }, 1);
+                    /**/
+                },function(r){
+                    return( $q.reject( "Something went wrong" ) );
+                });
+            }
+        });
+        
+        $scope.$watch("usersData.length", function(n, o){
+            //console.log($scope.usersData);
+        });
+        
+        $scope.$on('$destroy', function() {
+          $scope.stopRequestPages();
         });
 		
 	}
 	
 	function OtherController($scope) {
 		$scope.pageChangeHandler = function(num) {
-            console.log("OtherController - pageChangeHandler: " +num+" curPage: "+$scope.currentPage);    
+            //console.log("OtherController - pageChangeHandler: " +num+" curPage: "+$scope.currentPage);    
 		};
 	}
 	
