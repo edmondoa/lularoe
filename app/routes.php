@@ -446,7 +446,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	##############################################################################################
 
 	// LLRDEV
-	// Route::group(['before' => 'force.ssl'], function() {
+	// Route::group(['before' => 'force.ssl'], function() 
 	Route::group(array(), function() {
 		//Route::get('join', 'PreRegisterController@sponsor');
 		Route::get('join/{public_id}', 'PreRegisterController@create');
@@ -474,11 +474,11 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 ##############################################################################################
 # Replicated Site Routes
 ##############################################################################################
-Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain)
+
+Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'),'domain' => 'www.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain)
 {
 	function ($subdomain){
 	};
-
 
 	Route::get('/', function($subdomain)
 	{
