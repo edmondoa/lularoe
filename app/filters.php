@@ -75,16 +75,16 @@ Route::filter('rep', function(){
 });
 
 Route::filter('editor', function(){
-	if (!Auth::user()->hasRole(['Editor']))
+	if (!Auth::user()->hasRole(['Superadmin','Admin','Editor']))
 	{
 		return App::abort('403', 'You are not authorized (Editor).');
 	}
 });
 
 Route::filter('admin', function(){
-	if (!Auth::user()->hasRole(['Admin']))
+	if (!Auth::user()->hasRole(['Superadmin','Admin']))
 	{
-		return App::abort('403', 'You are not authorized (Admin).');
+		return App::abort('403', 'You are not authorized (Admin xyzpdq).');
 	}
 });
 

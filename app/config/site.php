@@ -18,6 +18,10 @@
 		'base_domain' => 'mylularoe.com',
 		'preregistration_fee' => 2000.00,
 		'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
+
+		'company_logo' => '/img/llr-logo.png',
+		'preregistration_fee' => 2000.00,
+
 		'default_from_email' => 'no-reply@mylularoe.com',
 		'contact_email' => 'mfrederico@gmail.com',
 		'contact_first_name' => 'Matt',
