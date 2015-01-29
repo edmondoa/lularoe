@@ -25,6 +25,7 @@
 ##############################################################################################
 
 Route::pattern('id', '[0-9]+');
+Route::pattern('page', '[0-9]+');
 
 		// API for IOS App
 		Route::get('llrapi/v1/auth/{id}', 			'ExternalAuthController@auth');
@@ -207,7 +208,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::group(['after' => 'cache.put'], function() {
 				Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
 				Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
-				Route::get('api/all-users/{id}', 'DataOnlyController@getAllUsers');
+				
 				Route::get('cache-testing',function(){
 					return 'jake_jake_jake_jake_jake_jake_jake_ '.date('Y-m-d H:i:s');
 				});
@@ -215,6 +216,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		});
 
 		// DataOnly functions that shouldn't be cached
+        Route::get('api/all-users/{page}', 'DataOnlyController@getAllUsers');
 		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
 		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
 		Route::get('api/all-images', 'DataOnlyController@getAllImages');
@@ -446,7 +448,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	##############################################################################################
 
 	// LLRDEV
-	// Route::group(['before' => 'force.ssl'], function() 
+	// Route::group(['before' => 'force.ssl'], function() {
 	Route::group(array(), function() {
 		//Route::get('join', 'PreRegisterController@sponsor');
 		Route::get('join/{public_id}', 'PreRegisterController@create');
