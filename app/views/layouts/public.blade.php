@@ -256,7 +256,7 @@
         <script type='text/javascript' src='/wp-includes/js/jquery/ui/jquery.ui.autocomplete.min.js?ver=1.10.4'></script>
         <script type='text/javascript'>
 /* <![CDATA[ */
-var MyAcSearch = {"url":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-ajax.php"};
+var MyAcSearch = {"url":"http:\/\/lularoe-wordpress\/wp-admin\/admin-ajax.php"};
 /* ]]> */
         </script>
         <script type='text/javascript' src='/wp-content/themes/salient/nectar/assets/functions/ajax-search/wpss-search-suggest.js'></script>
@@ -272,7 +272,7 @@ var MyAcSearch = {"url":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-ajax
         <script type='text/javascript' src='/wp-content/themes/salient/js/nectar-slider.js?ver=4.5.2'></script>
         <script type='text/javascript'>
 /* <![CDATA[ */
-var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-ajax.php","postID":"3085","rooturl":"http:\/\/sociallymobile-wordpress","pluginPages":[],"disqusComments":"false"};
+var nectarLove = {"ajaxurl":"http:\/\/lularoe-wordpress\/wp-admin\/admin-ajax.php","postID":"3085","rooturl":"http:\/\/lularoe-wordpress","pluginPages":[],"disqusComments":"false"};
 /* ]]> */
         </script>
         <script type='text/javascript' src='/wp-content/themes/salient/nectar/love/js/nectar-love.js?ver=1.0'></script>

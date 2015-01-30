@@ -9,7 +9,7 @@
 			<div class="user-banner-content overflow-hidden">
 				<div class="pull-left">
 					<h1>{{ $user->first_name }} {{ $user->last_name }}</h1>
-					<small>Independent Social Marketer &nbsp;|&nbsp; Rank: {{ $user->rank_name }}</small>
+					<small>Fashion Consultant &nbsp;|&nbsp; Rank: {{ $user->rank_name }}</small>
 				</div>
 				<div class="pull-right align-right">
 					<a class="btn btn-primary" onclick="scrollTo('#contact-form')">Contact {{ $user->first_name }}</a>

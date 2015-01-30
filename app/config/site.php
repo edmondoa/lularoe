@@ -20,6 +20,7 @@
 		'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
 
 		'company_logo' => '/img/llr-logo.png',
+		'company_logo_minimal' => '/img/llr-logo-minimal.png',
 		'preregistration_fee' => 2000.00,
 
 		'default_from_email' => 'no-reply@mylularoe.com',

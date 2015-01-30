@@ -1,1 +1,1 @@
-D:\Dropbox\UniServer\www\cp-sociallymobile\app/views/pre_registers/edit.blade.php
+D:\Dropbox\UniServer\www\cp-lularoe\app/views/pre_registers/edit.blade.php

@@ -30,9 +30,9 @@ class CreateUsersTable extends Migration
 		DB::update("ALTER TABLE users AUTO_INCREMENT = 2000;");
 		$user = User::create([
 			'id' => 0,
-			'first_name' => "Socially",
-			'last_name' => 'Mobile',
-			'email' => 'info@sociallymobile.com',
+			'first_name' => "LuLaRoe",
+			'last_name' => 'Company',
+			'email' => 'info@lularoe.com',
 			'password' => \Hash::make('Fr3@k0z0id'),
 			'key' => '',
 			'phone' => '7043059500',

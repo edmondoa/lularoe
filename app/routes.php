@@ -10,7 +10,7 @@
  | and give it the Closure to execute when that URI is requested.
  |
  */
-//use SociallyMobile\Payments\USAEpayment;
+//use LLR\Payments\USAEpayment;
 
 	// load user-created pages
 	/*
@@ -477,9 +477,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 # Replicated Site Routes
 ##############################################################################################
 
-Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'),'domain' => 'www.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain)
-{
+Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain){
+	// dd($subdomain);
 	function ($subdomain){
+		dd($subdomain);
 	};
 
 	Route::get('/', function($subdomain)
@@ -575,12 +576,16 @@ Route::get('test', function() {
 	# loading commission non-statically
 	##############################################################################################
 	
-	$commission = new \SociallyMobile\Commission\Commission;
+	$commission = new \LLR\Commission\Commission;
 	$commission->setCommissionPeriod(date('Y-m-d',strtotime('last month')));
 	$response['result'] = $commission->setRank(2001,true);
 	$response['lapsed'] = round((microtime (true) - $start),5);
 	return Response::json($response);
 	return User::find(2001);
+});
+
+Route::get('test', function() {
+	return App::environment();
 });
 
 Route::get('testfunction', function() {

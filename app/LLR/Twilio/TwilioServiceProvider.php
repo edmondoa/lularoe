@@ -1,4 +1,4 @@
-<?php namespace SociallyMobile\Twilio;
+<?php namespace LLR\Twilio;
 
 use Illuminate\Support\ServiceProvider;
 //use Twilio;
@@ -17,7 +17,7 @@ protected $defer = true;
 */
 public function boot()
 {
-    //$this->package('SociallyMobile/twilio');
+    //$this->package('LLR/twilio');
 }
 
 /**

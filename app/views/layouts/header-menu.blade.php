@@ -5,7 +5,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" id="logo" href="//{{ Config::get('site.domain') }}"><img src="{{ Config::get('site.company_logo') }}" width="150" alt="{{ Config::get('site.company_name') }}"></a>
+			<a class="navbar-brand" id="logo" href="//{{ Config::get('site.domain') }}"><img style="position:relative; bottom:-5px;" src="{{ Config::get('site.company_logo_minimal') }}" width="100" alt="{{ Config::get('site.company_name') }}"></a>
 		</div>
 		<div class="collapse navbar-collapse">
 			@if (!Auth::check())
@@ -52,7 +52,7 @@
 					@endif
 	                <li class="dropdown">
 	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-	                        {{ Auth::user()->first_name }}
+	                        <i class="fa fa-user"></i> {{ Auth::user()->first_name }}
 	                        <b class="caret"></b>
 	                    </a>
 	                    <ul class="dropdown-menu">

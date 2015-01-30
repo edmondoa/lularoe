@@ -1,4 +1,4 @@
-<?php namespace SociallyMobile\Commission;
+<?php namespace LLR\Commission;
 
 use \User;
 use \Level;
