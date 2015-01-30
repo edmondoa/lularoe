@@ -32,6 +32,10 @@ Route::pattern('page', '[0-9]+');
 		Route::get('llrapi/v1/get-inventory/{key}',	'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/purchase/{key}', 		'ExternalAuthController@purchase');
 
+
+// set timezone
+Route::post('set-timezone', 'TimezoneController@setTimezone');
+
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
 	##############################################################################################
@@ -125,10 +129,11 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('posts/delete', 'PostController@delete');
 	
 	//Route::controller('api','DataOnlyController');
-
-		
-	//timezone
-	Route::post('set-timezone', 'TimezoneController@setTimezone');
+	
+	// events
+	Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
+	Route::get('api/all-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
+	Route::get('api/all-past-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
 		
 	##############################################################################################
 	// Protected Routes
@@ -227,10 +232,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/first-branch', 'DataOnlyController@getFirstBranch');
 		Route::get('api/all-branches/{id}', 'DataOnlyController@getAllBranches');
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
-		Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
 		Route::get('api/all-past-events', 'DataOnlyController@getAllPastEvents');
-		Route::get('api/all-past-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
-		Route::get('api/all-past-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
 		Route::get('api/all-opportunities', 'DataOnlyController@getAllOpportunities');
 		Route::get('api/all-leads', 'DataOnlyController@getAllLeads');
 		Route::get('api/all-leads-by-rep/{id}', 'DataOnlyController@getAllLeadsByRep');

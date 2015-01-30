@@ -88,7 +88,7 @@
 		
 		function uventController($scope, $http) {
 			
-			$http.get('/api/all-upcoming-events').success(function(events) {
+			$http.get('/api/all-upcoming-events-by-role').success(function(events) {
 				$scope.events = events;
 				console.log($scope.events);
 				@include('_helpers.bulk_action_checkboxes')

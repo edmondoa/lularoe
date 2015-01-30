@@ -200,8 +200,7 @@ class DataOnlyController extends \BaseController
 
 	// all upcoming events
 	public function getAllUpcomingEvents() {
-		$events = Uvent::where('date_start', '>', time())->get();
-		return $events;
+		return Uvent::where('date_start', '>', time())->get();
 	}
 	
 	// all past events
@@ -212,23 +211,18 @@ class DataOnlyController extends \BaseController
 	
 	// all upcoming events by role
 	public function getAllUpcomingEventsByRole() {
-		if (!Auth::check()) $events = Uvent::where('public', 1)->where('date_start', '>', time())->get();
-		elseif (Auth::user()->role_name == 'Customer') $events = Uvent::where('customers', 1)->where('date_start', '>', time())->get();
-		elseif (Auth::user()->role_name == 'Rep') $events = Uvent::where('reps', 1)->where('date_start', '>', time())->get();
-		elseif (Auth::user()->role_name == 'Editor') $events = Uvent::where('editors', 1)->where('date_start', '>', time())->get();
-		elseif (Auth::user()->role_name == 'Admin') $events = Uvent::where('admins', 1)->where('date_start', '>', time())->get();
-		else $events = Uvent::where('public', 1)->where('date_start', '>', time())->get();
-		return $events;
+		if (!Auth::check()) return Uvent::where('public', 1)->where('date_start', '>', time())->get();
+		elseif (Auth::user()->hasRole(['Customer'])) return Uvent::where('customers', 1)->where('date_start', '>', time())->get();
+		elseif (Auth::user()->hasRole(['Rep'])) return Uvent::where('reps', 1)->where('date_start', '>', time())->get();
+		elseif (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Uvent::where('date_start', '>', time())->get();
 	}
 	
 	// all past events by role
 	public function getAllPastEventsByRole() {
-		if (!Auth::check()) $events = Uvent::where('public', 1)->where('date_start', '<', time())->get();
-		elseif (Auth::user()->role_name == 'Customer') $events = Uvent::where('customers', 1)->where('date_start', '<', time())->get();
-		elseif (Auth::user()->role_name == 'Rep') $events = Uvent::where('reps', 1)->where('date_start', '<', time())->get();
-		elseif (Auth::user()->role_name == 'Editor') $events = Uvent::where('editors', 1)->where('date_start', '<', time())->get();
-		elseif (Auth::user()->role_name == 'Admin') $events = Uvent::where('admins', 1)->where('date_start', '<', time())->get();
-		return $events;
+		if (!Auth::check()) return Uvent::where('public', 1)->where('date_start', '<', time())->get();
+		elseif (Auth::user()->hasRole(['Customer'])) return Uvent::where('customers', 1)->where('date_start', '<', time())->get();
+		elseif (Auth::user()->hasRole(['Rep'])) return Uvent::where('reps', 1)->where('date_start', '<', time())->get();
+		elseif (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Uvent::where('date_start', '<', time())->get();
 	}
 
 	public function getAllOpportunities(){
