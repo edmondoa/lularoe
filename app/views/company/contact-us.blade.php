@@ -12,7 +12,7 @@
                                         <div class="content">
                                             <h2>We Are {{ Config::get('site.company_name') }}</h2>
                                             <p  >
-                                                <span>join the conversation!</span>
+                                                <span>simply comfortable</span>
                                             </p>
                                         </div>
                                     </div><!--/container--><a href="#" class="slider-down-arrow"><i class="icon-salient-down-arrow icon-default-style"> <span class="ie-fix"></span> </i></a>
