@@ -1,4 +1,4 @@
-<?php namespace SociallyMobile\Twilio;
+<?php namespace LLR\Twilio;
 
 //use Merchant;
 use Auth;

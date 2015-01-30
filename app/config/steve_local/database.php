@@ -49,7 +49,7 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'sociallymobile',
+			'database'  => 'llr',
 			'username'  => 'root',
 			'password'  => 'password2',
 			'charset'   => 'utf8',

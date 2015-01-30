@@ -1,4 +1,4 @@
-<?php namespace SociallyMobile\Payments;
+<?php namespace LLR\Payments;
 /*
 CLASS to interface with the USAEpay webservice
 ControlPad

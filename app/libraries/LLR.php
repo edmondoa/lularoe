@@ -1,7 +1,7 @@
 <?php
 
 use \SimpleXMLElement;
-class SociallyMobile {
+class LLR {
 
 	public static function check_for_mobile($number) {
 		//echo"<pre>"; print_r($number); echo"</pre>";

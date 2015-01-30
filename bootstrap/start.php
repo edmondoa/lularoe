@@ -38,6 +38,7 @@ $env = $app->detectEnvironment(function(){
 		'cyberteknix'=>'cyberteknix_staging', 
 		'mattzilla'=>'mattzilla', 
 		'Jake-PC'=>'jake_local', 
+		'vagrant-ubuntu-trusty-64'=>'steve_local',
 		'Owner-PC'=>'steve_local',
 		'gashler-laptop'=>'steve_local',
 		'jakus1-MacBookPro'=>'jake_local',

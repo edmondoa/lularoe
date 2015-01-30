@@ -123,11 +123,11 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Way\Generators\GeneratorsServiceProvider',
 		'Jrenton\LaravelScaffold\LaravelScaffoldServiceProvider',
-		'SociallyMobile\Twilio\TwilioServiceProvider',
+		'LLR\Twilio\TwilioServiceProvider',
 		'Intervention\Image\ImageServiceProvider',
-	  'SociallyMobile\Payments\PaymentServiceProvider',
-	  'SociallyMobile\Twilio\TwilioServiceProvider',
-	  'SociallyMobile\Commission\CommissionServiceProvider',
+	  'LLR\Payments\PaymentServiceProvider',
+	  'LLR\Twilio\TwilioServiceProvider',
+	  'LLR\Commission\CommissionServiceProvider',
 	  'Camroncade\Timezone\TimezoneServiceProvider'
 
 	),
