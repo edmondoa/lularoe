@@ -95,13 +95,14 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 	// contact form
 	Route::post('send-contact-form',['as' => 'send-contact-form', 'uses' => 'ContactController@send']);
+		
+	// events
+	Route::get('api/upcoming-public-events', 'DataOnlyController@getUpcomingPublicEvents');
+	Route::get('public-events', 'UventController@publicIndex');
+	Route::get('public-events/{id}', 'UventController@publicShow');
 
 	// leads
 	Route::resource('leads', 'LeadController');
-
-	// events
-	Route::get('public-events', 'UventController@publicIndex');
-	Route::get('public-events/{id}', 'UventController@publicShow');
 
 	// opportunities (public view)
 	Route::get('opportunity/{id}', function($id)
@@ -124,11 +125,13 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('posts/disable', 'PostController@disable');
 	Route::post('posts/enable', 'PostController@enable');
 	Route::post('posts/delete', 'PostController@delete');
+	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
 	
-	//Route::controller('api','DataOnlyController');
-
-		
-	//timezone
+	// products
+	Route::get('store', 'ProductController@publicIndex');
+	Route::get('store/{id}', 'ProductController@publicShow');
+	
+	// timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
 		
 	##############################################################################################
@@ -229,8 +232,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-branches/{id}', 'DataOnlyController@getAllBranches');
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
 		Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
+		Route::get('api/all-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
 		Route::get('api/all-past-events', 'DataOnlyController@getAllPastEvents');
-		Route::get('api/all-past-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
+		Route::get('api/all-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
 		Route::get('api/all-past-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
 		Route::get('api/all-opportunities', 'DataOnlyController@getAllOpportunities');
 		Route::get('api/all-leads', 'DataOnlyController@getAllLeads');
