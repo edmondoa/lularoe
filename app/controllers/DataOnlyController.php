@@ -217,6 +217,11 @@ class DataOnlyController extends \BaseController
 		elseif (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Uvent::where('date_start', '>', time())->get();
 	}
 	
+	// upcoming public events
+	public function getUpcomingPublicEvents() {
+		return Uvent::where('public', 1)->where('date_start', '>', time())->get();
+	}
+	
 	// all past events by role
 	public function getAllPastEventsByRole() {
 		if (!Auth::check()) return Uvent::where('public', 1)->where('date_start', '<', time())->get();
