@@ -211,7 +211,7 @@ class userController extends \BaseController {
 			$user = User::findOrFail($id);
 			$old_user_data = $user;
 			$rules = User::$rules;
-			$rules['email'] = 'unique:users,email,' . $user->id;
+			$rules['email'] = 'required|email|unique:users,email,' . $user->id;
 			$rules['password'] = 'sometimes|confirmed|digits_between:8,12';
 			$rules['password_confirmation'] = 'sometimes|digits_between:8,12';
 
