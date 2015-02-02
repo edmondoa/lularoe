@@ -127,9 +127,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('posts/disable', 'PostController@disable');
 	Route::post('posts/enable', 'PostController@enable');
 	Route::post('posts/delete', 'PostController@delete');
+	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
 	
-	//Route::controller('api','DataOnlyController');
-	
+	// products
+	Route::get('store', 'ProductController@publicIndex');
+	Route::get('store/{id}', 'ProductController@publicShow');
+		
 	// events
 	Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
 	Route::get('api/all-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');

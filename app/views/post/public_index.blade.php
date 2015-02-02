@@ -88,7 +88,7 @@
 		
 		function postController($scope, $http) {
 			
-			$http.get('/api/all-posts').success(function(posts) {
+			$http.get('/api/public-posts').success(function(posts) {
 				$scope.posts = posts;
 				console.log($scope.posts);
 				@include('_helpers.bulk_action_checkboxes')
