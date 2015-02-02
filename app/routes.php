@@ -120,6 +120,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	
 	// posts
 	Route::resource('posts', 'PostController');
+	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
 	Route::get('public-posts', 'PostController@publicPosts');
 	Route::post('posts/disable', 'PostController@disable');
 	Route::post('posts/enable', 'PostController@enable');
