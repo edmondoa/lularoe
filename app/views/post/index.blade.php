@@ -154,7 +154,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{ highlight : post.new == 1, semitransparent : post.disabled }" dir-paginate-start="post in posts | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: postSize" current-post="currentPost">
+	                        <tr ng-class="{ highlight : post.new == 1, semitransparent : post.disabled == 1 }" dir-paginate-start="post in posts | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: postSize" current-post="currentPost">
 	                            @if (Auth::user() && Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
 		                            <td ng-click="checkbox()">
 		                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.post_id')">

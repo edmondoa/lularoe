@@ -22,14 +22,18 @@ class Uvent extends \Eloquent
 		$updated_time = $this->attributes['date_start'];
 		$start_date_stamp =	date('Y-m-d G:i:s', $updated_time);
 		$this->attributes['timezone'] = (!empty($this->attributes['timezone']))?$this->attributes['timezone']:'America/Denver';
-		return Timezone::convertFromUTC($start_date_stamp, $this->attributes['timezone'], 'F j, Y');
+		//if (Session::get('timezone') != null) {
+			return Timezone::convertFromUTC($start_date_stamp, $this->attributes['timezone'], 'F j, Y');
+		//}
 	}
 	
 	public function getLocalStartTimeAttribute($value)
 	{
 		$updated_time = $this->attributes['date_start'];
 		$start_date_stamp =	date('Y-m-d G:i:s', $updated_time);
-		return Timezone::convertFromUTC($start_date_stamp, Session::get('timezone'), 'g:i A');
+		//if (Session::get('timezone') != null) {
+			return Timezone::convertFromUTC($start_date_stamp, Session::get('timezone'), 'g:i A');
+		//}
 	}
 
 	public function getFormattedStartDateAttribute($value)
@@ -53,7 +57,9 @@ class Uvent extends \Eloquent
 	{
 		$updated_time = $this->attributes['date_end'];
 		$end_date_stamp = date('Y-m-d G:i:s', $updated_time);
-		return Timezone::convertFromUTC($end_date_stamp, Session::get('timezone'), 'g:i A');
+		//if (Session::get('timezone') != null) {
+			return Timezone::convertFromUTC($end_date_stamp, Session::get('timezone'), 'g:i A');
+		//}
 	}
 	
 	public function getFormattedStartTimeAttribute($value)

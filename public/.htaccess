@@ -4,6 +4,13 @@
 
     RewriteEngine On
 
+	# Redirect to main domain from www
+	RewriteCond %{HTTP_HOST} ^www.mylularoe.com$
+	RewriteRule (.*)$ http://mylularoe.com/$1 [R=301,L]
+
+	RewriteCond %{HTTP_HOST} ^www.mylularoe.local$
+	RewriteRule (.*)$ http://mylularoe.local/$1 [R=301,L]
+
     # Redirect Trailing Slashes...
     #RewriteRule ^(.*)/$ /$1 [L,R=301]
 
