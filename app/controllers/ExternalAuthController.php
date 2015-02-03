@@ -67,11 +67,12 @@ class externalAuthController extends \BaseController {
 		$ch = curl_init();
 
 		$username = urlencode($username);
-		$password = Self::midcrypt($password);
+		$password = urlencode(Self::midcrypt($password));
 
 		// Set this to HTTPS TLS / SSL
 		$curlstring = Config::get('site.mwl_api').'/login/'.Config::get('site.mwl_db')."/?username={$username}&password={$password}";
-		// echo $curlstring;
+		echo $curlstring;
+die();
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		/* If we ever decide to 'POST'
