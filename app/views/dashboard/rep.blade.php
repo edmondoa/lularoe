@@ -3,13 +3,6 @@
 <div class="row">
 	<div class="col col-md-12">
 		<h1>Welcome, {{ $user->first_name }}</h1>
-		@if ($beta_service_link->value == 1)
-			<div class="alert alert-success inline-block">
-				<a href="https://www.evopointe.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Click here to sign up for mobile service</a>
-				<!-- <a href="https://iminapikle.com/?uid={{ Auth::user()->id }}"><i class="fa fa-shopping-cart"></i> Click here to sign up for beta service</a> -->
-			</div>
-			<br>
-		@endif
 		<div class="alert alert-success inline-block">
 			Copy and paste the following link and send it to anyone whom you'd like to join your team:<br>
 			<a href="{{ url() }}/join/{{ $user->public_id }}">{{ url() }}/join/{{ $user->public_id }}</a>

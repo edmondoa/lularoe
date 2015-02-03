@@ -148,7 +148,7 @@
 		                        		<input class="bulk-check" type="hidden" name="ids[]" value="@include('_helpers.media_id')">
 		                        	</div>
 		                        	<?php // image ?>
-		                        	<img title="@include('_helpers.media_title')" ng-if="media.type == 'Image'" ng-class="{semitransparent : media.disabled}" src="/uploads/@include('_helpers.media_image_sm')">
+		                        	<img title="@include('_helpers.media_title')" ng-if="media.type == 'Image'" ng-class="{semitransparent : media.disabled == 1 }" src="/uploads/@include('_helpers.media_image_sm')">
 		                        	<div class="file" ng-if="media.type != 'Image'">
 		                        		<i ng-if="media.type == 'Database'" class="fa fa-database" ng-class="{semitransparent : media.disabled}"></i>
 		                        		<i ng-if="media.type == 'Document'" class="fa fa-file-word-o" ng-class="{semitransparent : media.disabled}"></i>

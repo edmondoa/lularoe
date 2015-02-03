@@ -7,12 +7,12 @@
                     <div style="height: 600px" data-transition="swipe" data-flexible-height="" data-fullscreen="false" data-autorotate="" data-parallax="false" data-full-width="true" class="nectar-slider-wrap " id="ns-id-546a48369477d">
                         <div style="height: 600px" class="swiper-container" data-loop="false" data-height="600" data-min-height="" data-arrows="false" data-bullets="false" data-desktop-swipe="false" data-settings="">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide" style="background-image: url(http://themenectar.com/demo/salient/wp-content/uploads/2013/09/black-bg1.png);" data-bg-alignment="bottom" data-color-scheme="light" data-x-pos="centered" data-y-pos="middle">
+                                <div class="swiper-slide" style="background: url(http://themenectar.com/demo/salient/wp-content/uploads/2013/09/black-bg1.png);" data-bg-alignment="bottom" data-color-scheme="light" data-x-pos="centered" data-y-pos="middle">
                                     <div class="container">
                                         <div class="content">
                                             <h2>We Are {{ Config::get('site.company_name') }}</h2>
                                             <p  >
-                                                <span>join the conversation!</span>
+                                                <span>Simply Comfortable!</span>
                                             </p>
                                         </div>
                                     </div><!--/container--><a href="#" class="slider-down-arrow"><i class="icon-salient-down-arrow icon-default-style"> <span class="ie-fix"></span> </i></a>
@@ -80,7 +80,6 @@
 
                     <div class="wpb_text_column wpb_content_element ">
                         <div class="wpb_wrapper">
-                            <h4><a href="/wp-content/uploads/2013/03/Contact-Image.jpg"><img class="aligncenter size-large wp-image-3072" src="/wp-content/uploads/2013/03/Contact-Image-1024x680.jpg" alt="young man using a smartphone outdoors" width="1024" height="680" /></a>Don&#8217;t hesitate to reach out!</h4>
                             <p>
                                 <strong>Customer Service: 1.800.000.0000</strong>
                             </p>

@@ -10,7 +10,7 @@
  | and give it the Closure to execute when that URI is requested.
  |
  */
-//use SociallyMobile\Payments\USAEpayment;
+//use LLR\Payments\USAEpayment;
 
 	// load user-created pages
 	/*
@@ -25,6 +25,7 @@
 ##############################################################################################
 
 Route::pattern('id', '[0-9]+');
+Route::pattern('page', '[0-9]+');
 
 		// API for IOS App
 		Route::get('llrapi/v1/auth/{id}', 			'ExternalAuthController@auth');
@@ -94,13 +95,14 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 	// contact form
 	Route::post('send-contact-form',['as' => 'send-contact-form', 'uses' => 'ContactController@send']);
+		
+	// events
+	Route::get('api/upcoming-public-events', 'DataOnlyController@getUpcomingPublicEvents');
+	Route::get('public-events', 'UventController@publicIndex');
+	Route::get('public-events/{id}', 'UventController@publicShow');
 
 	// leads
 	Route::resource('leads', 'LeadController');
-
-	// events
-	Route::get('public-events', 'UventController@publicIndex');
-	Route::get('public-events/{id}', 'UventController@publicShow');
 
 	// opportunities (public view)
 	Route::get('opportunity/{id}', function($id)
@@ -118,15 +120,18 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	
 	// posts
 	Route::resource('posts', 'PostController');
+	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
 	Route::get('public-posts', 'PostController@publicPosts');
 	Route::post('posts/disable', 'PostController@disable');
 	Route::post('posts/enable', 'PostController@enable');
 	Route::post('posts/delete', 'PostController@delete');
+	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
 	
-	//Route::controller('api','DataOnlyController');
-
-		
-	//timezone
+	// products
+	Route::get('store', 'ProductController@publicIndex');
+	Route::get('store/{id}', 'ProductController@publicShow');
+	
+	// timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
 		
 	##############################################################################################
@@ -207,7 +212,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::group(['after' => 'cache.put'], function() {
 				Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
 				Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
-				Route::get('api/all-users/{id}', 'DataOnlyController@getAllUsers');
+				
 				Route::get('cache-testing',function(){
 					return 'jake_jake_jake_jake_jake_jake_jake_ '.date('Y-m-d H:i:s');
 				});
@@ -215,6 +220,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		});
 
 		// DataOnly functions that shouldn't be cached
+        Route::get('api/all-users/{page}', 'DataOnlyController@getAllUsers');
 		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
 		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
 		Route::get('api/all-images', 'DataOnlyController@getAllImages');
@@ -226,8 +232,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-branches/{id}', 'DataOnlyController@getAllBranches');
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
 		Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
+		Route::get('api/all-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
 		Route::get('api/all-past-events', 'DataOnlyController@getAllPastEvents');
-		Route::get('api/all-past-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
+		Route::get('api/all-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
 		Route::get('api/all-past-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
 		Route::get('api/all-opportunities', 'DataOnlyController@getAllOpportunities');
 		Route::get('api/all-leads', 'DataOnlyController@getAllLeads');
@@ -446,7 +453,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	##############################################################################################
 
 	// LLRDEV
-	// Route::group(['before' => 'force.ssl'], function() 
+	// Route::group(['before' => 'force.ssl'], function() {
 	Route::group(array(), function() {
 		//Route::get('join', 'PreRegisterController@sponsor');
 		Route::get('join/{public_id}', 'PreRegisterController@create');
@@ -475,9 +482,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 # Replicated Site Routes
 ##############################################################################################
 
-Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'),'domain' => 'www.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain)
-{
+Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain){
+	// dd($subdomain);
 	function ($subdomain){
+		dd($subdomain);
 	};
 
 	Route::get('/', function($subdomain)
@@ -573,12 +581,16 @@ Route::get('test', function() {
 	# loading commission non-statically
 	##############################################################################################
 	
-	$commission = new \SociallyMobile\Commission\Commission;
+	$commission = new \LLR\Commission\Commission;
 	$commission->setCommissionPeriod(date('Y-m-d',strtotime('last month')));
 	$response['result'] = $commission->setRank(2001,true);
 	$response['lapsed'] = round((microtime (true) - $start),5);
 	return Response::json($response);
 	return User::find(2001);
+});
+
+Route::get('test', function() {
+	return App::environment();
 });
 
 Route::get('testfunction', function() {
