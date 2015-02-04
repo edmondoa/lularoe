@@ -4,7 +4,7 @@
             'contact_email' => 'mfrederico@gmail.com',
 			'mwl_api'       => 'http://mwl.controlpad.com:8080/cms/',
 			'mwl_db'        => 'llr',
-			'admin_uid'     => 10095,
+			'admin_uid'     => 0,
             'contact_first_name' => 'Matt',
             'contact_last_name'  => 'Frederico',
             'base_domain' => 'mylularoe.local',
