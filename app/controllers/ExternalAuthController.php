@@ -66,8 +66,9 @@ class externalAuthController extends \BaseController {
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
 
-		$username = urlencode($username);
-		$password = urlencode(Self::midcrypt($password));
+		$username = urlencode(Config::get('site.mwl_username'));
+		$password = urlencode(Config::get('site.mwl_password'));
+		// $password = urlencode(Self::midcrypt($password));
 
 		// Set this to HTTPS TLS / SSL
 		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/login/?username={$username}&password={$password}";
