@@ -35,7 +35,7 @@ class externalAuthController extends \BaseController {
 		}
 		curl_close ($ch);
 
-		$output = json_decode($server_output, true);
+		$output = json_decode($server_output, true); // true = array
 
 		// Transform the output to the appropriate IOS format
 		foreach($output['Inventory'] as $item) 
@@ -54,7 +54,17 @@ class externalAuthController extends \BaseController {
 
 			$itemnumber = $item['Item']['Part']['Number'];
 			$quantity	= $item['Item']['Quantity']['OnHand'];
-			list($model, $size) = explode(' - ',$itemnumber);
+
+			ltrim(rtrim($itemnumber));
+
+			// Delimiting sizes with hyphen and spaces
+			if (strpos($itemnumber,' -') === false) 
+			{
+				$model = $itemnumber;
+				$size  = 'NA';	
+			}
+			else list($model, $size) = explode(' -',$itemnumber);
+
 
 			// Initialize this set of item data
 			if (!isset($items[$model]))
@@ -63,17 +73,24 @@ class externalAuthController extends \BaseController {
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
 				'price'			=>$item['Item']['Price'],
-				'quantities'	=> array('XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0),
+				
+				'quantities'	=> array(), //array('NA'=>0,'XXS'=>0,'2XS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0),
 				'model'			=>$model);
 			}
 
+			// Cut useless spaces
+			$size = str_replace(' ','',$size);
+
 			// Set up the quantities of each size
-			if ($items[$model]['quantities'][$size] == 0) 
+			if (!isset($items[$model]['quantities'][$size])) 
 			{
 				$items[$model]['quantities'][$size] = $quantity;
 			}			
 
 		}
+		print "<pre>";
+		print_r($items);
+		die();
 
 		return(Response::json($items));
 		// STUB
