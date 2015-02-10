@@ -8,14 +8,16 @@ class externalAuthController extends \BaseController {
 		return(file_get_contents('SampleInventory.json'));
 	}
 
-	public function getInventory($key)
+	public function getInventory($key, $location='Main')
 	{
+		// Cache this too .. 
+
 		// Pull this out into an actual class for MWL php api
+		$location = str_replace(' ','%20', $location);
 		$ch = curl_init();
 
 		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').'/fishbowl/locationgroups?sessionkey='.$key;
-		echo $curlstring;
+		$curlstring = Config::get('site.mwl_api').'/llr/'.htmlentities($location,ENT_QUOTES,'UTF-8').'/inventorylist?sessionkey='.$key;
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		/* If we ever decide to 'POST'
@@ -28,12 +30,69 @@ class externalAuthController extends \BaseController {
 		$server_output = curl_exec ($ch);
 
 		if ($errno = curl_errno($ch)) {
-			die('Something went wrong connecting to inventory system: '.$errno);
+			print json_encode(array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno));
 			return(false);
 		}
 		curl_close ($ch);
 
-		return('<h1>Coming from mwl</h1> '.$server_output);
+		$output = json_decode($server_output, true); // true = array
+
+		// Transform the output to the appropriate IOS format
+		foreach($output['Inventory'] as $item) 
+		{
+/*
+    {
+        "quantities": {
+            "M": 1,
+            "S": 1,
+            "L": 1
+        },
+        "img_name": "CASSIE_525",
+        "name": "Cassie"
+    },
+*/
+
+			$itemnumber = $item['Item']['Part']['Number'];
+			$quantity	= $item['Item']['Quantity']['OnHand'];
+
+			ltrim(rtrim($itemnumber));
+
+			// Delimiting sizes with hyphen and spaces
+			if (strpos($itemnumber,' -') === false) 
+			{
+				$model = $itemnumber;
+				$size  = 'NA';	
+			}
+			else list($model, $size) = explode(' -',$itemnumber);
+
+
+			// Initialize this set of item data
+			if (!isset($items[$model]))
+			{
+				$items[$model] = array(
+				'UPC'			=>$item['Item']['UPC'],
+				'SKU'			=>$item['Item']['Sku'],
+				'price'			=>$item['Item']['Price'],
+				
+				'quantities'	=> array(), //array('NA'=>0,'XXS'=>0,'2XS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0),
+				'model'			=>$model);
+			}
+
+			// Cut useless spaces
+			$size = str_replace(' ','',$size);
+
+			// Set up the quantities of each size
+			if (!isset($items[$model]['quantities'][$size])) 
+			{
+				$items[$model]['quantities'][$size] = $quantity;
+			}			
+
+		}
+		print "<pre>";
+		print_r($items);
+		die();
+
+		return(Response::json($items));
 		// STUB
 //		return(file_get_contents('SampleInventory.json'));
 	}
@@ -66,12 +125,12 @@ class externalAuthController extends \BaseController {
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
 
-		$username = urlencode($username);
-		$password = urlencode(Self::midcrypt($password));
+		$username = urlencode(Config::get('site.mwl_username'));
+		$password = urlencode(Config::get('site.mwl_password'));
+		// $password = urlencode(Self::midcrypt($password));
 
 		// Set this to HTTPS TLS / SSL
 		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/login/?username={$username}&password={$password}";
-		#echo $curlstring;
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		/* If we ever decide to 'POST'
