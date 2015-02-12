@@ -88,9 +88,7 @@ class externalAuthController extends \BaseController {
 			}			
 
 		}
-		print "<pre>";
-		print_r($items);
-		die();
+		if (!isset($items)) $items = [];
 
 		return(Response::json($items));
 		// STUB

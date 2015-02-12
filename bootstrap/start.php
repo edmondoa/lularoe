@@ -36,6 +36,7 @@ $env = $app->detectEnvironment(function(){
 	$environments = [
 		//'hostname'=>'environment', 
 		'cyberteknix'=>'cyberteknix_staging', 
+		'mfrederico.local'=>'mattzilla', 
 		'mattzilla'=>'mattzilla', 
 		'Jake-PC'=>'jake_local', 
 		'vagrant-ubuntu-trusty-64'=>'steve_local',
