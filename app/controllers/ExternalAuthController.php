@@ -190,7 +190,8 @@ class externalAuthController extends \BaseController {
 			// If we already have a sesionable mwl_id with timestamp ..
 			if (Session::has('mwl_id'))
 			{
-				list($tstamp, $sessionkey)		= explode('|',Session::get('mwl_id'));
+				$sessionkey		= Session::get('mwl_id');
+				$tstamp			= Session::get('mwl_stamp');
 			}
 
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
@@ -208,7 +209,8 @@ class externalAuthController extends \BaseController {
 					// Also perform a logging notify here in papertrail or syslog?
 				}
 				else {
-					Session::put('mwl_id', time().'|'.$sessionkey);
+					Session::put('mwl_id', $sessionkey);
+					Session::put('mwl_stamp', time());
 				}
 			}
 		}

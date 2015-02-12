@@ -14,6 +14,8 @@
 		'domain' 		=> 'www.mylularoe.com',
 		'mwl_api'		=> 'http://mwl.controlpad.com:8080/cms/',
 		'mwl_db'		=> 'llr',
+		'mwl_username'	=> 'admin',
+		'mwl_password'	=> 'CY9rzUYh03PK3k6DJie09g==',
 		'admin_uid'		=> 0,
 		'base_domain' 	=> 'mylularoe.com',
 		'preregistration_fee' => 2000.00,
