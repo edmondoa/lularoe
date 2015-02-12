@@ -11,7 +11,7 @@
 		|
 		*/
 
-		'domain' 		=> 'www.mylularoe.com',
+		'domain' 		=> 'mylularoe.com',
 		'mwl_api'		=> 'http://mwl.controlpad.com:8080/cms/',
 		'mwl_db'		=> 'llr',
 		'mwl_username'	=> 'admin',
