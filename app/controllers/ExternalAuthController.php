@@ -36,6 +36,9 @@ class externalAuthController extends \BaseController {
 		curl_close ($ch);
 
 		$output = json_decode($server_output, true); // true = array
+		$model		= '';
+		$lastmodel	= '';
+		$count = 0;
 
 		// Transform the output to the appropriate IOS format
 		foreach($output['Inventory'] as $item) 
@@ -65,16 +68,21 @@ class externalAuthController extends \BaseController {
 			}
 			else list($model, $size) = explode(' -',$itemnumber);
 
+			if ($lastmodel != $model) {
+				$count++;
+				$lastmodel = $model;
+			}
 
 			// Initialize this set of item data
-			if (!isset($items[$model]))
+			if (!isset($items[$count]))
 			{
-				$items[$model] = array(
+				$items[$count] = array(
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
 				'price'			=>$item['Item']['Price'],
 				
 				'quantities'	=> array(), //array('NA'=>0,'XXS'=>0,'2XS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0),
+				'itemnumber'	=>$itemnumber,
 				'model'			=>$model);
 			}
 
@@ -82,14 +90,16 @@ class externalAuthController extends \BaseController {
 			$size = str_replace(' ','',$size);
 
 			// Set up the quantities of each size
-			if (!isset($items[$model]['quantities'][$size])) 
+			if (!isset($items[$count]['quantities'][$size])) 
 			{
-				$items[$model]['quantities'][$size] = $quantity;
+				$items[$count]['quantities'][$size] = $quantity;
 			}			
 
 		}
 		if (!isset($items)) $items = [];
 
+		print json_encode($items, JSON_PRETTY_PRINT);
+die();
 		return(Response::json($items));
 		// STUB
 //		return(file_get_contents('SampleInventory.json'));
