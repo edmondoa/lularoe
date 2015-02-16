@@ -1,6 +1,6 @@
 <?php
 
-class profileController extends \BaseController {
+class ProfileController extends \BaseController {
 
 	/**
 	 * Data only

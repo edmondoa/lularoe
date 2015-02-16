@@ -1,6 +1,6 @@
 <?php
 
-class reviewController extends \BaseController {
+class ReviewController extends \BaseController {
 
 	/**
 	 * Data only

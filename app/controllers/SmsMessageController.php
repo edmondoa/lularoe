@@ -1,6 +1,6 @@
 <?php
 
-class smsMessageController extends \BaseController {
+class SmsMessageController extends \BaseController {
 
 	/**
 	 * Data only

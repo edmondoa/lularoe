@@ -142,7 +142,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 
 	                            <td ng-if="user.block_email==0 || user.block_sms==0" ng-click="checkbox()">
 	                            	<input  class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
@@ -198,32 +198,13 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function DownlineController($scope, $http) {
-	
-		$http.get('/api/immediate-downline/{{ $user->id }}').success(function(users) {
-			$scope.users = users;
-			console.log($scope.users);
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
+    angular.extend(ControlPad, (function(){                
+                return {
+                    downlineCtrl : {
+                        path : '/api/immediate-downline/{{ $user->id }}'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/downlineController.js') }}
 @stop

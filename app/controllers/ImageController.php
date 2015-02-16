@@ -1,6 +1,6 @@
 <?php
 
-class imageController extends \BaseController {
+class ImageController extends \BaseController {
 
 	/**
 	 * Data only

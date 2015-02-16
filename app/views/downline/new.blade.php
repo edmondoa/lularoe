@@ -159,7 +159,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | filter:greaterThan('created_at', startDate) | orderBy: -'created_at' | orderBy: 'pivot.level' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | filter:greaterThan('created_at', startDate) | orderBy: -'created_at' | orderBy: 'pivot.level' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
@@ -218,64 +218,13 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function DownlineController($scope, $http) {
-	
-		$http.get('/api/new-downline/{{ $user->id }}').success(function(users) {
-			$scope.users = users;
-			console.log($scope.users);
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.range = 7;
-		$scope.getStartDate = function(range) {
-			var d = new Date();
-			d.setDate(d.getDate() - range);
-		    var yyyy = d.getFullYear();
-		    var mm = d.getMonth()+1; //January is 0!
-		    var dd = d.getDate();
-			var hh = d.getHours();
-			var ii = d.getMinutes();
-			var ss = d.getSeconds();
-		    if(dd<10){
-		        dd='0'+dd
-		    } 
-		    if(mm<10){
-		        mm='0'+mm
-		    } 
-		    if(hh<10){
-		        hh='0'+hh
-		    } 
-		    if(ii<10){
-		        ii='0'+ii
-		    }
-		    if(ss<10){
-		        ss='0'+ss
-		    }
-		    return $scope.startDate = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + ii + ':' + ss;
-		}
-		$scope.getStartDate($scope.range);
-		$scope.greaterThan = function(prop, val){
-		    return function(item){
-		      if (item[prop] > val) return true;
-		    }
-		}
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
+    angular.extend(ControlPad, (function(){                
+                return {
+                    downlineCtrl : {
+                        path : '/api/new-downline/{{ $user->id }}'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/downlineController.js') }}
 @stop

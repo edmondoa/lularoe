@@ -1,6 +1,6 @@
 <?php
 
-class rankController extends \BaseController {
+class RankController extends \BaseController {
 
 	/**
 	 * Data only

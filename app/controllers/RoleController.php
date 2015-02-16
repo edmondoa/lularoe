@@ -1,6 +1,6 @@
 <?php
 
-class roleController extends \BaseController {
+class RoleController extends \BaseController {
 
 	/**
 	 * Data only

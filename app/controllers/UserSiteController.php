@@ -1,6 +1,6 @@
 <?php
 
-class userSiteController extends \BaseController {
+class UserSiteController extends \BaseController {
 
 	/**
 	 * Data only
