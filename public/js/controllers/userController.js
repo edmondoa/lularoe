@@ -85,8 +85,6 @@ try {
                 
                 $scope.usersData.push({'page':curPage,'data':res});
                 
-                @include('_helpers.bulk_action_checkboxes')
-                
                 return v;
             },function(r){
                 return( $q.reject( "Something went wrong" ) );
