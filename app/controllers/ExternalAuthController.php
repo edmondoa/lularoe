@@ -1,6 +1,6 @@
 <?php
 
-class externalAuthController extends \BaseController {
+class ExternalAuthController extends \BaseController {
 
 	public function getInventory2()
 	{

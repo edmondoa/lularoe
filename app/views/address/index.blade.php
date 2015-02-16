@@ -131,7 +131,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="address in addresses | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="address in addresses | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.address_id')">
 	                            </td>
@@ -183,32 +183,13 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function AddressController($scope, $http) {
-	
-		$http.get('/api/all-addresses').success(function(addresses) {
-			$scope.addresses = addresses;
-			
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
+    angular.extend(ControlPad, (function(){                
+                return {
+                    addressCtrl : {
+                        path : '/api/all-addresses'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/addressController.js') }}
 @stop

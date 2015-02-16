@@ -1,6 +1,6 @@
 <?php
 
-class emailMessageController extends \BaseController {
+class EmailMessageController extends \BaseController {
 
 	/**
 	 * Data only

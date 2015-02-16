@@ -1,6 +1,6 @@
 <?php
 
-class addressController extends \BaseController {
+class AddressController extends \BaseController {
 
 	/**
 	 * Data only

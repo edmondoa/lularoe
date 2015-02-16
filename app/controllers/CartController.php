@@ -1,6 +1,6 @@
 <?php
 
-class cartController extends \BaseController {
+class CartController extends \BaseController {
 
 	/**
 	 * Data only

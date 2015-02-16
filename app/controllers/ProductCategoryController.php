@@ -1,6 +1,6 @@
 <?php
 
-class productCategoryController extends \BaseController {
+class ProductCategoryController extends \BaseController {
 
 	/**
 	 * Display a listing of productCategories

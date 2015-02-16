@@ -104,7 +104,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="smsMessage in smsMessages | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="smsMessage in smsMessages | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.smsMessage_id')">
 	                            </td>
@@ -144,32 +144,13 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function SmsMessageController($scope, $http) {
-	
-		$http.get('/api/all-smsMessages').success(function(smsMessages) {
-			$scope.smsMessages = smsMessages;
-			
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
+    angular.extend(ControlPad, (function(){                
+                return {
+                    smsMessageCtrl : {
+                        path : '/api/all-smsMessages'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/smsMessageController.js') }}
 @stop

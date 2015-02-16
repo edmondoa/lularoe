@@ -1,6 +1,6 @@
 <?php
 
-class userProductController extends \BaseController {
+class UserProductController extends \BaseController {
 
 	/**
 	 * Data only

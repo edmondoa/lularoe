@@ -132,7 +132,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{ highlight : product.new == 1, semitransparent : product.disabled==1 }" ng-class="{highlight: address.new == 1}" dir-paginate-start="product in products | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{ highlight : product.new == 1, semitransparent : product.disabled==1 }" ng-class="{highlight: address.new == 1}" dir-paginate-start="product in products | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.product_id')">
 	                            </td>
@@ -183,39 +183,15 @@
 @section('scripts')
 <script>
 
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function ProductController($scope, $http) {
-	
-		$http.get('/api/all-products').success(function(products) {
-			$scope.products = products;
-			@include('_helpers.bulk_action_checkboxes')
-		});
-		
-		$http.get('/api/all-product-categories').success(function(productCategories) {
-			$scope.productCategories = productCategories;
-			console.log($scope.productCategories);
-		});
-
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-
-		$scope.pageChangeHandler = function(num) {
-
-		};
-
-		$scope.$watch('search', function(newValue) {
-			index = jQuery('#categories option:selected').attr('data-index');
-			if (index != undefined) $scope.selectedSubCategoryValues = $scope.productCategories[index].tags;
-		});
-
-	}
-
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
+    angular.extend(ControlPad, (function(){                
+                return {
+                    productCtrl : {
+                        all_products_url : '/api/all-products',
+                        all_product_categories_url : '/api/all-product-categories'
+                    }
+                };
+            }())); 
 
 </script>
+{{ HTML::script('js/controllers/productController.js') }}
 @stop

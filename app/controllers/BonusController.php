@@ -1,6 +1,6 @@
 <?php
 
-class bonusController extends \BaseController {
+class BonusController extends \BaseController {
 
 	/**
 	 * Data only

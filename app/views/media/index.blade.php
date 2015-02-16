@@ -124,7 +124,7 @@
 	            <div class="col col-md-12">
             		<div ng-hide="val">
 	            		<ul class="tiles">
-		                    <li ng-click="show=!show; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+		                    <li ng-click="show=!show; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 		                        <div ng-click="checkbox()">
 		                        	<div class="options" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
@@ -183,11 +183,6 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function MediaController($scope, $http) {
-	
 		<?php
 			if (isset($user->id)) {
 				$media_url = '/api/media-by-user/' . $user->id;
@@ -207,46 +202,14 @@
 			}
 		?>
 		
-		$http.get('{{ $media_url }}').success(function(media) {
-			$scope.media = media;
-			// hide if object empty
-			$scope.val = "";
-
-			// Shows/hides the options on hover
-			$scope.hoverOn = function(media) {
-				return media.showOptions = true;
-			};
-			$scope.hoverOff = function(media) {
-				return media.showOptions = false;
-			};
-			
-			// download file
-			$scope.download = function(url) {
-				window.location.href = '/uploads/' + url;
-			}
-			
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$http.get('{{ $count_url }}').success(function(media_counts) {
-			$scope.media_counts = media_counts;
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 100;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
+    angular.extend(ControlPad, (function(){                
+                return {
+                    mediaCtrl : {
+                        media_url : '{{ $media_url }}',
+                        count_url : '{{ $count_url }}'
+                    }
+                };
+            }())); 
 
 	// toggle sort buttons
 	$('.btn-group .btn').click(function() {
@@ -255,4 +218,5 @@
 	});
 
 </script>
+{{ HTML::script('js/controllers/mediaController.js') }}
 @stop
