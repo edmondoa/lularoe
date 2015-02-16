@@ -6943,10 +6943,10 @@ footer {
 }
 .pagination > .active > a {
   background: rgba(0, 0, 0, 0.1) !important;
-  border-color: #fed141 !important;
+  border-color: #8bb8e8 !important;
 }
 .pagination > li > a {
-  color: #fed141;
+  color: #8bb8e8;
 }
 /* jquery-ui overrides */
 select.ui-datepicker-year,
