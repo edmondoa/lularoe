@@ -25,15 +25,16 @@ try {
         * operations here
         */
         var path =  ctrlpad.downlineCtrl.path;
-        
-        $http.get(path).success(function(users) {
-            $scope.users = users;
-        });
-        
+        $scope.countItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 10;
         $scope.meals = [];
         $scope.range = 7;
+        
+        $http.get(path).success(function(v) {
+            $scope.countItems = v.count;
+            $scope.users = v.data;
+        });
         
         $scope.getStartDate = function(range) {
             var d = new Date();
@@ -68,8 +69,12 @@ try {
             }
         }
         
+        $scope.$watch("currentPage", function(n, o){
+            console.log('page: '+n+' -o: '+o);  
+        });
+        
         $scope.pageChangeHandler = function(num) {
-            
+            console.log('page: '+num);    
         };
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));
