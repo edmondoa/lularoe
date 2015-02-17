@@ -83,7 +83,7 @@ try {
                     return user;    
                 });
                 
-                $scope.usersData.push({'page':curPage,'data':res});
+                //$scope.usersData.push({'page':curPage,'data':res});
                 
                 return v;
             },function(r){
