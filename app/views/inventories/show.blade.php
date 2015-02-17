@@ -1,1 +1,0 @@
-/controlpad/llr-main.site/app/views/inventories/show.blade.php
