@@ -5,7 +5,7 @@ class AddressController extends \BaseController {
 	/**
 	 * Data only
 	 */
-	public function getAllRecords(){
+	public function getAllAddresses(){
 		return Address::all();
 	}
 
