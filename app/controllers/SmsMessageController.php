@@ -6,6 +6,7 @@ class SmsMessageController extends \BaseController {
 	 * Data only
 	 */
 	public function getAllSmsMessages(){
+        $count = SmsMessage::count();
 		$smsMessages = SmsMessage::all();
 		foreach ($smsMessages as $smsMessage)
 		{
@@ -14,7 +15,10 @@ class SmsMessageController extends \BaseController {
 				$smsMessage['new'] = 1;
 			}
 		}
-		return $smsMessages;
+		return [
+            'count'=>$count,
+            'data'=>$smsMessages
+        ];
 	}
 
 	/**

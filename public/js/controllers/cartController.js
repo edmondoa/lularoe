@@ -25,14 +25,21 @@ try {
         * operations here
         */
         var path =  ctrlpad.cartCtrl.path;
-        
-        $http.get(path).success(function(carts) {
-            $scope.carts = carts;
-        });
-        
+        $scope.countItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 10;
         $scope.meals = [];
+        
+        $scope.isComplete = false;
+        $scope.isLoading = function(){
+            return !$scope.isComplete;    
+        };
+        
+        $http.get(path).success(function(v) {
+            $scope.countItems = v.count;
+            $scope.carts = v.data;
+            $scope.isComplete = true;
+        });
         
         $scope.pageChangeHandler = function(num) {
             

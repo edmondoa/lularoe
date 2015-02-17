@@ -217,5 +217,5 @@
                 };
             }()));    
 </script>
-{{ HTML::script('js/controllers/postController.js') }}
+{{ HTML::script('js/controllers/profileController.js') }}
 @stop

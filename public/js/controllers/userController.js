@@ -40,10 +40,14 @@ try {
         $scope.jumpData = [];
         
         $scope.counter = 0;
+        $scope.isComplete = false;
+        $scope.isLoading = function(){
+            return !$scope.isComplete;    
+        };
         
-        var mUser = function(curPage,  limit, orderByField, sequence){
-            var path = defaultPath+curPage;
-            path += '?a=1';
+        var dRetriever = function(curPage,  limit, orderByField, sequence, nPath){
+            var path = nPath;
+            path += '?p='+curPage;
             if(limit != defaultLimit){
                 path += '&l='+limit;
             }
@@ -83,9 +87,7 @@ try {
                     return user;    
                 });
                 
-                $scope.usersData.push({'page':curPage,'data':res});
-                
-                @include('_helpers.bulk_action_checkboxes')
+                //$scope.usersData.push({'page':curPage,'data':res});
                 
                 return v;
             },function(r){
@@ -119,7 +121,7 @@ try {
         $scope.$watch("pageSize", function(n, o){
             if(n != o){
                 $scope.stopRequestPages();
-                var promise = mUser($scope.currentPage, n, $scope.orderByField, $scope.reverseSort);
+                var promise = dRetriever($scope.currentPage, n, $scope.orderByField, $scope.reverseSort, defaultPath);
                 //console.log("pagesize currentpage: "+$scope.currentPage);
             }
         });
@@ -131,9 +133,9 @@ try {
                 $scope.prevJump = true;
             }
         
-            if($scope.checkLoadedPages(n) && (!$scope.countItems || tempPages < totalPages))
+            if(!check($scope.loadedPages,n) && (!$scope.countItems || tempPages < totalPages))
             {
-                var promise = mUser(n, $scope.pageSize,$scope.orderByField, $scope.reverseSort);
+                var promise = dRetriever(n, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
                 promise.then(function(v){
                     var totalPages = Math.ceil($scope.countItems/$scope.pageSize);
                     var curPage = n; 
@@ -149,8 +151,10 @@ try {
                                 curPage = 1;
                                 $scope.prevJump = false;    
                             }
-                            if ($scope.checkLoadedPages(curPage) && curPage <= totalPages) {
-                                mUser(curPage, $scope.pageSize,$scope.orderByField,$scope.reverseSort);
+                            if (!check($scope.loadedPages,curPage) && curPage <= totalPages) {
+                                dRetriever(curPage, $scope.pageSize,$scope.orderByField,$scope.reverseSort, defaultPath);
+                            }else{
+                                $scope.isComplete = true;
                             }
                         }
                         
@@ -173,5 +177,21 @@ try {
         $scope.$on('$destroy', function() {
           $scope.stopRequestPages();
         });
+
+		$scope.$watch('search.$', function (n,o) {
+			console.log('search changes');
+			console.log(n);
+			$scope.stopRequestPages();
+        });
+        
+        // bulk action checkboxes
+        $scope.checkbox = function() {
+            var checked = false;
+            $('.bulk-check').each(function() {
+            if ($(this).is(":checked")) checked = true;
+            });
+            if (checked == true) $('.applyAction').removeAttr('disabled');
+            else $('.applyAction').attr('disabled', 'disabled');
+        };
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));

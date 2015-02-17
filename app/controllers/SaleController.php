@@ -6,6 +6,7 @@ class SaleController extends \BaseController {
 	 * Data only
 	 */
 	public function getAllSales(){
+        $count = Sale::count();
 		$sales = Sale::all();
 		foreach ($sales as $sale)
 		{
@@ -14,7 +15,10 @@ class SaleController extends \BaseController {
 				$sale['new'] = 1;
 			}
 		}
-		return $sales;
+		return [
+            'count'=>$count,
+            'data'=>$sales
+        ];
 	}
 
 	/**

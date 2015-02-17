@@ -9,9 +9,7 @@ class SiteConfigController extends \BaseController {
 	 */
 	public function index()
 	{
-		$site_configs = SiteConfig::all();
-
-		return View::make('site-config.index', compact('site_configs'));
+		return View::make('site-config.index');
 	}
 
 	/**

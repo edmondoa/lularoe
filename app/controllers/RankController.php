@@ -6,6 +6,7 @@ class RankController extends \BaseController {
 	 * Data only
 	 */
 	public function getAllRanks(){
+        $count = Rank::count();
 		$ranks = Rank::all();
 		foreach ($ranks as $rank)
 		{
@@ -14,7 +15,10 @@ class RankController extends \BaseController {
 				$rank['new'] = 1;
 			}
 		}
-		return $ranks;
+		return [
+            'count'=>$count,
+            'data'=>$ranks
+        ];
 	}
 
 	/**

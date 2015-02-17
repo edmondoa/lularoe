@@ -25,9 +25,20 @@ try {
         * operations here
         */
         var path =  ctrlpad.mediaCtrl.media_url;
+        $scope.countItems = 0;
+        $scope.currentPage = 1;
+        $scope.pageSize = 10;
+        $scope.meals = [];
         
-        $http.get(path).success(function(media) {
-            $scope.media = media;
+        $scope.isComplete = false;
+        $scope.isLoading = function(){
+            return !$scope.isComplete;    
+        };
+        
+        $http.get(path).success(function(v) {
+            $scope.countItems = v.count;
+            $scope.media = v.data;
+            $scope.isComplete = true;
             // hide if object empty
             $scope.val = "";
 
@@ -50,10 +61,6 @@ try {
         $http.get(path).success(function(media_counts) {
             $scope.media_counts = media_counts;
         });
-        
-        $scope.currentPage = 1;
-        $scope.pageSize = 10;
-        $scope.meals = [];
         
         $scope.pageChangeHandler = function(num) {
             
