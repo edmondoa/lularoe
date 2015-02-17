@@ -2,17 +2,17 @@
 
 class InventoryController extends \BaseController {
 
-	/**
-	 * Data only
-	 */
+    /**
+     * Data only
+     */
     public function getAllInventories(){
-	    
-		return [
+        
+        return [
             'count' => Inventory::count(),
             'data' => Inventory::all()
         ];
-	}
-
+    }
+    
 	/**
 	 * Display a listing of inventories
 	 *
@@ -22,7 +22,7 @@ class InventoryController extends \BaseController {
 	{
 		$inventories = Inventory::all();
 
-		return View::make('inventory.index', compact('inventories'));
+		return View::make('inventories.index', compact('inventories'));
 	}
 
 	/**
@@ -32,7 +32,7 @@ class InventoryController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('inventory.create');
+		return View::make('inventories.create');
 	}
 
 	/**
@@ -51,7 +51,7 @@ class InventoryController extends \BaseController {
 
 		Inventory::create($data);
 
-		return Redirect::route('inventories.index')->with('message', 'Inventory created.');
+		return Redirect::route('inventories.index');
 	}
 
 	/**
@@ -64,7 +64,7 @@ class InventoryController extends \BaseController {
 	{
 		$inventory = Inventory::findOrFail($id);
 
-		return View::make('inventory.show', compact('inventory'));
+		return View::make('inventories.show', compact('inventory'));
 	}
 
 	/**
@@ -75,10 +75,11 @@ class InventoryController extends \BaseController {
 	 */
 	public function edit($id)
 	{
+        
 		$inventory = Inventory::find($id);
-		if (Auth::user()->hasRole(['Superadmin', 'Admin']) || $address->addressable_id == Auth::user()->id) {
-			return View::make('inventory.edit', compact('inventory'));
-		}
+        if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+		    return View::make('inventories.edit', compact('inventory'));
+        }
 	}
 
 	/**
@@ -98,9 +99,9 @@ class InventoryController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
-		$address->update($data);
+		$inventory->update($data);
 
-		return Redirect::to(Session::get('previous_page_2'))->with('message', 'Inventory updated.');
+		return Redirect::route('inventories.index');
 	}
 
 	/**
@@ -113,55 +114,7 @@ class InventoryController extends \BaseController {
 	{
 		Inventory::destroy($id);
 
-		return Redirect::route('inventories.index')->with('message', 'Inventory deleted.');
-	}
-	
-	/**
-	 * Remove inventories.
-	 */
-	public function delete()
-	{
-		foreach (Input::get('ids') as $id) {
-			Inventory::destroy($id);
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('inventories.index')->with('message', 'Inventories deleted.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Inventory deleted.');
-		}
-	}
-	
-	/**
-	 * Diable inventories.
-	 */
-	public function disable()
-	{
-		foreach (Input::get('ids') as $id) {
-			Inventory::find($id)->update(['disabled' => 1]);	
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('inventories.index')->with('message', 'Inventories disabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Inventory disabled.');
-		}
-	}
-	
-	/**
-	 * Enable inventories.
-	 */
-	public function enable()
-	{
-		foreach (Input::get('ids') as $id) {
-			Inventory::find($id)->update(['disabled' => 0]);	
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('inventories.index')->with('message', 'Inventories enabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Inventory enabled.');
-		}
+		return Redirect::route('inventories.index');
 	}
 
 }
