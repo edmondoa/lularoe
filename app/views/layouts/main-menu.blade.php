@@ -87,7 +87,14 @@
  					">
  						<i class="fa fa-file-image-o"></i> <span class="text">Resources</span>
  					</a>
- 				
+ 				    <a href="javascript:void(0)" data-href="/inventories" class='list-group-item' data-toggle="popover" data-content="
+                         <a href='/inventories'><i class='fa fa-check'></i> All Inventories</a>
+                         @if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
+                             <a href='/inventories/create'><i class='fa fa-plus'></i> New Inventory</a>
+                         @endif
+                     ">
+                         <i class="fa fa-list-ol"></i> <span class="text">Inventories</span>
+                     </a>
  					<a href="javascript:void(0)" data-href="/opportunities" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/opportunities'><i class='fa fa-check'></i> All Opportunities</a>
  						@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
