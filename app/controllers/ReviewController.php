@@ -6,6 +6,7 @@ class ReviewController extends \BaseController {
 	 * Data only
 	 */
 	public function getAllReviews(){
+        $count = Review::count();
 		$reviews = Review::all();
 		foreach ($reviews as $review)
 		{
@@ -14,7 +15,10 @@ class ReviewController extends \BaseController {
 				$review['new'] = 1;
 			}
 		}
-		return $reviews;
+		return [
+            'count'=>$count,
+            'data'=>$reviews
+        ];
 	}
 
 	/**

@@ -222,7 +222,7 @@
 		?>
     angular.extend(ControlPad, (function(){                
                 return {
-                    downlineCtrl : {
+                    uventCtrl : {
                         path : '/api/{{ $object }}'
             }
         };

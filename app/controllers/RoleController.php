@@ -6,6 +6,7 @@ class RoleController extends \BaseController {
 	 * Data only
 	 */
 	public function getAllRoles(){
+        $count = Role::count();
 		$roles = Role::all();
 		foreach ($roles as $role)
 		{
@@ -14,7 +15,10 @@ class RoleController extends \BaseController {
 				$role['new'] = 1;
 			}
 		}
-		return $roles;
+		return [
+            'count'=>$count,
+            'data'=>$roles
+        ];
 	}
 
 	/**

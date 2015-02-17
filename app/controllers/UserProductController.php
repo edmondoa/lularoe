@@ -6,6 +6,7 @@ class UserProductController extends \BaseController {
 	 * Data only
 	 */
 	public function getAllUserProducts(){
+        $count = UserProduct::count();
 		$userProducts = UserProduct::all();
 		foreach ($userProducts as $userProduct)
 		{
@@ -14,7 +15,10 @@ class UserProductController extends \BaseController {
 				$userProduct['new'] = 1;
 			}
 		}
-		return $userProducts;
+		return [
+            'count' => $count,
+            'data' =>$userProducts
+        ];
 	}
 
 	/**

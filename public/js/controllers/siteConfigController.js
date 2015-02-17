@@ -25,14 +25,21 @@ try {
         * operations here
         */
         var path =  ctrlpad.siteConfigCtrl.path;
-        
-        $http.get(path).success(function(site_configs) {
-            $scope.site_configs = site_configs;
-        });
-        
+        $scope.countItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 10;
         $scope.meals = [];
+        
+        $scope.isComplete = false;
+        $scope.isLoading = function(){
+            return !$scope.isComplete;    
+        };
+        
+        $http.get(path).success(function(v) {
+            $scope.countItems = v.count;
+            $scope.site_configs = v.data;
+            $scope.isComplete = true;
+        });
         
         $scope.pageChangeHandler = function(num) {
             

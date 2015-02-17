@@ -43,10 +43,10 @@ try {
         $scope.counter = 0;
         $scope.range = 7;
         
-        $http.get(path).success(function(v) {
-            $scope.countItems = v.count;
-            $scope.users = v.data;
-        });
+        $scope.isComplete = false;
+        $scope.isLoading = function(){
+            return !$scope.isComplete;    
+        };
         
         var dRetriever = function(curPage,  limit, orderByField, sequence, nPath){
             var path = nPath;
@@ -136,7 +136,7 @@ try {
         $scope.$watch("currentPage", function(n, o){
             var promise = dRetriever(n, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
                 promise.then(function(v){
-                    //success
+                    $scope.isComplete = true;
                 },function(r){
                     return( $q.reject( "Something went wrong" ) );    
                 }) 

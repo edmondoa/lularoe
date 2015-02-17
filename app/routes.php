@@ -199,7 +199,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-profiles', 'ProfileController@getAllProfiles');
 		Route::get('api/all-ranks', 'RankController@getAllRanks');
 		Route::get('api/all-reviews', 'ReviewController@getAllReviews');
-		Route::get('api/all-roles', 'ReviewController@getAllRoles');
+		Route::get('api/all-roles', 'RoleController@getAllRoles');
 		Route::get('api/all-sales', 'SaleController@getAllSales');
 		Route::get('api/all-smsMessages', 'SmsMessageController@getAllSmsMessages');
 		Route::get('api/all-states', 'StateController@getAllStates');
@@ -221,7 +221,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
         Route::get('api/all-users', 'DataOnlyController@getAllUsers');
 		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
-		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
+		Route::get('api/media-counts/{key}', 'DataOnlyController@getMediaCounts');
 		Route::get('api/all-images', 'DataOnlyController@getAllImages');
 		Route::get('api/media-by-user/{id}', 'DataOnlyController@getMediaByUser');
 		Route::get('api/media-by-reps', 'DataOnlyController@getMediaByReps');
@@ -242,7 +242,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-posts', 'DataOnlyController@getAllPosts');
 		Route::get('api/all-products', 'DataOnlyController@getAllProducts');
 		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
-		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
+        Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
+		Route::get('api/all-userSites', 'DataOnlyController@getAllUserSites');
 		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline');		
         Route::get('api/search-user/{keyword}', 'DataOnlyController@getSearchUsers');    
 

@@ -6,6 +6,7 @@ class EmailMessageController extends \BaseController {
 	 * Data only
 	 */
 	public function getAllEmailMessages(){
+        $count = EmailMessage::count();
 		$emailMessages = EmailMessage::all();
 		foreach ($emailMessages as $emailMessage)
 		{
@@ -14,7 +15,10 @@ class EmailMessageController extends \BaseController {
 				$emailMessage['new'] = 1;
 			}
 		}
-		return $emailMessages;
+		return [
+            'count'=>$count,
+            'data'=>$emailMessages
+        ];
 	}
 
 	/**

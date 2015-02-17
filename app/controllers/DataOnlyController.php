@@ -10,9 +10,18 @@ class DataOnlyController extends \BaseController
 	 
 	// all media
 	public function getAllMedia() {
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Media::all();
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])){ 
+            return [
+                'count' => Media::count(),
+                'data' => Media::all()
+            ];
+        }
 		if (Auth::user()->hasRole(['Rep'])) {
-			return Media::where('reps', 1)->get();
+            $raw = Media::where('reps', 1);
+			return [
+                'count'=>$raw->count(),
+                'data'=>$raw->get()
+            ];
 		}
 	}
 	
@@ -91,13 +100,18 @@ class DataOnlyController extends \BaseController
 	// all media by user
 	public function getMediaByUser($id) {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->hasRole(['Rep']) && Auth::user()->id == $id) {
-			return Media::where('user_id', $id)->get();
+            $raw = Media::where('user_id', $id);
+			return [
+                'count'=>$raw->count(),
+                'data'=>$raw->get()
+            ];
 		}
 	}
 	
 	// all media by reps
 	public function getMediaByReps() {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+            $count = Media::count();
 			$medias = Media::all();
 			$media_with_reps = [];
 			foreach($medias as $media) {
@@ -110,14 +124,21 @@ class DataOnlyController extends \BaseController
 					// unset($medias[$key]);
 				// }
 			// }
-			return $media_with_reps;
+			return [
+                'count'=>$count,
+                'data'=>$media_with_reps
+            ];
 		}
 	}
 	
 	// all media by reps
 	public function getMediaSharedWithReps() {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-			return Media::where('reps', 1)->get();
+            $raw = Media::where('reps', 1);
+			return [
+                'count'=>$raw->count(),
+                'data'=>$raw->get()
+            ];
 		}
 	}
 	
@@ -133,7 +154,10 @@ class DataOnlyController extends \BaseController
 	 */
 	
 	public function getAllConfig(){
-		return SiteConfig::all();
+		return [
+            'count'=>SiteConfig::count(),
+            'data'=>SiteConfig::all()
+        ];
 	}	 
 
 	/*
@@ -393,7 +417,7 @@ class DataOnlyController extends \BaseController
         $sequence = $s == "true" || !$s ? "ASC" : "DESC";
         $offset = ($page - 1) * $limit;
 		return [
-            'count' =>Lead::all()->count(),
+            'count' =>Lead::count(),
             'data' => Lead::orderBy("updated_at", "DESC")
                             ->orderBy($order, $sequence)
                             ->skip($offset)
@@ -551,7 +575,11 @@ class DataOnlyController extends \BaseController
 
 	// productCateogires
 	public function getAllProductCategories(){
-		return ProductCategory::with('tags')->get();
+		$raw = ProductCategory::with('tags');
+        return [
+            'count' => $raw->count(),
+            'data' => $raw->get()
+        ];
 	}
 
 	// productTags
@@ -606,6 +634,16 @@ class DataOnlyController extends \BaseController
             'count' => $count,
             'data' => $data
          ];
+    }
+    
+    public function getAllUserSites(){
+        $count = UserSite::count();
+        $data = UserSite::all();
+        
+        return [
+            'count' => $count,
+            'data' => $data
+        ];
     }
 
 }

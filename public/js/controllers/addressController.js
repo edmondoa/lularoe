@@ -30,9 +30,15 @@ try {
         $scope.pageSize = 10;
         $scope.meals = [];
         
+        $scope.isComplete = false;
+        $scope.isLoading = function(){
+            return !$scope.isComplete;    
+        };
+        
         $http.get(path).success(function(v) {
             $scope.countItems = v.count;
             $scope.addresses = v.data;
+            $scope.isComplete = true;
         });
         
         $scope.pageChangeHandler = function(num) {

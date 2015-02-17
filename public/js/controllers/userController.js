@@ -40,6 +40,10 @@ try {
         $scope.jumpData = [];
         
         $scope.counter = 0;
+        $scope.isComplete = false;
+        $scope.isLoading = function(){
+            return !$scope.isComplete;    
+        };
         
         var dRetriever = function(curPage,  limit, orderByField, sequence, nPath){
             var path = nPath;
@@ -149,6 +153,8 @@ try {
                             }
                             if (!check($scope.loadedPages,curPage) && curPage <= totalPages) {
                                 dRetriever(curPage, $scope.pageSize,$scope.orderByField,$scope.reverseSort, defaultPath);
+                            }else{
+                                $scope.isComplete = true;
                             }
                         }
                         

@@ -25,14 +25,23 @@ try {
         * operations here
         */
         var path =  ctrlpad.uventCtrl.path;
-        
-        $http.get(path).success(function(events) {
-            $scope.events = events;
-        });
-        
+        $scope.countItems = 0;
         $scope.currentPage = 1;
         $scope.pageSize = 10;
         $scope.meals = [];
+        
+        $scope.isComplete = false;
+        $scope.isLoading = function(){
+            return !$scope.isComplete;    
+        };
+        
+        $http.get(path).success(function(v) {
+            $scope.countItems = v.count;
+            $scope.events = v.data;
+            $scope.isComplete = true;
+        });
+        
+        
         
         $scope.pageChangeHandler = function(num) {
             

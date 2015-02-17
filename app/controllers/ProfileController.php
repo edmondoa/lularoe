@@ -6,6 +6,7 @@ class ProfileController extends \BaseController {
 	 * Data only
 	 */
 	public function getAllProfiles(){
+        $count = Profile::count();
 		$profiles = Profile::all();
 		foreach ($profiles as $profile)
 		{
@@ -14,7 +15,10 @@ class ProfileController extends \BaseController {
 				$profile['new'] = 1;
 			}
 		}
-		return $profiles;
+		return [
+            'count'=>$count,
+            'data'=>$profiles
+        ];
 	}
 
 	/**
