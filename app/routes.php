@@ -177,6 +177,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
 		
+        //inventories
+        Route::resource('inventories', 'InventoryController');
+        Route::post('inventories/disable', 'InventoryController@disable');
+        Route::post('inventories/enable', 'InventoryController@enable');
+        Route::post('inventories/delete', 'InventoryController@delete');
+        
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
 		Route::post('opportunities/disable', 'OpportunityController@disable');
