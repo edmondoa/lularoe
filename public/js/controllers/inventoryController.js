@@ -17,23 +17,6 @@ try {
       
     push(app.requires, newModules);
     
-    var isInOrder = function(array,n){
-        if(array.length){
-            var res = array.filter(function(o){
-                if(o.itemnumber == n){
-                    if(o.numOrder){
-                        o.numOrder++;
-                    }else{ 
-                        o.numOrder =1;
-                    }
-                    return true;
-                }else return false;
-            });    
-            return !(!res.length);
-        }
-        return false;   
-    };  
-
     app.controller('InventoryController',
         ['$scope','$http','shared','$q','$interval',
             function($scope, $http, shared, $q, $interval){
@@ -44,6 +27,7 @@ try {
         var path =  ctrlpad.inventoryCtrl.path;
         $scope.countItems = 0;
         $scope.orders = [];
+        $scope.inventories = [];
         $scope.currentPage = 1;
         $scope.pageSize = 10;
         
@@ -55,6 +39,12 @@ try {
         $http.get(path).success(function(v) {
             $scope.inventories = v;
             $scope.isComplete = true;
+            angular.forEach($scope.inventories, function(inventory){
+                 inventory.sizes = [];   
+                 angular.forEach(inventory.quantities, function(v, i){
+                       inventory.sizes.push({checked:false,key:i,value:v});                       
+                 });   
+            });
         });
         
         $scope.pageChangeHandler = function(num) {
@@ -66,15 +56,18 @@ try {
         }
         
         $scope.addOrder = function(n){
-            if(!isInOrder($scope.orders, n.itemnumber)){
-                n.numOrder =1;   
-                $scope.orders.push(n);    
-            }
-            console.log($scope.orders);
+            angular.forEach(n.sizes, function(size){
+                if(!$scope.isInOrder($scope.orders, n, size)){
+                    if(size.checked){
+                        size.numOrder = 1;
+                        $scope.orders.push({'itemnumber':n.itemnumber,'size':size.key,'numOrder':1,'price':n.price});
+                    }    
+                }
+            });   
         };
         
         $scope.plus = function(n){
-            
+            $scope.addOrder(n);
         };
         
         $scope.minus = function(n){
@@ -85,14 +78,58 @@ try {
             
         };
         
-        // bulk action checkboxes
-        $scope.checkbox = function() {
-            var checked = false;
-            $('.bulk-check').each(function() {
-            if ($(this).is(":checked")) checked = true;
+        $scope.toggleCheck = function(array,n){
+            angular.forEach($scope.inventories, function(inventory){
+                if(inventory.itemnumber == array.itemnumber){
+                    angular.forEach(inventory.sizes, function(size){
+                        if(size.key == n.key){
+                            size.checked = !n.checked;    
+                        }
+                    }) 
+                }    
             });
-            if (checked == true) $('.applyAction').removeAttr('disabled');
-            else $('.applyAction').attr('disabled', 'disabled');
+        };
+        
+        $scope.hasChecked = function(array,n){
+            if(array.length){
+                var res = array.filter(function(o){
+                    if(o.itemnumber == n.itemnumber){
+                        angular.forEach(n.sizes, function(size){
+                            if(size.checked ){
+                                //
+                            }    
+                        });
+                        return true;
+                    }else return false;
+                });    
+                return !(!res.length);
+            }
+            return false;   
+        };
+        
+        $scope.isInOrder = function(array,n, size){
+            if(array.length){
+                var res = array.filter(function(o){
+                    if(o.itemnumber == n.itemnumber && o.size == size.key){
+                        angular.forEach(n.sizes, function(size){
+                            if(size.checked && o.size ==size.key){
+                                if(o.numOrder){
+                                    o.numOrder++;
+                                }else{
+                                    o.numOrder = 1;  
+                                } 
+                            }    
+                        });
+                        return true;
+                    }else return false;
+                });    
+                return !(!res.length);
+            }
+            return false;   
+        };
+        
+        $scope.countSelect = function(){
+            return !(!$scope.orders.length);
         };
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));
