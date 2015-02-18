@@ -26,6 +26,8 @@ try {
         */
         var path =  ctrlpad.inventoryCtrl.path;
         $scope.countItems = 0;
+        $scope.tax = 0;
+        $scope.total = 0;
         $scope.orders = [];
         $scope.inventories = [];
         $scope.currentPage = 1;
@@ -130,6 +132,16 @@ try {
         
         $scope.countSelect = function(){
             return !(!$scope.orders.length);
+        };
+        
+        $scope.subtotal = function(){
+            var $total = 0;
+            angular.forEach($scope.orders, function (order){
+                $total += order.numOrder * order.price;    
+            });
+            $scope.tax = $total * 0.0625;
+            $scope.total = $scope.tax + $total;
+            return $total;
         };
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));

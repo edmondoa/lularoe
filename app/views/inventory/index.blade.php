@@ -60,15 +60,15 @@
                             <tbody>
                                 <tr>
                                     <td>Subtotal</td>
-                                    <td align="right">$100</td>
+                                    <td align="right">$@{{subtotal()|number:2}}</td>
                                 </tr>
                                 <tr>
                                     <td>Tax</td>
-                                    <td align="right">$6.25</td>
+                                    <td align="right">$@{{tax|number:2}}</td>
                                 </tr>
                                 <tr>
                                     <td><label>Total</label></td>
-                                    <td align="right">$106.25</td>
+                                    <td align="right">$@{{total|number:2}}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
