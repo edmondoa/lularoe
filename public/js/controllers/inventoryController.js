@@ -43,6 +43,7 @@ try {
             $scope.isComplete = true;
             angular.forEach($scope.inventories, function(inventory){
                  inventory.sizes = [];   
+                 inventory.doNag = false;   
                  angular.forEach(inventory.quantities, function(v, i){
                        inventory.sizes.push({checked:false,key:i,value:v});                       
                  });   
@@ -58,6 +59,14 @@ try {
         }
         
         $scope.addOrder = function(n){
+            var checkedItems = n.sizes.filter(function(s){
+                return s.checked;
+            });
+            
+            if(!checkedItems.length){
+                n.doNag = true;
+            }else n.doNag = false;
+            
             angular.forEach(n.sizes, function(size){
                 if(!$scope.isInOrder($scope.orders, n, size)){
                     if(size.checked){
@@ -90,23 +99,6 @@ try {
                     }) 
                 }    
             });
-        };
-        
-        $scope.hasChecked = function(array,n){
-            if(array.length){
-                var res = array.filter(function(o){
-                    if(o.itemnumber == n.itemnumber){
-                        angular.forEach(n.sizes, function(size){
-                            if(size.checked ){
-                                //
-                            }    
-                        });
-                        return true;
-                    }else return false;
-                });    
-                return !(!res.length);
-            }
-            return false;   
         };
         
         $scope.isInOrder = function(array,n, size){

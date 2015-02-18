@@ -36,6 +36,11 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h5>Size</h5>
+                                        <div ng-if="inventory.doNag">
+                                            <div class="pull-left alert alert-danger cleafix" role="alert">
+                                                <strong>Oh snap!</strong> Please select at least one size and try clicking the "add" button again.
+                                            </div><br/><br/><br/><br/>
+                                        </div>
                                         <ul class="nav nav-pills">
                                             <li ng-repeat="(key,size) in inventory.sizes">
                                                     <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
