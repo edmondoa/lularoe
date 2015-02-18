@@ -46,9 +46,11 @@
                                                     <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
                                                         <input class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
                                                     </a>
-                                                    <a ng-click="toggleCheck(inventory,size)" class="pull-left" ng-if="size.value > 1000" href="#"><span>@{{size.key}} - </span><span class="label label-info">IN STOCK</span></a>
-                                                    <a ng-click="toggleCheck(inventory,size)" class="pull-left" ng-if="size.value < 1000 && size >= 500" href="#"><span>@{{size.key}} - </span><span class="label label-warning">LIMITED STOCK</span></a>
-                                                    <a ng-click="toggleCheck(inventory,size)"class="pull-left" ng-if="size.value < 500" href="#"><span>@{{size.key}} - </span><span class="label label-danger">HURRY</span></a>
+                                                    <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}} - </span>
+                                                        <span ng-if="size.value > 1000" class="label label-info">IN STOCK</span>
+                                                        <span ng-if="size.value < 1000 && size >= 500" class="label label-warning">LIMITED STOCK</span>
+                                                        <span ng-if="size.value < 500" class="label label-danger">HURRY</span>
+                                                    </a>
                                             </li>
                                         </ul>
                                     </div>
