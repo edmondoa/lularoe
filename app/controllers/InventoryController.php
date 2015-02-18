@@ -22,7 +22,7 @@ class InventoryController extends \BaseController {
 	{
 		$inventories = Inventory::all();
 
-		return View::make('inventories.index', compact('inventories'));
+		return View::make('inventory.index', compact('inventories'));
 	}
 
 	/**
@@ -32,7 +32,7 @@ class InventoryController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('inventories.create');
+		return View::make('inventory.create');
 	}
 
 	/**
@@ -51,7 +51,7 @@ class InventoryController extends \BaseController {
 
 		Inventory::create($data);
 
-		return Redirect::route('inventories.index');
+		return Redirect::route('inventory.index');
 	}
 
 	/**
@@ -64,7 +64,7 @@ class InventoryController extends \BaseController {
 	{
 		$inventory = Inventory::findOrFail($id);
 
-		return View::make('inventories.show', compact('inventory'));
+		return View::make('inventory.show', compact('inventory'));
 	}
 
 	/**
@@ -78,7 +78,7 @@ class InventoryController extends \BaseController {
         
 		$inventory = Inventory::find($id);
         if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
-		    return View::make('inventories.edit', compact('inventory'));
+		    return View::make('inventory.edit', compact('inventory'));
         }
 	}
 
@@ -116,5 +116,53 @@ class InventoryController extends \BaseController {
 
 		return Redirect::route('inventories.index');
 	}
+    
+    /**
+     * Remove inventories.
+     */
+    public function delete()
+    {
+        foreach (Input::get('ids') as $id) {
+            Inventory::destroy($id);
+        }
+        if (count(Input::get('ids')) > 1) {
+            return Redirect::route('inventories.index')->with('message', 'Inventories deleted.');
+        }
+        else {
+            return Redirect::back()->with('message', 'Inventory deleted.');
+        }
+    }
+    
+    /**
+     * Diable inventories.
+     */
+    public function disable()
+    {
+        foreach (Input::get('ids') as $id) {
+            Inventory::find($id)->update(['disabled' => 1]);    
+        }
+        if (count(Input::get('ids')) > 1) {
+            return Redirect::route('inventories.index')->with('message', 'Inventory disabled.');
+        }
+        else {
+            return Redirect::back()->with('message', 'Inventory disabled.');
+        }
+    }
+    
+    /**
+     * Enable inventories.
+     */
+    public function enable()
+    {
+        foreach (Input::get('ids') as $id) {
+            Inventory::find($id)->update(['disabled' => 0]);    
+        }
+        if (count(Input::get('ids')) > 1) {
+            return Redirect::route('inventories.index')->with('message', 'Inventories enabled.');
+        }
+        else {
+            return Redirect::back()->with('message', 'Inventory enabled.');
+        }
+    }
 
 }

@@ -1,183 +1,136 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'addresses/disable', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => 'inventory/disable', 'method' => 'POST')) }}
         <div ng-controller="InventoryController" class="my-controller">
-            <div class="page-actions">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h1 class="no-top pull-left no-pull-xs">All Inventories</h1>
-                        <div class="pull-right hidable-xs">
-                            <div class="input-group pull-right">
-                                <span class="input-group-addon no-width">Count</span>
-                                <input class="form-control itemsPerPage width-auto" ng-model="pageSize" type="number" min="1">
-                            </div>
-                            <h4 class="pull-right margin-right-1">Page <span ng-bind="currentPage"></span></h4>
-                        </div>
-                    </div>
-                </div><!-- row -->
-                <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-12 page-actions-left">
-                        <div class="pull-left">
-                            <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('addresses/create') }}"><i class="fa fa-plus"></i></a>
-                            <div class="pull-left">
-                                <div class="input-group">
-                                    <select class="form-control selectpicker actions">
-                                        <option value="addresses/disable" selected>Disable</option>
-                                        <option value="addresses/enable">Enable</option>
-                                        <option value="addresses/delete">Delete</option>
-                                    </select>
-                                    <div class="input-group-btn no-width">
-                                        <button class="btn btn-default applyAction" disabled>
-                                            <i class="fa fa-check"></i>
-                                        </button>
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 class="">Current Inventory</h1>
+                    <ul class="media-list" id="currentinventory">
+                        <li class="media" ng-repeat="inventory in inventories">
+                            <a class="pull-left" href="#">
+                                <img class="media-object" src="sample.jpg" width="100">
+                            </a>
+                            <div class="media-body">
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <h4 class="media-heading pull-left">@{{inventory.model}}</h4>
+                                        <div class="pull-right">
+                                            <span class="bold"><b>$@{{inventory.price}}</b></span>
+                                            <div class="btn-group">
+                                                <button ng-click="addOrder(inventory)" type="button">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <p>Nothing to descript</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <ul id="@{{$index}}_sizes">
+                                            <li ng-repeat="(key,size) in inventory.quantities">
+                                                <a style="display:block;" ng-if="size > 1000" href="#"><span>@{{key}} - </span><span class="label label-info">IN STOCK</span></a>
+                                                <a style="display:block;" ng-if="size < 1000 && size >= 500" href="#"><span>@{{key}} - </span><span class="label label-warning">LIMITED STOCK</span></a>
+                                                <a style="display:block;" ng-if="size < 500" href="#"><span>@{{key}} - </span><span class="label label-danger">HURRY</span></a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-4">
+                    <h3>Order Total</h3>
+                    <div class="well">
+                        <!--
+                        <div class="form-group">
+                            <span>Subtotal</span>
+                            <div class="pull-right">$100</div>
                         </div>
+                        <div class="form-group">
+                            <span>Tax</span>
+                            <div class="pull-right">$6.25</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Total</label>
+                            <div class="pull-right">$106.25</div>
+                        </div>
+                        <div class="form-group">
+                            <button class="pull-right btn btn-sm btn-success">Checkout</button>
+                            <button class="pull-left btn btn-sm btn-danger">Cancel</button>
+                        </div>-->
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Subtotal</td>
+                                    <td align="right">$100</td>
+                                </tr>
+                                <tr>
+                                    <td>Tax</td>
+                                    <td align="right">$6.25</td>
+                                </tr>
+                                <tr>
+                                    <td><label>Total</label></td>
+                                    <td align="right">$106.25</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <button class="pull-right btn btn-sm btn-success">Checkout</button>
+                                        <button class="pull-left btn btn-sm btn-danger">Cancel</button>
+                                    </td>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                        <div class="input-group pull-right no-pull-xs">
-                            <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
-                            <span class="input-group-btn no-width">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                    </div><!-- col -->
-                </div><!-- row -->
-            </div><!-- page-actions -->
-            <div class="row">
-                <div class="col col-md-12">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <input type="checkbox">
-                                </th>
-                                
-                                <th class="link" ng-click="orderByField='address_1'; reverseSort = !reverseSort">Address 1
-                                    <span>
-                                        <span ng-show="orderByField == 'address_1'">
-                                            <span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-                                            <span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                                        </span>
-                                    </span>
-                                </th>
-                                
-                                <th class="link" ng-click="orderByField='address_2'; reverseSort = !reverseSort">Address 2
-                                    <span>
-                                        <span ng-show="orderByField == 'address_2'">
-                                            <span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-                                            <span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                                        </span>
-                                    </span>
-                                </th>
-                                
-                                <th class="link" ng-click="orderByField='city'; reverseSort = !reverseSort">City
-                                    <span>
-                                        <span ng-show="orderByField == 'city'">
-                                            <span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-                                            <span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                                        </span>
-                                    </span>
-                                </th>
-                                
-                                <th class="link" ng-click="orderByField='state'; reverseSort = !reverseSort">State
-                                    <span>
-                                        <span ng-show="orderByField == 'state'">
-                                            <span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-                                            <span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                                        </span>
-                                    </span>
-                                </th>
-                                
-                                <th class="link" ng-click="orderByField='addressable_id'; reverseSort = !reverseSort">Addressable Id
-                                    <span>
-                                        <span ng-show="orderByField == 'addressable_id'">
-                                            <span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-                                            <span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                                        </span>
-                                    </span>
-                                </th>
-                                
-                                <th class="link" ng-click="orderByField='zip'; reverseSort = !reverseSort">Zip
-                                    <span>
-                                        <span ng-show="orderByField == 'zip'">
-                                            <span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-                                            <span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                                        </span>
-                                    </span>
-                                </th>
-                                
-                                <th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
-                                    <span>
-                                        <span ng-show="orderByField == 'disabled'">
-                                            <span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-                                            <span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                                        </span>
-                                    </span>
-                                </th>
-                                
-                                <th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
-                                    <span>
-                                        <span ng-show="orderByField == 'updated_at'">
-                                            <span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-                                            <span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                                        </span>
-                                    </span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="inventory in inventories | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
-                                <td ng-click="checkbox()">
-                                    <input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.inventory_id')">
-                                </td>
-                                
-                                <td>
-                                    <a href="/inventories/@include('_helpers.inventory_id')"><span ng-bind="address.address_1"></span></a>
-                                </td>
-                                
-                                <td>
-                                    <a href="/inventories/@include('_helpers.inventory_id')"><span ng-bind="address.address_2"></span></a>
-                                </td>
-                                
-                                <td>
-                                    <a href="/inventories/@include('_helpers.inventory_id')"><span ng-bind="address.city"></span></a>
-                                </td>
-                                
-                                <td>
-                                    <a href="/inventories/@include('_helpers.inventory_id')"><span ng-bind="address.state"></span></a>
-                                </td>
-                                
-                                <td>
-                                    <a href="/inventories/@include('_helpers.inventory_id')"><span ng-bind="address.addressable_id"></span></a>
-                                </td>
-                                
-                                <td>
-                                    <a href="/inventories/@include('_helpers.inventory_id')"><span ng-bind="address.zip"></span></a>
-                                </td>
-                                
-                                <td>
-                                    <a href="/inventories/@include('_helpers.inventory_id')"><span ng-bind="address.disabled"></span></a>
-                                </td>
-                                
-                                <td>
-                                    <a href="/inventories/@include('_helpers.inventory_id')"><span ng-bind="address.updated_at"></span></a>
-                                </td>
-                            </tr>
-                            <tr dir-paginate-end></tr>
-                        </tbody>
-                    </table>
-                    @include('_helpers.loading')<div ng-controller="OtherController" class="other-controller">
-                        <div class="text-center">
-                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
-                        </div>
+                    <h3>Selected Items</h3>
+                    <div ng-if="isEmpty()">
+                        <ul class="media-list">
+                            <li class="media">
+                                <div class="well">
+                                    <div class="row">
+                                        <div class="col-lg-12">empty</div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                </div><!-- col -->
-            </div><!-- row -->
+                    <div>
+                        <ul class="media-list">
+                            <li class="media">
+                                    <div class="well clearfix" ng-repeat="order in orders | orderBy: 'itemnumber'">
+                                    <div class="pull-right"><a ng-click="close(order)" href='#'><i class='fa fa-close'></i></a></div>
+                                    <div class="row">
+                                        <div class="col-lg-2">
+                                            <span class="label label-info">$@{{order.price}} / XL</span>
+                                            <img src="sample.jpg" width="50" />
+                                            <div style="width:80px">
+                                                <span class="btn btn-xs btn-success" ng-click="">+</span>
+                                                <span class="btn btn-xs btn-danger" ng-click="">-</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-10">
+                                            <h4 class="media-heading"> @{{order.itemnumber}} </h4>
+                                            <p class="pull-left">Some semblance of a description could go here</p>
+                                            <div class="media-body">
+                                                <div class="col-lg-8">
+                                                    <span class="label label-sm label-info">x @{{order.numOrder}}</span>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="pull-right">
+                                                        <b>$@{{order.numOrder * order.price}}</b>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         {{ Form::close() }}
     </div><!-- app -->
 @stop
@@ -186,7 +139,7 @@
     angular.extend(ControlPad, (function(){                
                 return {
                     inventoryCtrl : {
-                        path : '/api/all-inventories'
+                        path : '/json/llr_json.json'
                     }
                 };
             }()));    
