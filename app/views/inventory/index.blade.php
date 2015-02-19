@@ -9,7 +9,7 @@
                     <ul class="media-list" id="currentinventory">
                         <li class="media" ng-repeat="(k,inventory) in inventories">
                             <a class="pull-left" href="#">
-                                <img class="media-object" src="sample.jpg" width="100">
+                                <img class="media-object" src="/img/media/@{{inventory.model}}.jpg" width="100">
                             </a>
                             <div class="media-body">
                                 <div class="row">
@@ -109,7 +109,7 @@
                                     <div class="row">
                                         <div class="col-lg-2">
                                             <span class="label label-info">$@{{order.price}} / @{{order.size}}</span>
-                                            <img src="sample.jpg" width="50" />
+                                            <img src="/img/media/@{{inventory.model}}.jpg" width="50" />
                                             <div style="width:80px">
                                                 <span class="btn btn-xs btn-success" ng-click="plus(order)">+</span>
                                                 <span class="btn btn-xs btn-danger" ng-click="minus(order)">-</span>
