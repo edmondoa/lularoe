@@ -75,7 +75,7 @@ try {
                 if(!$scope.isInOrder($scope.orders, n, size)){
                     if(size.checked){
                         var quantity = n.numOrder;
-                        if(size.value > quantity){
+                        if(size.value >= quantity){
                             size.numOrder = quantity;
                             size.value -= quantity;
                             if(!size.value || size.value < 0) size.value = 0;
@@ -124,7 +124,7 @@ try {
                     if(o.itemnumber == n.itemnumber && o.size == size.key){
                         angular.forEach(n.sizes, function(size){
                             if(size.checked && o.size ==size.key && size.value){
-                                if(size.value > n.numOrder){
+                                if(size.value >= n.numOrder){
                                     if(o.numOrder){
                                         if((size.value - n.numOrder) >= 0)
                                         o.numOrder += n.numOrder;
