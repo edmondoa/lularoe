@@ -164,5 +164,14 @@ class InventoryController extends \BaseController {
             return Redirect::back()->with('message', 'Inventory enabled.');
         }
     }
+    
+    /**
+     * Process order checkout
+     * 
+     */
+    public function checkout()
+    {
+            return View::make('inventory.checkout');
+    }
 
 }

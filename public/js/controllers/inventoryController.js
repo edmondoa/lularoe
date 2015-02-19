@@ -44,6 +44,7 @@ try {
             angular.forEach($scope.inventories, function(inventory){
                  inventory.sizes = [];   
                  inventory.doNag = false;   
+                 inventory.numOrder = 1;   
                  angular.forEach(inventory.quantities, function(v, i){
                        inventory.sizes.push({checked:false,key:i,value:v});                       
                  });   
@@ -53,6 +54,9 @@ try {
         $scope.pageChangeHandler = function(num) {
             
         };
+
+
+
         
         $scope.isEmpty = function(){
             return !($scope.orders.length);
@@ -64,29 +68,41 @@ try {
             });
             
             if(!checkedItems.length){
-                n.doNag = true;
+                n.doNag = "none-selected";
             }else n.doNag = false;
             
             angular.forEach(n.sizes, function(size){
                 if(!$scope.isInOrder($scope.orders, n, size)){
                     if(size.checked){
-                        size.numOrder = 1;
-                        $scope.orders.push({'itemnumber':n.itemnumber,'size':size.key,'numOrder':1,'price':n.price});
+                        var quantity = n.numOrder;
+                        if(size.value >= quantity){
+                            size.numOrder = quantity;
+                            size.value -= quantity;
+                            if(!size.value || size.value < 0) size.value = 0;
+                            $scope.orders.push({'itemnumber':n.itemnumber,'size':size.key,'numOrder':quantity,'price':n.price});
+                        }else{
+                            n.doNag = "volume-too-large";
+                        }
                     }    
                 }
             });   
         };
         
         $scope.plus = function(n){
-            $scope.addOrder(n);
+            n.numOrder++;
         };
         
         $scope.minus = function(n){
-            
+            n.numOrder--;
+            if(!n.numOrder) n.numOrder = 1;
         };
         
-        $scope.close = function(n){
-            
+        $scope.close = function(i){
+            $scope.orders.splice(i,1);
+        };
+
+        $scope.cancel = function(){
+            $scope.orders.splice(0);
         };
         
         $scope.toggleCheck = function(array,n){
@@ -94,7 +110,8 @@ try {
                 if(inventory.itemnumber == array.itemnumber){
                     angular.forEach(inventory.sizes, function(size){
                         if(size.key == n.key){
-                            size.checked = !n.checked;    
+                            size.checked = !n.checked;
+                            if(!size.value) size.checked = false;
                         }
                     }) 
                 }    
@@ -106,12 +123,19 @@ try {
                 var res = array.filter(function(o){
                     if(o.itemnumber == n.itemnumber && o.size == size.key){
                         angular.forEach(n.sizes, function(size){
-                            if(size.checked && o.size ==size.key){
-                                if(o.numOrder){
-                                    o.numOrder++;
+                            if(size.checked && o.size ==size.key && size.value){
+                                if(size.value >= n.numOrder){
+                                    if(o.numOrder){
+                                        if((size.value - n.numOrder) >= 0)
+                                        o.numOrder += n.numOrder;
+                                    }else{
+                                        o.numOrder = n.numOrder;  
+                                    }
+                                    size.value -= n.numOrder;
+                                    if(!size.value || size.value < 0) size.value = 0;
                                 }else{
-                                    o.numOrder = 1;  
-                                } 
+                                    n.doNag = "volume-too-large";
+                                }
                             }    
                         });
                         return true;

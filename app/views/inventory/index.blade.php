@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'inventory/disable', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => 'inventories/checkout', 'method' => 'POST')) }}
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
                 <div class="col-md-8">
@@ -36,20 +36,25 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h5>Size</h5>
-                                        <div ng-if="inventory.doNag">
-                                            <div class="pull-left alert alert-danger cleafix" role="alert">
+                                        <div ng-switch on="inventory.doNag">
+                                            <div ng-switch-when="none-selected" class="pull-left alert alert-danger cleafix" role="alert">
                                                 <strong>Oh snap!</strong> Please select at least one size and try clicking the "add" button again.
-                                            </div><br/><br/><br/><br/>
-                                        </div>
+                                            </div>
+                                            <div ng-switch-when="volume-too-large" class="pull-left alert alert-danger cleafix" role="alert">
+                                                <strong>Sorry!</strong> We can't cater your order as we currently have a limited volume. You may want to reduce your quantity.
+                                            </div>
+                                            <div ng-switch-default></div>
+                                        </div><div ng-if="inventory.doNag"><br/><br/><br/><br/></div>
                                         <ul class="nav nav-pills">
                                             <li ng-repeat="(key,size) in inventory.sizes">
                                                     <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
-                                                        <input class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
+                                                        <input ng-class="{disabled:!size.value}" class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
                                                     </a>
-                                                    <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}} - </span>
+                                                    <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}} - @{{size.value}} - </span>
                                                         <span ng-if="size.value > 1000" class="label label-info">IN STOCK</span>
                                                         <span ng-if="size.value < 1000 && size >= 500" class="label label-warning">LIMITED STOCK</span>
-                                                        <span ng-if="size.value < 500" class="label label-danger">HURRY</span>
+                                                        <span ng-if="size.value < 500 && size.value != 0" class="label label-danger">HURRY</span>
+                                                        <span ng-if="size.value == 0" class="label label-default">OUT OF STOCK</span>
                                                     </a>
                                             </li>
                                         </ul>
@@ -79,8 +84,8 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <button class="pull-right btn btn-sm btn-success">Checkout</button>
-                                        <button class="pull-left btn btn-sm btn-danger">Cancel</button>
+                                        <button type="button" class="pull-right btn btn-sm btn-success">Checkout</button>
+                                        <button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
                                     </td>
                             </tbody>
                         </table>
@@ -100,23 +105,22 @@
                     <div>
                         <ul class="media-list">
                             <li class="media">
-                                    <div class="well clearfix" ng-repeat="order in orders | orderBy: 'itemnumber'">
-                                    <div class="pull-right"><a ng-click="close(order)" href='#'><i class='fa fa-close'></i></a></div>
+                                <div class="well clearfix" ng-repeat="(idx,order) in orders | orderBy: 'itemnumber'">
                                     <div class="row">
                                         <div class="col-lg-2">
                                             <span class="label label-info">$@{{order.price}} / @{{order.size}}</span>
                                             <img src="sample.jpg" width="50" />
                                             <div style="width:80px">
-                                                <span class="btn btn-xs btn-success" ng-click="">+</span>
-                                                <span class="btn btn-xs btn-danger" ng-click="">-</span>
+                                                <span class="btn btn-xs btn-success" ng-click="plus(order)">+</span>
+                                                <span class="btn btn-xs btn-danger" ng-click="minus(order)">-</span>
                                             </div>
                                         </div>
-                                        <div class="col-lg-10">
+                                        <div class="col-lg-9">
                                             <h4 class="media-heading"> @{{order.itemnumber}} </h4>
-                                            <p class="pull-left">Some semblance of a description could go here</p>
+                                            <p class="">Some semblance of a description could go here</p>
                                             <div class="media-body">
                                                 <div class="col-lg-8">
-                                                    <span class="label label-sm label-info">x @{{order.numOrder}}</span>
+                                                    <span class="pull-left label label-sm label-info">x @{{order.numOrder}}</span>
                                                 </div>
                                                 <div class="col-lg-4">
                                                     <div class="pull-right">
@@ -125,6 +129,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="pull-right"><a ng-click="close(idx)" href='#'><i class='fa fa-close'></i></a></div>
                                     </div>
                                 </div>
                             </li>
