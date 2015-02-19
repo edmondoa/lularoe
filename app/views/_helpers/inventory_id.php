@@ -1,1 +1,1 @@
-{{ address.id }}
+{{ inventory.id }}

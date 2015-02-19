@@ -68,17 +68,21 @@ try {
             });
             
             if(!checkedItems.length){
-                n.doNag = true;
+                n.doNag = "none-selected";
             }else n.doNag = false;
             
             angular.forEach(n.sizes, function(size){
                 if(!$scope.isInOrder($scope.orders, n, size)){
                     if(size.checked){
-                        var quantity = n.numOrder; 
-                        size.numOrder = quantity;
-                        size.value -= quantity;
-                        if(!size.value || size.value < 0) size.value = 0;
-                        $scope.orders.push({'itemnumber':n.itemnumber,'size':size.key,'numOrder':quantity,'price':n.price});
+                        var quantity = n.numOrder;
+                        if(size.value > quantity){
+                            size.numOrder = quantity;
+                            size.value -= quantity;
+                            if(!size.value || size.value < 0) size.value = 0;
+                            $scope.orders.push({'itemnumber':n.itemnumber,'size':size.key,'numOrder':quantity,'price':n.price});
+                        }else{
+                            n.doNag = "volume-too-large";
+                        }
                     }    
                 }
             });   
@@ -120,14 +124,18 @@ try {
                     if(o.itemnumber == n.itemnumber && o.size == size.key){
                         angular.forEach(n.sizes, function(size){
                             if(size.checked && o.size ==size.key && size.value){
-                                if(o.numOrder){
-                                    if((size.value - n.numOrder) >= 0)
-                                    o.numOrder += n.numOrder;
+                                if(size.value > n.numOrder){
+                                    if(o.numOrder){
+                                        if((size.value - n.numOrder) >= 0)
+                                        o.numOrder += n.numOrder;
+                                    }else{
+                                        o.numOrder = n.numOrder;  
+                                    }
+                                    size.value -= n.numOrder;
+                                    if(!size.value || size.value < 0) size.value = 0;
                                 }else{
-                                    o.numOrder = n.numOrder;  
+                                    n.doNag = "volume-too-large";
                                 }
-                                size.value -= n.numOrder;
-                                if(!size.value || size.value < 0) size.value = 0;
                             }    
                         });
                         return true;
