@@ -1,0 +1,10 @@
+extensions:
+ - PhpSpec\Laravel\Extension\LaravelExtension
+suites:
+ controlpad_suite:
+  src_path: app
+  spec_path: app/tests
+  spec_prefix: spec
+laravel_extension:
+    testing_environment: 'ubuntu'
+
