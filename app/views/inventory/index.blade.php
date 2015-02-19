@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h5>Size</h5>
+                                        <h5>Available Sizes:</h5>
                                         <div ng-switch on="inventory.doNag">
                                             <div ng-switch-when="none-selected" class="pull-left alert alert-danger cleafix" role="alert">
                                                 <strong>Oh snap!</strong> Please select at least one size and try clicking the "add" button again.
@@ -116,7 +116,7 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-9">
-                                            <h4 class="media-heading"> @{{order.itemnumber}} </h4>
+                                            <h4 class="media-heading"> @{{order.model}} - @{{order.size}}</h4>
                                             <p class="">Some semblance of a description could go here</p>
                                             <div class="media-body">
                                                 <div class="col-lg-8">
@@ -124,7 +124,7 @@
                                                 </div>
                                                 <div class="col-lg-4">
                                                     <div class="pull-right">
-                                                        <b>$@{{order.numOrder * order.price}}</b>
+                                                        <b>$@{{(order.numOrder * order.price) | number}}</b>
                                                     </div>
                                                 </div>
                                             </div>
