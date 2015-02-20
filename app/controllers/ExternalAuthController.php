@@ -204,8 +204,57 @@ die();
 		}
 
 		$server_output = curl_exec ($ch);
+		$response_obj = json_decode($server_output);
 
-		return($server_output);
+/* Coming back from mwl
+stdClass Object
+(
+    [TransactionResponse] => stdClass Object
+        (
+            [ID] => 61931710
+            [ReferenceNumber] => 156372
+            [SequenceNumber] => 1
+            [Result] => Approved
+            [ResultCode] => A
+            [AuthCode] => 162669
+            [AuthAmount] => 6
+            [AvsResult] => Address: Match & 5 Digit Zip: Match
+            [AvsResultCode] => YYY
+            [Error] => Approved
+            [ErrorCode] => Address: Match & 5 Digit Zip: Match
+            [Status] => Pending
+            [StatusCode] => P
+        )
+
+)
+*/
+		$raw_response = $response_obj;
+
+		// Having to transform this since what is returned is not in a uniform format!!
+		// Bug Mike Carpenter about this .. :-)
+		if ($response_obj->Status == 'D')
+		{
+			unset($response_obj);
+			$response_obj = new stdClass();
+			$response_obj->TransactionResponse = new stdClass();
+			$response_obj->TransactionResponse->Error = true;
+			$response_obj->TransactionResponse->Result		= 'Declined';
+			$response_obj->TransactionResponse->ResultCode	= 'D';
+			$response_obj->TransactionResponse->Status		= 'Declined';
+			$response_obj->TransactionResponse->AuthAmount	= 0;
+		}
+
+
+		if ($response_obj->TransactionResponse->ResultCode == 'A') 
+		{
+			$response_obj->TransactionResponse->Error = false;
+		}
+
+        return Response::json(array('error'=>$response_obj->TransactionResponse->Error,
+									'result'=>$response_obj->TransactionResponse->Result, 
+									'status'=>$response_obj->TransactionResponse->Status,
+									'amount'=>$response_obj->TransactionResponse->AuthAmount,
+									'data'=>$raw_response),200);
 	}
 
 	public function auth($id)
