@@ -8,9 +8,16 @@ class ExternalAuthController extends \BaseController {
 		return(file_get_contents('SampleInventory.json'));
 	}
 
-	public function getInventory($key, $location='Main')
+	public function getInventory($key = 0, $location='Main')
 	{
 		// Cache this too .. 
+
+		// Get MAIN inventory as default
+		if ($key == null)
+		{
+			// Return the user is able to log in, but shut out of MWL
+			$key = Self::midauth('','',''); // stub parameters
+		}
 
 		// Pull this out into an actual class for MWL php api
 		$location = str_replace(' ','%20', $location);
