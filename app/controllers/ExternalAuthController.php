@@ -105,19 +105,32 @@ die();
 //		return(file_get_contents('SampleInventory.json'));
 	}
 
-	public function purchase($cart = array())
+	public function purchase($tid, $cart = array())
 	{
-		// STUB
-		$subtotal 	= 199.99;
-		$tax		= $subtotal * .08;
-		$total 		= $subtotal + $tax;
+       $txdata = array(
+                    'Tid'          		=> $tid,
+                    'Subtotal'          => Input::get('subtotal'),
+                    'Tax'               => Input::get('tax'),
+                    'Account-name'      => Input::get('cardname'),
+                    'Card-Number'       => Input::get('cardnumber'),
+                    'Card-Code'     	=> Input::get('cardcvv'),
+                    'Card-Expiration'   => Input::get('cardexp'),
+                    'Card-Address'      => Input::get('cardaddress'),
+                    'Card-Zip'          => Input::get('cardzip'),
+/*
+                    'transactionId'     => Input::get('txid'),
+                    'pinHash'           => Input::get('pinHash'),
+*/
+                    );
 
-		$purchase = array(	'errors'	=> false,
-							'subtotal'	=> $subtotal,
-							'tax'		=> $tax,
-							'total'		=> $total);
+		foreach($txdata as $k=>$v)
+		{
+			$txheaders[] = "{$k}: {$v}";
+		}
 
-		return(Response::json($purchase));
+        $purchase = self::makeSale($tid, $txheaders);
+
+		return($purchase);
 	}
 
 
@@ -161,6 +174,39 @@ die();
 		
 	}
 
+	private function makeSale($tid = NULL, $txdata = array())
+	{
+		$verbose = false; // Whether or not to write to /tmp/request.txt for debuggification
+
+		// Pull this out into an actual class for MWL php api
+		$ch = curl_init();
+
+		$username = urlencode(Config::get('site.mwl_username'));
+		$password = urlencode(Config::get('site.mwl_password'));
+		// $password = urlencode(Self::midcrypt($password));
+
+		// Set this to HTTPS TLS / SSL
+		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/sale?sessionkey=".Session::get('mwl_id');
+		curl_setopt($ch, CURLOPT_URL, $curlstring);
+
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $txdata);
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		if ($verbose)
+		{
+			$f = fopen('/tmp/request.txt', 'w');
+			curl_setopt_array($ch, array(
+				CURLOPT_VERBOSE        => 1,
+				CURLOPT_STDERR         => $f,
+			));
+		}
+
+		$server_output = curl_exec ($ch);
+
+		return($server_output);
+	}
 
 	public function auth($id)
 	{
