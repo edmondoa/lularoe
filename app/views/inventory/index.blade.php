@@ -75,9 +75,6 @@
                         </li>
                         <li dir-paginate-end></li>
                     </ul>
-                    <div class="text-center">
-                        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
-                    </div>
                 </div>
                 <div class="col-sm-4">
                     <h3>Order Total</h3>
