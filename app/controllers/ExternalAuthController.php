@@ -47,67 +47,60 @@ class ExternalAuthController extends \BaseController {
 		$lastmodel	= '';
 		$count = 0;
 
+
 		// Transform the output to the appropriate IOS format
 		foreach($output['Inventory'] as $item) 
 		{
-/*
-    {
-        "quantities": {
-            "M": 1,
-            "S": 1,
-            "L": 1
-        },
-        "img_name": "CASSIE_525",
-        "name": "Cassie"
-    },
-*/
 
 			$itemnumber = $item['Item']['Part']['Number'];
 			$quantity	= $item['Item']['Quantity']['OnHand'];
 
 			ltrim(rtrim($itemnumber));
 
+			$model = preg_replace('/ -.*$/','',$item['Item']['Part']['Number']);
+			$itemList[$model] = '';
+
 			// Delimiting sizes with hyphen and spaces
 			if (strpos($itemnumber,' -') === false) 
 			{
-				$model = $itemnumber;
+		//		$model = $itemnumber;
 				$size  = 'NA';	
 			}
 			else list($model, $size) = explode(' -',$itemnumber);
 
-			if ($lastmodel != $model) {
-				$count++;
-				$lastmodel = $model;
-			}
-
 			// Initialize this set of item data
-			if (!isset($items[$count]))
+			if (!isset($items[$model]))
 			{
-				$items[$count] = array(
+				$items[$model] = array(
+				'model'			=>$model,
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
 				'price'			=>$item['Item']['Price'],
 				
-				'quantities'	=> array(), //array('NA'=>0,'XXS'=>0,'2XS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0),
-				'itemnumber'	=>$itemnumber,
-				'model'			=>$model);
+				'quantities'	=> array()); //array('NA'=>0,'XXS'=>0,'2XS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0),
+				//'itemnumber'	=>$itemnumber,
 			}
 
 			// Cut useless spaces
 			$size = str_replace(' ','',$size);
 
 			// Set up the quantities of each size
-			if (!isset($items[$count]['quantities'][$size])) 
+			if (!isset($items[$model]['quantities'][$size])) 
 			{
-				$items[$count]['quantities'][$size] = $quantity;
+				$items[$model]['quantities'][$size] = $quantity;
 			}			
 
 		}
 		if (!isset($items)) $items = [];
 
-		print json_encode($items, JSON_PRETTY_PRINT);
-die();
-		return(Response::json($items));
+		// Reorder this with numerical indeces
+		foreach($items as $k=>$v)
+		{
+			$itemlist[$count++] = $v;
+		}
+
+		//print json_encode($itemlist, JSON_PRETTY_PRINT);
+		return(Response::json($itemlist,200));
 		// STUB
 //		return(file_get_contents('SampleInventory.json'));
 	}

@@ -24,7 +24,7 @@
                             <div class="media-body">
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <h4 class="media-heading pull-left">@{{inventory.itemnumber}}</h4>
+                                        <h4 class="media-heading pull-left">@{{inventory.model}}</h4>
                                         <div class="pull-right">
                                             <span><b>$@{{inventory.price}}</b></span>
                                         </div>
@@ -116,7 +116,7 @@
                     <div>
                         <ul class="media-list">
                             <li class="media">
-                                <div class="well clearfix" ng-repeat="(idx,order) in orders | orderBy: 'itemnumber'">
+                                <div class="well clearfix" ng-repeat="(idx,order) in orders | orderBy: 'model'">
                                     <div class="row">
                                         <div class="col-lg-2">
                                             <span class="label label-info">$@{{order.price}} / @{{order.size}}</span>
@@ -156,7 +156,7 @@
     angular.extend(ControlPad, (function(){                
                 return {
                     inventoryCtrl : {
-                        path : '/json/llr_json.json'
+                        path : '/llrapi/v1/get-inventory/'
                     }
                 };
             }()));    
