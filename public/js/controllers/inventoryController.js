@@ -39,9 +39,11 @@ try {
         };
         
         $http.get(path).success(function(v) {
-            $scope.inventories = v;
-            $scope.countItems = v.length;
-            $scope.pageSize = v.length;
+            for(var i in v){
+                $scope.inventories.push(v[i]);    
+            }
+            $scope.countItems = $scope.inventories.length;
+            $scope.pageSize = $scope.inventories.length;
             $scope.isComplete = true;
             angular.forEach($scope.inventories, function(inventory){
                  inventory.sizes = [];   
