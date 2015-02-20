@@ -5,9 +5,19 @@
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
                 <div class="col-md-8">
-                    <h1 class="">Current Inventory</h1>
+                    <div class="clearfix">
+                        <h1 class="pull-left">Current Inventory</h1>
+                        <div class="input-group pull-right no-pull-xs">
+                            <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
+                            <span class="input-group-btn no-width">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
                     <ul class="media-list" id="currentinventory">
-                        <li class="media" ng-repeat="(k,inventory) in inventories">
+                        <li class="media" dir-paginate-start="inventory in inventories | filter:search | itemsPerPage: pageSize " current-page="currentPage" total-items="countItems">
                             <a class="pull-left" href="#">
                                 <img class="media-object" src="/img/media/@{{inventory.model}}.jpg" width="100">
                             </a>
@@ -47,15 +57,15 @@
                                         </div><div ng-if="inventory.doNag"><br/><br/><br/><br/></div>
                                         <ul class="nav nav-pills">
                                             <li ng-repeat="(key,size) in inventory.sizes">
-                                                    <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
-                                                        <input ng-class="{disabled:!size.value}" class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
-                                                    </a>
-                                                    <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}} - @{{size.value}} - </span>
-                                                        <span ng-if="size.value > 1000" class="label label-info">IN STOCK</span>
-                                                        <span ng-if="size.value < 1000 && size >= 500" class="label label-warning">LIMITED STOCK</span>
-                                                        <span ng-if="size.value < 500 && size.value != 0" class="label label-danger">HURRY</span>
-                                                        <span ng-if="size.value == 0" class="label label-default">OUT OF STOCK</span>
-                                                    </a>
+                                                <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
+                                                    <input ng-class="{disabled:!size.value}" class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
+                                                </a>
+                                                <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}} - @{{size.value}} - </span>
+                                                    <span ng-if="size.value > 1000" class="label label-info">IN STOCK</span>
+                                                    <span ng-if="size.value < 1000 && size >= 500" class="label label-warning">LIMITED STOCK</span>
+                                                    <span ng-if="size.value < 500 && size.value != 0" class="label label-danger">HURRY</span>
+                                                    <span ng-if="size.value == 0" class="label label-default">OUT OF STOCK</span>
+                                                </a>
                                             </li>
                                         </ul>
                                     </div>
@@ -63,7 +73,11 @@
                             </div>
                             <hr style="border-top: 1px solid rgba(0,0,0,0.1);"/>
                         </li>
+                        <li dir-paginate-end></li>
                     </ul>
+                    <div class="text-center">
+                        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
+                    </div>
                 </div>
                 <div class="col-sm-4">
                     <h3>Order Total</h3>
