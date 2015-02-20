@@ -24,7 +24,7 @@
                             <div class="media-body">
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <h4 class="media-heading pull-left">@{{inventory.model}}</h4>
+                                        <h4 class="media-heading pull-left">@{{inventory.itemnumber}}</h4>
                                         <div class="pull-right">
                                             <span><b>$@{{inventory.price}}</b></span>
                                         </div>
