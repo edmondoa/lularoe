@@ -40,6 +40,8 @@ try {
         
         $http.get(path).success(function(v) {
             $scope.inventories = v;
+            $scope.countItems = v.length;
+            $scope.pageSize = v.length;
             $scope.isComplete = true;
             angular.forEach($scope.inventories, function(inventory){
                  inventory.sizes = [];   
@@ -79,7 +81,14 @@ try {
                             size.numOrder = quantity;
                             size.value -= quantity;
                             if(!size.value || size.value < 0) size.value = 0;
-                            $scope.orders.push({'itemnumber':n.itemnumber,'size':size.key,'numOrder':quantity,'price':n.price});
+                            
+                            $scope.orders.push({
+                                'model':n.model,
+                                'itemnumber':n.itemnumber,
+                                'size':size.key,
+                                'numOrder':quantity,
+                                'price':n.price
+                            });
                         }else{
                             n.doNag = "volume-too-large";
                         }
@@ -89,12 +98,39 @@ try {
         };
         
         $scope.plus = function(n){
-            n.numOrder++;
+            angular.forEach($scope.inventories, function(inventory){
+                if(inventory.itemnumber == n.itemnumber){
+                    angular.forEach(inventory.sizes, function(size){
+                        if(size.key == n.size){
+                            if(size.value-1 >= 0){
+                                n.numOrder++;
+                                size.value--;
+                            }
+                            if(size.value < 0) size.value = 0;
+                        }
+                    });    
+                }    
+            });
         };
         
         $scope.minus = function(n){
-            n.numOrder--;
+            
             if(!n.numOrder) n.numOrder = 1;
+            console.log('minus');
+            console.log(n);
+            angular.forEach($scope.inventories, function(inventory){
+                if(inventory.itemnumber == n.itemnumber){
+                    angular.forEach(inventory.sizes, function(size){
+                        if(size.key == n.size){
+                            if(n.numOrder -1 >= 0){
+                                n.numOrder--;                
+                                size.value++;
+                            }
+                            if(n.numOrder < 0) n.numOrder = 0;
+                        }
+                    });    
+                }    
+            });
         };
         
         $scope.close = function(i){

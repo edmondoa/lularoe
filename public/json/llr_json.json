@@ -1,6 +1,5 @@
-
-{
-    "1": {
+[
+    {
         "UPC": "",
         "SKU": "",
         "price": 20,
@@ -10,7 +9,7 @@
         "itemnumber": "Adult Leggings",
         "model": "Adult Leggings"
     },
-    "2": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 30,
@@ -24,7 +23,7 @@
         "itemnumber": "Amelia - L",
         "model": "Amelia"
     },
-    "3": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 26,
@@ -39,7 +38,7 @@
         "itemnumber": "Ana - L",
         "model": "Ana"
     },
-    "4": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 13,
@@ -55,7 +54,7 @@
         "itemnumber": "Azure - L",
         "model": "Azure"
     },
-    "5": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 13,
@@ -72,7 +71,7 @@
         "itemnumber": "Cassie - 3XL",
         "model": "Cassie"
     },
-    "6": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 13,
@@ -88,7 +87,7 @@
         "itemnumber": "Kids Maxi - 10",
         "model": "Kids Maxi"
     },
-    "7": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 17,
@@ -101,7 +100,7 @@
         "itemnumber": "DDM Sleeve - 2T",
         "model": "DDM Sleeve"
     },
-    "8": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 17,
@@ -114,7 +113,7 @@
         "itemnumber": "DDM Sleeveless - 2T",
         "model": "DDM Sleeveless"
     },
-    "9": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 14,
@@ -129,7 +128,7 @@
         "itemnumber": "Irma - L",
         "model": "Irma"
     },
-    "10": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 15,
@@ -143,7 +142,7 @@
         "itemnumber": "Jill - L",
         "model": "Jill"
     },
-    "11": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 17,
@@ -158,7 +157,7 @@
         "itemnumber": "Julia - L",
         "model": "Julia"
     },
-    "12": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 20,
@@ -174,7 +173,7 @@
         "itemnumber": "Kids Cassie - 10",
         "model": "Kids Cassie"
     },
-    "13": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 16,
@@ -184,7 +183,7 @@
         "itemnumber": "Kids Leggings",
         "model": "Kids Leggings"
     },
-    "14": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 20,
@@ -201,7 +200,7 @@
         "itemnumber": "Lola - 2XL",
         "model": "Lola"
     },
-    "15": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 22,
@@ -219,7 +218,7 @@
         "itemnumber": "Lucy - 2XL",
         "model": "Lucy"
     },
-    "16": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 24,
@@ -235,7 +234,7 @@
         "itemnumber": "Lucy Temple - 2XL",
         "model": "Lucy Temple"
     },
-    "17": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 22,
@@ -249,7 +248,7 @@
         "itemnumber": "Madison - L",
         "model": "Madison"
     },
-    "18": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 20,
@@ -266,7 +265,7 @@
         "itemnumber": "Maxi - L",
         "model": "Maxi"
     },
-    "19": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 20,
@@ -277,7 +276,7 @@
         "itemnumber": "Monroe - L",
         "model": "Monroe"
     },
-    "20": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 35,
@@ -292,7 +291,7 @@
         "itemnumber": "Nena & Co. - L",
         "model": "Nena & Co."
     },
-    "21": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 22,
@@ -306,7 +305,7 @@
         "itemnumber": "Nicole - L",
         "model": "Nicole"
     },
-    "22": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 20,
@@ -321,7 +320,7 @@
         "itemnumber": "Olivia - L",
         "model": "Olivia"
     },
-    "23": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 24,
@@ -331,7 +330,7 @@
         "itemnumber": "Plus Size Leggings",
         "model": "Plus Size Leggings"
     },
-    "24": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 15,
@@ -347,7 +346,7 @@
         "itemnumber": "Randy - L",
         "model": "Randy"
     },
-    "25": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 28,
@@ -363,7 +362,7 @@
         "itemnumber": "Temple Dress - L",
         "model": "Temple Dress"
     },
-    "26": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 12,
@@ -373,7 +372,7 @@
         "itemnumber": "Sloan - 2",
         "model": "Sloan"
     },
-    "27": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 0,
@@ -383,7 +382,7 @@
         "itemnumber": "Dot Dot Lucy Tank - 2",
         "model": "Dot Dot Lucy Tank"
     },
-    "28": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 0,
@@ -393,7 +392,7 @@
         "itemnumber": "Dot Dot Lucy Slv - 2",
         "model": "Dot Dot Lucy Slv"
     },
-    "29": {
+    {
         "UPC": "null",
         "SKU": "null",
         "price": 0,
@@ -403,7 +402,7 @@
         "itemnumber": "Julia - 2XL",
         "model": "Julia"
     },
-    "30": {
+    {
         "UPC": "null",
         "SKU": "null",
         "price": 0,
@@ -418,7 +417,7 @@
         "itemnumber": "Sloan - 4",
         "model": "Sloan"
     },
-    "31": {
+    {
         "UPC": "null",
         "SKU": "null",
         "price": 0,
@@ -428,7 +427,7 @@
         "itemnumber": "Nicole - 2XL",
         "model": "Nicole"
     },
-    "32": {
+    {
         "UPC": "null",
         "SKU": "null",
         "price": 0,
@@ -440,7 +439,7 @@
         "itemnumber": "Dot Dot Lucy Tank - 3\/4",
         "model": "Dot Dot Lucy Tank"
     },
-    "33": {
+    {
         "UPC": "null",
         "SKU": "null",
         "price": 0,
@@ -452,7 +451,7 @@
         "itemnumber": "Dot Dot Lucy Slv - 3\/4",
         "model": "Dot Dot Lucy Slv"
     },
-    "34": {
+    {
         "UPC": "null",
         "SKU": "null",
         "price": 0,
@@ -463,7 +462,7 @@
         "itemnumber": "Amelia - 2XL",
         "model": "Amelia"
     },
-    "35": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 26,
@@ -473,7 +472,7 @@
         "itemnumber": "Ana - S",
         "model": "Ana"
     },
-    "36": {
+    {
         "UPC": "",
         "SKU": "",
         "price": 30,
@@ -483,4 +482,4 @@
         "itemnumber": "Amelia - L",
         "model": "Amelia"
     }
-}
+]
