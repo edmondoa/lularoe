@@ -39,7 +39,6 @@ try {
         };
         
         $http.get(path).success(function(v) {
-            var temp = v;
             for(var i in v){
                 $scope.inventories.push(v[i]);    
             }
