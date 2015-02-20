@@ -105,19 +105,32 @@ die();
 //		return(file_get_contents('SampleInventory.json'));
 	}
 
-	public function purchase($cart = array())
+	public function purchase($tid, $cart = array())
 	{
-		// STUB
-		$subtotal 	= 199.99;
-		$tax		= $subtotal * .08;
-		$total 		= $subtotal + $tax;
+       $txdata = array(
+                    'Tid'          		=> $tid,
+                    'Subtotal'          => Input::get('subtotal'),
+                    'Tax'               => Input::get('tax'),
+                    'Account-name'      => Input::get('cardname'),
+                    'Card-Number'       => Input::get('cardnumber'),
+                    'Card-Code'     	=> Input::get('cardcvv'),
+                    'Card-Expiration'   => Input::get('cardexp'),
+                    'Card-Address'      => Input::get('cardaddress'),
+                    'Card-Zip'          => Input::get('cardzip'),
+/*
+                    'transactionId'     => Input::get('txid'),
+                    'pinHash'           => Input::get('pinHash'),
+*/
+                    );
 
-		$purchase = array(	'errors'	=> false,
-							'subtotal'	=> $subtotal,
-							'tax'		=> $tax,
-							'total'		=> $total);
+		foreach($txdata as $k=>$v)
+		{
+			$txheaders[] = "{$k}: {$v}";
+		}
 
-		return(Response::json($purchase));
+        $purchase = self::makeSale($tid, $txheaders);
+
+		return($purchase);
 	}
 
 
@@ -161,6 +174,88 @@ die();
 		
 	}
 
+	private function makeSale($tid = NULL, $txdata = array())
+	{
+		$verbose = false; // Whether or not to write to /tmp/request.txt for debuggification
+
+		// Pull this out into an actual class for MWL php api
+		$ch = curl_init();
+
+		$username = urlencode(Config::get('site.mwl_username'));
+		$password = urlencode(Config::get('site.mwl_password'));
+		// $password = urlencode(Self::midcrypt($password));
+
+		// Set this to HTTPS TLS / SSL
+		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/sale?sessionkey=".Session::get('mwl_id');
+		curl_setopt($ch, CURLOPT_URL, $curlstring);
+
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $txdata);
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		if ($verbose)
+		{
+			$f = fopen('/tmp/request.txt', 'w');
+			curl_setopt_array($ch, array(
+				CURLOPT_VERBOSE        => 1,
+				CURLOPT_STDERR         => $f,
+			));
+		}
+
+		$server_output = curl_exec ($ch);
+		$response_obj = json_decode($server_output);
+
+/* Coming back from mwl
+stdClass Object
+(
+    [TransactionResponse] => stdClass Object
+        (
+            [ID] => 61931710
+            [ReferenceNumber] => 156372
+            [SequenceNumber] => 1
+            [Result] => Approved
+            [ResultCode] => A
+            [AuthCode] => 162669
+            [AuthAmount] => 6
+            [AvsResult] => Address: Match & 5 Digit Zip: Match
+            [AvsResultCode] => YYY
+            [Error] => Approved
+            [ErrorCode] => Address: Match & 5 Digit Zip: Match
+            [Status] => Pending
+            [StatusCode] => P
+        )
+
+)
+*/
+		$raw_response = $response_obj;
+
+		// Having to transform this since what is returned is not in a uniform format!!
+		// Bug Mike Carpenter about this .. :-)
+		if ($response_obj->Status == 'D')
+		{
+			unset($response_obj);
+			$response_obj = new stdClass();
+			$response_obj->TransactionResponse = new stdClass();
+			$response_obj->TransactionResponse->Error = true;
+			$response_obj->TransactionResponse->Result		= 'Declined';
+			$response_obj->TransactionResponse->ResultCode	= 'D';
+			$response_obj->TransactionResponse->Status		= 'Declined';
+			$response_obj->TransactionResponse->AuthAmount	= 0;
+		}
+
+
+		if ($response_obj->TransactionResponse->ResultCode == 'A') 
+		{
+			$response_obj->TransactionResponse->Error = false;
+		}
+
+        return Response::json(array('error'=>$response_obj->TransactionResponse->Error,
+									'result'=>$response_obj->TransactionResponse->Result, 
+									'status'=>$response_obj->TransactionResponse->Status,
+									'amount'=>$response_obj->TransactionResponse->AuthAmount,
+									'data'=>$raw_response),200);
+	}
 
 	public function auth($id)
 	{
