@@ -206,28 +206,11 @@ class ExternalAuthController extends \BaseController {
 		$server_output = curl_exec ($ch);
 		$response_obj = json_decode($server_output);
 
-/* Coming back from mwl
-stdClass Object
-(
-    [TransactionResponse] => stdClass Object
-        (
-            [ID] => 61931710
-            [ReferenceNumber] => 156372
-            [SequenceNumber] => 1
-            [Result] => Approved
-            [ResultCode] => A
-            [AuthCode] => 162669
-            [AuthAmount] => 6
-            [AvsResult] => Address: Match & 5 Digit Zip: Match
-            [AvsResultCode] => YYY
-            [Error] => Approved
-            [ErrorCode] => Address: Match & 5 Digit Zip: Match
-            [Status] => Pending
-            [StatusCode] => P
-        )
-
-)
-*/
+		/* CREATE UNIFIED OBJECT FOR ALL PERMUTATIONS
+		// Having to make concession for no "transactionresponse" that is
+		// may be returned from MWL during sessionkey auth or during 
+		// card decline
+		*/
 		$raw_response = $response_obj;
 		if (isset($response_obj->Code))
 		{
