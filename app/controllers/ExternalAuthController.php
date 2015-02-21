@@ -229,10 +229,21 @@ stdClass Object
 )
 */
 		$raw_response = $response_obj;
+		if (isset($response_obj->Code))
+		{
+			unset($response_obj);
+			$response_obj = new stdClass();
+			$response_obj->TransactionResponse = new stdClass();
+			$response_obj->TransactionResponse->Error = true;
+			$response_obj->TransactionResponse->Result		= 'key mismatch';
+			$response_obj->TransactionResponse->ResultCode	= 'K';
+			$response_obj->TransactionResponse->Status		= 'Declined';
+			$response_obj->TransactionResponse->AuthAmount	= 0;
+		}
 
 		// Having to transform this since what is returned is not in a uniform format!!
 		// Bug Mike Carpenter about this .. :-)
-		if ($response_obj->Status == 'D')
+		if (isset($response_obj->Status) && $response_obj->Status == 'D')
 		{
 			unset($response_obj);
 			$response_obj = new stdClass();
