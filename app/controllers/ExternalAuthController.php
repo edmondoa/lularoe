@@ -105,6 +105,31 @@ class ExternalAuthController extends \BaseController {
 //		return(file_get_contents('SampleInventory.json'));
 	}
 
+
+	// What is this hackery?!
+	// It is this way until we have proper api access to the ledger.
+	public function ledger($tid, $ref = null)
+	{
+		try {
+			$mysqli = new mysqli('mwl.controlpad.com', 'llr_txn', 'ilovetexas', 'llr');
+		}
+		catch (Exception $e)
+		{
+			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
+			return(Response::json($noconnect,200));
+		}
+
+		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction WHERE tid='".intval($tid)."'";
+		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
+
+		$res = $mysqli->query($Q);
+		while($txn = $res->fetch_assoc())
+		{
+			$txns[] = $txn;
+		}	
+		return(Response::json($txns, 200));
+	}
+
 	public function purchase($tid, $cart = array())
 	{
        $txdata = array(

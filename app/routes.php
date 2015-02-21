@@ -31,6 +31,8 @@ Route::pattern('id', '[0-9]+');
 		Route::get('llrapi/v1/get-inventory/',					'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/purchase/{key}', 					'ExternalAuthController@purchase');
+		Route::get('llrapi/v1/texans/{tid}', 					'ExternalAuthController@ledger');
+		Route::get('llrapi/v1/texans/{tid}/{ref}', 				'ExternalAuthController@ledger');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
