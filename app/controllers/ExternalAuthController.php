@@ -8,13 +8,20 @@ class ExternalAuthController extends \BaseController {
 		return(file_get_contents('SampleInventory.json'));
 	}
 
-	public function getInventory($key = 0, $location='Main')
+
+	public function getInventory($key = 0, $location='')
 	{
 		// Cache this too .. 
-
+		if (empty($location)) {
+			$tmpkey 	= Session::get('mwl_id');
+			$location	= $key;
+			$key 		= $tmpkey;
+		}
+		
 		// Get MAIN inventory as default
-		if ($key == null)
+		if ($key == 0 || $key == null)
 		{
+			$location = 'Main';
 			// Return the user is able to log in, but shut out of MWL
 			$key = Self::midauth(); // stub parameters
 		}
@@ -126,6 +133,33 @@ class ExternalAuthController extends \BaseController {
 		return(Response::json($txns, 200));
 	}
 
+	public function refund($cart = array())
+	{
+       $txdata = array(
+                    'Subtotal'          => Input::get('subtotal'),
+                    'Tax'               => Input::get('tax'),
+                    'Account-name'      => Input::get('cardname'),
+                    'Card-Number'       => Input::get('cardnumber'),
+                    'Card-Code'     	=> Input::get('cardcvv'),
+                    'Card-Expiration'   => Input::get('cardexp'),
+                    'Card-Address'      => Input::get('cardaddress'),
+                    'Card-Zip'          => Input::get('cardzip'),
+/*
+                    'transactionId'     => Input::get('txid'),
+                    'pinHash'           => Input::get('pinHash'),
+*/
+                    );
+
+		foreach($txdata as $k=>$v)
+		{
+			$txheaders[] = "{$k}: {$v}";
+		}
+
+        $purchase = self::makeRefund($txheaders);
+
+		return($purchase);
+	}
+
 	public function purchase($cart = array())
 	{
        $txdata = array(
@@ -148,7 +182,7 @@ class ExternalAuthController extends \BaseController {
 			$txheaders[] = "{$k}: {$v}";
 		}
 
-        $purchase = self::makeSale($txheaders);
+        $purchase = self::makePayment($txheaders);
 
 		return($purchase);
 	}
@@ -201,7 +235,81 @@ class ExternalAuthController extends \BaseController {
 		
 	}
 
-	private function makeSale($txdata = array()) {
+	private function makeRefund($txdata = array()) {
+		// Whether or not to write to /tmp/request.txt for debuggification
+		$verbose = false; 
+
+		// Pull this out into an actual class for MWL php api
+		$ch = curl_init();
+
+		// Set this to HTTPS TLS / SSL
+		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/credit?sessionkey=".Session::get('mwl_id');
+		curl_setopt($ch, CURLOPT_URL, $curlstring);
+
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $txdata);
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		if ($verbose)
+		{
+			$f = fopen('/tmp/request.txt', 'w');
+			curl_setopt_array($ch, array(
+				CURLOPT_VERBOSE        => 1,
+				CURLOPT_STDERR         => $f,
+			));
+		}
+
+		$server_output = curl_exec ($ch);
+		$response_obj = json_decode($server_output);
+
+		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
+		// Having to make concession for no "transactionresponse" that is
+		// may be returned from MWL during sessionkey auth or during 
+		// card decline
+		*/
+		$raw_response = $response_obj;
+		if (!isset($response_obj->TransactionResponse)) {
+			unset($response_obj);
+			$response_obj = new stdClass();
+			$response_obj->TransactionResponse = new stdClass();
+			$response_obj->TransactionResponse->Error = true;
+		}
+
+		if (isset($response_obj->Code)) {
+			$response_obj->TransactionResponse->Result		= 'key mismatch';
+			$response_obj->TransactionResponse->ResultCode	= 'K';
+			$response_obj->TransactionResponse->Status		= 'Declined';
+			$response_obj->TransactionResponse->AuthAmount	= 0;
+		}
+
+		// Having to transform this since what is returned is not in a uniform format!!
+		// Bug Mike Carpenter about this .. :-)
+		if (isset($response_obj->Status) && $response_obj->Status == 'D') {
+			$response_obj->TransactionResponse->Result		= 'Declined';
+			$response_obj->TransactionResponse->ResultCode	= 'D';
+			$response_obj->TransactionResponse->Status		= 'Declined';
+			$response_obj->TransactionResponse->AuthAmount	= 0;
+		}
+
+		// If something really fscked
+		if (!isset($response_obj->TransactionResponse->ResultCode)) {
+			return(Response::json($response_obj));
+		}
+
+		// We're authorized!
+		if ($response_obj->TransactionResponse->ResultCode == 'A') {
+			$response_obj->TransactionResponse->Error = false;
+		}
+
+        return Response::json(array('error'=>$response_obj->TransactionResponse->Error,
+									'result'=>$response_obj->TransactionResponse->Result, 
+									'status'=>$response_obj->TransactionResponse->Status,
+									'amount'=>$response_obj->TransactionResponse->AuthAmount,
+									'data'=>$raw_response),200);
+	}
+
+	private function makePayment($txdata = array()) {
 		// Whether or not to write to /tmp/request.txt for debuggification
 		$verbose = false; 
 
