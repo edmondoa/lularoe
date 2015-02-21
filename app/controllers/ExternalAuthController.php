@@ -122,6 +122,7 @@ class ExternalAuthController extends \BaseController {
 		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".Session::get('mwl_id')."'";
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
+		$txns = [];
 		$res = $mysqli->query($Q);
 		while($txn = $res->fetch_assoc())
 		{
