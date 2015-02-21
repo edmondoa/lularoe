@@ -27,11 +27,6 @@ class ExternalAuthController extends \BaseController {
 		$curlstring = Config::get('site.mwl_api').'/llr/'.htmlentities($location,ENT_QUOTES,'UTF-8').'/inventorylist?sessionkey='.$key;
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
-		/* If we ever decide to 'POST'
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "username={$username}&password={$password}");
-		*/
-
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 		$server_output = curl_exec ($ch);
@@ -163,7 +158,6 @@ class ExternalAuthController extends \BaseController {
 	private function midcrypt($pass)
 	{
 		$penc = base64_encode(md5($pass,true));
-		
 		return($penc);
 	}
 
@@ -172,12 +166,13 @@ class ExternalAuthController extends \BaseController {
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
 
+		// Set to general auth for pulling inventory
 		if (empty($tid) && empty($username) && empty($password))
 		{
 			$username = urlencode(Config::get('site.mwl_username'));
 			$password = urlencode(Config::get('site.mwl_password'));
 		}
-		// $password = urlencode(Self::midcrypt($password));
+		else $password = Self::midcrypt($password);
 
 		// Set this to HTTPS TLS / SSL
 		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/login/?username={$username}&password={$password}";
@@ -201,22 +196,18 @@ class ExternalAuthController extends \BaseController {
 		if (!$server_output) return(false);
 		else {
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->code == '401') return null;
+			if (isset($so->Code) && $so->Code == '401') return null;
 			return($server_output);
 		}
 		
 	}
 
-	private function makeSale($tid = NULL, $txdata = array())
-	{
-		$verbose = false; // Whether or not to write to /tmp/request.txt for debuggification
+	private function makeSale($tid = NULL, $txdata = array()) {
+		// Whether or not to write to /tmp/request.txt for debuggification
+		$verbose = false; 
 
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
-
-		$username = urlencode(Config::get('site.mwl_username'));
-		$password = urlencode(Config::get('site.mwl_password'));
-		// $password = urlencode(Self::midcrypt($password));
 
 		// Set this to HTTPS TLS / SSL
 		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/sale?sessionkey=".Session::get('mwl_id');
@@ -239,18 +230,20 @@ class ExternalAuthController extends \BaseController {
 		$server_output = curl_exec ($ch);
 		$response_obj = json_decode($server_output);
 
-		/* CREATE UNIFIED OBJECT FOR ALL PERMUTATIONS
+		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
 		// Having to make concession for no "transactionresponse" that is
 		// may be returned from MWL during sessionkey auth or during 
 		// card decline
 		*/
 		$raw_response = $response_obj;
-		if (isset($response_obj->Code))
-		{
+		if (!isset($response_obj->TransactionResponse)) {
 			unset($response_obj);
 			$response_obj = new stdClass();
 			$response_obj->TransactionResponse = new stdClass();
 			$response_obj->TransactionResponse->Error = true;
+		}
+
+		if (isset($response_obj->Code)) {
 			$response_obj->TransactionResponse->Result		= 'key mismatch';
 			$response_obj->TransactionResponse->ResultCode	= 'K';
 			$response_obj->TransactionResponse->Status		= 'Declined';
@@ -259,21 +252,15 @@ class ExternalAuthController extends \BaseController {
 
 		// Having to transform this since what is returned is not in a uniform format!!
 		// Bug Mike Carpenter about this .. :-)
-		if (isset($response_obj->Status) && $response_obj->Status == 'D')
-		{
-			unset($response_obj);
-			$response_obj = new stdClass();
-			$response_obj->TransactionResponse = new stdClass();
-			$response_obj->TransactionResponse->Error = true;
+		if (isset($response_obj->Status) && $response_obj->Status == 'D') {
 			$response_obj->TransactionResponse->Result		= 'Declined';
 			$response_obj->TransactionResponse->ResultCode	= 'D';
 			$response_obj->TransactionResponse->Status		= 'Declined';
 			$response_obj->TransactionResponse->AuthAmount	= 0;
 		}
 
-
-		if ($response_obj->TransactionResponse->ResultCode == 'A') 
-		{
+		// We're authorized!
+		if ($response_obj->TransactionResponse->ResultCode == 'A') {
 			$response_obj->TransactionResponse->Error = false;
 		}
 
@@ -333,7 +320,7 @@ class ExternalAuthController extends \BaseController {
 			if (empty($sessionkey) || $tstamp < (time() - 360))
 			{
 				// Return the user is able to log in, but shut out of MWL
-				$sessionkey = Self::midauth($data['tid'], $data['email'], $pass);
+				$sessionkey = Self::midauth($data['tid'], $data['id'], $pass);
 
 				// if we don't get a sessionkey back - something is wrong
 				if (!$sessionkey)
