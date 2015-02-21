@@ -16,7 +16,7 @@ class ExternalAuthController extends \BaseController {
 		if ($key == null)
 		{
 			// Return the user is able to log in, but shut out of MWL
-			$key = Self::midauth('','',''); // stub parameters
+			$key = Self::midauth(); // stub parameters
 		}
 
 		// Pull this out into an actual class for MWL php api
@@ -167,13 +167,16 @@ class ExternalAuthController extends \BaseController {
 		return($penc);
 	}
 
-	private function midauth($tid, $username, $password)
+	private function midauth($tid = '', $username = '', $password = '')
 	{
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
 
-		$username = urlencode(Config::get('site.mwl_username'));
-		$password = urlencode(Config::get('site.mwl_password'));
+		if (empty($tid) && empty($username) && empty($password))
+		{
+			$username = urlencode(Config::get('site.mwl_username'));
+			$password = urlencode(Config::get('site.mwl_password'));
+		}
 		// $password = urlencode(Self::midcrypt($password));
 
 		// Set this to HTTPS TLS / SSL
@@ -196,7 +199,11 @@ class ExternalAuthController extends \BaseController {
 		curl_close ($ch);
 
 		if (!$server_output) return(false);
-		else return($server_output);
+		else {
+			$so = json_decode($server_output);
+			if (isset($so->Code) && $so->code == '401') return null;
+			return($server_output);
+		}
 		
 	}
 
@@ -303,7 +310,10 @@ class ExternalAuthController extends \BaseController {
 				'first_name'	=> $mbr[0]['attributes']['first_name'],
 				'last_name'		=> $mbr[0]['attributes']['last_name'],
 				'image'			=> $mbr[0]['attributes']['image'],
-				'tid'			=> '2', 	//STUB $mbr[0]['attributes']['key'],
+
+				// If we use the 'key' parameter, we could feasibly have 
+				// Multiple acconts using 1 TID .. Feature?
+				'tid'			=> $mbr[0]['attributes']['key'],
 				'email'			=> $mbr[0]['attributes']['email'],
 				'session'		=> Session::getId()
 			);
@@ -320,16 +330,19 @@ class ExternalAuthController extends \BaseController {
 			}
 
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
-			if (empty($sessionkey) || $tstamp < (time() - 10))
+			if (empty($sessionkey) || $tstamp < (time() - 360))
 			{
 				// Return the user is able to log in, but shut out of MWL
-				$sessionkey = Self::midauth($data['tid'],$data['email'], $pass);
+				$sessionkey = Self::midauth($data['tid'], $data['email'], $pass);
 
 				// if we don't get a sessionkey back - something is wrong
 				if (!$sessionkey)
 				{
 					$status .= '; cannot retrieve key from payment system';
 					$data['tid'] = null;
+
+					Session::forget('mwl_id');
+					Session::forget('mwl_stamp');
 
 					// Also perform a logging notify here in papertrail or syslog?
 				}
@@ -342,6 +355,8 @@ class ExternalAuthController extends \BaseController {
 		else
 		{
 			$status = 'Cannot authorize';
+			Session::forget('mwl_id');
+			Session::forget('mwl_stamp');
 		}
 		
         //return Response::json(array('error'=>$error,'status'=>$status,'data'=>$mbr[0]['attributes']),200);
