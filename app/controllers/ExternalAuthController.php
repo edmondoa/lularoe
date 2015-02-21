@@ -108,7 +108,7 @@ class ExternalAuthController extends \BaseController {
 
 	// What is this hackery?!
 	// It is this way until we have proper api access to the ledger.
-	public function ledger($tid, $ref = null)
+	public function ledger($ref = null)
 	{
 		try {
 			$mysqli = new mysqli('mwl.controlpad.com', 'llr_txn', 'ilovetexas', 'llr');
@@ -119,7 +119,7 @@ class ExternalAuthController extends \BaseController {
 			return(Response::json($noconnect,200));
 		}
 
-		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction WHERE tid='".intval($tid)."'";
+		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".Session::get('mwl_id')."'";
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
 		$res = $mysqli->query($Q);
