@@ -319,7 +319,7 @@ class ExternalAuthController extends \BaseController {
 
 				// If we use the 'key' parameter, we could feasibly have 
 				// Multiple acconts using 1 TID .. Feature?
-				$sessionkey = Self::midauth($data['tid'], $data['id'], $pass);
+				$sessionkey = Self::midauth($data['id'], $pass);
 
 				// if we don't get a sessionkey back - something is wrong
 				if (!$sessionkey)
