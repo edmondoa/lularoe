@@ -126,10 +126,9 @@ class ExternalAuthController extends \BaseController {
 		return(Response::json($txns, 200));
 	}
 
-	public function purchase($tid, $cart = array())
+	public function purchase($cart = array())
 	{
        $txdata = array(
-                    'Tid'          		=> $tid,
                     'Subtotal'          => Input::get('subtotal'),
                     'Tax'               => Input::get('tax'),
                     'Account-name'      => Input::get('cardname'),
@@ -149,7 +148,7 @@ class ExternalAuthController extends \BaseController {
 			$txheaders[] = "{$k}: {$v}";
 		}
 
-        $purchase = self::makeSale($tid, $txheaders);
+        $purchase = self::makeSale($txheaders);
 
 		return($purchase);
 	}
@@ -161,13 +160,13 @@ class ExternalAuthController extends \BaseController {
 		return($penc);
 	}
 
-	private function midauth($tid = '', $username = '', $password = '')
+	private function midauth($username = '', $password = '')
 	{
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
 
 		// Set to general auth for pulling inventory
-		if (empty($tid) && empty($username) && empty($password))
+		if (empty($username) && empty($password))
 		{
 			$username = urlencode(Config::get('site.mwl_username'));
 			$password = urlencode(Config::get('site.mwl_password'));
@@ -202,7 +201,7 @@ class ExternalAuthController extends \BaseController {
 		
 	}
 
-	private function makeSale($tid = NULL, $txdata = array()) {
+	private function makeSale($txdata = array()) {
 		// Whether or not to write to /tmp/request.txt for debuggification
 		$verbose = false; 
 
@@ -271,8 +270,7 @@ class ExternalAuthController extends \BaseController {
 									'data'=>$raw_response),200);
 	}
 
-	public function auth($id)
-	{
+	public function auth($id) {
 		$pass	= trim(Input::get('pass'));
         $status = 'ERR';
         $error  = true;
@@ -298,8 +296,6 @@ class ExternalAuthController extends \BaseController {
 				'last_name'		=> $mbr[0]['attributes']['last_name'],
 				'image'			=> $mbr[0]['attributes']['image'],
 
-				// If we use the 'key' parameter, we could feasibly have 
-				// Multiple acconts using 1 TID .. Feature?
 				'tid'			=> $mbr[0]['attributes']['key'],
 				'email'			=> $mbr[0]['attributes']['email'],
 				'session'		=> Session::getId()
@@ -320,6 +316,9 @@ class ExternalAuthController extends \BaseController {
 			if (empty($sessionkey) || $tstamp < (time() - 360))
 			{
 				// Return the user is able to log in, but shut out of MWL
+
+				// If we use the 'key' parameter, we could feasibly have 
+				// Multiple acconts using 1 TID .. Feature?
 				$sessionkey = Self::midauth($data['tid'], $data['id'], $pass);
 
 				// if we don't get a sessionkey back - something is wrong
