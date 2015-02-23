@@ -1,4 +1,4 @@
-<?php namespace SociallyMobile\Filters;
+<?php namespace LLR\Filters;
 
 use Illuminate\Routing\Route;
 use Illuminate\Http\Request;

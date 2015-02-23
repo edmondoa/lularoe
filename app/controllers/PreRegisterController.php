@@ -1,5 +1,5 @@
 <?php
-use SociallyMobile\Payments\CMSPayment;
+use LLR\Payments\CMSPayment;
 class PreRegisterController extends \BaseController {
 
 

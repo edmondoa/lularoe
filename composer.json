@@ -22,7 +22,7 @@
 			"app/libraries"
 		],
 		"psr-0": {
-			"SociallyMobile" : "app/"
+			"LLR" : "app/"
 		}
 	},
 	"scripts": {

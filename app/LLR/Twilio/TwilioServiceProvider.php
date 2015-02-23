@@ -1,4 +1,4 @@
-<?php namespace SociallyMobile\Twilio;
+<?php namespace LLR\Twilio;
 
 use Illuminate\Support\ServiceProvider;
 //use Twilio;

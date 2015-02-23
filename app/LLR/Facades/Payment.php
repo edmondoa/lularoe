@@ -1,4 +1,4 @@
-<?php namespace SociallyMobile\Facades;
+<?php namespace LLR\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

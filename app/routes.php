@@ -10,7 +10,6 @@
  | and give it the Closure to execute when that URI is requested.
  |
  */
-//use SociallyMobile\Payments\USAEpayment;
 
 	// load user-created pages
 	/*
