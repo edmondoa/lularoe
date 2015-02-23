@@ -33,7 +33,8 @@ Route::pattern('id', '[0-9]+');
 		Route::get('llrapi/v1/refund/',		 					'ExternalAuthController@refund');
 		Route::get('llrapi/v1/purchase/',	 					'ExternalAuthController@purchase');
 		Route::get('llrapi/v1/ledger/', 						'ExternalAuthController@ledger');
-		Route::get('llrapi/v1/ledger/{ref}', 					'ExternalAuthController@ledger');
+        Route::get('llrapi/v1/ledger/{ref}',                    'ExternalAuthController@ledger');
+		Route::post('llrapi/v1/reorder', 					    'ExternalAuthController@reorder');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {

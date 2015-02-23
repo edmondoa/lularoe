@@ -451,5 +451,17 @@ class ExternalAuthController extends \BaseController {
         return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>Session::get('mwl_id')),200);
 
 	}
+    
+    public function reorder(){
+        $data = Input::all();
+        if(empty($data)){
+            $message = "No data posted";
+            $status = "fail";    
+        }else{
+            $message = "Successfully posted data";
+            $status = "success";
+        }
+        return Response::json(['message'=>$message,'status'=>$status,'data'=>$data]);
+    }
 
 }
