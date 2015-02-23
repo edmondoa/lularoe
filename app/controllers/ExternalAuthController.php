@@ -8,14 +8,6 @@ class ExternalAuthController extends \BaseController {
 	private $mwl_pass	= 'ilovetexas';
 	private $mwl_db		= 'llr';
 
-	public function reorder($jsondata = '') {
-        $data = Input::all();
-        $error = "";
-        $status = "success";
-        return Response::json(['error'=>$error,'status'=>$status,'data'=>$data]);
-	}
-	
-
 	public function getInventory($key = 0, $location='')
 	{
 		// Cache this too .. 

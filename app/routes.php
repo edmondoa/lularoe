@@ -30,7 +30,6 @@ Route::pattern('id', '[0-9]+');
 		Route::get('llrapi/v1/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/inventory/{location}',			'ExternalAuthController@getInventory');
 
-		Route::post('llrapi/v1/reorder',		 				'ExternalAuthController@reorder');
 		Route::get('llrapi/v1/refund/',		 					'ExternalAuthController@refund');
 		Route::get('llrapi/v1/purchase/',	 					'ExternalAuthController@purchase');
 		Route::get('llrapi/v1/ledger/', 						'ExternalAuthController@ledger');
