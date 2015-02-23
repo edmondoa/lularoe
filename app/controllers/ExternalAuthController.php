@@ -379,7 +379,7 @@ class ExternalAuthController extends \BaseController {
 		$data   = [];
 
 		 // Find them here
-        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image'));
+        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'));
 		
 		//$lastq = DB::getQueryLog();
 		//print_r(end($lastq));
@@ -394,6 +394,7 @@ class ExternalAuthController extends \BaseController {
 			$status = 'User '.strip_tags($id).' found ok';
 			$data = array(
 				'id'			=> $mbr[0]['attributes']['id'],
+				'public_id'		=> $mbr[0]['attributes']['public_id'],
 				'first_name'	=> $mbr[0]['attributes']['first_name'],
 				'last_name'		=> $mbr[0]['attributes']['last_name'],
 				'image'			=> $mbr[0]['attributes']['image'],
