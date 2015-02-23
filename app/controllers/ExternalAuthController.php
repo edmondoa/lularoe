@@ -14,7 +14,7 @@ class ExternalAuthController extends \BaseController {
 		if (empty($location)) {
 			$tmpkey 	= Session::get('mwl_id');
 			$location	= $key;
-			$key 		= $tmpkey;
+			if (!empty($tmpkey)) $key 		= $tmpkey;
 		}
 		
 		// Get MAIN inventory as default
@@ -24,6 +24,7 @@ class ExternalAuthController extends \BaseController {
 			// Return the user is able to log in, but shut out of MWL
 			$key = Self::midauth(); // stub parameters
 		}
+
 
 		// Pull this out into an actual class for MWL php api
 		$location = str_replace(' ','%20', $location);
