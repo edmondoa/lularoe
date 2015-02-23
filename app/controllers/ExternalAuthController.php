@@ -9,10 +9,10 @@ class ExternalAuthController extends \BaseController {
 	private $mwl_db		= 'llr';
 
 	public function reorder($jsondata = '') {
-		if (empty($jsondata)) $jsondata = Input::get('jsondata');
-		print "<pre>Json Data:";
-		print_r(json_decode($jsondata));
-		die();
+        $data = Input::all();
+        $error = "";
+        $status = "success";
+        return Response::json(['error'=>$error,'status'=>$status,'data'=>$data]);
 	}
 	
 
