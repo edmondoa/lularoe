@@ -16,6 +16,7 @@
                             </span>
                         </div>
                     </div>
+                    @include('_helpers.loading')
                     <ul class="media-list" id="currentinventory">
                         <li class="media" dir-paginate-start="inventory in inventories | filter:search | itemsPerPage: pageSize " current-page="currentPage" total-items="countItems">
                             <a class="pull-left" href="#">
