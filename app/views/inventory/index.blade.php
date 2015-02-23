@@ -95,7 +95,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <button type="button" class="pull-right btn btn-sm btn-success">Checkout</button>
+                                        <button type="button" ng-click="checkout()" class="pull-right btn btn-sm btn-success">Checkout</button>
                                         <button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
                                     </td>
                             </tbody>

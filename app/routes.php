@@ -34,7 +34,8 @@ Route::pattern('id', '[0-9]+');
 		Route::get('llrapi/v1/refund/',		 					'ExternalAuthController@refund');
 		Route::get('llrapi/v1/purchase/',	 					'ExternalAuthController@purchase');
 		Route::get('llrapi/v1/ledger/', 						'ExternalAuthController@ledger');
-		Route::get('llrapi/v1/ledger/{ref}', 					'ExternalAuthController@ledger');
+        Route::get('llrapi/v1/ledger/{ref}',                    'ExternalAuthController@ledger');
+		Route::post('llrapi/v1/reorder', 					    'ExternalAuthController@reorder');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
@@ -99,7 +100,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 	// contact form
 	Route::post('send-contact-form',['as' => 'send-contact-form', 'uses' => 'ContactController@send']);
-		
+
 	// events
 	Route::get('api/upcoming-public-events', 'DataOnlyController@getUpcomingPublicEvents');
 	Route::get('public-events', 'UventController@publicIndex');
@@ -134,8 +135,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	// products
 	Route::get('store', 'ProductController@publicIndex');
 	Route::get('store/{id}', 'ProductController@publicShow');
-	
-	// timezone
+
+	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
 		
 	##############################################################################################
@@ -254,9 +255,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-posts', 'DataOnlyController@getAllPosts');
 		Route::get('api/all-products', 'DataOnlyController@getAllProducts');
 		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
-        Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
+		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
 		Route::get('api/all-userSites', 'DataOnlyController@getAllUserSites');
-		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline');		
+		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline'); 
         Route::get('api/search-user/{keyword}', 'DataOnlyController@getSearchUsers');    
 
 		// upload media
