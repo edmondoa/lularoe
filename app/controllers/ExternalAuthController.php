@@ -8,8 +8,9 @@ class ExternalAuthController extends \BaseController {
 	private $mwl_pass	= 'ilovetexas';
 	private $mwl_db		= 'llr';
 
-	public function reorder($jsondata) {
-		print "<pre>";
+	public function reorder($jsondata = '') {
+		if (empty($jsondata)) $jsondata = Input::get('jsondata');
+		print "<pre>Json Data:";
 		print_r(json_decode($jsondata));
 		die();
 	}
