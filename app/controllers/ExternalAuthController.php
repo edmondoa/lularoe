@@ -50,6 +50,11 @@ class ExternalAuthController extends \BaseController {
 		$count		= 0;
 		$itemlist	= [];
 
+        if(array_key_exists('Code',$output) && $output['Code'] == '400'){
+            print json_encode(array('errors'=>true,'message'=> $output['Message'],'errno'=>'400'));
+            return(false);
+        }
+        
 		// Transform the output to the appropriate IOS format
 		foreach($output['Inventory'] as $item) 
 		{
