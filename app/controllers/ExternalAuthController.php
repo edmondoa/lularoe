@@ -3,10 +3,10 @@
 class ExternalAuthController extends \BaseController {
 
 	// Private vars for this controller only
-	private $mwl_db		= 'mwl.controlpad.com';
+	private $mwl_server	= 'mwl.controlpad.com';
 	private $mwl_un		= 'llr_txn';
 	private $mwl_pass	= 'ilovetexas';
-	private $mwl_server = 'llr';
+	private $mwl_db		= 'llr';
 
 	public function getInventory($key = 0, $location='')
 	{
