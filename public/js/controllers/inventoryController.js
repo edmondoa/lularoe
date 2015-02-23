@@ -100,11 +100,16 @@ try {
         };
         
         $scope.plus = function(n){
+            console.log('plus');
+            console.log(n.numOrder);
             angular.forEach($scope.inventories, function(inventory){
-                if(inventory.itemnumber == n.itemnumber){
-                    angular.forEach(inventory.sizes, function(size){
+                if(inventory.itemnumber == n.itemnumber && inventory.model == n.model){
+                    console.log('inventory.sizes');
+                    console.log(inventory.sizes);
+                    angular.forEach(inventory.sizes, function(size,i){
                         if(size.key == n.size){
                             if(size.value-1 >= 0){
+                                console.log('size: '+i);
                                 n.numOrder++;
                                 size.value--;
                             }
@@ -116,12 +121,10 @@ try {
         };
         
         $scope.minus = function(n){
-            
-            if(!n.numOrder) n.numOrder = 1;
             console.log('minus');
             console.log(n);
             angular.forEach($scope.inventories, function(inventory){
-                if(inventory.itemnumber == n.itemnumber){
+                if(inventory.itemnumber == n.itemnumber && inventory.model == n.model){
                     angular.forEach(inventory.sizes, function(size){
                         if(size.key == n.size){
                             if(n.numOrder -1 >= 0){
