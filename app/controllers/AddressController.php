@@ -1,12 +1,16 @@
 <?php
 
-class addressController extends \BaseController {
+class AddressController extends \BaseController {
 
 	/**
 	 * Data only
 	 */
-	public function getAllRecords(){
-		return Address::all();
+    public function getAllAddresses(){
+	    
+		return [
+            'count' => Address::count(),
+            'data' => Address::all()
+        ];
 	}
 
 	/**
@@ -96,7 +100,7 @@ class addressController extends \BaseController {
 
 		$address->update($data);
 
-		return Redirect::route('settings')->with('message', 'Address updated.');
+		return Redirect::to(Session::get('previous_page_2'))->with('message', 'Address updated.');
 	}
 
 	/**

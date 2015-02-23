@@ -46,14 +46,20 @@
 			    </div>
 			    
 			    <div class="form-group">
-			        {{ Form::label('sponsor_id', 'Assign to ISM') }}
-			        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control', 'placeholder' => 'ISM ID')) }}
+			    	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+				        {{ Form::label('sponsor_id', 'Assign to ISM') }}
+				        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control', 'placeholder' => 'ISM ID')) }}
+				    @elseif (Auth::user()->hasRole(['Rep']))
+				        {{ Form::hidden('sponsor_id', Auth::user()->id) }}
+				    @endif
 			    </div>
 			    
-			    <div class="form-group">
-			        {{ Form::label('opportunity_id', 'Opportunity ID') }}
-			        {{ Form::text('opportunity_id', Input::old('opportunity_id'), array('class' => 'form-control')) }}
-			    </div>
+			    @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+				    <div class="form-group">
+				        {{ Form::label('opportunity_id', 'Opportunity ID') }}
+				        {{ Form::text('opportunity_id', Input::old('opportunity_id'), array('class' => 'form-control')) }}
+				    </div>
+			    @endif
 			    
 			    {{ Form::submit('Add Lead', array('class' => 'btn btn-primary')) }}
 	

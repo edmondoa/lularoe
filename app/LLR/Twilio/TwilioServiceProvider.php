@@ -17,7 +17,7 @@ protected $defer = true;
 */
 public function boot()
 {
-    //$this->package('SociallyMobile/twilio');
+    //$this->package('LLR/twilio');
 }
 
 /**

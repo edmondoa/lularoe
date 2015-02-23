@@ -1,6 +1,6 @@
 <?php
 
-class pageController extends \BaseController {
+class PageController extends \BaseController {
 
 	/**
 	 * Display a listing of pages

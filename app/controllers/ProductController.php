@@ -1,6 +1,6 @@
 <?php
 
-class productController extends \BaseController {
+class ProductController extends \BaseController {
 
 	/**
 	 * Display a listing of products
@@ -11,7 +11,8 @@ class productController extends \BaseController {
 	{
 		$products = Product::all();
 		$categories = ProductCategory::all();
-		return View::make('product.index', compact('products', 'categories'));
+		$tags = ProductTag::all();
+		return View::make('product.index', compact('products', 'categories', 'tags'));
 	}
 
 	/**
@@ -52,6 +53,7 @@ class productController extends \BaseController {
 			}
 			else $data['image'] = $data['image_url'];
 		}
+		else unset($data['image']);
 
 		$product = Product::create($data);
 		
@@ -145,7 +147,7 @@ class productController extends \BaseController {
 		$product->update($data);
 		// clear cache
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
-		return Redirect::route('products.show', $id)->with('message', 'Product updated.');
+		return Redirect::route('products.index', $id)->with('message', 'Product updated.');
 	}
 
 	/**

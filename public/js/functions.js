@@ -37,7 +37,6 @@ $(document).ready(function() {
     });
     
     // jQUery UI
-    
     var today = new Date();
     var firstYear = today.getFullYear() - 18;
     $('.datepicker').datetimepicker({
@@ -68,19 +67,8 @@ $(document).ready(function() {
     
     // delete label
     $('.form-group .label .fa-times').click(function() {
-       $(this).parent().remove(); 
+       $(this).parent().parent().remove();
     });
-    
-    // initialize fraola WYSIWYG editor
-    // $(function() {
-        // $('.wysiwyg').editable({
-            // beautifyCode: true,
-            // height: 400,
-            // inlineMode: false,
-            // plainPaste: true,
-            // imageUploadURL: '/upload-image',
-        // });
-    // });
     
     // initialize tinymce
     tinymce.init({
@@ -102,24 +90,30 @@ $(document).ready(function() {
     });
     
     // add buttons to tinymce editor for inserting images
-    $('body').on({
-        click: function() {
-            $('input#mceu_44-inp').before('' +
-                '<div id="uploadImage" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" title="Upload Image" role="button" class="mce-btn">' +
-                    '<button data-toggle="modal" data-target="#imageUpload" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" role="presentation" type="button" tabindex="-1">' +
-                        '<img style="height:16px; width:16px;" src="/img/upload.svg">' +
-                    '</button>' +
-                '</div>' +
-                // '<div data-toggle="modal" data-target="#media-library" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" title="Media Library" role="button" class="mce-btn">' +
-                    // '<button style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" role="presentation" type="button" tabindex="-1">' +
-                        // '<img style="height:16px; width:16px;" src="/img/tiles.svg">' +
-                    // '</button>' +
-                // '</div>' +
-            '');
-            $('input#mceu_44-inp').addClass("mceu_44-inp-hack");
-            if ($('#modals').html() == '') $('#modals').load('/helpers/modals');
-        }
-    }, '#mceu_16');
+	function addMediaButtons() {
+        $('.mce-combobox.mce-last.mce-abs-layout-item .mce-textbox').before('' +
+            '<div id="uploadImage" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" title="Upload Image" role="button" class="mce-btn">' +
+                '<button data-toggle="modal" data-target="#imageUpload" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important; border-top-left-radius:4px !important; border-bottom-left-radius:4px !important;" role="presentation" type="button" tabindex="-1">' +
+                    '<img style="height:16px; width:16px;" src="/img/upload.svg">' +
+                '</button>' +
+            '</div>' +
+            '<div data-toggle="modal" data-target="#mediaLibrary" style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" title="Media Library" role="button" class="mce-btn">' +
+                '<button style="border-top-right-radius:0 !important; border-bottom-right-radius:0 !important;" role="presentation" type="button" tabindex="-1">' +
+                    '<img style="height:16px; width:16px;" src="/img/tiles.svg">' +
+                '</button>' +
+            '</div>' +
+        '');
+        $('input#mceu_44-inp').addClass("mceu_44-inp-hack");
+        addedMediaButtons = true;
+	}
+    $('body').on('click', '#mceu_16', function() {
+		addMediaButtons();
+    });
+    
+    // load media modals if WYISYG editor exists
+    // if ($('.wysiwyg').length > 0) {
+    	// if ($('#modals').html() == '') $('#modals').load('/helpers/media-modals');
+    // }
     
     // close sidebar menu popovers when clicking outside
     $('[data-toggle="popover"]').popover();
@@ -128,7 +122,7 @@ $(document).ready(function() {
             //the 'is' for buttons that trigger popups
             //the 'has' for icons within a button that triggers a popup
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-                $(this).popover('hide');
+               	$(this).popover('hide');
             }
         });
     });
@@ -223,3 +217,53 @@ function cleanURL(text) {
     text = text.replace(/\-_/g, "");
     return cleaned_text = text;
 }
+
+
+/**
+* check existence of a value inside an array
+* 
+* @author Randy Binondo
+* @param array = haystack
+* @param n = needle
+* 
+* @returns {Boolean}
+*/
+var checkExists = function(array,n){
+    if(array.length){
+        var res = array.filter(function(o){
+            return o == n;    
+        });    
+        return !(!res.length);
+    }
+    return false;   
+};
+
+/**
+* Pushing into a well maintained array containing only unique values
+* 
+* @author: Randy Binondo
+* @param array = one dimensional array with only unique values
+*                assumes array given is clean
+* @param data  =  values to push
+* 
+*/
+
+function pushIfNotFound(array, data){
+    data.forEach(function(n){
+        if(!checkExists(array,n)){
+            array.push(n); 
+        }  
+    });
+}
+
+/**
+* Holder object for all other variables
+* 
+* @returns {Object}
+*/
+
+var ControlPad = (function(){
+    return {
+        commonctrl : {}
+    };
+}());

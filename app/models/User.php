@@ -13,10 +13,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var string
 	 */
 	protected $table = 'users';
-	public $timestamps = false;
+	// public $timestamps = false;
+
 
 	public static $rules = [
-		'email' => 'required|unique:users,email',
+		'email' => 'required|email|unique:users',
 		'first_name' => 'required|alpha',
 		'last_name' => 'required|alpha',
 		'phone' => 'required',
@@ -65,7 +66,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function descendants() {
-		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->remember(5,'user_'.$this->id.'_descendants')->withPivot('level');
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_descendants')->withPivot('level');
+	}
+
+	public function ancestors() {
+		return $this -> belongsToMany('User', 'levels', 'user_id','ancestor_id')->orderBy('level','desc')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_ancestors')->whereNotNull('sponsor_id')->withPivot('level');
 	}
 
 	public function leads() {
@@ -93,29 +98,45 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	public function ranks() {
-		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->remember(5,'user_'.$this->id.'_ranks')->withPivot('created_at');
+		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_ranks')->withPivot('created_at');
 	}
 	
 	public function currentRank() {
 		//return;
-		return $this->belongsToMany('Rank')->orderBy('rank_user.id', 'DESC')->remember(5,'user_'.$this->id.'_rank')->first();
+		return $this->ranks()->orderBy('rank_user.created_at', 'DESC')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_rank2')->first();
 	}
 	
 	public function descendantsCountRelation()
 	{
-		return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->remember(5,'user_'.$this->id.'_desc_count')->first();
+		return $this->descendants()->selectRaw('ancestor_id, count(*) as count')->groupBy('ancestor_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_desc_count')->first();
 	}
 
 	public function frontlineCountRelation()
 	{
-		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->remember(5,'user_'.$this->id.'_frontline_count')->first();
+		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_frontline_count')->first();
 	}
 
 	public function orgVolumeRelation()
 	{
-		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id')->remember(5)->first();
+		return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id' )->remember(5)->first();
+		}
+
+	public function new_descendants() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('30 days ago')));
+	}
+	
+	public function new_descendants_count_30() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('30 days ago')))->count();
+	}
+	
+	public function new_descendants_count_7() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('7 days ago')))->count();
 	}
 
+	public function new_descendants_count_1() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('1 day ago')))->count();
+	}
+	
 	##############################################################################################
 	# Custom Attributes
 	##############################################################################################
@@ -153,7 +174,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		if(!Auth::check()) return;
 		if (isset($this->phone)) {
 			if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $this->phone;
-			return ($this->hide_phone != true)?$this->phone:'';
+			if ($this->hide_phone != true) {
+				return substr($this->phone, 0, 3)."-".substr($this->phone, 3, 3)."-".substr($this->phone,6);
+			}
+			else {
+				return '';
+			}
 		}
 	}
 
@@ -186,11 +212,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function getAccountBalanceAttribute()
 	{
-	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(5,'user_'.$this->id.'_balance')->sum('amount');    
+	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_balance')->sum('amount');    
 	}
 
 	public function getVolumeAttribute() {
-		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->remember(5,'user_'.$this->id.'_volume')->volume:0;
+		return false;
+		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_volume')->volume:0;
 	}
 
 	public function getRankNameAttribute() {
@@ -227,16 +254,29 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	
 	public function getFormattedPhoneAttribute($value)
 	{
-		return substr($this->attributes['phone'], 0, 3)."-".substr($this->attributes['phone'], 3, 3)."-".substr($this->attributes['phone'],6);
+		if (!empty($this->phone)) {
+			return substr($this->phone, 0, 3)."-".substr($this->phone, 3, 3)."-".substr($this->phone,6);
+		}
+	
 	}
 	
+
+	public function getFormattedCreatedAtAttribute($value)
+	{
+		return date('M d Y, h:i a', strtotime($this->created_at));
+	}
+
+    public function setPhoneAttribute($value)
+    {
+        $this->attributes['phone'] = preg_replace('/\D+/', '', $value);
+    }
 
 
 	##############################################################################################
 	# append custom Attribs
 	##############################################################################################
 	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume','account_balance', 'public_gender', 'public_dob', 'full_name', 'public_email', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
+	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume','account_balance', 'public_gender', 'public_dob', 'full_name', 'public_email', 'formatted_created_at', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -280,8 +320,57 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function hasRepInDownline($repId) {
 		if(!Auth::check()) return false;
-		$rep = $this->descendants()->where('levels.user_id',$repId)->first();
-		return ($rep)?true:false;
+		$descendency = Level::where('user_id',$repId)->where('ancestor_id',$this->id)->first();
+		return ($descendency)?true:false;
+	}
+
+	public function sumOrgOrders() {
+		if(!Auth::check()) return false;
+		$total = 0;
+		foreach($this->descendants as $descendant)
+		{
+			$total += $descendant->account_balance;
+		}
+		//exit;
+		return $total;
+	}
+
+	public function clearUserCache(){
+		if(isset($this->id)){
+			$forgotten_keys = [];
+			$keys = [
+				'user_'.$this->id.'_role',
+				'user_'.$this->id.'_descendants',
+				'user_'.$this->id.'_ancestors',
+				'user_'.$this->id.'_roles',
+				'user_'.$this->id.'_stats',
+				'user_'.$this->id.'_ranks',
+				'user_'.$this->id.'_rank',
+				'user_'.$this->id.'_plan',
+				'user_'.$this->id.'_rank2',
+				'user_'.$this->id.'_desc_count',
+				'user_'.$this->id.'_frontline_count',
+				'user_'.$this->id.'_org_volume',
+				'user_'.$this->id.'_balance',
+				'user_'.$this->id.'_volume',
+				'route_'.Str::slug(action('DataOnlyController@getAllDownline',$this->id)),
+				'route_'.Str::slug(action('DataOnlyController@getImmediateDownline',$this->id)),
+			];
+			//return $keys;
+			foreach($keys as $key)
+			{
+				if(Cache::has($key))
+				{
+					Cache::forget($key);
+					$forgotten_keys[] = $key;
+				}
+			}
+			return true;
+		}
+		else
+		{
+			return "no id set";
+		}
 	}
     
 }

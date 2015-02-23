@@ -1,8 +1,8 @@
 @extends('layouts.public')
 @section('content')
 <div class="align-center">
-    <h1>SociallyMobile Leadership</h1>
-    <h2>United States Socially Leadership Council (US SLC)</h2>
+    <h1>{{ Config::get('site.company_name') }} Leadership</h1>
+    <h2>United States Leadership Council (US SLC)</h2>
     <ul class="tiles">
         <li>
         	<img src="/img/leadership/001.jpg">
@@ -23,7 +23,7 @@
         	<img src="/img/leadership/007.jpg">
         </li>
     </ul>
-    <h2>Puerto Rico Socially Leadership Council (PR SLC)</h2>
+    <h2>Puerto Rico Leadership Council (PR SLC)</h2>
     <ul class="tiles">
         <li>
         	<img src="/img/leadership/009.jpg">

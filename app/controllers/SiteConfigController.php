@@ -9,9 +9,7 @@ class SiteConfigController extends \BaseController {
 	 */
 	public function index()
 	{
-		$site_configs = SiteConfig::all();
-
-		return View::make('site-config.index', compact('site_configs'));
+		return View::make('site-config.index');
 	}
 
 	/**
@@ -40,6 +38,7 @@ class SiteConfigController extends \BaseController {
 
 		SiteConfig::create($data);
 		Cache::forget('site_configs');
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllConfig')));
 		return Redirect::action('SiteConfigController@index');
 	}
 
@@ -88,6 +87,7 @@ class SiteConfigController extends \BaseController {
 
 		$site_config->update($data);
 		Cache::forget('site_configs');
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllConfig')));
 		return Redirect::action('SiteConfigController@index');
 	}
 

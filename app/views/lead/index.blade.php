@@ -1,6 +1,6 @@
 @extends('layouts.default')
 @section('content')
-<div ng-app="app" class="index">
+<div ng-app="app" ng-controller="LeadController" class="index">
     {{ Form::open(array('url' => 'users/email', 'method' => 'POST')) }}
     	{{ Form::hidden('leads', 1) }}
 	    	<div class="page-actions">
@@ -144,7 +144,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="lead in leads | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="lead in leads | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.lead_id')">
 	                            </td>
@@ -202,32 +202,18 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function LeadController($scope, $http) {
-	
-		$http.get('/api/all-leads-by-rep/{{ Auth::user()->id }}').success(function(leads) {
-			$scope.leads = leads;
-			
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
+		<?php
+			if (Auth::user()->hasRole(['Superadmin', 'Admin'])) $object = 'all-leads';
+			else $object = 'all-leads-by-rep/' . Auth::user()->id;
+		?>
+    
+        angular.extend(ControlPad, (function(){                
+            return {
+                    leadCtrl : {
+                        path : '/api/{{ $object }}'
+                }
+            };
+        }()));
 </script>
+{{ HTML::script('js/controllers/leadController.js') }}
 @stop

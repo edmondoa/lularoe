@@ -20,3 +20,7 @@ public/uploads/
 LLR.pem
 LLR.ppk
 public/nfo.php
+app/models/User_OLD.php
+node_modules
+npm-debug.log
+.vagrant

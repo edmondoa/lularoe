@@ -264,7 +264,7 @@ jQuery(document).ready(function($){
 	if( isNaN(logoHeight) ) { usingLogoImage = false; logoHeight = 30;}
 	if( isNaN(headerPadding) ) { headerPadding = 28; headerPadding2 = 28;}
 	if( headerResize.length == 0 ) { extraDef = 0; headerResizeOffExtra = headerPadding2; }
-    if( $('header#top #logo img').length == 0 ) { logoHeight = 30; }
+    if( $('header#top #logo img').length == 0 ) { logoHeight = 48; }
     
 	var $captionPos = (((sliderHeight-70)/2 - $('div.slider-nav span.left span.white').height()/2) + headerPadding2 - headerResizeOffExtra) - 75;
 	var $controlsPos = (((sliderHeight-70)/2 - $('div.slider-nav span.left span.white').height()/2) + logoHeight + headerPadding*2 + extraHeight + secondaryHeader) -10;

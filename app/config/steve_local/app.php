@@ -129,7 +129,6 @@ return array(
 		'LLR\Twilio\TwilioServiceProvider',
 		'LLR\Commission\CommissionServiceProvider',
 		'Camroncade\Timezone\TimezoneServiceProvider'
-
 	),
 
 	/*

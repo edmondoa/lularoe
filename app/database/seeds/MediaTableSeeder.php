@@ -11,7 +11,7 @@ class mediaTableSeeder extends DatabaseSeeder
 			$media = array(
 				'type' => $faker->word,
 				'url' => $faker->url,
-				'user_id' => $faker->randomDigitNotNull,
+				'user_id' => 2001,
 				'disabled' => $faker->boolean,
 			);
 			Media::create($media);

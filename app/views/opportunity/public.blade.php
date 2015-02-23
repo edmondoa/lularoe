@@ -16,7 +16,7 @@
 	    <div class="col col-md-3">
     		<h1>@if (isset($already_submitted)){{ $already_submitted }}@endif</h1>
 	    	@if ($opportunity->include_form == 1 && (!Session::get('already_submitted')))
-		    	<div class="panel panel-primary">
+		    	<div class="panel panel-default">
 		    		<div class="panel-heading">
 		    			<h2 class="panel-title">Sign Up</h2>
 		    		</div>

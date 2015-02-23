@@ -47,6 +47,7 @@
 	"minimum-stability": "stable",
 	"require-dev": {
 		"way/generators": "2.*",
-		"jrenton/laravel-scaffold": "dev-master"
+		"jrenton/laravel-scaffold": "dev-master",
+		"benconstable/phpspec-laravel": "~1.6"
 	}
 }

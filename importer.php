@@ -1,4 +1,16 @@
 <?php
+// Import CSV dump into new system
+
+$fd = fopen('Consultants.csv','r');
+$headers = fgetcsv($fd, 2048);
+
+while($line = fgetcsv($fd,2048))
+{
+	$line = array_combine($headers,$line); // transform($headers, $line);
+	print_r($line);
+}
+
+die();
 // Old LLR db importer into new system
 
 $lnk	= mysql_connect('localhost','root','build4n0w');
