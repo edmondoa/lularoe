@@ -88,7 +88,7 @@
                             		</span>
                         		</th>
  
-                            	<th class="link" ng-click="orderByField='id'; reverseSort = !reverseSort">ISM ID
+                            	<th class="link" ng-click="orderByField='id'; reverseSort = !reverseSort">ID
                             		<span>
                             			<span ng-show="orderByField == 'id'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>

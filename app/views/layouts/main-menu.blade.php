@@ -43,13 +43,13 @@
  					</a>
  					<a href="javascript:void(0)" data-href="/events" class='list-group-item' data-toggle="popover" data-content="
  						<a target='_blank' href='/public-events'><i class='fa fa-globe'></i> Public Events Page</a>
- 						<a href='/events'><i class='fa fa-calendar'></i> Upcoming Events for ISM's</a>
+ 						<a href='/events'><i class='fa fa-calendar'></i> Upcoming Events for {{ Config::get('site.rep_title') }}</a>
  					">
 	 					<i class="fa fa-calendar"></i> <span class="text">Events</span>
 	 				</a>
  					<a href="javascript:void(0)" data-href="/posts" class='list-group-item' data-toggle="popover" data-content="
  						<a target='_blank' href='/public-posts'><i class='fa fa-globe'></i> Public Announcements</a>
- 						<a href='/posts'><i class='fa fa-user'></i> Announcements for ISM's</a>
+ 						<a href='/posts'><i class='fa fa-user'></i> Announcements for {{ Config::get('site.rep_title') }}</a>
  					">
 	 					<i class="fa fa-thumb-tack"></i> <span class="text">Announcements</span>
 	 				</a>
@@ -77,8 +77,8 @@
  						@endif
  						@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
  							<a href='/media/user/{{ Config::get('site.admin_uid') }}'><i class='fa fa-th-large'></i> Company Resources</a>
- 							<a href='/media-shared-with-reps'><i class='fa fa-th-large'></i> Resources Shared with ISM's</a>
- 							<a href='/media-reps'><i class='fa fa-users'></i> Resources Uploaded by ISM's</a>
+ 							<a href='/media-shared-with-reps'><i class='fa fa-th-large'></i> Resources Shared with {{ Config::get('site.rep_title') }}</a>
+ 							<a href='/media-reps'><i class='fa fa-users'></i> Resources Uploaded by {{ Config::get('site.rep_title') }}</a>
  						@endif
  						@if ((Auth::check())&&(Auth::user()->hasRole(['Rep'])))
  							<a href='/media'><i class='fa fa-th-large'></i> Resource Library</a>

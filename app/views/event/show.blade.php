@@ -85,7 +85,7 @@
 			        			</tr>
 			        			<tr>
 			        				<td>@if ($event->reps == 1)<i class="fa fa-check"></i>@endif</td>
-			        				<td>&nbsp;ISM's</td>
+			        				<td>&nbsp;{{ Config::get('site.rep_title') }}'s</td>
 			        			</tr>
 			        			<!--<tr>
 			        				<td>@if ($event->editors == 1)<i class="fa fa-check"></i>@endif</td>

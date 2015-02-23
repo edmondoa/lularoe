@@ -20,9 +20,9 @@
 		                			My Resources
 		                		@endif
 		                	@elseif (isset($reps))
-		                		ISM Resources
+		                		{{ Config::get('site.rep_title') }} Resources
 		                	@elseif (isset($shared_with_reps))
-		                		Resources Shared with ISM's
+		                		Resources Shared with {{ Config::get('site.rep_title') }}
 		                	@else
 		                		Resource Library
 		                	@endif

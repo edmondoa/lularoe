@@ -29,6 +29,7 @@
 		'contact_email' => 'mfrederico@gmail.com',
 		'contact_first_name' => 'Matt',
 		'contact_last_name'  => 'Frederico',
+		'rep_title'			=> 'Independent Consultant',
 		'company_name' => 'LulaRoe',
 		//'subdomain' => Route::getCurrentRoute()->getParameter('subdomain'),
 		'locked_subdomains' => [

@@ -248,7 +248,7 @@
 					'<div class="popover downline-popover fade top in" role="tooltip" style="top:' + mouseY + 'px; left:' + mouseX + 'px">' +
 						'<div style="left: 50%;" class="arrow"></div><div class="popover-content">' +
 							'<table>' +
-								'<tr><th>ISM ID:</th><td>' + id + '<div class="pull-right"><a title="View details" target="_blank" href="/users/' + id + '"><i class="fa fa-eye"></i></a> <a title="View downline" href="/downline/visualization/' + id + '"><i class="fa fa-sitemap"></i></a></div><td></tr>' +
+								'<tr><th>ID:</th><td>' + id + '<div class="pull-right"><a title="View details" target="_blank" href="/users/' + id + '"><i class="fa fa-eye"></i></a> <a title="View downline" href="/downline/visualization/' + id + '"><i class="fa fa-sitemap"></i></a></div><td></tr>' +
 								'<tr><th>Rank:</th><td>' + rank + '</td></tr>' +
 								phone +
 								email +
