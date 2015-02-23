@@ -2,7 +2,6 @@
 /app/controllers/Server.php
 /vendor
 composer.phar
-composer.lock
 .env.*.php
 .env.php
 .DS_Store
@@ -11,23 +10,13 @@ Thumbs.db
 *.pyc
 *.pyo
 /app/config/jake_local
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 public/nfo.php
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
-=======
-public/nfo.php
->>>>>>> 0b62f3d62136fa1c154682d2a09ea168fa4567d5
 /public/server_config
 /public/nfo.php
 /.htaccess
-/soc_mob_backup_2014_10_28_21.sql
-/soc_mob_backup_2014_10_29_21.sql
+/*.sql
 public/img/users/
 public/uploads/
-SociallyMobile.pem
-SociallyMobile.ppk
-public/nfo.php
-
+LLR.pem
+LLR.ppk
 public/nfo.php
