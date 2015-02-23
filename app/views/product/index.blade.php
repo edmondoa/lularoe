@@ -35,12 +35,17 @@
 		                            </div>
 		                        </div>
 		                        <?php /* select categories */ ?>
-		                        <div class="pull-left">
-		                            <select ng-model="search" class="form-control">
+		                        <div class="pull-left margin-right-1">
+		                            <select ng-model="search" id="categories" class="form-control">
 		                            	<option value="">All Categories</option>
-		                            	@foreach ($categories as $category)
-		                                	<option value="{{ $category->name }}">{{ $category->name }}</option>
-		                                @endforeach
+		                                <option ng-repeat="productCategory in productCategories" data-index="@include('_helpers.index')">@include('_helpers.productCategory_name')</option>
+		                            </select>
+		                    	</div>
+		                        <?php /* select tags */ ?>
+		                        <div class="pull-left">
+		                            <select ng-model="search" id="tags" class="form-control">
+		                            	<option value="">All Tags</option>
+		                                <option ng-repeat="productTag in selectedSubCategoryValues" value="@include('_helpers.productTag_name')">@include('_helpers.productTag_name')</option>
 		                            </select>
 		                    	</div>
 		                    </div>
@@ -127,7 +132,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{ highlight : product.new == 1, semitransparent : product.disabled }" ng-class="{highlight: address.new == 1}" dir-paginate-start="product in products | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{ highlight : product.new == 1, semitransparent : product.disabled==1 }" ng-class="{highlight: address.new == 1}" dir-paginate-start="product in products | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.product_id')">
 	                            </td>
@@ -178,31 +183,15 @@
 @section('scripts')
 <script>
 
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function ProductController($scope, $http) {
-	
-		$http.get('/api/all-products').success(function(products) {
-			$scope.products = products;
-			
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
+    angular.extend(ControlPad, (function(){                
+                return {
+                    productCtrl : {
+                        all_products_url : '/api/all-products',
+                        all_product_categories_url : '/api/all-product-categories'
+                    }
+                };
+            }())); 
 
 </script>
+{{ HTML::script('js/controllers/productController.js') }}
 @stop

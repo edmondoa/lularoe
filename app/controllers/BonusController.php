@@ -1,11 +1,12 @@
 <?php
 
-class bonusController extends \BaseController {
+class BonusController extends \BaseController {
 
 	/**
 	 * Data only
 	 */
 	public function getAllBonuses(){
+        $count = Bonus::count();
 		$bonuses = Bonus::all();
 		foreach ($bonuses as $bonus)
 		{
@@ -14,7 +15,10 @@ class bonusController extends \BaseController {
 				$bonus['new'] = 1;
 			}
 		}
-		return $bonuses;
+		return [
+            'count' => $count,
+            'data' => $bonuses
+        ];
 	}
 
 	/**

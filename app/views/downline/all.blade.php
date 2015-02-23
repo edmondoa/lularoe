@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => '/users/public_email', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
 	    <div ng-controller="DownlineController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
@@ -18,11 +18,7 @@
 			                	{{ $user->first_name }} {{ $user->last_name }}'s Entire Downline
 			            	@endif
 			            	<span class="badge">
-				            	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-				            		{{ $total_users }}
-				            	@else
-				            		{{ $user->descendant_count }}
-				            	@endif
+				            	{{ number_format($user->descendant_count) }}
 			            	</span>
 		            	</h1>
 		            	<div class="pull-right hidable-xs">
@@ -150,7 +146,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: 'last_name' | orderBy: 'pivot.level' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: 'last_name' | orderBy: 'pivot.level' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
@@ -205,32 +201,13 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function DownlineController($scope, $http) {
-	
-		$http.get('/api/all-downline/{{ $user->id }}').success(function(users) {
-			$scope.users = users;
-			console.log($scope.users);
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
+    angular.extend(ControlPad, (function(){                
+                return {
+                    downlineCtrl : {
+                        path : '/api/all-downline/{{ $user->id }}'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/downlineController.js') }}
 @stop

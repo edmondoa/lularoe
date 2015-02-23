@@ -1,29 +1,41 @@
 <?php
+	return [
 
-return [
+		/*
+		|--------------------------------------------------------------------------
+		| Site general configutaion
+		|--------------------------------------------------------------------------
+		|
+		| This file is for storage of settings for site
 
-	/*
-	|--------------------------------------------------------------------------
-	| Site general configutaion
-	|--------------------------------------------------------------------------
-	|
-	| This file is for storage of settings for site
+		|
+		*/
 
-	|'domain' => 'my.sociallymobile.com',
-    'base_domain' => 'sociallymobile.com',
-	*/
-    
+		'domain' 		=> 'mylularoe.com',
+		'mwl_api'		=> 'http://mwl.controlpad.com:8080/cms/',
+		'mwl_db'		=> 'llr',
+		'mwl_username'	=> 'admin',
+		'mwl_password'	=> 'CY9rzUYh03PK3k6DJie09g==',
+		'admin_uid'		=> 0,
+		'base_domain' 	=> 'mylularoe.com',
+		'preregistration_fee' => 2000.00,
+		'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
 
-	'domain' => 'llr.controlpad.local',
-	'base_domain' => 'llr.controlpad.local',
-	'preregistration_fee' => 100.00,
-	'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
-	'default_from_email' => 'no-reply@lularoe.com',
-	'company_name' => 'LulaRoe',
-	//'subdomain' => Route::getCurrentRoute()->getParameter('subdomain'),
-	'locked_subdomains' => [
-		'my',
-		'beta',
-		'www',
-	]
-];
+		'company_logo' => '/img/llr-logo.png',
+		'company_logo_minimal' => '/img/llr-logo-minimal.png',
+		'preregistration_fee' => 2000.00,
+
+		'default_from_email' => 'no-reply@mylularoe.com',
+		'contact_email' => 'mfrederico@gmail.com',
+		'contact_first_name' => 'Matt',
+		'contact_last_name'  => 'Frederico',
+		'rep_title'			=> 'Independent Consultant',
+		'company_name' => 'LulaRoe',
+		//'subdomain' => Route::getCurrentRoute()->getParameter('subdomain'),
+		'locked_subdomains' => [
+			'my',
+			'www',
+			'llr'
+		],
+		'cache_length' => 10
+	];

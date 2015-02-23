@@ -30,12 +30,16 @@ class Server extends \BaseController {
 	{
 		//return "Deploying";
 		SSH::into('production')->run(array(
+			// back up db
 			'cd /var/www/html',
+			"php artisan down",
+			"mysqldump -u root --password='Yr*r,dAv" . '$' . "S?qE8,N' soc_mob > /var/www/html/soc_mob_backup_" . date('Y_m_d_h_m') . ".sql",
 			// 'ls -la',
 			'git pull',
 			//'sudo chmod -R 777 app/storage',
 			'composer install --no-dev',
-			'php artisan migrate'
+			'php artisan migrate',
+			"php artisan up"
 		), function($line){
 		 
 			echo $line.PHP_EOL; // outputs server feedback

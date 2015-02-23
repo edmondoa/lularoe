@@ -2,7 +2,7 @@
 @section('content')
 <div ng-app="app" class="index">
     {{ Form::open(array('url' => 'events/disable', 'method' => 'POST')) }}
-	    <div ng-controller="uventController" class="my-controller">
+	    <div ng-controller="UventController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
@@ -149,7 +149,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{ highlight : event.new == 1, semitransparent : event.disabled }" dir-paginate-start="event in events | filter:search | orderBy:'<?php if ($range == 'past') echo '-' ?>date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{ highlight : event.new == 1, semitransparent : event.disabled }" dir-paginate-start="event in events | filter:search | orderBy:'<?php if ($range == 'past') echo '-' ?>date_start' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 		                        
 		                        @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		                            <td ng-click="checkbox()">
@@ -212,11 +212,6 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function uventController($scope, $http) {
-		
 		<?php
 			if (Auth::user()->hasRole(["Superadmin", "Admin"])) {
 				$object = 'all-' . $range . '-events';
@@ -225,28 +220,13 @@
 				$object = 'all-' . $range . '-events-by-role';
 			}
 		?>
-		
-		$http.get('/api/{{ $object }}').success(function(events) {
-			$scope.events = events;
-			console.log($scope.events);
-			@include('_helpers.bulk_action_checkboxes')
-
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
+    angular.extend(ControlPad, (function(){                
+                return {
+                    uventCtrl : {
+                        path : '/api/{{ $object }}'
+            }
+        };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/uventController.js') }}
 @stop

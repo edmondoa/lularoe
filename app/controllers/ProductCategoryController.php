@@ -1,21 +1,6 @@
 <?php
 
-class productCategoryController extends \BaseController {
-
-	/**
-	 * Data only
-	 */
-	public function getAllProductCategories(){
-		$productCategories = ProductCategory::all();
-		foreach ($productCategories as $productCategory)
-		{
-			if (strtotime($productCategory['created_at']) >= (time() - Config::get('site.new_time_frame') ))
-			{
-				$productCategory['new'] = 1;
-			}
-		}
-		return $productCategories;
-	}
+class ProductCategoryController extends \BaseController {
 
 	/**
 	 * Display a listing of productCategories
@@ -36,7 +21,19 @@ class productCategoryController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('productCategory.create');
+		$productCategories = ProductCategory::all();
+		$selectCategories = [];
+		$selectCategories[''] = 'None';
+		foreach ($productCategories as $productCategory) {
+			// $tab = '';
+			$parent = ProductCategory::find($productCategory->parent_id);
+			// while ($parent['id'] != 0) {
+				// $parent = ProductCategory::find($parent['parent_id']);
+				// $tab .= '--';
+			// }
+			$selectCategories[$productCategory->id] = /*$tab . */$productCategory->name;
+		}
+		return View::make('productCategory.create', compact('selectCategories'));
 	}
 
 	/**
@@ -54,8 +51,9 @@ class productCategoryController extends \BaseController {
 		}
 
 		ProductCategory::create($data);
-
-		return Redirect::route('productCategories.index')->with('message', 'ProductCategory created.');
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
+		
+		return Redirect::route('productCategories.index')->with('message', 'Product Category created.');
 	}
 
 	/**
@@ -103,7 +101,9 @@ class productCategoryController extends \BaseController {
 
 		$productCategory->update($data);
 
-		return Redirect::route('productCategories.show', $id)->with('message', 'ProductCategory updated.');
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
+
+		return Redirect::route('productCategories.show', $id)->with('message', 'Product Category updated.');
 	}
 
 	/**
@@ -115,8 +115,8 @@ class productCategoryController extends \BaseController {
 	public function destroy($id)
 	{
 		ProductCategory::destroy($id);
-
-		return Redirect::route('productCategories.index')->with('message', 'ProductCategory deleted.');
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
+		return Redirect::route('productCategories.index')->with('message', 'Product Category deleted.');
 	}
 	
 	/**
@@ -127,11 +127,12 @@ class productCategoryController extends \BaseController {
 		foreach (Input::get('ids') as $id) {
 			ProductCategory::destroy($id);
 		}
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('productCategories.index')->with('message', 'ProductCategories deleted.');
+			return Redirect::route('productCategories.index')->with('message', 'Product Categories deleted.');
 		}
 		else {
-			return Redirect::back()->with('message', 'ProductCategory deleted.');
+			return Redirect::back()->with('message', 'Product Category deleted.');
 		}
 	}
 	
@@ -143,11 +144,12 @@ class productCategoryController extends \BaseController {
 		foreach (Input::get('ids') as $id) {
 			ProductCategory::find($id)->update(['disabled' => 1]);	
 		}
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('productCategories.index')->with('message', 'ProductCategories disabled.');
+			return Redirect::route('productCategories.index')->with('message', 'Product Categories disabled.');
 		}
 		else {
-			return Redirect::back()->with('message', 'ProductCategory disabled.');
+			return Redirect::back()->with('message', 'Product Category disabled.');
 		}
 	}
 	
@@ -159,11 +161,12 @@ class productCategoryController extends \BaseController {
 		foreach (Input::get('ids') as $id) {
 			ProductCategory::find($id)->update(['disabled' => 0]);	
 		}
+		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProductCategories')));
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('productCategories.index')->with('message', 'ProductCategories enabled.');
+			return Redirect::route('productCategories.index')->with('message', 'Product Categories enabled.');
 		}
 		else {
-			return Redirect::back()->with('message', 'ProductCategory enabled.');
+			return Redirect::back()->with('message', 'Product Category enabled.');
 		}
 	}
 

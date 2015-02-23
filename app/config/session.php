@@ -122,7 +122,7 @@ return array(
 	|
 	*/
 
-	'domain' => '.' . Config::get('site.domain'),
+	'domain' => '.' . Config::get('site.base_domain'),
 
 	/*
 	|--------------------------------------------------------------------------

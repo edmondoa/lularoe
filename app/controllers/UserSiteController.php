@@ -1,6 +1,6 @@
 <?php
 
-class userSiteController extends \BaseController {
+class UserSiteController extends \BaseController {
 
 	/**
 	 * Data only
@@ -186,7 +186,7 @@ class userSiteController extends \BaseController {
 		
 		$userSite->update($data);
 
-		return Redirect::back()->with('message', 'Site updated. <a target="_blank" href="//' . $user->public_id . '.' . Config::get('site.domain') . '">View site</a>.');
+		return Redirect::back()->with('message', 'Site updated. <a target="_blank" href="//' . $user->public_id . '.' . Config::get('site.base_domain') . '">View site</a>.');
 	}
 
 	/**

@@ -13,17 +13,19 @@
                 </div>
                  
                 <!-- <div class="form-group">
-                    {{ Form::label('parent_id', 'Parent Category') }}
-                    {{-- Form::select('parent_id', $selectCategories, null, ['class' => 'form-control']) --}}
+                	@if (isset($selectCategories))
+	                    {{ Form::label('parent_id', 'Parent Category') }}
+	                    {{ Form::select('parent_id', $selectCategories, null, ['class' => 'form-control']) }}
+	                @endif
                 </div> -->
                  
                 <!-- <div class="form-group">
                     {{ Form::label('disabled', 'Status') }}
                     <br>
-                    {{ Form::select('disabled', [
-                        0 => 'Active',
-                        1 => 'Disabled'
-                    ], null, ['class' => 'selectpicker form-control width-auto']) }}
+	                    {{ Form::select('disabled', [
+	                        0 => 'Active',
+	                        1 => 'Disabled'
+	                    ], null, ['class' => 'selectpicker form-control width-auto']) }}
                 </div> -->
 		
 		    {{ Form::submit('Update Product Category', array('class' => 'btn btn-primary')) }}

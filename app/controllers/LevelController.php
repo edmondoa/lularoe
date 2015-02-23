@@ -1,12 +1,22 @@
 <?php
 
-class levelController extends \BaseController {
+class LevelController extends \BaseController {
 
 	/**
 	 * Data only
 	 */
 	public function getAllLevels(){
-		$levels = Level::all();
+        $p = Input::get('p');
+        $l = Input::get('l');
+        $o = Input::get('o');
+        $s = Input::get('s');
+        $page = $p ? $p : 1;
+        $limit = $l ? $l : 10;
+        $order = $o ? $o : "user_id";
+        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
+        $offset = ($page - 1) * $limit;
+        $count = Level::count();
+		$levels = Level::orderBy("updated_at", "DESC")->orderBy($order, $sequence)->skip($offset)->take($limit)->get();
 		foreach ($levels as $level)
 		{
 			if (strtotime($level['created_at']) >= (time() - Config::get('site.new_time_frame') ))
@@ -14,7 +24,11 @@ class levelController extends \BaseController {
 				$level['new'] = 1;
 			}
 		}
-		return $levels;
+        
+        return [
+            'count' => $count,
+            'data' => $levels
+        ];
 	}
 
 	/**
@@ -24,9 +38,7 @@ class levelController extends \BaseController {
 	 */
 	public function index()
 	{
-		$levels = Level::all();
-
-		return View::make('level.index', compact('levels'));
+		return View::make('level.index');
 	}
 
 	/**

@@ -92,7 +92,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="userSite in userSites | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="userSite in userSites | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.userSite_id')">
 	                            </td>
@@ -126,31 +126,13 @@
 @section('scripts')
 <script>
 
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function UserSiteController($scope, $http) {
-	
-		$http.get('/api/all-userSites').success(function(userSites) {
-			$scope.userSites = userSites;
-			
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
+    angular.extend(ControlPad, (function(){                
+                return {
+                    userSiteCtrl : {
+                        path : '/api/all-userSites'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/userSiteController.js') }}
 @stop

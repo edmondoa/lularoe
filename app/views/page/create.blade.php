@@ -9,7 +9,7 @@
 	</div>
 	<div class="row">
 		{{ Form::open(array('url' => 'pages')) }}
-			<div class="col col-lg-6 col-md-8 col-sm-12">
+			<div class="col col-lg-9 col-md-8 col-sm-12">
 				<div class="row">
 					<div class="col-md-12">
 					    <div class="form-group">
@@ -23,7 +23,6 @@
 						
 					    <div class="form-group">
 					        {{ Form::label('short_title', 'Short Title') }}
-					        <br>
 					        <small>(To be used in menus)</small>
 					        {{ Form::text('short_title', Input::old('url'), array('class' => 'form-control')) }}
 					    </div>
@@ -33,7 +32,6 @@
 						
 					    <div class="form-group">
 					        {{ Form::label('url', 'URL') }}
-					        <br>
 					        <small>{{ url() }}/pages/</small>
 					        {{ Form::text('url', Input::old('url'), array('class' => 'form-control')) }}
 					    </div>
@@ -91,7 +89,7 @@
 					        </label>
 					        <br>
 					        <label>
-					   			{{ Form::checkbox('reps') }} ISM's
+					   			{{ Form::checkbox('reps') }} {{ Config::get('site.rep_title') }}
 					        </label>
 				    	</div>
 			    	</div>
@@ -167,4 +165,7 @@
 		});
 		
 	</script>
+@stop
+@section('modals')
+	@include('_helpers.wysiwyg_modals')
 @stop

@@ -42,22 +42,24 @@
 		        {{ Form::text('phone', null, array('class' => 'form-control')) }}
 		    </div>
 		    
-		    <div class="form-group">
+		    @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 			    <div class="form-group">
-			        {{ Form::label('sponsor_id', 'Assign to ISM') }}
-			        {{ Form::text('sponsor_id', null, array('class' => 'form-control', 'placeholder' => 'ISM ID')) }}
+				    <div class="form-group">
+				        {{ Form::label('sponsor_id', 'Assign to '. Config::get('site.rep_title')) }}
+				        {{ Form::text('sponsor_id', null, array('class' => 'form-control', 'placeholder' => 'ISM ID')) }}
+				    </div>
 			    </div>
-		    </div>
+			    
+			    <div class="form-group">
+			        {{ Form::label('opportunity_id', 'Opportunity ID') }}
+			        {{ Form::text('opportunity_id', null, array('class' => 'form-control')) }}
+			    </div>
+			@endif
 		    
-		    <div class="form-group">
-		        {{ Form::label('opportunity_id', 'Opportunity ID') }}
-		        {{ Form::text('opportunity_id', null, array('class' => 'form-control')) }}
-		    </div>
-		    
-		    <div class="form-group">
+		    <!-- <div class="form-group">
 		        {{ Form::label('disabled', 'Disabled') }}
 		        {{ Form::text('disabled', null, array('class' => 'form-control')) }}
-		    </div>
+		    </div> -->
 		    
 		
 		    {{ Form::submit('Update Lead', array('class' => 'btn btn-primary')) }}

@@ -47,6 +47,12 @@ class SessionController extends \BaseController {
 			], false);
 		if($attempt)
 		{
+	//		Auth::user()->clearUserCache();
+/*			if (Auth::user()->hasRole(['Rep'])) {
+				return 'The back office is currently down for maintenance until Monday January 26th.';
+			}
+*/			
+
 			return Redirect::intended('/dashboard');		
 		} 
 		else

@@ -121,11 +121,9 @@ return array(
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
-		//'Way\Generators\GeneratorsServiceProvider',
-		//'Jrenton\LaravelScaffold\LaravelScaffoldServiceProvider',
-		'SociallyMobile\Payments\PaymentServiceProvider',
-		'SociallyMobile\Twilio\TwilioServiceProvider',
-		'SociallyMobile\Commission\CommissionServiceProvider',
+		'LLR\Payments\PaymentServiceProvider',
+		'LLR\Twilio\TwilioServiceProvider',
+		'LLR\Commission\CommissionServiceProvider',
 		'Intervention\Image\ImageServiceProvider',
     	'Camroncade\Timezone\TimezoneServiceProvider'
 
@@ -195,9 +193,9 @@ return array(
 		'URL'             => 'Illuminate\Support\Facades\URL',
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
-		'Twilio'		  => 'SociallyMobile\Facades\Twilio',
-		'CMSPayment'	  => 'SociallyMobile\Facades\Payment',
-		'Commission'		=> 'SociallyMobile\Facades\Commission',
+		'Twilio'		  => 'LLR\Facades\Twilio',
+		'CMSPayment'	  => 'LLR\Facades\Payment',
+		'Commission'		=> 'LLR\Facades\Commission',
 		'Image'	  => 'Intervention\Image\Facades\Image'
 	),
 

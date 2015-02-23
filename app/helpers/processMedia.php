@@ -15,11 +15,10 @@
                 	$file = Input::file('image');
 				}
 				
-				/*
-				if (!file_exists('/uploads/' . date('Y') . '/' . date('m'))) {
-				    mkdir('/uploads/' . date('Y') . '/' . date('m'), 0755, true);
+				if (!file_exists(public_path() . '/uploads/' . date('Y') . '/' . date('m'))) {
+				    mkdir(public_path() . '/uploads/' . date('Y') . '/' . date('m'), 0755, true);
 				}
-				*/
+
 				$path = date('Y') . '/' . date('m') . '/';
                 $fullPath = public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/';
 				if (!file_exists($fullPath)) {
@@ -40,10 +39,10 @@
 				$existing_file = Media::where('url', $url)->get();
 				if (count($existing_file) > 0) {
 					$filename = str_random(20);
-					$url = $path . $filename;
+					$url = $path . $filename . '.' . $extension;
 				}
 
-                $uploadSuccess = $file->move($fullPath, $filename);
+                $uploadSuccess = $file->move($fullPath, $filename . '.' . $extension);
 				
 				// common media types		
 				$raster_image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
@@ -62,19 +61,17 @@
 				// determine media type
 				if (in_array($extension, $raster_image_extensions)) {
 					// make thumbs directory if doesn't exist
-					/*
-					if (!file_exists('/uploads/' . date('Y') . '/' . date('m') . '/thumbs')) {
-					    mkdir('/uploads/' . date('Y') . '/' . date('m') . '/thumbs', 0755, true);
+					if (!file_exists(public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/thumbs')) {
+					    mkdir(public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/thumbs', 0755, true);
 					}
-					*/
 	                // open an image media
-					$img = Image::make('uploads/' . $path . $filename)
+					$img = Image::make(public_path() . '/uploads/' . $path . $filename . '.' . $extension)
 	                // now you are able to resize the instance
-	                ->save('uploads/' . $path . $filename . '.' . $extension)
+	                ->save(public_path() . '/uploads/' . $path . $filename . '.' . $extension)
 					->fit(200, 150)
-	                ->save('uploads/' . $path . $filename . '-sm' . '.' . $extension)
+	                ->save(public_path() . '/uploads/' . $path . $filename . '-sm' . '.' . $extension)
 					->destroy();
-					unlink('uploads/' . $path . $filename);
+					// unlink(public_path() . '/uploads/' . $path . $filename);
 					$data['type'] = 'Image';
 				}
 				elseif (in_array($extension, $image_extensions)) $data['type'] = 'Image media';
@@ -94,7 +91,7 @@
                 $data['url'] = $url;
 				$data['user_id'] = Auth::user()->id;
 				if (isset($data['title'])) {
-					if ($data['title'] == '') $data['title'] = $filename;
+					if ($data['title'] == '') $data['title'] = $filename . '.' . $extension;
 				}
 
             }
