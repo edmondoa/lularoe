@@ -366,7 +366,10 @@ class DataOnlyController extends \BaseController
 	
 	// all upcoming events by role
 	public function getAllUpcomingEventsByRole() {
-		return $events;
+		if (!Auth::check()) return Uvent::where('public', 1)->where('date_start', '>', time())->get();
+		elseif (Auth::user()->hasRole(['Customer'])) return Uvent::where('customers', 1)->where('date_start', '>', time())->get();
+		elseif (Auth::user()->hasRole(['Rep'])) return Uvent::where('reps', 1)->where('date_start', '>', time())->get();
+		elseif (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Uvent::where('date_start', '>', time())->get();
 	}
 	
 	// upcoming public events
@@ -376,7 +379,10 @@ class DataOnlyController extends \BaseController
 	
 	// all past events by role
 	public function getAllPastEventsByRole() {
-		return $events;
+		if (!Auth::check()) return Uvent::where('public', 1)->where('date_start', '<', time())->get();
+		elseif (Auth::user()->hasRole(['Customer'])) return Uvent::where('customers', 1)->where('date_start', '<', time())->get();
+		elseif (Auth::user()->hasRole(['Rep'])) return Uvent::where('reps', 1)->where('date_start', '<', time())->get();
+		elseif (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Uvent::where('date_start', '<', time())->get();
 	}
 
 	public function getAllOpportunities(){
