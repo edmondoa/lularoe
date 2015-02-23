@@ -197,5 +197,15 @@ try {
             $scope.total = $scope.tax + $total;
             return $total;
         };
+        
+        $scope.checkout = function(){
+            $http.post('/llrapi/v1/reorder',$scope.orders)
+                .success(function(data, status,headers,config){
+                    console.log(data.message);
+                })
+                .error(function(data, status, headers, config){
+                    console.log(data.message);
+                });
+        };
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));
