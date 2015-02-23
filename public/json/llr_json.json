@@ -1,0 +1,485 @@
+[
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 20,
+        "quantities": {
+            "NA": 99724
+        },
+        "itemnumber": "Adult Leggings",
+        "model": "Adult Leggings"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 30,
+        "quantities": {
+            "L": 99786,
+            "M": 99689,
+            "S": 99700,
+            "XL": 99433,
+            "XS": 99380
+        },
+        "itemnumber": "Amelia - L",
+        "model": "Amelia"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 26,
+        "quantities": {
+            "L": 99371,
+            "M": 99968,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000,
+            "2XL": 99604
+        },
+        "itemnumber": "Ana - L",
+        "model": "Ana"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 13,
+        "quantities": {
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 99922,
+            "2XL": 100000,
+            "XXS": 100000
+        },
+        "itemnumber": "Azure - L",
+        "model": "Azure"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 13,
+        "quantities": {
+            "3XL": 100000,
+            "L": 99944,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000,
+            "2XS": 59,
+            "2XL": 99986
+        },
+        "itemnumber": "Cassie - 3XL",
+        "model": "Cassie"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 13,
+        "quantities": {
+            "10": 100000,
+            "12": 100000,
+            "14": 100000,
+            "2": 100000,
+            "4": 100000,
+            "6": 100000,
+            "8": 100000
+        },
+        "itemnumber": "Kids Maxi - 10",
+        "model": "Kids Maxi"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 17,
+        "quantities": {
+            "2T": 100000,
+            "3\/4": 100000,
+            "5\/6": 100000,
+            "8\/10": 100000
+        },
+        "itemnumber": "DDM Sleeve - 2T",
+        "model": "DDM Sleeve"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 17,
+        "quantities": {
+            "2T": 100000,
+            "3\/4": 100000,
+            "5\/6": 100000,
+            "8\/10": 100000
+        },
+        "itemnumber": "DDM Sleeveless - 2T",
+        "model": "DDM Sleeveless"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 14,
+        "quantities": {
+            "L": 100000,
+            "M": 99976,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000,
+            "XXS": 99984
+        },
+        "itemnumber": "Irma - L",
+        "model": "Irma"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 15,
+        "quantities": {
+            "L": 100000,
+            "M": 99985,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000
+        },
+        "itemnumber": "Jill - L",
+        "model": "Jill"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 17,
+        "quantities": {
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000,
+            "XXS": 100000
+        },
+        "itemnumber": "Julia - L",
+        "model": "Julia"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 20,
+        "quantities": {
+            "10": 100000,
+            "12": 100000,
+            "14": 100000,
+            "2": 100000,
+            "4": 100000,
+            "6": 100000,
+            "8": 100000
+        },
+        "itemnumber": "Kids Cassie - 10",
+        "model": "Kids Cassie"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 16,
+        "quantities": {
+            "NA": 100000
+        },
+        "itemnumber": "Kids Leggings",
+        "model": "Kids Leggings"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 20,
+        "quantities": {
+            "2XL": 100000,
+            "3XL": 6,
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000,
+            "XXS": 100000
+        },
+        "itemnumber": "Lola - 2XL",
+        "model": "Lola"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 22,
+        "quantities": {
+            "2XL": 100000,
+            "3XL": 18,
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XXL": 20,
+            "XXS": 100000,
+            "XS": 100000
+        },
+        "itemnumber": "Lucy - 2XL",
+        "model": "Lucy"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 24,
+        "quantities": {
+            "2XL": 100000,
+            "3XL": 100000,
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000
+        },
+        "itemnumber": "Lucy Temple - 2XL",
+        "model": "Lucy Temple"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 22,
+        "quantities": {
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000
+        },
+        "itemnumber": "Madison - L",
+        "model": "Madison"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 20,
+        "quantities": {
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000,
+            "2XL": 100000,
+            "XXS": 100000,
+            "3XL": 100000
+        },
+        "itemnumber": "Maxi - L",
+        "model": "Maxi"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 20,
+        "quantities": {
+            "L": 100000,
+            "S": 100000
+        },
+        "itemnumber": "Monroe - L",
+        "model": "Monroe"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 35,
+        "quantities": {
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000,
+            "2XS": 100000
+        },
+        "itemnumber": "Nena & Co. - L",
+        "model": "Nena & Co."
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 22,
+        "quantities": {
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000
+        },
+        "itemnumber": "Nicole - L",
+        "model": "Nicole"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 20,
+        "quantities": {
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000,
+            "2XL": 100000
+        },
+        "itemnumber": "Olivia - L",
+        "model": "Olivia"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 24,
+        "quantities": {
+            "NA": 100000
+        },
+        "itemnumber": "Plus Size Leggings",
+        "model": "Plus Size Leggings"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 15,
+        "quantities": {
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XL": 100000,
+            "XS": 100000,
+            "2XL": 100000,
+            "XXS": 100000
+        },
+        "itemnumber": "Randy - L",
+        "model": "Randy"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 28,
+        "quantities": {
+            "L": 100000,
+            "M": 100000,
+            "S": 100000,
+            "XS": 100000,
+            "2XL": 100000,
+            "3XL": 100000,
+            "XL": 100000
+        },
+        "itemnumber": "Temple Dress - L",
+        "model": "Temple Dress"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 12,
+        "quantities": {
+            "2": 100000
+        },
+        "itemnumber": "Sloan - 2",
+        "model": "Sloan"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 0,
+        "quantities": {
+            "2": 99983
+        },
+        "itemnumber": "Dot Dot Lucy Tank - 2",
+        "model": "Dot Dot Lucy Tank"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 0,
+        "quantities": {
+            "2": 100000
+        },
+        "itemnumber": "Dot Dot Lucy Slv - 2",
+        "model": "Dot Dot Lucy Slv"
+    },
+    {
+        "UPC": "null",
+        "SKU": "null",
+        "price": 0,
+        "quantities": {
+            "2XL": 100000
+        },
+        "itemnumber": "Julia - 2XL",
+        "model": "Julia"
+    },
+    {
+        "UPC": "null",
+        "SKU": "null",
+        "price": 0,
+        "quantities": {
+            "4": 100000,
+            "6": 100000,
+            "8": 100000,
+            "10": 100000,
+            "12": 100000,
+            "14": 100000
+        },
+        "itemnumber": "Sloan - 4",
+        "model": "Sloan"
+    },
+    {
+        "UPC": "null",
+        "SKU": "null",
+        "price": 0,
+        "quantities": {
+            "2XL": 100000
+        },
+        "itemnumber": "Nicole - 2XL",
+        "model": "Nicole"
+    },
+    {
+        "UPC": "null",
+        "SKU": "null",
+        "price": 0,
+        "quantities": {
+            "3\/4": 100000,
+            "5\/6": 100000,
+            "8\/10": 100000
+        },
+        "itemnumber": "Dot Dot Lucy Tank - 3\/4",
+        "model": "Dot Dot Lucy Tank"
+    },
+    {
+        "UPC": "null",
+        "SKU": "null",
+        "price": 0,
+        "quantities": {
+            "3\/4": 100000,
+            "5\/6": 100000,
+            "8\/10": 100000
+        },
+        "itemnumber": "Dot Dot Lucy Slv - 3\/4",
+        "model": "Dot Dot Lucy Slv"
+    },
+    {
+        "UPC": "null",
+        "SKU": "null",
+        "price": 0,
+        "quantities": {
+            "2XL": 331,
+            "M": 50
+        },
+        "itemnumber": "Amelia - 2XL",
+        "model": "Amelia"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 26,
+        "quantities": {
+            "S": 400
+        },
+        "itemnumber": "Ana - S",
+        "model": "Ana"
+    },
+    {
+        "UPC": "",
+        "SKU": "",
+        "price": 30,
+        "quantities": {
+            "L": 1
+        },
+        "itemnumber": "Amelia - L",
+        "model": "Amelia"
+    }
+]

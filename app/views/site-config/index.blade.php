@@ -34,7 +34,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-class="{highlight: address.new == 1}" dir-paginate-start="site_config in site_configs | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+							<tr ng-class="{highlight: address.new == 1}" dir-paginate-start="site_config in site_configs | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 								<td>
 									<a href="/config/@{{site_config.id}}/edit"><span ng-bind="site_config.key"></span>
 								</td>
@@ -59,33 +59,13 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function SiteConfigController($scope, $http) {
-	
-		$http.get('/api/all-config').success(function(site_configs) {
-			$scope.site_configs = site_configs;
-			
-			@include('_helpers.bulk_action_checkboxes')
-
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-	
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-	
+    angular.extend(ControlPad, (function(){                
+                return {
+                    siteConfigCtrl : {
+                        path : '/api/all-config'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/siteConfigController.js') }}
 @stop

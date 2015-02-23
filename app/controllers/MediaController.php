@@ -1,6 +1,6 @@
 <?php
 
-class mediaController extends \BaseController {
+class MediaController extends \BaseController {
 
 	/**
 	 * Display a listing of media

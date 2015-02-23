@@ -10,8 +10,6 @@
  | and give it the Closure to execute when that URI is requested.
  |
  */
-//use SociallyMobile\Payments\USAEpayment;
-
 	// load user-created pages
 	/*
 	$path = Request::path();
@@ -27,9 +25,15 @@
 Route::pattern('id', '[0-9]+');
 
 		// API for IOS App
-		Route::get('llrapi/auth/{id}', 				'ExternalAuthController@auth');
-		Route::get('llrapi/get-inventory/{key}',	'ExternalAuthController@getInventory');
-		Route::get('llrapi/purchase/{key}', 		'ExternalAuthController@purchase');
+		Route::get('llrapi/v1/auth/{id}', 						'ExternalAuthController@auth');
+		Route::get('llrapi/v1/get-inventory/',					'ExternalAuthController@getInventory');
+		Route::get('llrapi/v1/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory');
+		Route::get('llrapi/v1/inventory/{location}',			'ExternalAuthController@getInventory');
+
+		Route::get('llrapi/v1/refund/',		 					'ExternalAuthController@refund');
+		Route::get('llrapi/v1/purchase/',	 					'ExternalAuthController@purchase');
+		Route::get('llrapi/v1/ledger/', 						'ExternalAuthController@ledger');
+		Route::get('llrapi/v1/ledger/{ref}', 					'ExternalAuthController@ledger');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
@@ -95,12 +99,13 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	// contact form
 	Route::post('send-contact-form',['as' => 'send-contact-form', 'uses' => 'ContactController@send']);
 
-	// leads
-	Route::resource('leads', 'LeadController');
-
 	// events
+	Route::get('api/upcoming-public-events', 'DataOnlyController@getUpcomingPublicEvents');
 	Route::get('public-events', 'UventController@publicIndex');
 	Route::get('public-events/{id}', 'UventController@publicShow');
+
+	// leads
+	Route::resource('leads', 'LeadController');
 
 	// opportunities (public view)
 	Route::get('opportunity/{id}', function($id)
@@ -118,14 +123,17 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	
 	// posts
 	Route::resource('posts', 'PostController');
+	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
 	Route::get('public-posts', 'PostController@publicPosts');
 	Route::post('posts/disable', 'PostController@disable');
 	Route::post('posts/enable', 'PostController@enable');
 	Route::post('posts/delete', 'PostController@delete');
+	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
 	
-	//Route::controller('api','DataOnlyController');
+	// products
+	Route::get('store', 'ProductController@publicIndex');
+	Route::get('store/{id}', 'ProductController@publicShow');
 
-		
 	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
 		
@@ -173,6 +181,13 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
 		
+        //inventories
+        Route::resource('inventories', 'InventoryController');
+        Route::post('inventories/disable', 'InventoryController@disable');
+        Route::post('inventories/enable', 'InventoryController@enable');
+        Route::post('inventories/delete', 'InventoryController@delete');
+        Route::post('inventories/checkout', 'InventoryController@checkout');
+        
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
 		Route::post('opportunities/disable', 'OpportunityController@disable');
@@ -195,7 +210,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-profiles', 'ProfileController@getAllProfiles');
 		Route::get('api/all-ranks', 'RankController@getAllRanks');
 		Route::get('api/all-reviews', 'ReviewController@getAllReviews');
-		Route::get('api/all-roles', 'ReviewController@getAllRoles');
+		Route::get('api/all-roles', 'RoleController@getAllRoles');
 		Route::get('api/all-sales', 'SaleController@getAllSales');
 		Route::get('api/all-smsMessages', 'SmsMessageController@getAllSmsMessages');
 		Route::get('api/all-states', 'StateController@getAllStates');
@@ -205,9 +220,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		//put routes in here that we would like to cache
 		Route::group(['before' => 'cache.fetch'], function() {
 			Route::group(['after' => 'cache.put'], function() {
-				Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
-				Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
-				Route::get('api/all-users/{id}', 'DataOnlyController@getAllUsers');
+				
 				Route::get('cache-testing',function(){
 					return 'jake_jake_jake_jake_jake_jake_jake_ '.date('Y-m-d H:i:s');
 				});
@@ -215,8 +228,11 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		});
 
 		// DataOnly functions that shouldn't be cached
+        Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+        Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
+        Route::get('api/all-users', 'DataOnlyController@getAllUsers');
 		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
-		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
+		Route::get('api/media-counts/{key}', 'DataOnlyController@getMediaCounts');
 		Route::get('api/all-images', 'DataOnlyController@getAllImages');
 		Route::get('api/media-by-user/{id}', 'DataOnlyController@getMediaByUser');
 		Route::get('api/media-by-reps', 'DataOnlyController@getMediaByReps');
@@ -226,8 +242,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-branches/{id}', 'DataOnlyController@getAllBranches');
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
 		Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
+		Route::get('api/all-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
 		Route::get('api/all-past-events', 'DataOnlyController@getAllPastEvents');
-		Route::get('api/all-past-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
+		Route::get('api/all-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
 		Route::get('api/all-past-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
 		Route::get('api/all-opportunities', 'DataOnlyController@getAllOpportunities');
 		Route::get('api/all-leads', 'DataOnlyController@getAllLeads');
@@ -237,6 +254,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-products', 'DataOnlyController@getAllProducts');
 		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
 		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
+		Route::get('api/all-userSites', 'DataOnlyController@getAllUserSites');
 		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline'); 
         Route::get('api/search-user/{keyword}', 'DataOnlyController@getSearchUsers');    
 
@@ -474,11 +492,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 ##############################################################################################
 # Replicated Site Routes
 ##############################################################################################
-Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain)
-{
-	function ($subdomain){
-	};
 
+Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain){
+	// dd($subdomain);
+	function ($subdomain){
+		dd($subdomain);
+	};
 
 	Route::get('/', function($subdomain)
 	{
@@ -573,12 +592,16 @@ Route::get('test', function() {
 	# loading commission non-statically
 	##############################################################################################
 	
-	$commission = new \SociallyMobile\Commission\Commission;
+	$commission = new \LLR\Commission\Commission;
 	$commission->setCommissionPeriod(date('Y-m-d',strtotime('last month')));
 	$response['result'] = $commission->setRank(2001,true);
 	$response['lapsed'] = round((microtime (true) - $start),5);
 	return Response::json($response);
 	return User::find(2001);
+});
+
+Route::get('test', function() {
+	return App::environment();
 });
 
 Route::get('testfunction', function() {

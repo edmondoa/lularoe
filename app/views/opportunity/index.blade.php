@@ -132,7 +132,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="opportunity in opportunities | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="opportunity in opportunities | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage"  total-items="countItems">
 	                            @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		                            <td ng-click="checkbox()">
 		                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.opportunity_id')">
@@ -189,32 +189,13 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function OpportunityController($scope, $http) {
-	
-		$http.get('/api/all-opportunities').success(function(opportunities) {
-			$scope.opportunities = opportunities;
-			console.log($scope.opportunities)
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
+    angular.extend(ControlPad, (function(){                
+                return {
+                    opportunityCtrl : {
+                        path : '/api/all-opportunities'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/opportunityController.js') }}
 @stop

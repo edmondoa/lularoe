@@ -84,7 +84,7 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">ISM's
+                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">{{ Config::get('site.rep_title') }}
                             		<span>
                             			<span ng-show="orderByField == 'public'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -114,7 +114,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{ highlight : page.new == 1, semitransparent : page.disabled }" dir-paginate-start="page in pages | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+	                        <tr ng-class="{ highlight : page.new == 1, semitransparent : page.disabled == 1 }" dir-paginate-start="page in pages | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.page_id')">
 	                            </td>
@@ -158,32 +158,13 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function PageController($scope, $http) {
-	
-		$http.get('/api/all-pages').success(function(pages) {
-			$scope.pages = pages;
-			
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPage = 1;
-		$scope.pageSize = 10;
-		$scope.meals = [];
-		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
-
+    angular.extend(ControlPad, (function(){                
+                return {
+                    pageCtrl : {
+                        path : '/api/all-pages'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/pageController.js') }}
 @stop

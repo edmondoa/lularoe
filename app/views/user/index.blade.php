@@ -88,7 +88,7 @@
                             		</span>
                         		</th>
  
-                            	<th class="link" ng-click="orderByField='id'; reverseSort = !reverseSort">ISM ID
+                            	<th class="link" ng-click="orderByField='id'; reverseSort = !reverseSort">ID
                             		<span>
                             			<span ng-show="orderByField == 'id'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -264,92 +264,13 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function UserController($scope, $http) {
-	    var defaultLimit = 10;
-        
-        $scope.users = [];
-        $scope.currentPage = 1;
-        $scope.pageSize = defaultLimit;
-        $scope.countItems = 0;
-        $scope.meals = [];
-		
-        var mUser = function(curPage,  limit){
-            var path = '/api/all-users/'+curPage;
-            if(limit != defaultLimit){
-                path += '/'+limit;
-            }
-            $http.get(path).success(function(users) {
-                /**/
-                console.log("from net");
-                console.log(users);
-                console.log("scope var");
-                console.log($scope.users);
-                var lSize = users.data.length;
-                    //for(var i =0; i< lSize; i++){
-                        $scope.users = users.data.splice(0);
-                        //$scope.users.push(users.data.pop());
-                        console.log($scope.users);        
-                    //}
-                /**/
-                //$scope.users = users.data;
-                $scope.countItems = users.count;
-                
-                var totalPages = Math.ceil(users.count/limit);
-                console.log("total-pages: "+ totalPages);
-                console.log("users.length: "+ $scope.users.length);
-                
-                var tempPages = Math.ceil($scope.users.length/limit);
-                console.log("tempPages:  "+tempPages);
-                /**/if(tempPages < 2){/**//*totalPages){*/
-                /**/    //mUser(tempPages+1, limit);
-                }/**/
-                
-                @include('_helpers.bulk_action_checkboxes')
-                
-                //console.log("users");
-                console.log($scope.users);
-            });    
-        }
-		
-		$scope.pageChangeHandler = function(num) {
-            console.log("UserController - pageChangeHandler: " +num+" curPage: "+$scope.currentPage);    
-		    
-		};
-	
-        $scope.$watch("pageSize", function(n, o){
-            if(n != o){
-                mUser($scope.currentPage, n);
-                console.log("pageSize changed: n["+n+"]"+" o:["+o+"]");
-            }
-        });
-    
-        $scope.$watch("currentPage", function(n, o){
-            var totalPages = Math.ceil($scope.countItems/$scope.pageSize);
-            var tempPages = Math.ceil($scope.users.length/$scope.pageSize);
-            console.log("totalPages: "+totalPages +" tempPages: "+ tempPages);
-            console.log("l: "+$scope.users.length);
-            console.log("ln: "+$scope.countItems);
-            console.log("users.length: "+ $scope.users.length);
-            console.log($scope.users);
-            
-            //if(!$scope.countItems || tempPages < totalPages)
-            //if($scope.countItems == 0)
-            //{
-                mUser(n, $scope.pageSize);
-                console.log("currentPage changed: n["+n+"]"+" o:["+o+"]");
-            //}
-        });
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-            console.log("OtherController - pageChangeHandler: " +num+" curPage: "+$scope.currentPage);    
-		};
-	}
-	
+    angular.extend(ControlPad, (function(){                
+                return {
+                    userCtrl : {
+                        path : '/api/all-users'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/userController.js') }}
 @stop

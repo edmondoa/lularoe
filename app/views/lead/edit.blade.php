@@ -45,7 +45,7 @@
 		    @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 			    <div class="form-group">
 				    <div class="form-group">
-				        {{ Form::label('sponsor_id', 'Assign to ISM') }}
+				        {{ Form::label('sponsor_id', 'Assign to '. Config::get('site.rep_title')) }}
 				        {{ Form::text('sponsor_id', null, array('class' => 'form-control', 'placeholder' => 'ISM ID')) }}
 				    </div>
 			    </div>

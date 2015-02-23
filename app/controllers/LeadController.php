@@ -1,6 +1,6 @@
 <?php
 
-class leadController extends \BaseController {
+class LeadController extends \BaseController {
 
 	/**
 	 * Display a listing of leads

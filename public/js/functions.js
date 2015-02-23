@@ -217,3 +217,53 @@ function cleanURL(text) {
     text = text.replace(/\-_/g, "");
     return cleaned_text = text;
 }
+
+
+/**
+* check existence of a value inside an array
+* 
+* @author Randy Binondo
+* @param array = haystack
+* @param n = needle
+* 
+* @returns {Boolean}
+*/
+var checkExists = function(array,n){
+    if(array.length){
+        var res = array.filter(function(o){
+            return o == n;    
+        });    
+        return !(!res.length);
+    }
+    return false;   
+};
+
+/**
+* Pushing into a well maintained array containing only unique values
+* 
+* @author: Randy Binondo
+* @param array = one dimensional array with only unique values
+*                assumes array given is clean
+* @param data  =  values to push
+* 
+*/
+
+function pushIfNotFound(array, data){
+    data.forEach(function(n){
+        if(!checkExists(array,n)){
+            array.push(n); 
+        }  
+    });
+}
+
+/**
+* Holder object for all other variables
+* 
+* @returns {Object}
+*/
+
+var ControlPad = (function(){
+    return {
+        commonctrl : {}
+    };
+}());

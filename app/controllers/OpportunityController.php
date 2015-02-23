@@ -1,6 +1,6 @@
 <?php
 
-class opportunityController extends \BaseController {
+class OpportunityController extends \BaseController {
 
 	/**
 	 * Display a listing of opportunities

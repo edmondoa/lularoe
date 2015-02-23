@@ -13,13 +13,12 @@
                 size : 'md',
                 beforeDateTime : '03/01/2015 00:00:01'
             });
-			*/
             // add labels to the timer
             // jQuery(document).ready(function() {
             // jQuery('.xdsoft_digit:nth-child(1)').prepend('<h1>Days</h1>');
             // });
      //   });
-
+	*/
     </script>
 
     <div id="fws_546a4816763c0" class="wpb_row vc_row-fluid full-width-section standard_section    "  style="padding-top: 0px; padding-bottom: 0px; ">

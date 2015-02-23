@@ -3,7 +3,7 @@
 		    @section('modals')
 		    @show
 		</div>
-		{{ HTML::script('/js/jquery1.js') }}
+		{{ HTML::script('/js/lib/jquery1.js') }}
 		{{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
 		{{ HTML::script('//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js') }}
 		{{ HTML::script('//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js') }}
@@ -17,6 +17,9 @@
 		</script>
 		{{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
 		{{ HTML::script('js/functions.js') }}
+        {{ HTML::script('js/services.js') }}
+        {{ HTML::script('js/controllers.js') }}
+		{{ HTML::script('js/app.js') }}
 		{{ HTML::script('/js/controllers/datepickerController.js') }}
 		{{ HTML::script('/packages/jquery-ui/timepicker.js') }}
 		{{ HTML::script('/packages/dirpagination/dirPagination.js') }}
@@ -35,7 +38,7 @@
 
 			        //'Asia/Kolhata' for Indian Time.
 			        $.post('/set-timezone', { timezone : timezone }, function(result) {
-			        	alert('Result!');
+			        	//alert('Result!');
 			        	console.log('result: ' + result);
 			        });
 			        console.log('Ran AJAX');

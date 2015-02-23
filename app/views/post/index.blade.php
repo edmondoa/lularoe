@@ -123,7 +123,7 @@
 	                            		</span>
 	                        		</th>
 	                        		
-	                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">ISM's
+	                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">{{ Config::get('site.rep_title') }}
 	                            		<span>
 	                            			<span ng-show="orderByField == 'public'">
 		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -154,7 +154,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{ highlight : post.new == 1, semitransparent : post.disabled }" dir-paginate-start="post in posts | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: postSize" current-post="currentPost">
+	                        <tr ng-class="{ highlight : post.new == 1, semitransparent : post.disabled == 1 }" dir-paginate-start="post in posts | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: postSize" current-post="currentPost" total-items="countItems">
 	                            @if (Auth::user() && Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
 		                            <td ng-click="checkbox()">
 		                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.post_id')">
@@ -213,32 +213,13 @@
 @stop
 @section('scripts')
 <script>
-
-	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-	
-	function PostController($scope, $http) {
-	
-		$http.get('/api/all-posts').success(function(posts) {
-			$scope.posts = posts;
-			console.log($scope.posts);
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
-		
-		$scope.currentPost = 1;
-		$scope.postSize = 10;
-		$scope.meals = [];
-		
-		$scope.postChangeHandler = function(num) {
-			
-		};
-		
-	}
-	
-	function OtherController($scope) {
-		$scope.postChangeHandler = function(num) {
-		};
-	}
-
+    angular.extend(ControlPad, (function(){                
+                return {
+                    postCtrl : {
+                        path : '/api/all-posts'
+                    }
+                };
+            }()));    
 </script>
+{{ HTML::script('js/controllers/postController.js') }}
 @stop

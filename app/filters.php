@@ -25,8 +25,8 @@ App::after(function($request, $response)
 
 // Force cache on some routes
 
-Route::filter('cache.fetch','SociallyMobile\Filters\CacheFilter@fetch');
-Route::filter('cache.put','SociallyMobile\Filters\CacheFilter@put');
+Route::filter('cache.fetch','LLR\Filters\CacheFilter@fetch');
+Route::filter('cache.put','LLR\Filters\CacheFilter@put');
 
 /*
 |--------------------------------------------------------------------------
@@ -75,16 +75,16 @@ Route::filter('rep', function(){
 });
 
 Route::filter('editor', function(){
-	if (!Auth::user()->hasRole(['Editor']))
+	if (!Auth::user()->hasRole(['Superadmin','Admin','Editor']))
 	{
 		return App::abort('403', 'You are not authorized (Editor).');
 	}
 });
 
 Route::filter('admin', function(){
-	if (!Auth::user()->hasRole(['Admin']))
+	if (!Auth::user()->hasRole(['Superadmin','Admin']))
 	{
-		return App::abort('403', 'You are not authorized (Admin).');
+		return App::abort('403', 'You are not authorized (Admin xyzpdq).');
 	}
 });
 

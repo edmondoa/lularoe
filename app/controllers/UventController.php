@@ -1,6 +1,6 @@
 <?php
 
-class uventController extends \BaseController {
+class UventController extends \BaseController {
 
 	/**
 	 * Display a listing of upcoming uvents

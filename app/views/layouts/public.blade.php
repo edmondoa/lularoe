@@ -256,7 +256,7 @@
         <script type='text/javascript' src='/wp-includes/js/jquery/ui/jquery.ui.autocomplete.min.js?ver=1.10.4'></script>
         <script type='text/javascript'>
 /* <![CDATA[ */
-var MyAcSearch = {"url":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-ajax.php"};
+var MyAcSearch = {"url":"http:\/\/lularoe-wordpress\/wp-admin\/admin-ajax.php"};
 /* ]]> */
         </script>
         <script type='text/javascript' src='/wp-content/themes/salient/nectar/assets/functions/ajax-search/wpss-search-suggest.js'></script>
@@ -272,7 +272,7 @@ var MyAcSearch = {"url":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-ajax
         <script type='text/javascript' src='/wp-content/themes/salient/js/nectar-slider.js?ver=4.5.2'></script>
         <script type='text/javascript'>
 /* <![CDATA[ */
-var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-ajax.php","postID":"3085","rooturl":"http:\/\/sociallymobile-wordpress","pluginPages":[],"disqusComments":"false"};
+var nectarLove = {"ajaxurl":"http:\/\/lularoe-wordpress\/wp-admin\/admin-ajax.php","postID":"3085","rooturl":"http:\/\/lularoe-wordpress","pluginPages":[],"disqusComments":"false"};
 /* ]]> */
         </script>
         <script type='text/javascript' src='/wp-content/themes/salient/nectar/love/js/nectar-love.js?ver=1.0'></script>
@@ -283,13 +283,22 @@ var nectarLove = {"ajaxurl":"http:\/\/sociallymobile-wordpress\/wp-admin\/admin-
 		@if (!Session::has('timezone'))
 			<!-- get timezone -->
 			<script>
+				console.log('Running script');
 			    // if (localStorage['timezone'] == undefined) {
 			        // get timezone
 			        var tz = jstz.determine();
+			        console.log('var tz = ' + tz);
 			        // Determines the time zone of the browser client
 			        var timezone = tz.name();
+			        console.log('var timezone = ' + timezone);
+
 			        //'Asia/Kolhata' for Indian Time.
-			        jQuery.post('/set-timezone', { timezone : timezone });
+			        jQuery.post('/set-timezone', { timezone : timezone }, function(result) {
+			        	//alert('Result!');
+			        	console.log('result: ' + result);
+			        });
+			        console.log('Ran AJAX');
+
 			    // }
 			</script>
 		@endif

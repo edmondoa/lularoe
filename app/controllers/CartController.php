@@ -1,11 +1,12 @@
 <?php
 
-class cartController extends \BaseController {
+class CartController extends \BaseController {
 
 	/**
 	 * Data only
 	 */
 	public function getAllCarts(){
+        $count = Cart::count();
 		$carts = Cart::all();
 		foreach ($carts as $cart)
 		{
@@ -14,7 +15,10 @@ class cartController extends \BaseController {
 				$cart['new'] = 1;
 			}
 		}
-		return $carts;
+		return [
+            'count' => $count,
+            'data' => $carts
+        ];
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-class postController extends \BaseController {
+class PostController extends \BaseController {
 
 	/**
 	 * Display a listing of posts

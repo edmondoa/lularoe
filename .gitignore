@@ -2,7 +2,6 @@
 /app/controllers/Server.php
 /vendor
 composer.phar
-composer.lock
 .env.*.php
 .env.php
 .DS_Store
@@ -15,10 +14,13 @@ public/nfo.php
 /public/server_config
 /public/nfo.php
 /.htaccess
-/soc_mob_backup_2014_10_28_21.sql
-/soc_mob_backup_2014_10_29_21.sql
+/*.sql
 public/img/users/
-SociallyMobile.pem
-SociallyMobile.ppk
+public/uploads/
+LLR.pem
+LLR.ppk
 public/nfo.php
 app/models/User_OLD.php
+node_modules
+npm-debug.log
+.vagrant

@@ -79,7 +79,7 @@
 			        			</tr>
 			        			<tr>
 			        				<td>@if ($opportunity->reps == 1)<i class="fa fa-check"></i>@endif</td>
-			        				<td>&nbsp;ISM's</td>
+			        				<td>&nbsp;{{ Config::get('site.rep_title') }}</td>
 			        			</tr>
 			        		</table>
 			        	</td>
