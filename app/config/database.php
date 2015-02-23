@@ -45,7 +45,7 @@ return array(
 	*/
 
 	'connections' => array(
-
+/*
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
@@ -56,6 +56,20 @@ return array(
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
 		),
+		
+		*/
+		'mysql' => array(
+			'driver'    => 'mysql',
+			'host'      => 'localhost',
+			'database'  => 'llr_dev',
+			'username'  => 'root',
+			'password'  => 'b0X42!!!',
+			'charset'   => 'utf8',
+			'collation' => 'utf8_unicode_ci',
+			'prefix'    => '',
+		),
+		
+		
 
 	),
 

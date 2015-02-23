@@ -1,5 +1,5 @@
 <?php
-use SociallyMobile\Payments\USAEpayment;
+use LLR\Payments\USAEpayment;
 class PaymentsController extends \BaseController {
 
 	/**

@@ -36,10 +36,7 @@ class UpdateSiteConfigsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('config', function(Blueprint $table)
-		{
-			
-		});
+
 	}
 
 }

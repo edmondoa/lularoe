@@ -37,5 +37,4 @@ class SociallyMobile {
 	public static function _unmaskUrlParam($param) {
 	    return base64_decode($param);
 	}
-}
 ?>

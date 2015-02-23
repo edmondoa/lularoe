@@ -23,6 +23,11 @@ App::after(function($request, $response)
 	//
 });
 
+// Force cache on some routes
+
+Route::filter('cache.fetch','LLR\Filters\CacheFilter@fetch');
+Route::filter('cache.put','LLR\Filters\CacheFilter@put');
+
 /*
 |--------------------------------------------------------------------------
 | Authentication Filters

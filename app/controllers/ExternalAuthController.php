@@ -7,6 +7,7 @@ class externalAuthController extends \BaseController {
 		$pass	= trim(Input::get('pass'));
         $status = 'ERR';
         $error  = true;
+		$data   = [];
 
 		 // Find them here
         $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'password', 'first_name', 'last_name', 'image'));
@@ -28,6 +29,10 @@ class externalAuthController extends \BaseController {
 				'last_name'		=> $mbr[0]['attributes']['last_name'],
 				'image'			=> $mbr[0]['attributes']['image']
 			);
+		}
+		else
+		{
+			$status = 'Cannot authorize';
 		}
 		
         //return Response::json(array('error'=>$error,'status'=>$status,'data'=>$mbr[0]['attributes']),200);
