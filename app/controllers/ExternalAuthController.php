@@ -2,12 +2,11 @@
 
 class ExternalAuthController extends \BaseController {
 
-	public function getInventory2()
-	{
-		// STUB
-		return(file_get_contents('SampleInventory.json'));
-	}
-
+	// Private vars for this controller only
+	private $mwl_db		= 'mwl.controlpad.com';
+	private $mwl_un		= 'llr_txn';
+	private $mwl_pass	= 'ilovetexas';
+	private $mwl_server = 'llr';
 
 	public function getInventory($key = 0, $location='')
 	{
@@ -44,11 +43,11 @@ class ExternalAuthController extends \BaseController {
 		}
 		curl_close ($ch);
 
-		$output = json_decode($server_output, true); // true = array
+		$output		= json_decode($server_output, true); // true = array
 		$model		= '';
 		$lastmodel	= '';
-		$count = 0;
-
+		$count		= 0;
+		$itemlist	= [];
 
 		// Transform the output to the appropriate IOS format
 		foreach($output['Inventory'] as $item) 
@@ -65,7 +64,7 @@ class ExternalAuthController extends \BaseController {
 			// Delimiting sizes with hyphen and spaces
 			if (strpos($itemnumber,' -') === false) 
 			{
-		//		$model = $itemnumber;
+				// $model = $itemnumber; // ??
 				$size  = 'NA';	
 			}
 			else list($model, $size) = explode(' -',$itemnumber);
@@ -113,7 +112,7 @@ class ExternalAuthController extends \BaseController {
 	public function ledger($ref = null)
 	{
 		try {
-			$mysqli = new mysqli('mwl.controlpad.com', 'llr_txn', 'ilovetexas', 'llr');
+			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
 		}
 		catch (Exception $e)
 		{
@@ -136,6 +135,7 @@ class ExternalAuthController extends \BaseController {
 	public function refund($cart = array())
 	{
        $txdata = array(
+                    'transactionId'     => Input::get('transactionid'),
                     'Subtotal'          => Input::get('subtotal'),
                     'Tax'               => Input::get('tax'),
                     'Account-name'      => Input::get('cardname'),
@@ -144,10 +144,6 @@ class ExternalAuthController extends \BaseController {
                     'Card-Expiration'   => Input::get('cardexp'),
                     'Card-Address'      => Input::get('cardaddress'),
                     'Card-Zip'          => Input::get('cardzip'),
-/*
-                    'transactionId'     => Input::get('txid'),
-                    'pinHash'           => Input::get('pinHash'),
-*/
                     );
 
 		foreach($txdata as $k=>$v)
@@ -171,10 +167,6 @@ class ExternalAuthController extends \BaseController {
                     'Card-Expiration'   => Input::get('cardexp'),
                     'Card-Address'      => Input::get('cardaddress'),
                     'Card-Zip'          => Input::get('cardzip'),
-/*
-                    'transactionId'     => Input::get('txid'),
-                    'pinHash'           => Input::get('pinHash'),
-*/
                     );
 
 		foreach($txdata as $k=>$v)
@@ -237,7 +229,7 @@ class ExternalAuthController extends \BaseController {
 
 	private function makeRefund($txdata = array()) {
 		// Whether or not to write to /tmp/request.txt for debuggification
-		$verbose = false; 
+		$verbose = true; 
 
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
@@ -270,8 +262,8 @@ class ExternalAuthController extends \BaseController {
 		*/
 		$raw_response = $response_obj;
 		if (!isset($response_obj->TransactionResponse)) {
-			unset($response_obj);
-			$response_obj = new stdClass();
+			// unset($response_obj);
+			// $response_obj = new stdClass();
 			$response_obj->TransactionResponse = new stdClass();
 			$response_obj->TransactionResponse->Error = true;
 		}
@@ -284,8 +276,9 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		// Having to transform this since what is returned is not in a uniform format!!
+
 		// Bug Mike Carpenter about this .. :-)
-		if (isset($response_obj->Status) && $response_obj->Status == 'D') {
+		if (isset($response_obj->Status) && $response_obj->Status == 'D' || isset($response_obj->Error)) {
 			$response_obj->TransactionResponse->Result		= 'Declined';
 			$response_obj->TransactionResponse->ResultCode	= 'D';
 			$response_obj->TransactionResponse->Status		= 'Declined';
@@ -294,11 +287,11 @@ class ExternalAuthController extends \BaseController {
 
 		// If something really fscked
 		if (!isset($response_obj->TransactionResponse->ResultCode)) {
-			return(Response::json($response_obj));
+			$response_obj->data = $raw_response;
 		}
 
 		// We're authorized!
-		if ($response_obj->TransactionResponse->ResultCode == 'A') {
+		if (isset($response_obj->TransactionResponse->ResultCode) && $response_obj->TransactionResponse->ResultCode == 'A') {
 			$response_obj->TransactionResponse->Error = false;
 		}
 
@@ -459,4 +452,3 @@ class ExternalAuthController extends \BaseController {
 	}
 
 }
-
