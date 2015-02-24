@@ -83,6 +83,7 @@ class ExternalAuthController extends \BaseController {
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
 				'price'			=>$item['Item']['Price'],
+				'image'			=>'http://mylularoe.com/img/media/'.$model.'.jpg',
 				
 				'quantities'	=> array()); //array('NA'=>0,'XXS'=>0,'2XS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0),
 				//'itemnumber'	=>$itemnumber,
