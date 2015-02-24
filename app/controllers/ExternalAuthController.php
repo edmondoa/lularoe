@@ -11,7 +11,7 @@ class ExternalAuthController extends \BaseController {
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
 
 	// These items are to be ignored and not shown
-	private $ignore_inv	= ['OLIVIA', 'NENA & CO.'];
+	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
 
 	public function getInventory($key = 0, $location='')
 	{
