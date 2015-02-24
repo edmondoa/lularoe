@@ -7,16 +7,12 @@ class ExternalAuthController extends \BaseController {
 	private $mwl_un		= 'llr_txn';
 	private $mwl_pass	= 'ilovetexas';
 	private $mwl_db		= 'llr';
+	private $mwl_cachetime	= 3600;
+	private	$mwl_cache	= '../app/storage/cache/mwl/';
+	private $ignore_inv	= ['OLIVIA', 'NENA & CO.'];
 
 	public function getInventory($key = 0, $location='')
 	{
-		// Cache this too .. 
-		if (empty($location)) {
-			$tmpkey 	= Session::get('mwl_id');
-			$location	= $key;
-			if (!empty($tmpkey)) $key 		= $tmpkey;
-		}
-		
 		// Get MAIN inventory as default
 		if ($key == 0 || $key == null)
 		{
@@ -25,30 +21,63 @@ class ExternalAuthController extends \BaseController {
 			$key = Self::midauth(); // stub parameters
 		}
 
-
-		// Pull this out into an actual class for MWL php api
-		$location = str_replace(' ','%20', $location);
-		$ch = curl_init();
-
-		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').'/llr/'.htmlentities($location,ENT_QUOTES,'UTF-8').'/inventorylist?sessionkey='.$key;
-		curl_setopt($ch, CURLOPT_URL, $curlstring);
-
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-		$server_output = curl_exec ($ch);
-
-		if ($errno = curl_errno($ch)) {
-			print json_encode(array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno));
-			return(false);
+		// Cache this too .. 
+		if (empty($location)) {
+			$tmpkey 	= Session::get('mwl_id');
+			$location	= $key;
+			if (!empty($tmpkey)) $key 		= $tmpkey;
 		}
-		curl_close ($ch);
 
+		$server_output = '';
+
+		// Simple caching - probably a better way to do this
+		@mkdir($this->mwl_cache);
+		$mwlcachefile = $this->mwl_cache.urlencode($location).'.json';
+		if (file_exists($mwlcachefile)) {
+			$fs = stat($mwlcachefile);
+			if (time() - $fs['ctime'] > $this->mwl_cachetime) {
+				unlink($mwlcachefile);
+			}
+			else {
+				$server_output = file_get_contents($mwlcachefile);
+			}
+		}
+
+		// Only pull from the inventory server 
+		// if we don't have any output
+		if (empty($server_output)) {
+			// Pull this out into an actual class for MWL php api
+			$location = str_replace(' ','%20', $location);
+			$ch = curl_init();
+
+			// Set this to HTTPS TLS / SSL
+			$curlstring = Config::get('site.mwl_api').'/llr/'.htmlentities($location,ENT_QUOTES,'UTF-8').'/inventorylist?sessionkey='.$key;
+			curl_setopt($ch, CURLOPT_URL, $curlstring);
+
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+			$server_output = curl_exec ($ch);
+
+			if ($errno = curl_errno($ch)) {
+				print json_encode(array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno));
+				return(false);
+			}
+			curl_close ($ch);
+			file_put_contents($mwlcachefile, $server_output);
+		}
+
+		// Start transforming the server output data
 		$output		= json_decode($server_output, true); // true = array
 		$model		= '';
 		$lastmodel	= '';
 		$count		= 0;
 		$itemlist	= [];
+
+        if(array_key_exists('Code',$output) && $output['Code'] == '400'){
+			unlink($mwlcachefile);
+            print json_encode(array('errors'=>true,'message'=> $output['Message'],'errno'=>'400'));
+            return(false);
+        }
 
 		// Transform the output to the appropriate IOS format
 		foreach($output['Inventory'] as $item) 
@@ -60,7 +89,14 @@ class ExternalAuthController extends \BaseController {
 			ltrim(rtrim($itemnumber));
 
 			$model = preg_replace('/ -.*$/','',$item['Item']['Part']['Number']);
+
+			// May want to ignore some inventory items here
+			if (in_array(strtoupper($model), $this->ignore_inv)) {
+				continue;
+			}
+
 			$itemList[$model] = '';
+			
 
 			// Delimiting sizes with hyphen and spaces
 			if (strpos($itemnumber,' -') === false) 
@@ -78,6 +114,7 @@ class ExternalAuthController extends \BaseController {
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
 				'price'			=>$item['Item']['Price'],
+				'image'			=>'http://mylularoe.com/img/media/'.$model.'.jpg',
 				
 				'quantities'	=> array()); //array('NA'=>0,'XXS'=>0,'2XS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0),
 				//'itemnumber'	=>$itemnumber,
@@ -379,7 +416,7 @@ class ExternalAuthController extends \BaseController {
 		$data   = [];
 
 		 // Find them here
-        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image'));
+        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'));
 		
 		//$lastq = DB::getQueryLog();
 		//print_r(end($lastq));
@@ -394,6 +431,7 @@ class ExternalAuthController extends \BaseController {
 			$status = 'User '.strip_tags($id).' found ok';
 			$data = array(
 				'id'			=> $mbr[0]['attributes']['id'],
+				'public_id'		=> $mbr[0]['attributes']['public_id'],
 				'first_name'	=> $mbr[0]['attributes']['first_name'],
 				'last_name'		=> $mbr[0]['attributes']['last_name'],
 				'image'			=> $mbr[0]['attributes']['image'],
@@ -451,5 +489,17 @@ class ExternalAuthController extends \BaseController {
         return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>Session::get('mwl_id')),200);
 
 	}
+    
+    public function reorder(){
+        $data = Input::all();
+        if(empty($data)){
+            $message = "No data posted";
+            $status = "fail";    
+        }else{
+            $message = "Successfully posted data";
+            $status = "success";
+        }
+        return Response::json(['message'=>$message,'status'=>$status,'data'=>$data]);
+    }
 
 }

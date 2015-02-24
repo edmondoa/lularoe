@@ -46,7 +46,7 @@
 			    <div class="form-group">
 				    <div class="form-group">
 				        {{ Form::label('sponsor_id', 'Assign to '. Config::get('site.rep_title')) }}
-				        {{ Form::text('sponsor_id', null, array('class' => 'form-control', 'placeholder' => 'ISM ID')) }}
+				        {{ Form::text('sponsor_id', null, array('class' => 'form-control', 'placeholder' => 'REP ID')) }}
 				    </div>
 			    </div>
 			    
