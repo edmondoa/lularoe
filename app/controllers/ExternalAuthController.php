@@ -9,6 +9,7 @@ class ExternalAuthController extends \BaseController {
 	private $mwl_db		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
+	private $ignore_inv	= ['OLIVIA', 'NENA & CO.'];
 
 	public function getInventory($key = 0, $location='')
 	{
@@ -88,7 +89,14 @@ class ExternalAuthController extends \BaseController {
 			ltrim(rtrim($itemnumber));
 
 			$model = preg_replace('/ -.*$/','',$item['Item']['Part']['Number']);
+
+			// May want to ignore some inventory items here
+			if (in_array(strtoupper($model), $this->ignore_inv)) {
+				continue;
+			}
+
 			$itemList[$model] = '';
+			
 
 			// Delimiting sizes with hyphen and spaces
 			if (strpos($itemnumber,' -') === false) 
