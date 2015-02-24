@@ -1,10 +1,10 @@
-		<div id='div_session_write'></div>
 		<div id="modals">
 		    @section('modals')
 		    @show
 		</div>
 		{{ HTML::script('/js/lib/jquery1.js') }}
-		{{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
+        {{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
+        {{ HTML::script('//code.angularjs.org/1.2.0/angular-animate.min.js') }}
 		{{ HTML::script('//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js') }}
 		{{ HTML::script('//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js') }}
 		{{ HTML::script('/packages/bootstrap-select/bootstrap-select.min.js') }}

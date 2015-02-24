@@ -125,15 +125,15 @@
                                     <li class="media">
                                         <div class="well clearfix" ng-repeat="(idx,order) in orders | orderBy: 'model'">
                                             <div class="row">
-                                                <div class="col-lg-2 col-md-2 col-sm-2">
-                                                    <span class="label label-info">$@{{order.price}} / @{{order.size}}</span>
+                                                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-3">
+                                                    <div class="label label-info">$@{{order.price}} / @{{order.size}}</div>
                                                     <img src="/img/media/@{{order.model}}.jpg" width="50" />
                                                     <div style="width:80px">
                                                         <span class="btn btn-xs btn-success" ng-click="plus(order)">+</span>
                                                         <span class="btn btn-xs btn-danger" ng-click="minus(order)">-</span>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-9 col-md-9 col-sm-9">
+                                                <div class="col-lg-9 col-md-8 col-sm-8 col-xs-8">
                                                     <h4 class="media-heading"> @{{order.model}} - @{{order.size}}</h4>
                                                     <p class="">Some semblance of a description could go here</p>
                                                     <div class="media-body">
