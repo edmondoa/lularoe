@@ -8,7 +8,8 @@
 		{{ HTML::script('//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js') }}
 		{{ HTML::script('//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js') }}
 		{{ HTML::script('/packages/bootstrap-select/bootstrap-select.min.js') }}
-		{{ HTML::script('packages/jquery-ui/jquery-ui-1.10.4.custom.min.js') }}
+        {{ HTML::script('packages/jquery-ui/jquery-ui-1.10.4.custom.min.js') }}
+		{{ HTML::script('packages/angular-growl-v2/build/angular-growl.min.js') }}
 		<script>
 		    // convert PHP variables to JavaScript
 		    var domain = '{{ Config::get("site.domain") }}';
