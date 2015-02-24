@@ -10,13 +10,6 @@ class ExternalAuthController extends \BaseController {
 
 	public function getInventory($key = 0, $location='')
 	{
-		// Cache this too .. 
-		if (empty($location)) {
-			$tmpkey 	= Session::get('mwl_id');
-			$location	= $key;
-			if (!empty($tmpkey)) $key 		= $tmpkey;
-		}
-		
 		// Get MAIN inventory as default
 		if ($key == 0 || $key == null)
 		{
@@ -25,6 +18,12 @@ class ExternalAuthController extends \BaseController {
 			$key = Self::midauth(); // stub parameters
 		}
 
+		// Cache this too .. 
+		if (empty($location)) {
+			$tmpkey 	= Session::get('mwl_id');
+			$location	= $key;
+			if (!empty($tmpkey)) $key 		= $tmpkey;
+		}
 
 		// Pull this out into an actual class for MWL php api
 		$location = str_replace(' ','%20', $location);
