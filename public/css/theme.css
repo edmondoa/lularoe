@@ -155,6 +155,7 @@ i { width:16px; } /* standardizes font awesome icons */
 
 /* media queries*/
 @media(max-width:767px) {
+    .width-xs {width:100%;margin-bottom: 1em;}
     .hidable-xs { display:none; }
     .date-col { width:auto; }
     .user-banner-container { position:relative !important; }
