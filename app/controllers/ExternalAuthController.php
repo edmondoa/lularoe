@@ -176,45 +176,49 @@ class ExternalAuthController extends \BaseController {
 		return(Response::json($txns, 200));
 	}
 
-	public function refund($cart = array())
+	// Keep these separate for now
+	public function refund($key = 0)
 	{
-       $txdata = array(
-                    'transactionId'     => Input::get('transactionid'),
-                    'Subtotal'          => Input::get('subtotal'),
-                    'Tax'               => Input::get('tax'),
-                    'Account-name'      => Input::get('cardname'),
-                    'Card-Number'       => Input::get('cardnumber'),
-                    'Card-Code'     	=> Input::get('cardcvv'),
-                    'Card-Expiration'   => Input::get('cardexp'),
-                    'Card-Address'      => Input::get('cardaddress'),
-                    'Card-Zip'          => Input::get('cardzip'),
-                    );
+		//does this session key correlate with the TID?
 
-		foreach($txdata as $k=>$v)
-		{
+		$txdata = array(
+			'transactionId'     => Input::get('transactionid'),
+			'Subtotal'          => Input::get('subtotal'),
+			'Tax'               => Input::get('tax'),
+			'Account-name'      => Input::get('cardname'),
+			'Card-Number'       => Input::get('cardnumber'),
+			'Card-Code'     	=> Input::get('cardcvv'),
+			'Card-Expiration'   => Input::get('cardexp'),
+			'Card-Address'      => Input::get('cardaddress'),
+			'Card-Zip'          => Input::get('cardzip'),
+		);
+
+		foreach($txdata as $k=>$v) {
 			$txheaders[] = "{$k}: {$v}";
 		}
 
-        $purchase = self::makeRefund($txheaders);
+        $refund = self::makeRefund($txheaders);
 
-		return($purchase);
+		return($refund);
 	}
 
-	public function purchase($cart = array())
+	public function purchase($key = 0)
 	{
-       $txdata = array(
-                    'Subtotal'          => Input::get('subtotal'),
-                    'Tax'               => Input::get('tax'),
-                    'Account-name'      => Input::get('cardname'),
-                    'Card-Number'       => Input::get('cardnumber'),
-                    'Card-Code'     	=> Input::get('cardcvv'),
-                    'Card-Expiration'   => Input::get('cardexp'),
-                    'Card-Address'      => Input::get('cardaddress'),
-                    'Card-Zip'          => Input::get('cardzip'),
-                    );
+		$cartdata = Input::get('cart');
 
-		foreach($txdata as $k=>$v)
-		{
+		$txdata = array(
+			'Subtotal'          => Input::get('subtotal'),
+			'Tax'               => Input::get('tax'),
+			'Account-name'      => Input::get('cardname'),
+			'Card-Number'       => Input::get('cardnumber'),
+			'Card-Code'     	=> Input::get('cardcvv'),
+			'Card-Expiration'   => Input::get('cardexp'),
+			'Card-Address'      => Input::get('cardaddress'),
+			'Card-Zip'          => Input::get('cardzip'),
+			'Description'       => json_encode($cartdata)
+		);
+
+		foreach($txdata as $k=>$v) {
 			$txheaders[] = "{$k}: {$v}";
 		}
 

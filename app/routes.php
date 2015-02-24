@@ -27,16 +27,17 @@ Route::pattern('id', '[0-9]+');
 		// API for IOS App
 		Route::get('llrapi/v1/auth/{id}', 						'ExternalAuthController@auth');
 		Route::get('llrapi/v1/get-inventory/',					'ExternalAuthController@getInventory');
+		Route::get('llrapi/v1/get-inventory/{key}',				'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/inventory/{location}',			'ExternalAuthController@getInventory');
 
-		Route::get('llrapi/v1/refund/',		 					'ExternalAuthController@refund');
-		Route::get('llrapi/v1/purchase/',	 					'ExternalAuthController@purchase');
+		Route::get('llrapi/v1/refund/{key}', 					'ExternalAuthController@refund');
+		Route::get('llrapi/v1/purchase/{key}',					'ExternalAuthController@purchase');
 
-		Route::get('llrapi/v1/ledger/',		 					'ExternalAuthController@ledger');
 		Route::get('llrapi/v1/ledger/{key}', 					'ExternalAuthController@ledger');
+		Route::get('llrapi/v1/ledger/',		 					'ExternalAuthController@ledger');
 
-		Route::post('llrapi/v1/reorder', 					    'ExternalAuthController@reorder');
+		Route::post('llrapi/v1/reorder/{key}', 					    'ExternalAuthController@reorder');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
