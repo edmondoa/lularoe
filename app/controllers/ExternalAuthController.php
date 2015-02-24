@@ -9,6 +9,8 @@ class ExternalAuthController extends \BaseController {
 	private $mwl_db		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
+
+	// These items are to be ignored and not shown
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.'];
 
 	public function getInventory($key = 0, $location='')
@@ -147,8 +149,11 @@ class ExternalAuthController extends \BaseController {
 
 	// What is this hackery?!
 	// It is this way until we have proper api access to the ledger.
-	public function ledger($ref = null)
+	public function ledger($key = 0)
 	{
+		$ref = Input::get('ref');
+		$key = Session::get('mwl_id', $key);
+
 		try {
 			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
 		}
@@ -157,8 +162,9 @@ class ExternalAuthController extends \BaseController {
 			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
 			return(Response::json($noconnect,200));
 		}
-
-		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".Session::get('mwl_id')."'";
+	
+		// This is not good .. 
+		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".$mysqli->escape_string($key)."'";
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
 		$txns = [];
