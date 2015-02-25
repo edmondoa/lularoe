@@ -224,19 +224,19 @@
 		                    ?>
 		                    @if (isset($pages))
 			                    <ul class="footer-menu">
+									<li><a href="/privacy-policy">Privacy Policy</a></li>
+									<li><a href="/terms-conditions">Terms and Conditions</a></li>
 									@foreach ($pages as $page)
 										<li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
 									@endforeach
 								</ul>
 							@endif
 							<br>
-                            <p id="copyright-text">&copy; {{ date('Y') }} {{ Config::get('site.company_name') }}</p>
+                            <div id="copyright-text">&copy; {{ date('Y') }} {{ Config::get('site.company_name') }}
+							</div><!--/span_7-->
 
                         </div><!--/span_5-->
 
-                        <div class="col span_7 col_last">
-                            <ul id="social"></ul>
-                        </div><!--/span_7-->
 
                     </div><!--/container-->
 
