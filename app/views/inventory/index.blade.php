@@ -29,48 +29,43 @@
                                         <div class="pull-right">
                                             <span><b>$@{{inventory.price}}</b></span>
                                         </div>
-                                        <br class="clearfix"/><br/>
-                                        <p>Nothing to descript</p><br/>
+                                        <div style="display:none;">
+                                            <br class="clearfix"/><br/>
+                                            <p>Nothing to descript</p><br/>
+                                        </div>
+                                        <div class="row available-xs">
+                                            <div class="col-md-12"><br/>
+                                                <h5>Available Sizes:</h5>
+                                                <div ng-switch on="inventory.doNag">
+                                                    <div ng-switch-when="none-selected" class="pull-left alert alert-danger cleafix" role="alert">
+                                                        <strong>Oh snap!</strong> Please select at least one size and try clicking the "add" button again.
+                                                    </div>
+                                                    <div ng-switch-when="volume-too-large" class="pull-left alert alert-danger cleafix" role="alert">
+                                                        <strong>Sorry!</strong> We can't cater your order as we currently have a limited volume. You may want to reduce your quantity.
+                                                    </div>
+                                                    <div ng-switch-default></div>
+                                                </div><div ng-if="inventory.doNag"><br/><br/><br/><br/></div>
+                                                <ul class="nav nav-pills">
+                                                    <li ng-repeat="(key,size) in inventory.sizes">
+                                                        <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
+                                                            <input ng-class="{disabled:!size.value}" class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
+                                                        </a>
+                                                        <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}}</span><span> - </span>
+                                                            <span ng-if="size.value > 1000" class="label label-info">IN STOCK</span>
+                                                            <span ng-if="size.value < 1000 && size >= 500" class="label label-warning">LIMITED STOCK</span>
+                                                            <span ng-if="size.value < 500 && size.value != 0" class="label label-danger">HURRY</span>
+                                                            <span ng-if="size.value == 0" class="label label-default">OUT OF STOCK</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-4">
                                          <div class="pull-right">
-                                            <div class="input-group pull-right">
-                                                <span class="input-group-addon no-width hidable-xs">Quantity</span>
-                                                <input class="form-control itemsPerPage width-auto" ng-model="inventory.numOrder" type="number" min="1" placeholder="1">
-                                            </div>
-                                            <div class="input-group pull-right">
-                                                <button class="pull-right btn btn-sm btn-info" ng-click="addOrder(inventory)" type="button">Add</button>
-                                            </div>
+                                            <button class="pull-right btn btn-sm btn-info" ng-click="addOrder(inventory)" type="button">Add</button>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row available-xs">
-                                <div class="col-md-12">
-                                    <div class="hidable-xs"><br/><br/></div>
-                                    <h5>Available Sizes:</h5>
-                                    <div ng-switch on="inventory.doNag">
-                                        <div ng-switch-when="none-selected" class="pull-left alert alert-danger cleafix" role="alert">
-                                            <strong>Oh snap!</strong> Please select at least one size and try clicking the "add" button again.
-                                        </div>
-                                        <div ng-switch-when="volume-too-large" class="pull-left alert alert-danger cleafix" role="alert">
-                                            <strong>Sorry!</strong> We can't cater your order as we currently have a limited volume. You may want to reduce your quantity.
-                                        </div>
-                                        <div ng-switch-default></div>
-                                    </div><div ng-if="inventory.doNag"><br/><br/><br/><br/></div>
-                                    <ul class="nav nav-pills">
-                                        <li ng-repeat="(key,size) in inventory.sizes">
-                                            <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
-                                                <input ng-class="{disabled:!size.value}" class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
-                                            </a>
-                                            <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}}</span> - <span>@{{size.value}}</span><span> - </span>
-                                                <span ng-if="size.value > 1000" class="label label-info">IN STOCK</span>
-                                                <span ng-if="size.value < 1000 && size >= 500" class="label label-warning">LIMITED STOCK</span>
-                                                <span ng-if="size.value < 500 && size.value != 0" class="label label-danger">HURRY</span>
-                                                <span ng-if="size.value == 0" class="label label-default">OUT OF STOCK</span>
-                                            </a>
-                                        </li>
-                                    </ul>
                                 </div>
                             </div>
                             <hr style="border-top: 1px solid rgba(0,0,0,0.1);"/>
@@ -129,8 +124,8 @@
                                                     <div class="label label-info">$@{{order.price}} / @{{order.size}}</div>
                                                     <img src="/img/media/@{{order.model}}.jpg" width="50" />
                                                     <div style="width:80px">
-                                                        <span class="btn btn-xs btn-success" ng-click="plus(order)">+</span>
-                                                        <span class="btn btn-xs btn-danger" ng-click="minus(order)">-</span>
+                                                        <span class="btn btn-xs btn-success" style="display:none;" ng-click="plus(order)">+</span>
+                                                        <span class="btn btn-xs btn-danger" style="display:none;" ng-click="minus(order)">-</span>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-9 col-md-8 col-sm-8 col-xs-8">
@@ -138,7 +133,10 @@
                                                     <p class="">Some semblance of a description could go here</p>
                                                     <div class="media-body">
                                                         <div class="col-lg-8">
-                                                            <span class="pull-left label label-sm label-info">x @{{order.numOrder}}</span>
+                                                            <div class="input-group">
+                                                              <span class="input-group-addon" id="basic-addon1">x</span>
+                                                              <input type="number" min="1" ng-model="order.numOrder" class="form-control width-auto" placeholder="Username" aria-describedby="basic-addon1">
+                                                            </div>
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <div class="pull-right">
