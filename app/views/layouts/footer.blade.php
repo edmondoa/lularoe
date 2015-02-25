@@ -19,6 +19,7 @@
 		{{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
 		{{ HTML::script('js/functions.js') }}
         {{ HTML::script('js/services.js') }}
+        {{ HTML::script('js/directives/validNumberDirective.js') }}
         {{ HTML::script('js/controllers.js') }}
 		{{ HTML::script('js/app.js') }}
 		{{ HTML::script('/js/controllers/datepickerController.js') }}

@@ -218,5 +218,11 @@ try {
                     console.log(data.message);
                 });
         };
+        
+        $scope.fixInvalidNumber = function(n){
+            if(n.numOrder == undefined){
+                n.numOrder = 0;
+            }
+        };
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));
