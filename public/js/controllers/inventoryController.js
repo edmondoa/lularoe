@@ -66,10 +66,11 @@ try {
             return !($scope.orders.length);
         }
         
-        $scope.removeOrder = function(n){
+        $scope.removeOrder = function(n, key){
+            console.log($scope.orders);
             for(var i=0; i< $scope.orders.length; i++){
-                if(n.itemnumber == $scope.orders[i].itemnumber && n.model == $scope.orders[i].model){
-                    $scope.orders.splice(i,1);
+                if(n.itemnumber == $scope.orders[i].itemnumber && n.model == $scope.orders[i].model &&  $scope.orders[i].size == key){
+                   $scope.orders.splice(i,1);
                 }
             }
         };                                                 
@@ -157,7 +158,8 @@ try {
                             if(size.checked){
                                 $scope.addOrder(array);     
                             }else{
-                                $scope.removeOrder(array);
+                                console.log('keys ::: '+n.key);
+                                $scope.removeOrder(array, size.key);
                             }
                         }
                     }) 
@@ -173,12 +175,14 @@ try {
                             if(size.checked && o.size ==size.key && size.value){
                                 if(size.value >= n.numOrder){
                                     if(o.numOrder){
+                                        /*
                                         if((size.value - n.numOrder) >= 0)
                                         o.numOrder += n.numOrder;
+                                        */
                                     }else{
                                         o.numOrder = n.numOrder;  
                                     }
-                                    size.value -= n.numOrder;
+                                    /*size.value -= n.numOrder;*/
                                     if(!size.value || size.value < 0) size.value = 0;
                                 }else{
                                     n.doNag = "volume-too-large";
