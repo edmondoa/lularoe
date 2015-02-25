@@ -18,8 +18,8 @@ try {
     push(app.requires, newModules);
     
     app.controller('InventoryController',
-        ['$scope','$http','shared','$q','$interval',
-            function($scope, $http, shared, $q, $interval){
+        ['$scope','$http','shared','$q','$interval','$window',
+            function($scope, $http, shared, $q, $interval, $window){
 
         /**
         * operations here
