@@ -141,7 +141,7 @@ try {
         
         $scope.toggleCheck = function(array,n){
             angular.forEach($scope.inventories, function(inventory){
-                if(inventory.itemnumber == array.itemnumber){
+                if(inventory.itemnumber == array.itemnumber && inventory.model == array.model){
                     angular.forEach(inventory.sizes, function(size){
                         if(size.key == n.key){
                             size.checked = !n.checked;
@@ -155,7 +155,7 @@ try {
         $scope.isInOrder = function(array,n, size){
             if(array.length){
                 var res = array.filter(function(o){
-                    if(o.itemnumber == n.itemnumber && o.size == size.key){
+                    if(o.itemnumber == n.itemnumber && o.model == n.model && o.size == size.key){
                         angular.forEach(n.sizes, function(size){
                             if(size.checked && o.size ==size.key && size.value){
                                 if(size.value >= n.numOrder){
