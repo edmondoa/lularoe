@@ -66,6 +66,14 @@ try {
             return !($scope.orders.length);
         }
         
+        $scope.removeOrder = function(n){
+            for(var i=0; i< $scope.orders.length; i++){
+                if(n.itemnumber == $scope.orders[i].itemnumber && n.model == $scope.orders[i].model){
+                    $scope.orders.splice(i,1);
+                }
+            }
+        };                                                 
+        
         $scope.addOrder = function(n){
             var checkedItems = n.sizes.filter(function(s){
                 return s.checked;
@@ -146,6 +154,11 @@ try {
                         if(size.key == n.key){
                             size.checked = !n.checked;
                             if(!size.value) size.checked = false;
+                            if(size.checked){
+                                $scope.addOrder(array);     
+                            }else{
+                                $scope.removeOrder(array);
+                            }
                         }
                     }) 
                 }    

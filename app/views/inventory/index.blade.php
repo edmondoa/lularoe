@@ -24,7 +24,7 @@
                             </a>
                             <div class="media-body clearfix">
                                 <div class="row">
-                                    <div class="col-md-8">
+                                    <div class="col-md-12">
                                         <h4 class="media-heading pull-left">@{{inventory.model}}</h4>
                                         <div class="pull-right">
                                             <span><b>$@{{inventory.price}}</b></span>
@@ -59,11 +59,6 @@
                                                     </li>
                                                 </ul>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                         <div class="pull-right">
-                                            <button class="pull-right btn btn-sm btn-info" ng-click="addOrder(inventory)" type="button">Add</button>
                                         </div>
                                     </div>
                                 </div>
@@ -131,7 +126,7 @@
                                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                                     <div class="input-group">
                                                       <span class="input-group-addon" id="basic-addon1">x</span>
-                                                      <input type="number" min="1" ng-model="order.numOrder" class="form-control width-auto" placeholder="Username" aria-describedby="basic-addon1">
+                                                      <input type="number" min="1" ng-model="order.numOrder" class="form-control width-auto" placeholder="0" aria-describedby="basic-addon1">
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
