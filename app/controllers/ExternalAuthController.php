@@ -9,7 +9,9 @@ class ExternalAuthController extends \BaseController {
 	private $mwl_db		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
-	private $ignore_inv	= ['OLIVIA', 'NENA & CO.'];
+
+	// These items are to be ignored and not shown
+	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
 
 	public function getInventory($key = 0, $location='')
 	{
@@ -116,8 +118,7 @@ class ExternalAuthController extends \BaseController {
 				'price'			=>$item['Item']['Price'],
 				'image'			=>'http://mylularoe.com/img/media/'.$model.'.jpg',
 				
-				'quantities'	=> array()); //array('NA'=>0,'XXS'=>0,'2XS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0),
-				//'itemnumber'	=>$itemnumber,
+				'quantities'	=> array()); 
 			}
 
 			// Cut useless spaces
@@ -147,8 +148,11 @@ class ExternalAuthController extends \BaseController {
 
 	// What is this hackery?!
 	// It is this way until we have proper api access to the ledger.
-	public function ledger($ref = null)
+	public function ledger($key = 0)
 	{
+		$ref = Input::get('ref');
+		$key = Session::get('mwl_id', $key);
+
 		try {
 			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
 		}
@@ -157,8 +161,9 @@ class ExternalAuthController extends \BaseController {
 			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
 			return(Response::json($noconnect,200));
 		}
-
-		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".Session::get('mwl_id')."'";
+	
+		// This is not good .. 
+		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".$mysqli->escape_string($key)."'";
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
 		$txns = [];
@@ -170,45 +175,49 @@ class ExternalAuthController extends \BaseController {
 		return(Response::json($txns, 200));
 	}
 
-	public function refund($cart = array())
+	// Keep these separate for now
+	public function refund($key = 0)
 	{
-       $txdata = array(
-                    'transactionId'     => Input::get('transactionid'),
-                    'Subtotal'          => Input::get('subtotal'),
-                    'Tax'               => Input::get('tax'),
-                    'Account-name'      => Input::get('cardname'),
-                    'Card-Number'       => Input::get('cardnumber'),
-                    'Card-Code'     	=> Input::get('cardcvv'),
-                    'Card-Expiration'   => Input::get('cardexp'),
-                    'Card-Address'      => Input::get('cardaddress'),
-                    'Card-Zip'          => Input::get('cardzip'),
-                    );
+		//does this session key correlate with the TID?
 
-		foreach($txdata as $k=>$v)
-		{
+		$txdata = array(
+			'transactionId'     => Input::get('transactionid'),
+			'Subtotal'          => Input::get('subtotal'),
+			'Tax'               => Input::get('tax'),
+			'Account-name'      => Input::get('cardname'),
+			'Card-Number'       => Input::get('cardnumber'),
+			'Card-Code'     	=> Input::get('cardcvv'),
+			'Card-Expiration'   => Input::get('cardexp'),
+			'Card-Address'      => Input::get('cardaddress'),
+			'Card-Zip'          => Input::get('cardzip'),
+		);
+
+		foreach($txdata as $k=>$v) {
 			$txheaders[] = "{$k}: {$v}";
 		}
 
-        $purchase = self::makeRefund($txheaders);
+        $refund = self::makeRefund($txheaders);
 
-		return($purchase);
+		return($refund);
 	}
 
-	public function purchase($cart = array())
+	public function purchase($key = 0)
 	{
-       $txdata = array(
-                    'Subtotal'          => Input::get('subtotal'),
-                    'Tax'               => Input::get('tax'),
-                    'Account-name'      => Input::get('cardname'),
-                    'Card-Number'       => Input::get('cardnumber'),
-                    'Card-Code'     	=> Input::get('cardcvv'),
-                    'Card-Expiration'   => Input::get('cardexp'),
-                    'Card-Address'      => Input::get('cardaddress'),
-                    'Card-Zip'          => Input::get('cardzip'),
-                    );
+		$cartdata = Input::get('cart');
 
-		foreach($txdata as $k=>$v)
-		{
+		$txdata = array(
+			'Subtotal'          => Input::get('subtotal'),
+			'Tax'               => Input::get('tax'),
+			'Account-name'      => Input::get('cardname'),
+			'Card-Number'       => Input::get('cardnumber'),
+			'Card-Code'     	=> Input::get('cardcvv'),
+			'Card-Expiration'   => Input::get('cardexp'),
+			'Card-Address'      => Input::get('cardaddress'),
+			'Card-Zip'          => Input::get('cardzip'),
+			'Description'       => json_encode($cartdata)
+		);
+
+		foreach($txdata as $k=>$v) {
 			$txheaders[] = "{$k}: {$v}";
 		}
 
