@@ -162,14 +162,18 @@ class ExternalAuthController extends \BaseController {
 			return(Response::json($noconnect,200));
 		}
 	
-		// This is not good .. 
-		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".$mysqli->escape_string($key)."'";
+		// This is not good .. WHERE'S MY API!
+		$Q = "SELECT tid, refNum as order_number, result, authAmount as subtotal, salesTax as tax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".$mysqli->escape_string($key)."'";
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
 		$txns = [];
+
+		// Pull these from some sort of transaction/sale log
+		$stub_items = json_decode('[{"quantities":{"M":2,"L":3,"XXS":5},"price":59.99,"model":"Lola"},{"quantities":{"M":8,"L":6,"XXS":1},"price":59.99,"model":"Ana"}]');
 		$res = $mysqli->query($Q);
 		while($txn = $res->fetch_assoc())
 		{
+			$txn['items'] = $stub_items;
 			$txns[] = $txn;
 		}	
 		return(Response::json($txns, 200));
@@ -196,7 +200,7 @@ class ExternalAuthController extends \BaseController {
 			$txheaders[] = "{$k}: {$v}";
 		}
 
-        $refund = self::makeRefund($txheaders);
+        $refund = self::makeRefund($key, $txheaders, Input::get('transactionid'));
 
 		return($refund);
 	}
@@ -221,7 +225,7 @@ class ExternalAuthController extends \BaseController {
 			$txheaders[] = "{$k}: {$v}";
 		}
 
-        $purchase = self::makePayment($txheaders);
+        $purchase = self::makePayment($key, $txheaders);
 
 		return($purchase);
 	}
@@ -274,7 +278,7 @@ class ExternalAuthController extends \BaseController {
 		
 	}
 
-	private function makeRefund($txdata = array()) {
+	private function makeVoid($key, $txdata) {
 		// Whether or not to write to /tmp/request.txt for debuggification
 		$verbose = true; 
 
@@ -282,7 +286,7 @@ class ExternalAuthController extends \BaseController {
 		$ch = curl_init();
 
 		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/credit?sessionkey=".Session::get('mwl_id');
+		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/void?sessionkey=".Session::get('mwl_id', $key);
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		curl_setopt($ch, CURLOPT_POST, 1);
@@ -301,6 +305,97 @@ class ExternalAuthController extends \BaseController {
 
 		$server_output = curl_exec ($ch);
 		$response_obj = json_decode($server_output);
+
+		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
+		// Having to make concession for no "transactionresponse" that is
+		// may be returned from MWL during sessionkey auth or during 
+		// card decline
+		*/
+		$raw_response = $response_obj;
+		if (!isset($response_obj->TransactionResponse)) {
+			// unset($response_obj);
+			// $response_obj = new stdClass();
+			$response_obj->TransactionResponse = new stdClass();
+			$response_obj->TransactionResponse->Error = true;
+		}
+
+		if (isset($response_obj->Code)) {
+			$response_obj->TransactionResponse->Result		= 'key mismatch';
+			$response_obj->TransactionResponse->ResultCode	= 'K';
+			$response_obj->TransactionResponse->Status		= 'Declined';
+			$response_obj->TransactionResponse->AuthAmount	= 0;
+		}
+
+		// Having to transform this since what is returned is not in a uniform format!!
+
+		// Bug Mike Carpenter about this .. :-)
+		if (isset($response_obj->Status)) { 
+			if ($response_obj->Status == 'Failed'){
+				$response_obj->TransactionResponse->Result		= 'Declined';
+				$response_obj->TransactionResponse->ResultCode	= 'F';
+				$response_obj->TransactionResponse->Status		= 'Void Failed';
+				$response_obj->TransactionResponse->AuthAmount	= 0;
+			}
+			else if ($response_obj->Status == 'Success') {
+				$response_obj->TransactionResponse->Result		= 'Voided';
+				$response_obj->TransactionResponse->ResultCode	= 'V';
+				$response_obj->TransactionResponse->Status		= 'Voided';
+				$response_obj->TransactionResponse->AuthAmount	= floatval(Input::get('subtotal')) + floatval(Input::get('tax'));
+			}
+		}
+
+		// If something really fscked
+		if (!isset($response_obj->TransactionResponse->ResultCode)) {
+			$response_obj->data = $raw_response;
+		}
+
+		// We're authorized!
+		if (isset($response_obj->TransactionResponse->ResultCode) && $response_obj->TransactionResponse->ResultCode == 'A') {
+			$response_obj->TransactionResponse->Error = false;
+		}
+
+        return Response::json(array('error'=>$response_obj->TransactionResponse->Error,
+									'result'=>$response_obj->TransactionResponse->Result, 
+									'status'=>$response_obj->TransactionResponse->Status,
+									'amount'=>$response_obj->TransactionResponse->AuthAmount,
+									'data'=>$raw_response),200);
+	}
+
+	private function makeRefund($key, $txdata = array()) {
+		// Whether or not to write to /tmp/request.txt for debuggification
+		$verbose = true; 
+
+		// Pull this out into an actual class for MWL php api
+		$ch = curl_init();
+
+		// Set this to HTTPS TLS / SSL
+		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/credit?sessionkey=".Session::get('mwl_id', $key);
+		curl_setopt($ch, CURLOPT_URL, $curlstring);
+
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $txdata);
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		if ($verbose)
+		{
+			$f = fopen('/tmp/request.txt', 'w');
+			curl_setopt_array($ch, array(
+				CURLOPT_VERBOSE        => 1,
+				CURLOPT_STDERR         => $f,
+			));
+		}
+
+		$server_output = curl_exec ($ch);
+		$response_obj = json_decode($server_output);
+
+		// Handle wonky error messages
+		if (isset($response_obj->Status)) {
+			switch ($response_obj->Error->Code) {
+				// Transaction needs to be voided
+				case 115 : return($this->makeVoid($key, $txdata));
+			}
+		}
 
 		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
 		// Having to make concession for no "transactionresponse" that is
@@ -349,7 +444,7 @@ class ExternalAuthController extends \BaseController {
 									'data'=>$raw_response),200);
 	}
 
-	private function makePayment($txdata = array()) {
+	private function makePayment($key, $txdata = array()) {
 		// Whether or not to write to /tmp/request.txt for debuggification
 		$verbose = false; 
 
@@ -357,7 +452,7 @@ class ExternalAuthController extends \BaseController {
 		$ch = curl_init();
 
 		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/sale?sessionkey=".Session::get('mwl_id');
+		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/sale?sessionkey=".Session::get('mwl_id', $key);
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		curl_setopt($ch, CURLOPT_POST, 1);
