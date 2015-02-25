@@ -67,7 +67,6 @@ try {
         }
         
         $scope.removeOrder = function(n, key){
-            console.log($scope.orders);
             for(var i=0; i< $scope.orders.length; i++){
                 if(n.itemnumber == $scope.orders[i].itemnumber && n.model == $scope.orders[i].model &&  $scope.orders[i].size == key){
                    $scope.orders.splice(i,1);
@@ -158,7 +157,6 @@ try {
                             if(size.checked){
                                 $scope.addOrder(array);     
                             }else{
-                                console.log('keys ::: '+n.key);
                                 $scope.removeOrder(array, size.key);
                             }
                         }
