@@ -5,5 +5,6 @@
 var ControlPadApp = angular.module('app',[
     'ControlPadControllers',
     'ControlPadServices',
+    'ControlPadValidNumber',
     'ngAnimate'
 ]);

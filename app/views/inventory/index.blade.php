@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'inventories/checkout', 'method' => 'POST')) }}
+    {{ Form::open(array('url' => 'inventories/checkout', 'method' => 'POST','name'=>'inven')) }}
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
                 <div class="col-md-8">
@@ -126,7 +126,7 @@
                                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                                     <div class="input-group">
                                                       <span class="input-group-addon" id="basic-addon1">x</span>
-                                                      <input type="number" min="1" ng-model="order.numOrder" class="form-control width-auto" placeholder="0" aria-describedby="basic-addon1">
+                                                      <input ng-change="fixInvalidNumber(order)" type="number" min="1" ng-model="order.numOrder" ng-init="order.numOrder=1" class="form-control width-auto" placeholder="0" aria-describedby="basic-addon1">
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
