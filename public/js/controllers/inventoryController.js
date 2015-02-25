@@ -18,8 +18,8 @@ try {
     push(app.requires, newModules);
     
     app.controller('InventoryController',
-        ['$scope','$http','shared','$q','$interval',
-            function($scope, $http, shared, $q, $interval){
+        ['$scope','$http','shared','$q','$interval','$window',
+            function($scope, $http, shared, $q, $interval, $window){
 
         /**
         * operations here
@@ -65,6 +65,14 @@ try {
         $scope.isEmpty = function(){
             return !($scope.orders.length);
         }
+        
+        $scope.removeOrder = function(n, key){
+            for(var i=0; i< $scope.orders.length; i++){
+                if(n.itemnumber == $scope.orders[i].itemnumber && n.model == $scope.orders[i].model &&  $scope.orders[i].size == key){
+                   $scope.orders.splice(i,1);
+                }
+            }
+        };                                                 
         
         $scope.addOrder = function(n){
             var checkedItems = n.sizes.filter(function(s){
@@ -141,11 +149,16 @@ try {
         
         $scope.toggleCheck = function(array,n){
             angular.forEach($scope.inventories, function(inventory){
-                if(inventory.itemnumber == array.itemnumber){
+                if(inventory.itemnumber == array.itemnumber && inventory.model == array.model){
                     angular.forEach(inventory.sizes, function(size){
                         if(size.key == n.key){
                             size.checked = !n.checked;
                             if(!size.value) size.checked = false;
+                            if(size.checked){
+                                $scope.addOrder(array);     
+                            }else{
+                                $scope.removeOrder(array, size.key);
+                            }
                         }
                     }) 
                 }    
@@ -155,17 +168,19 @@ try {
         $scope.isInOrder = function(array,n, size){
             if(array.length){
                 var res = array.filter(function(o){
-                    if(o.itemnumber == n.itemnumber && o.size == size.key){
+                    if(o.itemnumber == n.itemnumber && o.model == n.model && o.size == size.key){
                         angular.forEach(n.sizes, function(size){
                             if(size.checked && o.size ==size.key && size.value){
                                 if(size.value >= n.numOrder){
                                     if(o.numOrder){
+                                        /*
                                         if((size.value - n.numOrder) >= 0)
                                         o.numOrder += n.numOrder;
+                                        */
                                     }else{
                                         o.numOrder = n.numOrder;  
                                     }
-                                    size.value -= n.numOrder;
+                                    /*size.value -= n.numOrder;*/
                                     if(!size.value || size.value < 0) size.value = 0;
                                 }else{
                                     n.doNag = "volume-too-large";
@@ -202,6 +217,12 @@ try {
                 .error(function(data, status, headers, config){
                     console.log(data.message);
                 });
+        };
+        
+        $scope.fixInvalidNumber = function(n){
+            if(n.numOrder == undefined){
+                n.numOrder = 0;
+            }
         };
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));
