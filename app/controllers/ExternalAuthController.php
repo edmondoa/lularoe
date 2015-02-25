@@ -116,7 +116,7 @@ class ExternalAuthController extends \BaseController {
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
 				'price'			=>$item['Item']['Price'],
-				'image'			=>'http://mylularoe.com/img/media/'.$model.'.jpg',
+				'image'			=>'http://mylularoe.com/img/media/'.urlencode($model).'.jpg',
 				
 				'quantities'	=> array()); 
 			}
