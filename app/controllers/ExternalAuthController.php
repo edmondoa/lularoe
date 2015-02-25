@@ -169,7 +169,14 @@ class ExternalAuthController extends \BaseController {
 		$txns = [];
 
 		// Pull these from some sort of transaction/sale log
-		$stub_items = json_decode('[{"quantities":{"M":2,"L":3,"XXS":5},"price":59.99,"model":"Lola"},{"quantities":{"M":8,"L":6,"XXS":1},"price":59.99,"model":"Ana"}]');
+		$stub_items = json_decode('[{"quantities":{"M":2,"L":3,"XXS":5},
+									"price":59.99,
+									"image":"http://mylularoe.com/img/media/Lola.jpg",
+									"model":"Lola"},
+									{"quantities":{"M":8,"L":6,"XXS":1},
+									"price":59.99,
+									"image":"http://mylularoe.com/img/media/Ana.jpg",
+									"model":"Ana"}]');
 		$res = $mysqli->query($Q);
 		while($txn = $res->fetch_assoc())
 		{
