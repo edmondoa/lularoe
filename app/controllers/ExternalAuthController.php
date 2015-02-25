@@ -7,16 +7,14 @@ class ExternalAuthController extends \BaseController {
 	private $mwl_un		= 'llr_txn';
 	private $mwl_pass	= 'ilovetexas';
 	private $mwl_db		= 'llr';
+	private $mwl_cachetime	= 3600;
+	private	$mwl_cache	= '../app/storage/cache/mwl/';
+
+	// These items are to be ignored and not shown
+	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
 
 	public function getInventory($key = 0, $location='')
 	{
-		// Cache this too .. 
-		if (empty($location)) {
-			$tmpkey 	= Session::get('mwl_id');
-			$location	= $key;
-			if (!empty($tmpkey)) $key 		= $tmpkey;
-		}
-		
 		// Get MAIN inventory as default
 		if ($key == 0 || $key == null)
 		{
@@ -25,25 +23,52 @@ class ExternalAuthController extends \BaseController {
 			$key = Self::midauth(); // stub parameters
 		}
 
-
-		// Pull this out into an actual class for MWL php api
-		$location = str_replace(' ','%20', $location);
-		$ch = curl_init();
-
-		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').'/llr/'.htmlentities($location,ENT_QUOTES,'UTF-8').'/inventorylist?sessionkey='.$key;
-		curl_setopt($ch, CURLOPT_URL, $curlstring);
-
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-		$server_output = curl_exec ($ch);
-
-		if ($errno = curl_errno($ch)) {
-			print json_encode(array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno));
-			return(false);
+		// Cache this too .. 
+		if (empty($location)) {
+			$tmpkey 	= Session::get('mwl_id');
+			$location	= $key;
+			if (!empty($tmpkey)) $key 		= $tmpkey;
 		}
-		curl_close ($ch);
 
+		$server_output = '';
+
+		// Simple caching - probably a better way to do this
+		@mkdir($this->mwl_cache);
+		$mwlcachefile = $this->mwl_cache.urlencode($location).'.json';
+		if (file_exists($mwlcachefile)) {
+			$fs = stat($mwlcachefile);
+			if (time() - $fs['ctime'] > $this->mwl_cachetime) {
+				unlink($mwlcachefile);
+			}
+			else {
+				$server_output = file_get_contents($mwlcachefile);
+			}
+		}
+
+		// Only pull from the inventory server 
+		// if we don't have any output
+		if (empty($server_output)) {
+			// Pull this out into an actual class for MWL php api
+			$location = str_replace(' ','%20', $location);
+			$ch = curl_init();
+
+			// Set this to HTTPS TLS / SSL
+			$curlstring = Config::get('site.mwl_api').'/llr/'.htmlentities($location,ENT_QUOTES,'UTF-8').'/inventorylist?sessionkey='.$key;
+			curl_setopt($ch, CURLOPT_URL, $curlstring);
+
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+			$server_output = curl_exec ($ch);
+
+			if ($errno = curl_errno($ch)) {
+				print json_encode(array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno));
+				return(false);
+			}
+			curl_close ($ch);
+			file_put_contents($mwlcachefile, $server_output);
+		}
+
+		// Start transforming the server output data
 		$output		= json_decode($server_output, true); // true = array
 		$model		= '';
 		$lastmodel	= '';
@@ -51,10 +76,11 @@ class ExternalAuthController extends \BaseController {
 		$itemlist	= [];
 
         if(array_key_exists('Code',$output) && $output['Code'] == '400'){
+			unlink($mwlcachefile);
             print json_encode(array('errors'=>true,'message'=> $output['Message'],'errno'=>'400'));
             return(false);
         }
-        
+
 		// Transform the output to the appropriate IOS format
 		foreach($output['Inventory'] as $item) 
 		{
@@ -65,7 +91,14 @@ class ExternalAuthController extends \BaseController {
 			ltrim(rtrim($itemnumber));
 
 			$model = preg_replace('/ -.*$/','',$item['Item']['Part']['Number']);
+
+			// May want to ignore some inventory items here
+			if (in_array(strtoupper($model), $this->ignore_inv)) {
+				continue;
+			}
+
 			$itemList[$model] = '';
+			
 
 			// Delimiting sizes with hyphen and spaces
 			if (strpos($itemnumber,' -') === false) 
@@ -83,9 +116,9 @@ class ExternalAuthController extends \BaseController {
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
 				'price'			=>$item['Item']['Price'],
+				'image'			=>'http://mylularoe.com/img/media/'.$model.'.jpg',
 				
-				'quantities'	=> array()); //array('NA'=>0,'XXS'=>0,'2XS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0),
-				//'itemnumber'	=>$itemnumber,
+				'quantities'	=> array()); 
 			}
 
 			// Cut useless spaces
@@ -115,8 +148,11 @@ class ExternalAuthController extends \BaseController {
 
 	// What is this hackery?!
 	// It is this way until we have proper api access to the ledger.
-	public function ledger($ref = null)
+	public function ledger($key = 0)
 	{
+		$ref = Input::get('ref');
+		$key = Session::get('mwl_id', $key);
+
 		try {
 			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
 		}
@@ -125,8 +161,9 @@ class ExternalAuthController extends \BaseController {
 			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
 			return(Response::json($noconnect,200));
 		}
-
-		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".Session::get('mwl_id')."'";
+	
+		// This is not good .. 
+		$Q = "SELECT tid, refNum, result, authAmount, salesTax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".$mysqli->escape_string($key)."'";
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
 		$txns = [];
@@ -138,45 +175,49 @@ class ExternalAuthController extends \BaseController {
 		return(Response::json($txns, 200));
 	}
 
-	public function refund($cart = array())
+	// Keep these separate for now
+	public function refund($key = 0)
 	{
-       $txdata = array(
-                    'transactionId'     => Input::get('transactionid'),
-                    'Subtotal'          => Input::get('subtotal'),
-                    'Tax'               => Input::get('tax'),
-                    'Account-name'      => Input::get('cardname'),
-                    'Card-Number'       => Input::get('cardnumber'),
-                    'Card-Code'     	=> Input::get('cardcvv'),
-                    'Card-Expiration'   => Input::get('cardexp'),
-                    'Card-Address'      => Input::get('cardaddress'),
-                    'Card-Zip'          => Input::get('cardzip'),
-                    );
+		//does this session key correlate with the TID?
 
-		foreach($txdata as $k=>$v)
-		{
+		$txdata = array(
+			'transactionId'     => Input::get('transactionid'),
+			'Subtotal'          => Input::get('subtotal'),
+			'Tax'               => Input::get('tax'),
+			'Account-name'      => Input::get('cardname'),
+			'Card-Number'       => Input::get('cardnumber'),
+			'Card-Code'     	=> Input::get('cardcvv'),
+			'Card-Expiration'   => Input::get('cardexp'),
+			'Card-Address'      => Input::get('cardaddress'),
+			'Card-Zip'          => Input::get('cardzip'),
+		);
+
+		foreach($txdata as $k=>$v) {
 			$txheaders[] = "{$k}: {$v}";
 		}
 
-        $purchase = self::makeRefund($txheaders);
+        $refund = self::makeRefund($txheaders);
 
-		return($purchase);
+		return($refund);
 	}
 
-	public function purchase($cart = array())
+	public function purchase($key = 0)
 	{
-       $txdata = array(
-                    'Subtotal'          => Input::get('subtotal'),
-                    'Tax'               => Input::get('tax'),
-                    'Account-name'      => Input::get('cardname'),
-                    'Card-Number'       => Input::get('cardnumber'),
-                    'Card-Code'     	=> Input::get('cardcvv'),
-                    'Card-Expiration'   => Input::get('cardexp'),
-                    'Card-Address'      => Input::get('cardaddress'),
-                    'Card-Zip'          => Input::get('cardzip'),
-                    );
+		$cartdata = Input::get('cart');
 
-		foreach($txdata as $k=>$v)
-		{
+		$txdata = array(
+			'Subtotal'          => Input::get('subtotal'),
+			'Tax'               => Input::get('tax'),
+			'Account-name'      => Input::get('cardname'),
+			'Card-Number'       => Input::get('cardnumber'),
+			'Card-Code'     	=> Input::get('cardcvv'),
+			'Card-Expiration'   => Input::get('cardexp'),
+			'Card-Address'      => Input::get('cardaddress'),
+			'Card-Zip'          => Input::get('cardzip'),
+			'Description'       => json_encode($cartdata)
+		);
+
+		foreach($txdata as $k=>$v) {
 			$txheaders[] = "{$k}: {$v}";
 		}
 
@@ -384,7 +425,7 @@ class ExternalAuthController extends \BaseController {
 		$data   = [];
 
 		 // Find them here
-        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image'));
+        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'));
 		
 		//$lastq = DB::getQueryLog();
 		//print_r(end($lastq));
@@ -399,6 +440,7 @@ class ExternalAuthController extends \BaseController {
 			$status = 'User '.strip_tags($id).' found ok';
 			$data = array(
 				'id'			=> $mbr[0]['attributes']['id'],
+				'public_id'		=> $mbr[0]['attributes']['public_id'],
 				'first_name'	=> $mbr[0]['attributes']['first_name'],
 				'last_name'		=> $mbr[0]['attributes']['last_name'],
 				'image'			=> $mbr[0]['attributes']['image'],

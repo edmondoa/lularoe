@@ -109,7 +109,7 @@
 	                            		</span>
 	                        		</th>
 	                        		
-	                            	<th class="link hidable-sm" ng-click="orderByField='reps'; reverseSort = !reverseSort">ISM's
+	                            	<th class="link hidable-sm" ng-click="orderByField='reps'; reverseSort = !reverseSort">REPS
 	                            		<span>
 	                            			<span ng-show="orderByField == 'reps'">
 		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>

@@ -82,7 +82,7 @@ class userController extends \BaseController {
 	{
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id || Auth::user()->hasRepInDownline($id) || Auth::user()->sponsor_id == $id) {
 			$user = User::findOrFail($id);
-			$user->role_name == 'Rep' ? $user->formatted_role_name = 'ISM' : $user->formatted_role_name = $user->role_name;
+			$user->role_name == 'Rep' ? $user->formatted_role_name = Config::get('site.rep_title') : $user->formatted_role_name = $user->role_name;
 			
 			// set unlabeled addresses to billing
 			$address = $user->addresses()->first();
