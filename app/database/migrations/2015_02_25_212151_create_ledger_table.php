@@ -24,6 +24,7 @@ class CreateLedgerTable extends Migration {
 			$table->mediumInteger('transactionid')->unsigned();
 			$table->binary('data'); 
 			$table->dateTime('created_at');
+			$table->dateTime('updated_at');
 		});
 	}
 

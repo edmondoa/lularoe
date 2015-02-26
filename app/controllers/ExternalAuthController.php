@@ -222,6 +222,9 @@ class ExternalAuthController extends \BaseController {
 	{
 		$cartdata = Input::get('cart');
 
+		// Wish we could use sessions on all this
+        $mbr = User::where('key', 'LIKE', $key.'|%')->first();
+
 		$txdata = array(
 			'Subtotal'          => Input::get('subtotal'),
 			'Tax'               => Input::get('tax'),
@@ -240,7 +243,17 @@ class ExternalAuthController extends \BaseController {
 
         $purchase = self::makePayment($key, $txheaders);
 
-		return($purchase);
+		$lg = new Ledger();
+		$lg->user_id		= $mbr->id;
+		#$lg->account		= '';
+		#$lg->amount			= Input::get('subtotal');
+		#$lg->tax			= Input::get('tax');
+		#$lg->txtype			= 'CARD';
+		#$lg->transactionid	= $purchase['id'];
+		#$lg->data			= $purchase['data'];
+		$lg->save();
+
+        return Response::json($purchase, 200);
 	}
 
 
@@ -492,8 +505,8 @@ class ExternalAuthController extends \BaseController {
 		*/
 		$raw_response = $response_obj;
 		if (!isset($response_obj->TransactionResponse)) {
-			unset($response_obj);
 			$response_obj = new stdClass();
+			$response_obj = $raw_response;
 			$response_obj->TransactionResponse = new stdClass();
 			$response_obj->TransactionResponse->Error = true;
 		}
@@ -519,11 +532,15 @@ class ExternalAuthController extends \BaseController {
 			$response_obj->TransactionResponse->Error = false;
 		}
 
-        return Response::json(array('error'=>$response_obj->TransactionResponse->Error,
-									'result'=>$response_obj->TransactionResponse->Result, 
-									'status'=>$response_obj->TransactionResponse->Status,
-									'amount'=>$response_obj->TransactionResponse->AuthAmount,
-									'data'=>$raw_response),200);
+        $returndata = array('error'=>$response_obj->TransactionResponse->Error,
+							'result'=>$response_obj->TransactionResponse->Result, 
+							'status'=>$response_obj->TransactionResponse->Status,
+							'amount'=>$response_obj->TransactionResponse->AuthAmount,
+							'data'=>$raw_response);
+
+	$returndata['id'] = (isset($response_obj->TransactionResponse->ID))  ? $response_obj->TransactionResponse->ID  : null;
+
+        return ($returndata);
 	}
 
 	public function auth($id) {
