@@ -217,6 +217,33 @@ class ExternalAuthController extends \BaseController {
 
 		return($refund);
 	}
+/*
+{
+        “cash” : 50
+        “tax” : 10
+        “subtotal” : 100
+        “total” : 110
+        “cards” : [
+                {
+                        … card stuff, exp, card no. etc. ..
+                        “amount” : 50
+                },
+                {
+                        … card stuff, exp, card no. etc. …
+                        “amount” : 10
+                }
+        ]
+        “items_sold” : [
+                {
+                        “model” : “example”,
+                        “price” : 100
+                        “quantitates” : {
+                                “XL” : 1
+                        }
+                }
+        ]
+}
+*/
 
 	public function purchase($key = 0)
 	{
@@ -243,15 +270,17 @@ class ExternalAuthController extends \BaseController {
 
         $purchase = self::makePayment($key, $txheaders);
 
-		$lg = new Ledger();
-		$lg->user_id		= $mbr->id;
-		$lg->account		= '';
-		$lg->amount			= Input::get('subtotal');
-		$lg->tax			= Input::get('tax');
-		$lg->txtype			= 'CARD';
-		$lg->transactionid	= $purchase['id'];
-		$lg->data			= json_encode($purchase['data']);
-		$lg->save();
+		if (!$purchase['error']) {
+			$lg = new Ledger();
+			$lg->user_id		= $mbr->id;
+			$lg->account		= '';
+			$lg->amount			= Input::get('subtotal');
+			$lg->tax			= Input::get('tax');
+			$lg->txtype			= 'CARD';
+			$lg->transactionid	= $purchase['id'];
+			$lg->data			= json_encode($cartdata);
+			$lg->save();
+		}
 
         return Response::json($purchase, 200);
 	}
@@ -618,8 +647,9 @@ class ExternalAuthController extends \BaseController {
             $message = "No data posted";
             $status = "fail";    
         }else{
+			Session::put('orderdata',$data);
             $message = "Successfully posted data";
-            $status = "success";
+            $status = "success"; 
         }
         return Response::json(['message'=>$message,'status'=>$status,'data'=>$data]);
     }

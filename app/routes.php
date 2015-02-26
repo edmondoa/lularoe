@@ -37,7 +37,7 @@ Route::pattern('id', '[0-9]+');
 		Route::get('llrapi/v1/ledger/{key}', 					'ExternalAuthController@ledger');
 		Route::get('llrapi/v1/ledger/',		 					'ExternalAuthController@ledger');
 
-		Route::post('llrapi/v1/reorder/{key}', 					    'ExternalAuthController@reorder');
+		Route::post('llrapi/v1/reorder/', 					    	'ExternalAuthController@reorder');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
@@ -190,7 +190,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::post('inventories/disable', 'InventoryController@disable');
         Route::post('inventories/enable', 'InventoryController@enable');
         Route::post('inventories/delete', 'InventoryController@delete');
-        Route::post('inventories/checkout', 'InventoryController@checkout');
+        Route::post('inventories/purchase', 'InventoryController@purchase');
+        Route::get('inventories/checkout', 'InventoryController@checkout');
         
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
