@@ -217,6 +217,40 @@ class ExternalAuthController extends \BaseController {
 
 		return($refund);
 	}
+/*
+{
+        “cash” : 50
+        “tax” : 10
+        “subtotal” : 100
+        “total” : 110
+        “cards” : [
+                {
+                        … card stuff, exp, card no. etc. ..
+                        “amount” : 50
+                },
+                {
+                        … card stuff, exp, card no. etc. …
+                        “amount” : 10
+                }
+        ]
+        “items_sold” : [
+                {
+                        “model” : “example”,
+                        “price” : 100
+                        “quantitates” : {
+                                “XL” : 1
+                        }
+                }
+        ]
+}
+*/
+
+	public function purchaseJS($key = 0) {
+        $purchaseData = Input::all();
+		print_r($purchaseData);
+		die();
+	}
+	
 
 	public function purchase($key = 0)
 	{
