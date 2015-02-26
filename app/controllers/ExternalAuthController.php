@@ -648,7 +648,8 @@ class ExternalAuthController extends \BaseController {
             $status = "fail";    
         }else{
 			Session::put('orderdata',$data);
-			return Redirect::to('inventories/checkout');
+            $message = "Successfully posted data";
+            $status = "success"; 
         }
         return Response::json(['message'=>$message,'status'=>$status,'data'=>$data]);
     }
