@@ -12,9 +12,13 @@ class ExternalAuthController extends \BaseController {
 
 	// These items are to be ignored and not shown
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
+	public 	$logdata = false;
 
 	public function getInventory($key = 0, $location='')
 	{
+		if ($this->logdata) file_put_contents('/tmp/logData.txt','OKey: '.$key."\n",FILE_APPEND);
+		if ($this->logdata) file_put_contents('/tmp/logData.txt','OLoc: '.$location."\n",FILE_APPEND);
+
 		// Get MAIN inventory as default
 		if ($key == 0 || $key == null)
 		{
@@ -24,17 +28,23 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		// Cache this too .. 
+/*
 		if (empty($location)) {
-			$tmpkey 	= Session::get('mwl_id');
+			$tmpkey 	= Session::get('mwl_id', $key);
 			$location	= $key;
 			if (!empty($tmpkey)) $key 		= $tmpkey;
 		}
+*/
+
+		if ($this->logdata) file_put_contents('/tmp/logData.txt','TKey: '.$key."\n",FILE_APPEND);
+		if ($this->logdata) file_put_contents('/tmp/logData.txt','TLoc: '.$location."\n",FILE_APPEND);
 
 		$server_output = '';
 
 		// Simple caching - probably a better way to do this
 		@mkdir($this->mwl_cache);
 		$mwlcachefile = $this->mwl_cache.urlencode($location).'.json';
+		if ($this->logdata) file_put_contents('/tmp/logData.txt','File: '.$mwlcachefile."\n",FILE_APPEND);
 		if (file_exists($mwlcachefile)) {
 			$fs = stat($mwlcachefile);
 			if (time() - $fs['ctime'] > $this->mwl_cachetime) {
@@ -49,7 +59,7 @@ class ExternalAuthController extends \BaseController {
 		// if we don't have any output
 		if (empty($server_output)) {
 			// Pull this out into an actual class for MWL php api
-			$location = str_replace(' ','%20', $location);
+			$location = rawurlencode($location);
 			$ch = curl_init();
 
 			// Set this to HTTPS TLS / SSL
@@ -527,44 +537,34 @@ class ExternalAuthController extends \BaseController {
 		$data   = [];
 
 		 // Find them here
-        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'));
-		
-		//$lastq = DB::getQueryLog();
-		//print_r(end($lastq));
+        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
 
         // Can't find them?
-        if (!isset($mbr[0])) {
+        if (!isset($mbr)) {
             $mbr	= null;
             $status = 'User '.strip_tags($id).' not found';
         }
-		else if (Hash::check($pass, $mbr[0]['attributes']['password'])) {
+		else if (Hash::check($pass, $mbr['attributes']['password'])) {
         	$error  = false;
 			$status = 'User '.strip_tags($id).' found ok';
 			$data = array(
-				'id'			=> $mbr[0]['attributes']['id'],
-				'public_id'		=> $mbr[0]['attributes']['public_id'],
-				'first_name'	=> $mbr[0]['attributes']['first_name'],
-				'last_name'		=> $mbr[0]['attributes']['last_name'],
-				'image'			=> $mbr[0]['attributes']['image'],
-
-				'tid'			=> $mbr[0]['attributes']['key'],
-				'email'			=> $mbr[0]['attributes']['email'],
-				'session'		=> Session::getId()
+				'id'			=> $mbr['attributes']['id'],
+				'public_id'		=> $mbr['attributes']['public_id'],
+				'first_name'	=> $mbr['attributes']['first_name'],
+				'last_name'		=> $mbr['attributes']['last_name'],
+				'image'			=> $mbr['attributes']['image'],
+				'key'			=> $mbr['attributes']['key'],
+				'email'			=> $mbr['attributes']['email']
 			);
 
 			// Initialize these two
 			$tstamp		= 0;
 			$sessionkey = '';
 
-			// If we already have a sesionable mwl_id with timestamp ..
-			if (Session::has('mwl_id'))
-			{
-				$sessionkey		= Session::get('mwl_id');
-				$tstamp			= Session::get('mwl_stamp');
-			}
+			@list($tstamp,$sessionkey) = explode('|',$mbr['attributes']['key']);
 
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
-			if (empty($sessionkey) || $tstamp < (time() - 360))
+			if (empty($sessionkey) || $tstamp < (time() - 10))
 			{
 				// Return the user is able to log in, but shut out of MWL
 
@@ -572,35 +572,31 @@ class ExternalAuthController extends \BaseController {
 				// Multiple acconts using 1 TID .. Feature?
 				$sessionkey = Self::midauth($data['id'], $pass);
 
-				// if we don't get a sessionkey back - something is wrong
+				if ($this->logdata) file_put_contents('/tmp/logData.txt','TSTP: '.$tstamp." ".$sessionkey."\n",FILE_APPEND);
 				if (!$sessionkey)
 				{
 					$status .= '; cannot retrieve key from payment system';
-					$data['tid'] = null;
+					$data['key'] = null;
 
-					Session::forget('mwl_id');
-					Session::forget('mwl_stamp');
-
+					$mbr->update(array('key'=>''));
 					// Also perform a logging notify here in papertrail or syslog?
 				}
 				else {
-					Session::put('mwl_id', $sessionkey);
-					Session::put('mwl_stamp', time());
+					$mbr->update(array('key'=>time().'|'.$sessionkey));
 				}
 			}
+
 		}
 		else
 		{
 			$status = 'Cannot authorize';
-			Session::forget('mwl_id');
-			Session::forget('mwl_stamp');
+			$mbr->update(array('key'=>''));
 		}
 		
-        //return Response::json(array('error'=>$error,'status'=>$status,'data'=>$mbr[0]['attributes']),200);
-        return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>Session::get('mwl_id')),200);
+        return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),200);
 
 	}
-    
+   
     public function reorder(){
         $data = Input::all();
         if(empty($data)){
