@@ -245,13 +245,6 @@ class ExternalAuthController extends \BaseController {
 }
 */
 
-	public function purchaseJS($key = 0) {
-        $purchaseData = Input::all();
-		print_r($purchaseData);
-		die();
-	}
-	
-
 	public function purchase($key = 0)
 	{
 		$cartdata = Input::get('cart');
@@ -652,8 +645,8 @@ class ExternalAuthController extends \BaseController {
             $message = "No data posted";
             $status = "fail";    
         }else{
-            $message = "Successfully posted data";
-            $status = "success";
+			Session::put('orderdata',$data);
+			return Redirect::to('inventories/checkout');
         }
         return Response::json(['message'=>$message,'status'=>$status,'data'=>$data]);
     }

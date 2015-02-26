@@ -62,7 +62,7 @@ class InventoryController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$inventory = Inventory::findOrFail($id);
+		//$inventory = Inventory::findOrFail($id);
 
 		return View::make('inventory.show', compact('inventory'));
 	}
