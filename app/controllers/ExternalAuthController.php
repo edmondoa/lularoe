@@ -16,25 +16,21 @@ class ExternalAuthController extends \BaseController {
 
 	public function getInventory($key = 0, $location='')
 	{
+		// Magic database voodoo
+        $mbr = User::where('key', 'LIKE', $key.'|%')->first();
+		if ($mbr) $location = $mbr->first_name.' '.$mbr->last_name;
+
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','OKey: '.$key."\n",FILE_APPEND);
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','OLoc: '.$location."\n",FILE_APPEND);
 
 		// Get MAIN inventory as default
-		if ($key == 0 || $key == null)
+		if (empty($location)) // $key == 0 || $key == null)
 		{
 			$location = 'Main';
+
 			// Return the user is able to log in, but shut out of MWL
 			$key = Self::midauth(); // stub parameters
 		}
-
-		// Cache this too .. 
-/*
-		if (empty($location)) {
-			$tmpkey 	= Session::get('mwl_id', $key);
-			$location	= $key;
-			if (!empty($tmpkey)) $key 		= $tmpkey;
-		}
-*/
 
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','TKey: '.$key."\n",FILE_APPEND);
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','TLoc: '.$location."\n",FILE_APPEND);
@@ -536,6 +532,10 @@ class ExternalAuthController extends \BaseController {
         $error  = true;
 		$data   = [];
 
+		// Initialize these two
+		$tstamp		= 0;
+		$sessionkey = '';
+
 		 // Find them here
         $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
 
@@ -557,11 +557,8 @@ class ExternalAuthController extends \BaseController {
 				'email'			=> $mbr['attributes']['email']
 			);
 
-			// Initialize these two
-			$tstamp		= 0;
-			$sessionkey = '';
 
-			@list($tstamp,$sessionkey) = explode('|',$mbr['attributes']['key']);
+			@list($sessionkey, $tstamp) = explode('|',$mbr['attributes']['key']);
 
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
 			if (empty($sessionkey) || $tstamp < (time() - 10))
@@ -571,6 +568,7 @@ class ExternalAuthController extends \BaseController {
 				// If we use the 'key' parameter, we could feasibly have 
 				// Multiple acconts using 1 TID .. Feature?
 				$sessionkey = Self::midauth($data['id'], $pass);
+				$tstamp		= time();
 
 				if ($this->logdata) file_put_contents('/tmp/logData.txt','TSTP: '.$tstamp." ".$sessionkey."\n",FILE_APPEND);
 				if (!$sessionkey)
@@ -582,7 +580,7 @@ class ExternalAuthController extends \BaseController {
 					// Also perform a logging notify here in papertrail or syslog?
 				}
 				else {
-					$mbr->update(array('key'=>time().'|'.$sessionkey));
+					$mbr->update(array('key'=>$sessionkey.'|'.time()));
 				}
 			}
 
