@@ -278,7 +278,7 @@ class ExternalAuthController extends \BaseController {
 			$lg->tax			= Input::get('tax');
 			$lg->txtype			= 'CARD';
 			$lg->transactionid	= $purchase['id'];
-			$lg->data			= json_encode($purchase['data']);
+			$lg->data			= json_encode($cartdata);
 			$lg->save();
 		}
 

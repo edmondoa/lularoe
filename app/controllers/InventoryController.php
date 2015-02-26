@@ -187,7 +187,8 @@ class InventoryController extends \BaseController {
 					'cardexp'		=>$oldInput['cardexp'],
 					'cardcvv'		=>$oldInput['cvv'],
 					'cardzip'		=>$oldInput['zip'],
-					'cardaddress'	=>$oldInput['address']
+					'cardaddress'	=>$oldInput['address'],
+					'cart'			=>json_encode($invitems)
 				);
 		
 		
