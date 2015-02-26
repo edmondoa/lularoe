@@ -12,7 +12,7 @@
 	// Corona California tax
 	$data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$inittotal);
 	$tax = json_decode($data);
-
+    
 	Session::put('subtotal',$inittotal);
 	Session::put('tax',$tax->Tax);
 ?>
