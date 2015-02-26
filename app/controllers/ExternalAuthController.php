@@ -270,15 +270,17 @@ class ExternalAuthController extends \BaseController {
 
         $purchase = self::makePayment($key, $txheaders);
 
-		$lg = new Ledger();
-		$lg->user_id		= $mbr->id;
-		$lg->account		= '';
-		$lg->amount			= Input::get('subtotal');
-		$lg->tax			= Input::get('tax');
-		$lg->txtype			= 'CARD';
-		$lg->transactionid	= $purchase['id'];
-		$lg->data			= json_encode($purchase['data']);
-		$lg->save();
+		if (!$purchase['error']) {
+			$lg = new Ledger();
+			$lg->user_id		= $mbr->id;
+			$lg->account		= '';
+			$lg->amount			= Input::get('subtotal');
+			$lg->tax			= Input::get('tax');
+			$lg->txtype			= 'CARD';
+			$lg->transactionid	= $purchase['id'];
+			$lg->data			= json_encode($purchase['data']);
+			$lg->save();
+		}
 
         return Response::json($purchase, 200);
 	}

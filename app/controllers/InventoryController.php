@@ -164,6 +164,42 @@ class InventoryController extends \BaseController {
             return Redirect::back()->with('message', 'Inventory enabled.');
         }
     }
+
+	public function purchase(){
+		$tax		= Session::get('tax');
+		$subtotal	= Session::get('subtotal');
+		$invitems	= Session::get('orderdata');
+
+		$user = Config::get('site.mwl_username');
+		$pass = Config::get('site.mwl_password');
+
+		// MATT HACKERY!
+		$oldInput = Input::all();
+		Input::replace(array('pass'=>'test'));	
+		$request	= Request::create('llrapi/v1/auth/0?pass=test','GET', array());
+		$authinfo	= json_decode(Route::dispatch($request)->getContent());
+
+		$purchaseInfo = array(
+					'subtotal'		=>$subtotal,
+					'tax'			=>$tax,
+					'cardname'		=>$oldInput['accountname'],
+					'cardnumber'	=>$oldInput['cardno'],
+					'cardexp'		=>$oldInput['cardexp'],
+					'cardcvv'		=>$oldInput['cvv'],
+					'cardzip'		=>$oldInput['zip'],
+					'cardaddress'	=>$oldInput['address']
+				);
+		
+		
+		Input::replace($purchaseInfo);
+		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		$cardauth	= json_decode(Route::dispatch($request)->getContent());
+
+		if (!$cardauth->error) die('Purchase is good!');
+		else die('Purchase failed: '.$cardauth->result);
+
+	}
+
     
     /**
      * Process order checkout
@@ -173,5 +209,7 @@ class InventoryController extends \BaseController {
     {
             return View::make('inventory.checkout');
     }
+
+
 
 }

@@ -190,6 +190,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::post('inventories/disable', 'InventoryController@disable');
         Route::post('inventories/enable', 'InventoryController@enable');
         Route::post('inventories/delete', 'InventoryController@delete');
+        Route::post('inventories/purchase', 'InventoryController@purchase');
         Route::get('inventory/checkout', 'InventoryController@checkout');
         
 		// opportunities
