@@ -76,10 +76,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		$title = 'Terms and Conditions';
 		return View::make('company.terms', compact('title'));
 	});
-	// Route::get('privacy-policy', function() {
-		// $title = 'Privacy Policy';
-		// return View::make('company.privacy', compact('title'));
-	// });
+	Route::get('privacy-policy', function() {
+		$title = 'Privacy Policy';
+		return View::make('company.privacy', compact('title'));
+	});
 	Route::get('leadership', function() {
 		$title = 'Leadership';
 		return View::make('company.leadership', compact('title'));
