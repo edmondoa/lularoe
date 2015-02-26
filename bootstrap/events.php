@@ -2,7 +2,7 @@
 
 Event::listen('illuminate.query', function($query){
 	
-	\Log::info($query);
+	//\Log::info($query);
 	// /echo""; print_r($query); echo"\r\n";
 /*	if(Session::has('queries'))
 	{

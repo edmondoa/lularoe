@@ -11,3 +11,5 @@
 |
 */
 
+Artisan::add(new setLevels); //add a command to set all levels in the db
+Artisan::add(new clearUserCache); //add a command clear the cached data in all the user models

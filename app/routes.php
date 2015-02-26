@@ -271,6 +271,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::post('leads/disable', 'LeadController@disable');
 			Route::post('leads/enable', 'LeadController@enable');
 			Route::post('leads/delete', 'LeadController@delete');
+			Route::controller('dev','DevelopController');
 		});
 
 
