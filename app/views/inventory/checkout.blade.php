@@ -21,19 +21,21 @@
                 <div class="col-sm-6">
                     <h3>Selected Inventory</h3>
                     <div ng-if="isEmpty()">
-						<div class="well">
+					  <div class="well">
 							<div class="row">
-								<div class="col-sm-6"><h3>Model</h3></div>
+								<div class="col-sm-2"><h3>Amt</h3></div>
+								<div class="col-sm-4"><h3>Model</h3></div>
 								<div class="col-sm-3"><h3>Price EA</h3></div>
 								<div class="col-sm-3"><h3>Cost</h3></div>
 							</div>
-@foreach (Session::get('orderdata') as $order) 
+		@foreach (Session::get('orderdata') as $order) 
 							<div class="row">
-								<div class="col-sm-6">{{ $order['model'] }} <span class="label label-info">{{ $order['size'] }}</span></div>
-								<div class="col-sm-3">${{ number_format($order['price'],2) }}x {{ $order['numOrder'] }}</div>
+								<div class="col-sm-2">{{ $order['numOrder'] }}</div>
+								<div class="col-sm-4">{{ $order['model'] }} <span class="label label-info">{{ $order['size'] }}</span></div>
+								<div class="col-sm-3">${{ number_format($order['price'],2) }}</div>
 								<div class="col-sm-3">${{ number_format(floatval($order['price']) * intval($order['numOrder']),2) }}</div>
 							</div>
-@endforeach
+		@endforeach
 							<div class="row">
 								<div class="col-sm-12">--</div>
 							</div>

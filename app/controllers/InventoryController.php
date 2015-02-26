@@ -196,9 +196,8 @@ class InventoryController extends \BaseController {
 		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
 
-		if (!$cardauth->error) die('Purchase is good!');
-		else die('Purchase failed: '.$cardauth->result);
-
+		if (!$cardauth->error) return View::make('inventory.validpurchase');
+		else return View::make('inventory.invalidpurchase');
 	}
 
     
