@@ -210,9 +210,10 @@ try {
         };
         
         $scope.checkout = function(){
-            $http.post('/llrapi/v1/reorder',$scope.orders)
+            $http.post('/llrapi/v1/reorder/',$scope.orders)
                 .success(function(data, status,headers,config){
                     console.log(data.message);
+					$window.location.href = "/inventories/checkout";
                 })
                 .error(function(data, status, headers, config){
                     console.log(data.message);
