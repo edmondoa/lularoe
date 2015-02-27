@@ -14,7 +14,7 @@
 	<strong>Date:</strong><?php echo date("F j, Y, g:i a"); ?>
 	<strong>User IP address:</strong><?php echo Request::getClientIp(); ?>
 </p>
-<img src="/img/llr-logo.png" alt="{{ Config::get('site.company_name') }}">
+<img src="{{ Config::get('site.company_logo') }}" alt="{{ Config::get('site.company_name') }}">
 @stop
 @section('unsubscribe')
 @stop
