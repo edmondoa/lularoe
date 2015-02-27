@@ -664,6 +664,9 @@ class ExternalAuthController extends \BaseController {
 			$status = 'Cannot authorize';
 			$mbr->update(array('key'=>''));
 		}
+
+		// Set session key to null 
+		if (empty($sessionkey)) $sessionkey = null;
 		
         return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),200);
 
