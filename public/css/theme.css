@@ -121,6 +121,7 @@ i { width:16px; } /* standardizes font awesome icons */
 .mceu_44-inp-hack { width:207px !important; border-top-left-radius:0 !important; border-bottom-left-radius:0 !important; }
 
 /* bootstrap overrides */
+.alert.alert-warning { color:#63666a; !important; }
 .btn { vertical-align:top; }
 .input-group .bootstrap-select .selectpicker { border-top-right-radius: 0px !important; border-bottom-right-radius: 0px !important; }
 

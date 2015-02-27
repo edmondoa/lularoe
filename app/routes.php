@@ -238,6 +238,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('opportunities/enable', 'OpportunityController@enable');
 		Route::post('opportunities/delete', 'OpportunityController@delete');
 
+		// products
+		Route::resource('products', 'ProductController');
+		Route::post('products/disable', 'ProductController@disable');
+		Route::post('products/enable', 'ProductController@enable');
+		Route::post('products/delete', 'ProductController@delete');
+
 		// parties
 		Route::resource('parties', 'PartyController');
 		Route::post('parties/disable', 'PartyController@disable');
@@ -421,12 +427,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::post('mobilePlans/disable', 'MobilePlanController@disable');
 			Route::post('mobilePlans/enable', 'MobilePlanController@enable');
 			Route::post('mobilePlans/delete', 'MobilePlanController@delete');
-			
-			// products
-			Route::resource('products', 'ProductController');
-			Route::post('products/disable', 'ProductController@disable');
-			Route::post('products/enable', 'ProductController@enable');
-			Route::post('products/delete', 'ProductController@delete');
 			
 			// productCategories
 			Route::resource('productCategories', 'ProductCategoryController');
