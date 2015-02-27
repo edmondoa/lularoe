@@ -8,8 +8,6 @@ class Rank extends \Eloquent
 	// 'title' => 'required'
 	];
 
-	// Don't forget to fill this array    
-	protected $table = 'ranks';
 	protected $fillable = array('name','disabled');
 
 	public function getNewRecordAttribute() {

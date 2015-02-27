@@ -3,12 +3,23 @@
 class [Model] extends \Eloquent
 {
 
- // Add your validation rules here
- public static $rules = [
-  // 'title' => 'required'
- ];
+	// Add your validation rules here
+	public static $rules = [
+	// 'title' => 'required'
+	];
 
- // Don't forget to fill this array    
- [content]
+	public static function boot() {
+		parent::boot();
+		static::creating(function($[model]) { }); // returning false will cancel the operation
+		static::created(function($[model]) { });
+		static::updating(function($[model]) { }); // returning false will cancel the operation
+		static::updated(function($[model]) { });
+		static::saving(function($[model]) { });  // returning false will cancel the operation
+		static::saved(function($[model]) { });
+		static::deleting(function($[model]) { }); // returning false will cancel the operation
+		static::deleted(function($[model]) { });    
+	}
+	// Don't forget to fill this array    
+	[content]
 
 }
