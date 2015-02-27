@@ -11,7 +11,8 @@ class Product extends \Eloquent
 	];
 
 	// Don't forget to fill this array    
-	protected $fillable = array('sku','name','blurb','description','price','quantity','category_id','image','disabled');
+	protected $table = 'products';
+	protected $fillable = array('sku','name','blurb','description','price','quantity','category_id','image','points_value','disabled');
 
 	public function getNewRecordAttribute() {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;

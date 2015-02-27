@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'inventories/checkout', 'method' => 'POST','name'=>'inven')) }}
+    {{ Form::open(array('url' => 'inv/checkout', 'method' => 'POST','name'=>'inven')) }}
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
                 <div class="col-md-8">
@@ -84,6 +84,11 @@
                                 <tr>
                                     <td><label>Total</label></td>
                                     <td align="right">$@{{total|number:2}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+										<span class="label label-info">Please allow 3 days for shipping</span>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
