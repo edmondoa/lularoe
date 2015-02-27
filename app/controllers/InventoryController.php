@@ -12,6 +12,16 @@ class InventoryController extends \BaseController {
             'data' => Inventory::all()
         ];
     }
+
+    /**
+     * Process order checkout
+     * 
+     */
+    public function checkout()
+    {
+            return View::make('inventory.checkout');
+    }
+
     
 	/**
 	 * Display a listing of inventories
@@ -32,7 +42,9 @@ class InventoryController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('inventory.create');
+		$inventories = Inventory::all();
+
+		return View::make('inventory.create', compact('inventory'));
 	}
 
 	/**
@@ -201,15 +213,4 @@ class InventoryController extends \BaseController {
 	}
 
     
-    /**
-     * Process order checkout
-     * 
-     */
-    public function checkout()
-    {
-            return View::make('inventory.checkout');
-    }
-
-
-
 }

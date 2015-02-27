@@ -186,12 +186,13 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('media/delete', 'MediaController@delete');
 		
         //inventories
-        Route::resource('inventories', 'InventoryController');
-        Route::post('inventories/disable', 'InventoryController@disable');
-        Route::post('inventories/enable', 'InventoryController@enable');
-        Route::post('inventories/delete', 'InventoryController@delete');
+        #Route::resource('inventories', 'InventoryController');
+        Route::get('inventories/', 'InventoryController@index');
+        Route::get('inv/checkout', 'InventoryController@checkout');
+        #Route::post('inventories/disable', 'InventoryController@disable');
+        #Route::post('inventories/enable', 'InventoryController@enable');
+        #Route::post('inventories/delete', 'InventoryController@delete');
         Route::post('inventories/purchase', 'InventoryController@purchase');
-        Route::post('inventories/checkout', 'InventoryController@checkout');
         
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
