@@ -99,6 +99,17 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('blast_email',['uses'=>'BlastController@StoreMail']);
 	Route::get('blast_sms',['as'=>'blast_sms','uses'=>'BlastController@CreateSms']);
 	Route::post('blast_sms',['uses'=>'BlastController@StoreSms']);
+	Route::post('party-invite','BlastController@CreatePartyInvite');
+	Route::post('party-host-invite','BlastController@CreatePartyHostInvite');
+	Route::post('blast-party-invites',['as' => 'blast-party-invites', 'uses'=>'BlastController@StorePartyInvites']);
+	Route::post('blast-party-host-invite',['as' => 'blast-party-host-invite', 'uses'=>'BlastController@StorePartyHostInvite']);
+
+	// cart
+	Route::get('cart', ['as' => 'cart', 'uses' => 'CartController@show']);
+	Route::post('cart', 'CartController@store');
+	Route::post('cart/remove/{index}', 'CartController@remove');
+	Route::post('cart/change-quantity', 'CartController@changeQuantity');
+	Route::get('api/cart', 'DataOnlyController@getCart');
 
 	// contact form
 	Route::post('send-contact-form',['as' => 'send-contact-form', 'uses' => 'ContactController@send']);
@@ -109,6 +120,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::get('public-events/{id}', 'UventController@publicShow');
 
 	// leads
+	Route::get('leads', ['as' => 'leads', 'uses' => 'LeadController@index']);
 	Route::resource('leads', 'LeadController');
 
 	// opportunities (public view)
@@ -125,6 +137,16 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('pages/enable', 'PageController@enable');
 	Route::post('pages/delete', 'PageController@delete');
 	
+	// parties
+	Route::get('public-parties', 'PartyController@publicIndex');
+	Route::get('public-parties/{id}', 'PartyController@publicShow');
+	Route::get('api/upcoming-public-parties', 'DataOnlyController@getUpcomingPublicParties');
+	Route::get('party-rsvp/{party_id}/{person_id}/{person_type}/{status}', 'PartyController@RSVP');
+	Route::get('party-decline/{party_id}/{person_id}/{person_type}/{status}', 'PartyController@RSVP');
+	Route::get('host-rsvp/{party_id}/{person_id}/{person_type}/{status}', 'PartyController@hostRSVP');
+	Route::get('host-decline/{party_id}/{person_id}/{person_type}/{status}', 'PartyController@hostRSVP');
+	Route::get('party/{id}', 'PartyController@publicShow');
+	
 	// posts
 	Route::resource('posts', 'PostController');
 	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
@@ -137,6 +159,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	// products
 	Route::get('store', 'ProductController@publicIndex');
 	Route::get('store/{id}', 'ProductController@publicShow');
+	Route::get('api/all-products', 'DataOnlyController@getAllProducts');
+
+	// sales
+	Route::resource('sales', 'SaleController');
 
 	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
@@ -145,6 +171,16 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	// Protected Routes
 	##############################################################################################
 	Route::group(array('before' => 'auth'), function() {
+
+		// addresses
+		Route::resource('addresses', 'AddressController');
+		Route::post('addresses/disable', 'AddressController@disable');
+		Route::post('addresses/enable', 'AddressController@enable');
+		Route::post('addresses/delete', 'AddressController@delete');
+		Route::get('addresses/{id}/delete', 'AddressController@destroy');
+
+		// attachments
+		Route::get('delete-attachment/{id}', 'AttachmentController@destroy');
 
 		// dashboard
 		Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@index']);
@@ -202,68 +238,89 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('opportunities/enable', 'OpportunityController@enable');
 		Route::post('opportunities/delete', 'OpportunityController@delete');
 
+		// parties
+		Route::resource('parties', 'PartyController');
+		Route::post('parties/disable', 'PartyController@disable');
+		Route::post('parties/enable', 'PartyController@enable');
+		Route::post('parties/delete', 'PartyController@delete');
+		Route::get('past-parties', 'PartyController@indexPast');
 
-		// API
+
+		##############################################################################################
+		# API that should be cached
+		##############################################################################################
+		//Route::controller('api','DataOnlyController');
+		//put routes in here that we would like to cache
+		Route::group(['before' => 'cache.fetch'], function() {
+			Route::group(['after' => 'cache.put'], function() {
+				Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+				Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
+				Route::get('api/all-users', 'DataOnlyController@getAllUsers');
+				Route::get('cache-testing',function(){
+					return 'jake_'.date('H:i:s');
+				});
+			});
+		});
+
+		##############################################################################################
+		# API functions that shouldn't be cached
+		##############################################################################################
 		Route::get('api/all-addresses', 'AddressController@getAllAddresses');
 		Route::get('api/all-bonuses', 'BonusController@getAllBonuses');
 		Route::get('api/all-carts', 'CartController@getAllCarts');
 		Route::get('api/all-emailMessages', 'EmailMessageController@getAllEmailMessages');
-		Route::get('api/all-images', 'ImageController@getAllImages');
 		Route::get('api/all-leads', 'LeadController@getAllLeads');
 		Route::get('api/all-levels', 'LevelController@getAllLevels');
 		Route::get('api/all-opportunities', 'OpportunityController@getAllOpportunities');
 		Route::get('api/all-pages', 'PageController@getAllPages');
-		Route::get('api/all-products', 'ProductController@getAllProducts');
 		Route::get('api/all-productCategories', 'ProductCategoryController@getAllProductCategories');
 		Route::get('api/all-profiles', 'ProfileController@getAllProfiles');
 		Route::get('api/all-ranks', 'RankController@getAllRanks');
 		Route::get('api/all-reviews', 'ReviewController@getAllReviews');
-		Route::get('api/all-roles', 'RoleController@getAllRoles');
+		Route::get('api/all-roles', 'ReviewController@getAllRoles');
 		Route::get('api/all-sales', 'SaleController@getAllSales');
 		Route::get('api/all-smsMessages', 'SmsMessageController@getAllSmsMessages');
 		Route::get('api/all-states', 'StateController@getAllStates');
 		Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 		Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
-		
-		//put routes in here that we would like to cache
-		Route::group(['before' => 'cache.fetch'], function() {
-			Route::group(['after' => 'cache.put'], function() {
-				
-				Route::get('cache-testing',function(){
-					return 'jake_jake_jake_jake_jake_jake_jake_ '.date('Y-m-d H:i:s');
-				});
-			});
-		});
-
-		// DataOnly functions that shouldn't be cached
-        Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
-        Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
-        Route::get('api/all-users', 'DataOnlyController@getAllUsers');
 		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
-		Route::get('api/media-counts/{key}', 'DataOnlyController@getMediaCounts');
+		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
 		Route::get('api/all-images', 'DataOnlyController@getAllImages');
-		Route::get('api/media-by-user/{id}', 'DataOnlyController@getMediaByUser');
-		Route::get('api/media-by-reps', 'DataOnlyController@getMediaByReps');
-		Route::get('api/images-by-user', 'DataOnlyController@getImagesByUser');
 		Route::get('api/all-config', 'DataOnlyController@getAllConfig');
 		Route::get('api/first-branch', 'DataOnlyController@getFirstBranch');
 		Route::get('api/all-branches/{id}', 'DataOnlyController@getAllBranches');
+		
+		// media
+		Route::get('api/media-by-user/{id}', 'DataOnlyController@getMediaByUser');
+		Route::get('api/media-by-reps', 'DataOnlyController@getMediaByReps');
+		Route::get('api/images-by-user/{id}', 'DataOnlyController@getImagesByUser');
+		Route::get('api/media-shared-with-reps', 'DataOnlyController@getMediaSharedWithReps');
+		Route::get('api/images-shared-with-reps', 'DataOnlyController@getImagesSharedWithReps');
+		
+		// events
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
 		Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
 		Route::get('api/all-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
 		Route::get('api/all-past-events', 'DataOnlyController@getAllPastEvents');
 		Route::get('api/all-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
-		Route::get('api/all-past-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
+		
+		// parties
+		Route::get('api/all-parties', 'DataOnlyController@getAllParties');
+		Route::get('api/all-upcoming-parties', 'DataOnlyController@getAllUpcomingParties');
+		Route::get('api/all-upcoming-parties-by-role', 'DataOnlyController@getAllUpcomingPartiesByRole');
+		Route::get('api/all-past-parties', 'DataOnlyController@getAllPastParties');
+		Route::get('api/all-past-parties-by-role', 'DataOnlyController@getAllPastPartiesByRole');
+		Route::get('api/party/{id}', 'DataOnlyController@getParty');
+		
 		Route::get('api/all-opportunities', 'DataOnlyController@getAllOpportunities');
 		Route::get('api/all-leads', 'DataOnlyController@getAllLeads');
 		Route::get('api/all-leads-by-rep/{id}', 'DataOnlyController@getAllLeadsByRep');
 		Route::get('api/all-pages', 'DataOnlyController@getAllPages');
 		Route::get('api/all-posts', 'DataOnlyController@getAllPosts');
-		Route::get('api/all-products', 'DataOnlyController@getAllProducts');
 		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
 		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
-		Route::get('api/all-userSites', 'DataOnlyController@getAllUserSites');
-		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline'); 
+		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline');		
+		Route::get('api/all-items', 'DataOnlyController@getAllItems');	
         Route::get('api/search-user/{keyword}', 'DataOnlyController@getSearchUsers');    
 
 		// upload media
@@ -316,12 +373,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			
 			// site-config
 			Route::resource('config', 'SiteConfigController');
-
-			// addresses
-			Route::resource('addresses', 'AddressController');
-			Route::post('addresses/disable', 'AddressController@disable');
-			Route::post('addresses/enable', 'AddressController@enable');
-			Route::post('addresses/delete', 'AddressController@delete');
 			
 			// bonuses
 			Route::resource('bonuses', 'BonusController');
@@ -408,7 +459,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::post('roles/delete', 'RoleController@delete');
 			
 			// sales
-			Route::resource('sales', 'SaleController');
 			Route::post('sales/disable', 'SaleController@disable');
 			Route::post('sales/enable', 'SaleController@enable');
 			Route::post('sales/delete', 'SaleController@delete');

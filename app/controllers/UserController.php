@@ -263,9 +263,14 @@ class userController extends \BaseController {
 				Event::fire('sponsor.update', array('rep_id' => $user->id));
 			}
 			Event::fire('rep.update', array('rep_id' => $user->id));
+<<<<<<< HEAD
 
 
 			return Redirect::route('users.show', $id)->with('message', 'Updates saved.');
+=======
+			if (Auth::user()->hasRole(['Rep'])) return Redirect::route('settings')->with('message', 'Updates saved.');
+			else return Redirect::route('users.show', $id)->with('message', 'Updates saved.');
+>>>>>>> 11dcb2469692da0c2045c263a26ade521b3cde67
 		}
 	}
 

@@ -1,1 +1,1 @@
-{{ product.image_sm }}
+{{ product.featured_image }}

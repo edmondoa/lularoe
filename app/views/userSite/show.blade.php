@@ -12,7 +12,7 @@
 					<small>Fashion Consultant &nbsp;|&nbsp; Rank: {{ $user->rank_name }}</small>
 				</div>
 				<div class="pull-right align-right">
-					<a class="btn btn-primary" onclick="scrollTo('#contact-form')">Contact {{ $user->first_name }}</a>
+					<!-- <a class="btn btn-primary" onclick="scrollTo('#contact-form')">Contact {{ $user->first_name }}</a> -->
 					@if ($userSite->display_phone == 1)
 						<div class="big margin-top-1"><i class="fa fa-mobile-phone"></i> {{ $user->formatted_phone }}</div>
 					@endif

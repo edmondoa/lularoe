@@ -51,6 +51,7 @@ class DashboardController extends \BaseController
 	public function settings()
 	{
 		$addresses = User::find(Auth::user()->id)->addresses;
+		// die($shipping_address_exists);
 		return View::make('dashboard.settings', compact('addresses'));
 	}
 	

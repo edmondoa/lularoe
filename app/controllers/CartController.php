@@ -1,47 +1,6 @@
 <?php
 
-class CartController extends \BaseController {
-
-	/**
-	 * Data only
-	 */
-	public function getAllCarts(){
-        $count = Cart::count();
-		$carts = Cart::all();
-		foreach ($carts as $cart)
-		{
-			if (strtotime($cart['created_at']) >= (time() - Config::get('site.new_time_frame') ))
-			{
-				$cart['new'] = 1;
-			}
-		}
-		return [
-            'count' => $count,
-            'data' => $carts
-        ];
-	}
-
-	/**
-	 * Display a listing of carts
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		$carts = Cart::all();
-
-		return View::make('cart.index', compact('carts'));
-	}
-
-	/**
-	 * Show the form for creating a new cart
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		return View::make('cart.create');
-	}
+class cartController extends \BaseController {
 
 	/**
 	 * Store a newly created cart in storage.
@@ -56,10 +15,13 @@ class CartController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
-
-		Cart::create($data);
-
-		return Redirect::route('carts.index')->with('message', 'Cart created.');
+		
+		// store product in session
+		if (Session::get('products') == null) Session::put('products', []);
+		$product = Product::find($data['product_id']);
+		$product->purchase_quantity = $data['purchase_quantity'];
+		Session::push('products', $product);
+		return Redirect::route('cart')->with('message', 'Product added to cart. <a href="/store">Continue Shopping</a>.');
 	}
 
 	/**
@@ -68,24 +30,10 @@ class CartController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show()
 	{
-		$cart = Cart::findOrFail($id);
-
-		return View::make('cart.show', compact('cart'));
-	}
-
-	/**
-	 * Show the form for editing the specified cart.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		$cart = Cart::find($id);
-
-		return View::make('cart.edit', compact('cart'));
+		$organizer = User::find(Session::get('organizer_id'));
+		return View::make('cart.show', compact('organizer'));
 	}
 
 	/**
@@ -111,64 +59,34 @@ class CartController extends \BaseController {
 	}
 
 	/**
-	 * Remove the specified cart from storage.
+	 * Remove the specified product from session storage.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function remove($index)
 	{
-		Cart::destroy($id);
+		Session::forget('products.' . $index);
+		return 'Product removed from cart';
+	}
 
-		return Redirect::route('carts.index')->with('message', 'Cart deleted.');
-	}
-	
 	/**
-	 * Remove carts.
+	 * Change the quantity of the specified product in product storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
 	 */
-	public function delete()
+	public function changeQuantity()
 	{
-		foreach (Input::get('ids') as $id) {
-			Cart::destroy($id);
+		$data = Input::all();
+
+		$product = Session::get('products');
+		if (isset($product[$data['index']])) {
+			return $product[$data['index']]->purchase_quantity = $data['purchase_quantity'];
 		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('carts.index')->with('message', 'Carts deleted.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Cart deleted.');
-		}
-	}
-	
-	/**
-	 * Diable carts.
-	 */
-	public function disable()
-	{
-		foreach (Input::get('ids') as $id) {
-			Cart::find($id)->update(['disabled' => 1]);	
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('carts.index')->with('message', 'Carts disabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Cart disabled.');
-		}
-	}
-	
-	/**
-	 * Enable carts.
-	 */
-	public function enable()
-	{
-		foreach (Input::get('ids') as $id) {
-			Cart::find($id)->update(['disabled' => 0]);	
-		}
-		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('carts.index')->with('message', 'Carts enabled.');
-		}
-		else {
-			return Redirect::back()->with('message', 'Cart enabled.');
-		}
+		Session::put('products', $product);
+		return true;
+		return 'Purchase quantity set to ' . $data['purchase_quantity'];
 	}
 
 }

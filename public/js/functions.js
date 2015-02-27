@@ -128,7 +128,6 @@ $(document).ready(function() {
     });
     
     // add tag
-
 	$(window).keydown(function(event) {
 		if ($('#tagger').is(':focus')) {
 			if(event.keyCode == 13 /* enter */ || event.keyCode == 9 /* tab */ || event.keyCode == 188 /* comma */) {
@@ -169,7 +168,148 @@ $(document).ready(function() {
             data: { '_method' : 'delete' }
         });
     });
- 
+    
+    // add item
+	$(window).keydown(function(event) {
+		if ($('#add-items').is(':focus')) {
+			if(event.keyCode == 13 /* enter */) {
+				event.preventDefault();
+				addItem();
+			}
+		}
+	}); 
+	$('#add-item-button').click( function() {
+		if ($("#add-item").val() != null) {
+			addItem();
+		}
+	});
+	function addItem() {
+		if ($('#add-item').val() != '') {
+			product_items_count ++;
+			var item_id = $('#add-item').val();
+			var item_name = $('#add-item option:selected').html();
+			$('.item-list').prepend('' +
+        		'<li class="list-group-item display-table width-full">' +
+        			'<input type="hidden" name="items[' + product_items_count + '][new_product_item]" value="1">' +
+        			'<input type="hidden" name="items[' + product_items_count + '][item_id]" value="' + item_id + '">' +
+        			'<div class="table-cell quantity">' +
+        				'<input type="text" name="items[' + product_items_count + '][quantity]" class="form-control" value="1">' +
+        			'</div>' +
+        			'<div class="table-cell">' + item_name + '</div>' +
+	        		'<div class="table-cell align-left">' +
+	        			'<i class="fa fa-times removeItem pull-right" data-item-id="' + product_id + '" data-product-id="' + product_id + '"></i>' +
+					'</div>' +
+        		'</li>' +
+			'');
+			$('#add-item').val('');
+		}
+	};
+
+    // remove item
+    $('body').on('click', '.removeItem', function() {
+        var item_id = $(this).attr('data-item-id');
+        var product_id = $(this).attr('data-product-id');
+        $(this).parents('.list-group-item').fadeOut(function() {
+        	$(this).remove();
+        });
+        if (item_id != undefined) {
+	        $.ajax({
+	            type: "POST",
+	            data: {
+	            	'item_id' : item_id,
+	            	'product_id' : product_id,
+	            },
+	            url: "/product-items-delete",
+	            success: function(result) {
+	            	console.log(result);
+	            }
+	        });
+		}
+    });
+
+    // add image
+	$('#add-image').click( function() {
+		addImage();
+	});
+	function addImage() {
+		attachment_images_count ++;
+		
+		// make sure a featured image is checked
+		var checked = 'checked';
+		$('#image-list input[type="radio"]').each(function() {
+			if ($(this).is(':checked')) checked = '';
+		});
+		
+		// append an image widget
+		$('#image-list').append('' +
+    		'<li class="list-group-item" data-image-id="' + attachment_images_count + '">' +
+    			'<div class="display-table width-full">' +
+	    			'<input type="hidden" name="images[' + attachment_images_count + '][new_attachment_image]" value="1">' +
+			    	'<input type="hidden" name="images[' + attachment_images_count + '][path]" class="form-control">' +
+					'<div class="btn-group swappable">' +
+		                '<button title="Upload file" class="btn btn-default set_id" type="button" data-toggle="modal" data-target="#imageUpload" id="uploadImage" role="button">' +
+		                    '<i class="fa fa-upload"></i> Upload' +
+		                '</button>' +
+		                '<button title="Select from media libray" class="btn btn-default set_id" type="button" data-toggle="modal" data-target="#mediaLibrary" role="button">' +
+		                    '<i class="fa fa-th-large"></i> Library' +
+		                '</button>' +
+			    	'</div>' +
+		            '<div class="table-cell" style="vertical-align:top;">' +
+	        			'<i class="fa fa-times removeImage pull-right"></i>' +
+					'</div>' +
+				'</div>' +
+				'<label class="margin-top-2">' +
+					'<input type="radio" ' + checked + ' name="images[' + attachment_images_count + '][featured]">' +
+					'&nbsp;Featured Image' +
+				'</label>' +
+    		'</li>' +
+		'');
+		$('#add-image').val('');
+	};
+	
+	// determine which image widget to add the media to
+	$('body').on('click', '#image-list button.set_id', function() {
+		image_id = $(this).parents('.list-group-item').attr('data-image-id');
+	});
+	
+	// set image as featured (uncheck other images)
+	$('body').on('change', '#image-list input[type="radio"]', function() {
+		$('#image-list input[type="radio"]').prop('checked', false);
+		$(this).prop('checked', true);
+	});
+
+    // remove image
+    $('body').on('click', '.removeImage', function() {
+        var id = $(this).attr('data-attachment-id');
+        $(this).parents('.list-group-item').fadeOut(function() {
+        	$(this).remove();
+        	// set a new featured image
+        	setNewFeaturedImage();
+        });
+        if (id != undefined) {
+			$.get("/delete-attachment/" + id, function() {
+				setNewFeaturedImage();
+			});
+        }
+        function setNewFeaturedImage() {
+        	$('#image-list input[type="radio"]').prop('checked', false);
+        	$('#image-list input[type="radio"]:first').prop('checked', true);
+        }
+    });
+
+	// change featured image by clicking on thumbnails
+	if ($("#featured-image") != undefined) {
+		$('.thumb').click(function() {
+			
+			// swap small image with medium image
+			src = $(this).attr('src');
+			src = src.split('-sm');
+			src = src[0] + src[1];
+			
+			$('#featured-image').attr('src', src);
+		});
+	}
+
 });
 
 // clean URL

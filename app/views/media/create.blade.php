@@ -29,7 +29,7 @@
                 @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
 	                <div class="form-group">
 	                	<label>
-	                		{{ Form::checkbox('reps') }} Share with {{ Config::get('site.rep_title') }}
+	                		{{ Form::checkbox('reps') }} Share with Reps
 	                	</label>
 	                </div>
 	            @endif
