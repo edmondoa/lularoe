@@ -1,6 +1,7 @@
 <?php namespace LLR\Commission;
 
 use \User;
+use \Rank;
 use \Level;
 
 class Commission extends \BaseController {
@@ -16,6 +17,28 @@ class Commission extends \BaseController {
 	*/
 	public function setCommissionPeriod($date){
 		$this->commission_period = date('Y-m-00',strtotime($date));
+	}
+	
+	/**
+	* 
+	*
+	* @param int $repId
+	* @return 
+	*/
+	public function getUserStats($repId){
+		// requires a commission period be set
+		$rep = User::findOrFail($repId);
+		if(empty($this->commission_period)) throw new \Exception('Commission period not specified.');
+		$stats = $rep->stats()->where('userstats.commission_period',$this->commission_period)->first();
+		if(!$stats)
+		{
+			//i should maybe expand this to create a record when one is not present.
+			\Log::info($descendants->last_name.", ".$descendants->first_name." ... no stats found");
+			throw new \Exception('Stat record not found.');
+			return;
+		}
+		return $stats;
+		
 	}
 	
 	/**
@@ -252,19 +275,45 @@ class Commission extends \BaseController {
 	/**
 	* 
 	*
-	* @param  null
-	* @return null
+	* @param  
+	* @return 
 	*/
-	public function organize_hierarchy(){
-		$reps = User::take(3)->skip(10)->get();
-		foreach($reps as $rep)
+	protected function countQualifiedLines($rep_id,$rank_reqd_id,$qty)
+	{
+		$count = 0;
+		foreach(\User::find($rep_id)->frontline as $frontline)
 		{
-			if ($rep->sponsor_id == 0) continue; //skip frontline
-			$this->next_up($rep->sponsor_id,1);
+			if($this->isQualifiedLine($rep_id,$rank_reqd_id))
+			{
+				$count++;
+			}
 		}
-		return ;
+		return ($count >= $qty)?true:false;
 	}
-
+		
+	/**
+	* 
+	*
+	* @param  int $rep_id, int $rank_reqd_id
+	* @return boolean
+	*/
+	protected function isQualifiedLine($rep_id,$rank_reqd_id)
+	{
+		$rep = \User::find($rep_id);
+		if($rep->rank_id == $rank_reqd_id)
+		{
+			return true;
+		}
+		foreach($rep->descendants as $descendant)
+		{
+			if($descendant->rank_id == $rank_reqd_id)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+		
 	/**
 	* 
 	*
@@ -305,6 +354,27 @@ class Commission extends \BaseController {
 		}
 
 		return $business_dollar_volume;
+	}
+		
+	/**
+	* 
+	*
+	* @param int rep_id   
+	* @return boolean
+	*/
+	public function checkDownlineVolume($rep_id,$accumulated =0)
+	{
+		if(empty($this->commission_period)) throw new \Exception('Commission period not specified.');
+		$frontline = User::find($rep_id)->frontline;
+		foreach($frontline as $rep)
+		{
+			set_time_limit(30);
+			if($rep->rank_id > 2) continue; //skip all organizations of trainer or above
+			$points_volume = $rep->orders()->whereRaw("MONTH(created_at)=MONTH('".$this->commission_period."') AND YEAR(created_at)=YEAR('".$this->commission_period."')")->sum('total_points'); 
+			$accumulated += $points_volume;
+			$accumulated += $this->checkDownlineVolume($rep->id);
+		}
+		return $accumulated;
 	}
 		
 	/**
@@ -397,119 +467,12 @@ class Commission extends \BaseController {
 	{
 		set_time_limit(120);
 		\DB::connection()->disableQueryLog();
-		
-/*		User::chunk(250, function($results) use($date,$update_stats)
-		{
-			foreach($results as $rep) 
-			{
-				$this->setUserStats($rep->id,$date,$update_stats);
-			}
-		});
-*/		//$users = User::all(['id']);
 		$users = \DB::table('users')->where('id','!=',0)->get(['id']);
 		foreach($users as $rep)
 		{
 			$this->setUserStats($rep->id,$date,true);
 		}
 		return;
-	}
-
-	/**
-	* 
-	*
-	* @param  int $rep_id, int $rank_reqd_id
-	* @return boolean
-	*/
-	protected function isQualifiedLine($rep_id,$rank_reqd_id)
-	{
-		foreach(\User::find($rep_id)->descendants_sm()->with('ranks')->get() as $descendant)
-		{
-			foreach($descendant->currentRank()->get() as $rank)
-			{
-				if($rank->id == $rank_reqd_id)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-		
-
-	/**
-	* 
-	*
-	* @param  
-	* @return 
-	*/
-	protected function countQualifiedLines($rep_id,$rank_reqd_id,$qty)
-	{
-		$count = 0;
-		foreach(\User::find($rep_id)->frontline as $frontline)
-		{
-			if($this->isQualifiedLine($rep_id,$rank_reqd_id))
-			{
-				$count++;
-			}
-		}
-		return ($count >= $qty)?true:false;
-	}
-		
-
-	/**
-	* 
-	*
-	* @param  
-	* @return 
-	*/
-	public function assessPercentages($rep_id,$max_percentage)
-	{
-		if(empty($this->commission_period)) throw new \Exception('Commission period not specified.');
-		$rep = \User::find($rep_id);
-		$rep_stats = $rep->stats()->where('userstats.commission_period',$this->commission_period)->first();
-
-		if($rep_stats->business_volume ==0)
-		{
-			return true;
-		}
-		foreach($rep->frontline as $frontline)
-		{
-			$fl_stats = $frontline->stats()->where('userstats.commission_period',$this->commission_period)->first();
-
-			$percentage = ($fl_stats->business_volume / $rep_stats->business_volume)*100;
-			if($fl_stats->business_volume ==0)
-			{
-				continue;
-			}
-			if((($fl_stats->business_volume / $rep_stats->business_volume)*100) > $max_percentage)
-			{
-				
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	* 
-	*
-	* @param  
-	* @return 
-	*/
-	public function countDownlineByLevel($rep_id)
-	{
-		
-	}
-
-	/**
-	* 
-	*
-	* @param  
-	* @return 
-	*/
-	public function getAllDownline($rep_id)
-	{
-		// returns rep objects with their level and rank
 	}
 
 	/**
@@ -578,17 +541,20 @@ class Commission extends \BaseController {
 			}
 			
 			//Next, let's check GV
-			if($stats->business_points_volume < $rank->gv_minimum)
+			if($rank->gv_minimum > 0)
 			{
-				\Log::info(" - Failed the GV minimum rank test for ".$rank->name.". Required:".$rank->gv_minimum." Actual:".$stats->business_points_volume.".");
-				continue; //didn't pass so we skip the rest of the tests
+				$group_volume = (int)$this->checkDownlineVolume($rep->id);
+				if($group_volume<$rank->gv_minimum)
+				{
+					\Log::info(" - Failed the GV minimum rank test for ".$rank->name.". Required:".$rank->gv_minimum." Actual:".$group_volume.".");
+					continue; //didn't pass so we skip the rest of the tests
+				}
+				else
+				{
+					$result[] = " - passed the GV minimum rank test for ".$rank->name;
+					\Log::info(" - passed the GV minimum rank test for ".$rank->name);
+				}
 			}
-			else
-			{
-				$result[] = " - passed the GV minimum rank test for ".$rank->name;
-				\Log::info(" - passed the GV minimum rank test for ".$rank->name);
-			}
-			
 			//Next, let's check Downline requirement
 			if($rep->descendant_count < $rank->downline_min)
 			{
@@ -668,39 +634,94 @@ class Commission extends \BaseController {
 
 	/**
 	* 
-	* Calculates all commission bonuses
+	* Calculates commission bonuses for a single user
 	* @param  
-	* @return int $count all updated reps
+	* @return 
 	*/
 	//private function calculate($repId)
 	public function calculate($repId)
 	{
-		$rep = \User::find($repId);
+		if(empty($this->commission_period)) throw new \Exception('Commission period not specified.');
+		$rep = User::find($repId);
 
-		//$plan = \CommissionPlan::where('rank_id',$rep->rank_id)->first();
-
+		$rank = Rank::find($rep->rank_id);
+		if (!isset($rank->id)) return;
+		//return $rank;
+		if($rep->rank_id < 2) //no commissions paid to Fashion Consultants or non
+		{
+			return;
+		}
 		$sum = 0;
 		$infinity = 0;
 		$infinity_amount = 0;
 		$response = [];
 		$distributions = [];
-		foreach($rep->personally_sponsored()->get() as $descendant)
-		{
-			echo"<pre>"; print_r($descendant->toArray()); echo"</pre>";
-			continue;
-			$infinity++;
-			$distribution = $this->infinity($descendant->id);
+		//$personally_sponsored = $rep->personally_sponsored();
+		//return $personally_sponsored->get();
+		/*
+		SET FOREIGN_KEY_CHECKS=0;
+		TRUNCATE commissionlines; 
+		SET FOREIGN_KEY_CHECKS=1;
 
-			$infinity_value = (isset($distribution[$rep->id]['amount']))?$distribution[$rep->id]['amount']:0;
-			$commission = \Commissionline::create([
-				'amount'=>$infinity_value,
-				'description'=>'Commission paid for level:Infinity downline',
-				'commission_period'=>date('Y-m-00',strtotime('last month')),
-			]);
-			$commission->user()->associate($rep)->save();
-			$commission->source()->associate($descendant)->save();
-			//\Log::info($descendant->last_name.", ".$descendant->first_name." - Level:Infinity - Amount:".$infinity_value." ");
-			$infinity_amount += $infinity_value;
+		*/
+		foreach($rep->descendants as $descendants)
+		{
+			\Log::info($descendants->last_name.", ".$descendants->first_name." ... running commission");
+			$stats = $descendants->stats()->where('userstats.commission_period',$this->commission_period)->first();
+			if(!$stats)
+			{
+				\Log::info($descendants->last_name.", ".$descendants->first_name." ... no stats found");
+				continue;
+			}
+			if($descendants->level == 1)
+			{
+
+				if($stats->personal_dollar_volume > 0)
+				{
+					if($descendants->original_sponsor_id == $repId)
+					{
+						$amount = round(($stats->personal_dollar_volume * $rank->frontline_commission),2);
+						$description = 'Commission paid for Personally Sponsored Override Bonus';
+					}
+					else
+					{
+						$amount = round(($stats->personal_dollar_volume * $rank->org_commission),2);
+						$description = 'Commission paid for Frontline Override Bonus';
+					}
+					//Generate a commission record for personally downline
+					$commission = \Commissionline::create([
+						'amount'=> $amount,
+						'description'=>$description,
+						'commission_period'=>$this->commission_period,
+					]);
+
+					$commission->user()->associate($rep)->save();
+					$commission->source()->associate($descendants)->save();
+					\Log::info($descendants->last_name.", ".$descendants->first_name." - Bonus:Personally Sponsored Override Bonus - Amount:".$amount." ");
+					$sum += $amount;
+				}
+			}
+			else
+			{
+				\Log::info('This was in the infinity group');
+				$infinity++;
+				$distribution = $this->infinity($descendants->id);
+
+				if(isset($distribution[$rep->id]))
+				{
+					$infinity_value = (isset($distribution[$rep->id]['amount']))?$distribution[$rep->id]['amount']:0;
+					$description = (isset($distribution[$rep->id]['description']))?$distribution[$rep->id]['description']:'';
+					$commission = \Commissionline::create([
+						'amount'=>$infinity_value,
+						'description'=>$distribution[$rep->id]['description'],
+						'commission_period'=>date('Y-m-00',strtotime('last month')),
+					]);
+					$commission->user()->associate($rep)->save();
+					$commission->source()->associate($descendants)->save();
+					//\Log::info($descendants->last_name.", ".$descendants->first_name." - Level:Infinity - Amount:".$infinity_value." ");
+					$infinity_amount += $infinity_value;
+				}
+			}
 		}
 
 		$response['sum'] = $sum;
@@ -708,8 +729,27 @@ class Commission extends \BaseController {
 		$response['infinity_amount'] = $infinity_amount;
 		//$response['dist'] = $distributions;
 		$response['total_commission_earned'] = $response['infinity_amount'] + $response['sum'];
-		$response['rep'] = User::find($repId);
+		//$response['rep'] = User::find($repId);
 		return $response;
+	}
+
+	/**
+	* 
+	* Calculates commission bonuses for all users
+	* @param  
+	* @return 
+	*/
+	//private function calculate($repId)
+	public function runCommissions($date)
+	{
+		if(strtotime($date) === false) throw new \Exception('Commission period not specified.');
+		$this->commission_period = date('Y-m-00',strtotime($date));
+		if(empty($this->commission_period)) throw new \Exception('Commission period not specified.');
+		foreach(User::all() as $rep)
+		{
+			$this->calculate($rep->id);
+		}
+
 	}
 
 	/**
@@ -720,19 +760,64 @@ class Commission extends \BaseController {
 	*/
 	public function infinity($repId)
 	{
+		//requires commission period to be set in the class
+		if(empty($this->commission_period)) throw new \Exception('Commission period not specified.');
+		//gets the accumulated stats for this rep or
+		$stats = $this->getUserStats($repId);
+		//return $stats;
 		$distribution =array();
 		$rep = User::find($repId);
-		if($rep->free_service) return $distribution;
 		\Cache::forget('user_'.$repId.'_ancestors');
 
 		$ancestors = $rep->ancestors;
+		$ancestors = $ancestors->sortBy('level');
 		//return $ancestors;
 		$total_available = 0;
-
+		$ranking = [];
+		$high_rank = 0;
+		$maximum_multiplier = 0.03;
+		//$total_available_commission = round($stats->personal_dollar_volume*$maximum_multiplier,2);
 		foreach($ancestors as $ancestor)
 		{
-			if($ancestor->rank_id >= 5)
+			//skip lower-level ancestors
+			if($ancestor->rank_id < 3) continue;
+			//loop through trainers/leaders
+			if($ancestor->rank_id >= 3)
 			{
+				$ancestor_rank = $ancestor->ranks()->first();
+				$ranking[] = $ancestor;
+				$generation = count($ranking);
+				if($generation===1)
+				{
+					//this is the closest trainer/leader
+					//This leader is entitled to his/her full%
+					$amount = round(($stats->personal_dollar_volume*$ancestor_rank->org_commission),2);
+					if($amount > 0)
+					{
+						$distribution[$ancestor->id] = ['rep_id'=>$ancestor->id,'amount'=>$amount,'description'=>'3% Commission paid for Org Override Bonus'];
+					}
+				}
+				elseif($generation===2)
+				{
+					//this is the closest trainer/leader
+					//This leader is entitled to his/her full%
+					$amount = round(($stats->personal_dollar_volume*$ancestor_rank->gen_one_ldr_commission),2);
+					if($amount > 0)
+					{
+						$distribution[$ancestor->id] = ['rep_id'=>$ancestor->id,'amount'=>$amount,'description'=>'First Level 1% override bonus for trainer/leader'];
+					}
+				}
+				elseif($generation===3)
+				{
+					//this is the closest trainer/leader
+					//This leader is entitled to his/her full%
+					$amount = round(($stats->personal_dollar_volume*$ancestor_rank->gen_two_ldr_commission),2);
+					if($amount > 0)
+					{
+						$distribution[$ancestor->id] = ['rep_id'=>$ancestor->id,'amount'=>$amount,'description'=>'Second Level 1% override bonus for trainer/leader'];
+					}
+				}
+				continue;
 				$rank = $ancestor->rank;
 				// asuming higest ancestor first, which we can control let's set the portioning of the infinity income for this rep
 				if($rank->infinity_value > $total_available)
@@ -759,7 +844,10 @@ class Commission extends \BaseController {
 			}
 		}
 		//echo"<pre>"; print_r($rep->toArray()); echo"</pre>";
+		//return $ranking;
 		return $distribution;
 	}
+
+
 }
 ?>

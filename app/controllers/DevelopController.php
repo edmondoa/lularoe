@@ -27,8 +27,8 @@ class DevelopController extends \BaseController {
 	{
 		
 		$start = microtime (true);
-		$response['result'] = Commission::calculate(9921);
-		//$response['result'] = User::find(9921);
+		//$response['result'] = User::find(9921)->descendants()->orderBy('pivot_level')->get();
+		$response['result'] = User::find(9921)->ranks()->first();
 		$response['lapsed'] = round((microtime (true) - $start),5);
 		return $response;
 		//return Rank::all();
@@ -66,14 +66,15 @@ class DevelopController extends \BaseController {
 	{
 		set_time_limit(300);
 		$start = microtime (true);
+		$response['result'] = Commission::runCommissions(date('Y-m-d',strtotime('last month')));
 		//$response['result'] = Rank::all();
 		//User::find(2001)->clearUserCache();
 		
 /*		
 		$commission = new \LLR\Commission\Commission;
-		$commission->setCommissionPeriod(date('Y-m-d',strtotime('last month')));
+		$commission->setCommissionPeriod(date('Y-m-d'));
 		//$commission->setCommissionPeriod(date('Y-m-d'));
-		$response['result'] = $commission->setRank(1,true);
+		$response['result'] = $commission->calculate(9921);
 */
 		//$rep = User::find(2001)->descendants;
 		//$user = User::find(0);
@@ -82,7 +83,7 @@ class DevelopController extends \BaseController {
 		//$response['result'] = Commission::setUserStats(1201,date('Y-m-d',strtotime('last month')));
 		//$response['result'] = Commission::setAllUserStats(date('Y-m-d',strtotime('last month')));
 		//$response['result'] = Commission::setAllUserStats(date('Y-m-d'));
-		$response['result'] = Commission::updateRanks(date('Y-m-d',strtotime('last month')));
+		//$response['result'] = Commission::updateRanks(date('Y-m-d',strtotime('last month')));
 		//$response['result'] = Commission::setAllFreeService();
 		//$response['result'] = User::where('free_service',1)->get();
 		//$response['result'] = User::find(2001)->descendants_sm()->get();

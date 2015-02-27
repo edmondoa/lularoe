@@ -70,6 +70,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'public_email',
 		'formatted_created_at',
 		'public_phone', 
+		'level',
 		//'public_billing_address',
 		//'public_shipping_address'
 	];
@@ -303,6 +304,11 @@ public function getAccountBalanceAttribute()
     {
         $this->attributes['phone'] = preg_replace('/\D+/', '', $value);
     }
+
+	public function getLevelAttribute()
+	{
+		return (isset($this->pivot->level))?$this->pivot->level:null;
+	}
 
 	/**
 	 * The attributes excluded from the model's JSON form.
