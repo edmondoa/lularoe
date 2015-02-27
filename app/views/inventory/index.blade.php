@@ -87,6 +87,11 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
+										<span class="label label-info">Please allow 3 days for shipping</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
                                         <button type="button" class="pull-right btn btn-sm btn-success" ng-click="checkout()">Checkout</button>
                                         <button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
                                     </td>
