@@ -14,7 +14,7 @@ class UpdateProductsTable20150210 extends Migration {
 	{
 		Schema::table('products', function(Blueprint $table)
 		{
-			$table->string('sku')->unique();
+			$table->string('sku')->nullable()->unique();
 		});
 	}
 
