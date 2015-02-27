@@ -82,7 +82,7 @@
 		        
 		        @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && $media->reps)
 			        <tr>
-			            <th>Shared with ISM's:</th>
+			            <th>Shared with {{ Config::get('site.rep_title') }}:</th>
 			            <td><i class="fa fa-check"></i></td>
 			        </tr>
 		        @endif

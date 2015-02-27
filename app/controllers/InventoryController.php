@@ -12,6 +12,16 @@ class InventoryController extends \BaseController {
             'data' => Inventory::all()
         ];
     }
+
+    /**
+     * Process order checkout
+     * 
+     */
+    public function checkout()
+    {
+            return View::make('inventory.checkout');
+    }
+
     
 	/**
 	 * Display a listing of inventories
@@ -32,7 +42,9 @@ class InventoryController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('inventory.create');
+		$inventories = Inventory::all();
+
+		return View::make('inventory.create', compact('inventory'));
 	}
 
 	/**
@@ -62,7 +74,7 @@ class InventoryController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$inventory = Inventory::findOrFail($id);
+		//$inventory = Inventory::findOrFail($id);
 
 		return View::make('inventory.show', compact('inventory'));
 	}
@@ -164,14 +176,42 @@ class InventoryController extends \BaseController {
             return Redirect::back()->with('message', 'Inventory enabled.');
         }
     }
-    
-    /**
-     * Process order checkout
-     * 
-     */
-    public function checkout()
-    {
-            return View::make('inventory.checkout');
-    }
 
+	public function purchase(){
+		$tax		= Session::get('tax');
+		$subtotal	= Session::get('subtotal');
+		$invitems	= Session::get('orderdata');
+
+		$user = Config::get('site.mwl_username');
+						//Config::get('site.mwl_password');
+		$pass = 'test'; // Must be plaintext in auth 
+
+		// MATT HACKERY!
+		$oldInput = Input::all();
+		// Auth into the 0 mid
+		Input::replace(array('pass'=>$pass));
+		$authinfo = json_decode(App::make('ExternalAuthController')->auth('0')->getContent());
+
+		$purchaseInfo = array(
+					'subtotal'		=>$subtotal,
+					'tax'			=>$tax,
+					'cardname'		=>$oldInput['accountname'],
+					'cardnumber'	=>$oldInput['cardno'],
+					'cardexp'		=>$oldInput['cardexp'],
+					'cardcvv'		=>$oldInput['cvv'],
+					'cardzip'		=>$oldInput['zip'],
+					'cardaddress'	=>$oldInput['address'],
+					'cart'			=>json_encode($invitems)
+				);
+		
+		Input::replace($purchaseInfo);
+		$cardauth	= json_decode(App::make('ExternalAuthController')->purchase($authinfo->mwl)->getContent());
+
+		if (!$cardauth->error) return View::make('inventory.validpurchase');
+		else {
+			return View::make('inventory.invalidpurchase');
+		}
+	}
+
+    
 }

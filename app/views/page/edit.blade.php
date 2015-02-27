@@ -98,7 +98,7 @@
                     <div id="only_show_to_list">
                         <label> {{ Form::checkbox('customers') }} Customers </label>
                         <br>
-                        <label> {{ Form::checkbox('reps') }} ISM's </label>
+                        <label> {{ Form::checkbox('reps') }} {{ Config::get('site.rep_title') }} </label>
                     </div>
                 </div>
             </div><!-- panel -->

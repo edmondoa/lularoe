@@ -84,7 +84,7 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">ISM's
+                            	<th class="link" ng-click="orderByField='public'; reverseSort = !reverseSort">{{ Config::get('site.rep_title') }}
                             		<span>
                             			<span ng-show="orderByField == 'public'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>

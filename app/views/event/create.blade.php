@@ -43,7 +43,7 @@
 			        </label>
 			        <br>
 			        <label>
-			   			{{ Form::checkbox('reps', null, array('class' => 'form-control')) }} ISM's
+			   			{{ Form::checkbox('reps', null, array('class' => 'form-control')) }} {{ Config::get('site.rep_title') }}
 			        </label>
 			        <!--<br>
 			        <label>

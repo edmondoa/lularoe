@@ -27,13 +27,17 @@ Route::pattern('id', '[0-9]+');
 		// API for IOS App
 		Route::get('llrapi/v1/auth/{id}', 						'ExternalAuthController@auth');
 		Route::get('llrapi/v1/get-inventory/',					'ExternalAuthController@getInventory');
+		Route::get('llrapi/v1/get-inventory/{key}',				'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/inventory/{location}',			'ExternalAuthController@getInventory');
 
-		Route::get('llrapi/v1/refund/',		 					'ExternalAuthController@refund');
-		Route::get('llrapi/v1/purchase/',	 					'ExternalAuthController@purchase');
-		Route::get('llrapi/v1/ledger/', 						'ExternalAuthController@ledger');
-		Route::get('llrapi/v1/ledger/{ref}', 					'ExternalAuthController@ledger');
+		Route::get('llrapi/v1/refund/{key}', 					'ExternalAuthController@refund');
+		Route::get('llrapi/v1/purchase/{key}',					'ExternalAuthController@purchase');
+
+		Route::get('llrapi/v1/ledger/{key}', 					'ExternalAuthController@ledger');
+		Route::get('llrapi/v1/ledger/',		 					'ExternalAuthController@ledger');
+
+		Route::post('llrapi/v1/reorder/', 					    	'ExternalAuthController@reorder');
 
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
 {
@@ -72,10 +76,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		$title = 'Terms and Conditions';
 		return View::make('company.terms', compact('title'));
 	});
-	// Route::get('privacy-policy', function() {
-		// $title = 'Privacy Policy';
-		// return View::make('company.privacy', compact('title'));
-	// });
+	Route::get('privacy-policy', function() {
+		$title = 'Privacy Policy';
+		return View::make('company.privacy', compact('title'));
+	});
 	Route::get('leadership', function() {
 		$title = 'Leadership';
 		return View::make('company.leadership', compact('title'));
@@ -98,7 +102,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 	// contact form
 	Route::post('send-contact-form',['as' => 'send-contact-form', 'uses' => 'ContactController@send']);
-		
+
 	// events
 	Route::get('api/upcoming-public-events', 'DataOnlyController@getUpcomingPublicEvents');
 	Route::get('public-events', 'UventController@publicIndex');
@@ -133,8 +137,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	// products
 	Route::get('store', 'ProductController@publicIndex');
 	Route::get('store/{id}', 'ProductController@publicShow');
-	
-	// timezone
+
+	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
 		
 	##############################################################################################
@@ -182,11 +186,15 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('media/delete', 'MediaController@delete');
 		
         //inventories
-        Route::resource('inventories', 'InventoryController');
-        Route::post('inventories/disable', 'InventoryController@disable');
-        Route::post('inventories/enable', 'InventoryController@enable');
-        Route::post('inventories/delete', 'InventoryController@delete');
-        Route::post('inventories/checkout', 'InventoryController@checkout');
+        #Route::resource('inventories', 'InventoryController');
+        Route::get('inventories/', 'InventoryController@index');
+        Route::get('inv/checkout', 'InventoryController@checkout');
+        Route::post('inv/purchase', 'InventoryController@purchase');
+        #Route::post('inventories/disable', 'InventoryController@disable');
+        #Route::post('inventories/enable', 'InventoryController@enable');
+        #Route::post('inventories/delete', 'InventoryController@delete');
+		Route::get('inventory/validpurchase', function () { return(View::make('inventory.validpurchase')); });
+        Route::get('inventory/invalidpurchase', function () { return(View::make('inventory.invalidpurchase')); });
         
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
@@ -253,9 +261,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-posts', 'DataOnlyController@getAllPosts');
 		Route::get('api/all-products', 'DataOnlyController@getAllProducts');
 		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
-        Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
+		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
 		Route::get('api/all-userSites', 'DataOnlyController@getAllUserSites');
-		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline');		
+		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline'); 
         Route::get('api/search-user/{keyword}', 'DataOnlyController@getSearchUsers');    
 
 		// upload media

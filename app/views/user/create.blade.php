@@ -65,7 +65,7 @@
 		    		{{ Form::label('role_id', 'Role') }}<br>
 		    		{{ Form::select('role_id', array(
 				    	'1' => 'Customer',
-				    	'2' => 'ISM',
+				    	'2' => Config::get('site.rep_title'),
 				    	'3' => 'Editor',
 				    	'4' => 'Admin'
 				    ), null, array('class' => 'form-control')) }}

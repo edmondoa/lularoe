@@ -127,7 +127,7 @@
 					        </label>
 					        <br>
 					        <label>
-					   			{{ Form::checkbox('reps') }} ISM's
+					   			{{ Form::checkbox('reps') }} {{ Config::get('site.rep_title') }}
 					        </label>
 				    	</div>
 			    	</div>

@@ -81,7 +81,7 @@
                     <div class="wpb_text_column wpb_content_element ">
                         <div class="wpb_wrapper">
                             <p>
-                                <strong>Customer Service: 1.800.000.0000</strong>
+                                <strong>Customer Service: {{ Config::get('site.customer_service') }}</strong>
                             </p>
                             <h2>
                         </div>
