@@ -33,7 +33,7 @@
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('dob', 'Dob') }}
+		        {{ Form::label('dob', 'Date of Birth') }}
 		        {{ Form::text('dob', null, array('class' => 'form-control')) }}
 		    </div>
 		    
@@ -45,8 +45,8 @@
 		    @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 			    <div class="form-group">
 				    <div class="form-group">
-				        {{ Form::label('sponsor_id', 'Assign to '. Config::get('site.rep_title')) }}
-				        {{ Form::text('sponsor_id', null, array('class' => 'form-control', 'placeholder' => 'REP ID')) }}
+				        {{ Form::label('sponsor_id', 'Assign to Rep') }}
+				        {{ Form::text('sponsor_id', null, array('class' => 'form-control', 'placeholder' => 'Rep ID')) }}
 				    </div>
 			    </div>
 			    

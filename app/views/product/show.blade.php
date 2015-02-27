@@ -36,29 +36,40 @@
 	</div><!-- row -->
 	<div class="row">
 		<div class="col col-md-6 center">
-			<img src="/uploads/{{ $product->image }}" class="full-image">
+			<p class="align-left">{{ $product->blurb }}</p>
+			@if (isset($product->featured_image))
+				<img id="featured-image" src="/uploads/{{ $product->featured_image->url }}" class="full-image">
+			@endif
+			@if (count($attachment_images) > 1)
+				<div class="margin-top-2 product-thumbs">
+					@foreach ($attachment_images as $attachment_image)
+						<img src="/uploads/{{ $attachment_image }}" class="thumb thumb-md">
+					@endforeach
+				</div>
+			@endif
 		</div>
 		<div class="col col-md-6">
 		    <table class="table">
 		        
-		        <tr>
-		            <th>Name:</th>
-		            <td>{{ $product->name }}</td>
-		        </tr>
+		        @if ($product->description != '')
+			        <tr>
+			            <th>Description:</th>
+			            <td>{{ $product->description }}</td>
+			        </tr>
+			    @endif
 		        
 		        <tr>
-		            <th>Blurb:</th>
-		            <td>{{ $product->blurb }}</td>
+		            <th>Retail Price:</th>
+		            <td>
+		               	{{ money($product->retail_price) }}
+		            </td>
 		        </tr>
-		        
+
 		        <tr>
-		            <th>Description:</th>
-		            <td>{{ $product->description }}</td>
-		        </tr>
-		        
-		        <tr>
-		            <th>Price:</th>
-		            <td>{{ $product->price }}</td>
+		            <th>Rep Price:</th>
+		            <td>
+		               	{{ money($product->rep_price) }}
+		            </td>
 		        </tr>
 		        
 		        <tr>

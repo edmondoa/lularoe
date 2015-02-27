@@ -14,6 +14,9 @@ class ExternalAuthController extends \BaseController {
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
 	public 	$logdata = false;
 
+
+
+
 	public function getInventory($key = 0, $location='')
 	{
 		// Magic database voodoo
@@ -151,8 +154,29 @@ class ExternalAuthController extends \BaseController {
 //		return(file_get_contents('SampleInventory.json'));
 	}
 
-
 	// What is this hackery?!
+	// PLEASE baby Jesus, lets get an api for these things.
+	public function setmwlpassword($id, $pass, $cid = 'llr') {
+		$cid = $this->mwl_db;
+
+		try {
+			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
+		}
+		catch (Exception $e)
+		{
+			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
+			return(Response::json($noconnect,200));
+		}
+
+		$pwd = base64_encode(md5($pass,true));
+		$pwdf = base64_encode(md5($cid.$pwd,true));
+		$Q = "REPLACE INTO users SET username='{$id}', password='{$pwdf}'";
+		$res = $mysqli->query($Q);
+
+		$mysqli->close();
+		return($res);
+	}
+
 	// It is this way until we have proper api access to the ledger.
 	public function ledger($key = 0)
 	{
@@ -174,7 +198,7 @@ class ExternalAuthController extends \BaseController {
 
 		$txns = [];
 
-		// Pull these from some sort of transaction/sale log
+		// Pull these from inventory data
 		$stub_items = json_decode('[{"quantities":{"M":2,"L":3,"XXS":5},
 									"price":59.99,
 									"image":"http://mylularoe.com/img/media/Lola.jpg",
@@ -189,6 +213,7 @@ class ExternalAuthController extends \BaseController {
 			$txn['items'] = $stub_items;
 			$txns[] = $txn;
 		}	
+		$mysqli->close();
 		return(Response::json($txns, 200));
 	}
 
@@ -270,7 +295,9 @@ class ExternalAuthController extends \BaseController {
 
         $purchase = self::makePayment($key, $txheaders);
 
+		// Drop this into product table too.
 		if (!$purchase['error']) {
+
 			$lg = new Ledger();
 			$lg->user_id		= $mbr->id;
 			$lg->account		= '';
@@ -280,6 +307,7 @@ class ExternalAuthController extends \BaseController {
 			$lg->transactionid	= $purchase['id'];
 			$lg->data			= json_encode($cartdata);
 			$lg->save();
+
 		}
 
         return Response::json($purchase, 200);

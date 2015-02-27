@@ -6,7 +6,7 @@
 		<h1 class="no-top">{{ $lead->first_name }} {{ $lead->last_name }}</h1>
 
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep']))
-		    <div class="btn-group" id="record-options">
+		    <div class="btn-group pull-left margin-right-1" id="record-options">
 			    <a class="btn btn-default" href="{{ url('leads/'.$lead->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 			    <!--
 			    @if ($lead->disabled == 0)
@@ -31,6 +31,25 @@
 			    	</button>
 			    {{ Form::close() }}
 			</div>
+			{{ Form::open(array('url' => 'party-invite', 'method' => 'POST', 'class' => 'pull-left')) }}
+			    {{ Form::hidden('leads', 1) }}
+			    {{ Form::hidden('user_ids[]', $lead->id) }}
+                <div class="margin-right-2">
+                    <div class="input-group">
+                        <select class="form-control selectpicker actions">
+                            <option value="/party-invite" selected>Invite to Attend Your Party ...</option>
+                            <option value="/party-host-invite">Invite to Host Your Party ...</option>
+                            <option value="/users/email">Send Email</option>
+                            <option value="/users/sms">Send Text (SMS)</option>
+                        </select>
+                        <div class="input-group-btn no-width">
+                            <button class="btn btn-default applyAction">
+                                <i class="fa fa-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        	{{ Form::close() }}
 		@endif
 	</div><!-- row -->
 	<div class="row">
@@ -60,7 +79,7 @@
 		            		{{ Form::hidden('leads', 1) }}
 		            		<button style="width:32px;" title="Send Text Message (SMS)"><i class="fa fa-mobile-phone"></i></button>
 		            	{{ Form::close() }}
-		            	&nbsp;{{ $lead->phone }}
+		            	&nbsp;{{ $lead->formatted_phone }}
 		            </td>
 		        </tr>
 

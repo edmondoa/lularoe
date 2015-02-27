@@ -7,8 +7,12 @@
 @stop
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'media/delete', 'method' => 'POST')) }}
-	    <div ng-controller="MediaController" class="my-controller">
+	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+    	{{ Form::open(array('url' => 'media/disable', 'method' => 'POST')) }}
+    @else
+    	{{ Form::open(array('url' => 'media/delete', 'method' => 'POST')) }}
+    @endif
+    	<div ng-controller="MediaController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
@@ -20,9 +24,9 @@
 		                			My Resources
 		                		@endif
 		                	@elseif (isset($reps))
-		                		{{ Config::get('site.rep_title') }} Resources
+		                		Rep Resources
 		                	@elseif (isset($shared_with_reps))
-		                		Resources Shared with {{ Config::get('site.rep_title') }}
+		                		Resources Shared with Reps
 		                	@else
 		                		Resource Library
 		                	@endif
@@ -124,7 +128,7 @@
 	            <div class="col col-md-12">
             		<div ng-hide="val">
 	            		<ul class="tiles">
-		                    <li ng-click="show=!show; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
+		                    <li ng-click="show=!show; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 		                        <div ng-click="checkbox()">
 		                        	<div class="options" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
@@ -148,22 +152,22 @@
 		                        		<input class="bulk-check" type="hidden" name="ids[]" value="@include('_helpers.media_id')">
 		                        	</div>
 		                        	<?php // image ?>
-		                        	<img title="@include('_helpers.media_title')" ng-if="media.type == 'Image'" ng-class="{semitransparent : media.disabled == 1 }" src="/uploads/@include('_helpers.media_image_sm')">
+		                        	<img title="@include('_helpers.media_title')" ng-if="media.type == 'Image'" ng-class="{semitransparent : media.disabled == 1}" src="/uploads/@include('_helpers.media_image_sm')">
 		                        	<div class="file" ng-if="media.type != 'Image'">
-		                        		<i ng-if="media.type == 'Database'" class="fa fa-database" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'Document'" class="fa fa-file-word-o" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'Image file'" class="fa fa-image" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'Text'" class="fa fa-file-text-o" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'Spreadsheet'" class="fa fa-file-excel-o" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'Audio'" class="fa fa-file-audio-o" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'Video'" class="fa fa-file-video-o" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'Code'" class="fa fa-file-code-o" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'File'" class="fa fa-file-o" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'PDF'" class="fa fa-file-pdf-o" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'Presentation'" class="fa fa-file-powerpoint-o" ng-class="{semitransparent : media.disabled}"></i>
-		                        		<i ng-if="media.type == 'Archive'" class="fa fa-file-archive-o" ng-class="{semitransparent : media.disabled}"></i>
+		                        		<i ng-if="media.type == 'Database'" class="fa fa-database" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'Document'" class="fa fa-file-word-o" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'Image file'" class="fa fa-image" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'Text'" class="fa fa-file-text-o" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'Spreadsheet'" class="fa fa-file-excel-o" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'Audio'" class="fa fa-file-audio-o" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'Video'" class="fa fa-file-video-o" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'Code'" class="fa fa-file-code-o" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'File'" class="fa fa-file-o" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'PDF'" class="fa fa-file-pdf-o" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'Presentation'" class="fa fa-file-powerpoint-o" ng-class="{semitransparent : media.disabled == 1}"></i>
+		                        		<i ng-if="media.type == 'Archive'" class="fa fa-file-archive-o" ng-class="{semitransparent : media.disabled == 1}"></i>
 		                        		<br>
-		                        		<div ng-class="{semitransparent : media.disabled}" class="file-title" ng-bind="media.title"></div>
+		                        		<div ng-class="{semitransparent : media.disabled == 1}" class="file-title" ng-bind="media.title"></div>
 		                        	</div>
 		                        </div>
 		                    </li>
@@ -183,6 +187,11 @@
 @stop
 @section('scripts')
 <script>
+
+	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
+	
+	function MediaController($scope, $http) {
+	
 		<?php
 			if (isset($user->id)) {
 				$media_url = '/api/media-by-user/' . $user->id;
@@ -202,14 +211,46 @@
 			}
 		?>
 		
-    angular.extend(ControlPad, (function(){                
-                return {
-                    mediaCtrl : {
-                        media_url : '{{ $media_url }}',
-                        count_url : '{{ $count_url }}'
-                    }
-                };
-            }())); 
+		$http.get('{{ $media_url }}').success(function(media) {
+			$scope.media = media;
+			// hide if object empty
+			$scope.val = "";
+
+			// Shows/hides the options on hover
+			$scope.hoverOn = function(media) {
+				return media.showOptions = true;
+			};
+			$scope.hoverOff = function(media) {
+				return media.showOptions = false;
+			};
+			
+			// download file
+			$scope.download = function(url) {
+				window.location.href = '/uploads/' + url;
+			}
+			
+			@include('_helpers.bulk_action_checkboxes')
+			
+		});
+		
+		$http.get('{{ $count_url }}').success(function(media_counts) {
+			$scope.media_counts = media_counts;
+		});
+		
+		$scope.currentPage = 1;
+		$scope.pageSize = 100;
+		$scope.meals = [];
+		
+		$scope.pageChangeHandler = function(num) {
+			
+		};
+		
+	}
+	
+	function OtherController($scope) {
+		$scope.pageChangeHandler = function(num) {
+		};
+	}
 
 	// toggle sort buttons
 	$('.btn-group .btn').click(function() {
@@ -218,5 +259,4 @@
 	});
 
 </script>
-{{ HTML::script('js/controllers/mediaController.js') }}
 @stop

@@ -12,16 +12,16 @@ class Product extends \Eloquent
 
 	// Don't forget to fill this array    
 	protected $table = 'products';
-	protected $fillable = array('name','blurb','description','price','quantity','category_id','image','points_value','disabled');
+	protected $fillable = array('sku','name','blurb','description','price','quantity','category_id','image','points_value','disabled');
 
 	public function getNewRecordAttribute() {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
 	}
 	
-	/***************
-	 * Relationships
-	 ***************/
-	
+	/*##############################################################################################
+	Relationships	
+	##############################################################################################*/
+			
 	public function category() {
 		return $this->belongsTo('ProductCategory', 'category_id', 'id');
 	}
@@ -40,8 +40,12 @@ class Product extends \Eloquent
 	public function getImageSmAttribute() {
 		$image_sm = explode('.', $this->image);
 		if (isset($image_sm[1])) return $image_sm[0] . '-sm.' . $image_sm[1];
-		else return '';	
+		else return '';
 	}
+	
+    public function items() {
+		return $this->belongsToMany('Item', 'product_item', 'product_id', 'item_id');
+    }
 	
 	protected $appends = array('new_record', 'category_name', 'image_sm');
 

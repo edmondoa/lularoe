@@ -47,8 +47,8 @@
 			    
 			    <div class="form-group">
 			    	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-				        {{ Form::label('sponsor_id', 'Assign to '. Config::get('site.rep_title')) }}
-				        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control', 'placeholder' => 'REP ID')) }}
+				        {{ Form::label('sponsor_id', 'Assign to Rep') }}
+				        {{ Form::text('sponsor_id', Input::old('sponsor_id'), array('class' => 'form-control', 'placeholder' => 'Rep ID')) }}
 				    @elseif (Auth::user()->hasRole(['Rep']))
 				        {{ Form::hidden('sponsor_id', Auth::user()->id) }}
 				    @endif

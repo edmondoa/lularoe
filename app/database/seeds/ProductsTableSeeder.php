@@ -23,9 +23,13 @@ class ProductsTableSeeder extends DatabaseSeeder
 					'description' => $faker->text,
 					'price' => ($price + (3.5 * $key)),
 					'points_value' => 20,
-					//'quantity' => $faker->randomDigitNotNull,
-					//'category_id' => $faker->randomDigitNotNull,
 					'disabled' => $faker->boolean,
+					'retail_price' => $faker->numberBetween($min = 105, $max = 200),
+					'rep_price' => $faker->numberBetween($min = 50, $max = 100),
+					'cv_price' => $faker->numberBetween($min = 50, $max = 100),
+					'quantity' => $faker->numberBetween($min = 1, $max = 100),
+					'category_id' => $faker->randomDigitNotNull,
+					'sku' => $faker->unique()->randomNumber($min = 10000, $max = 100000),
 				);
 				Product::create($product);
 			}

@@ -30,27 +30,40 @@
 				<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
 			
 					<div class="form-group">
-						{{ Form::label('image', 'Upload Image') }}
-						{{ Form::file('image', null, array('class' => 'form-control')) }}
-					</div>
-					
-					<div class="form-group">
-						{{ Form::label('name', 'Or Choose from Media Library') }}
-						<div class="input-group">
-							<span class="input-group-btn">
-								<button data-toggle="modal" data-target="#mediaLibrary" type="button" class="btn btn-default" id="media-library">
-									<i class="fa fa-th-large"></i>
-								</button>
-							</span>
-							{{ Form::text('image_url', null, array('class' => 'form-control inline-block', 'id' => 'image_url')) }}
-						</div>
+						<label>Images</label>
+						<ul id="image-list" class="list-group no-bottom">
+							@foreach ($attachment_images as $attachment_image)
+					    		<li class="list-group-item">
+					    			<input type="hidden" name="images[{{ $attachment_image->id }}][attachment_id]" value="{{ $attachment_image->attachment_id }}">
+					    			<div class="display-table width-full">
+										<div class="btn-group table-cell">
+											<img src="/uploads/{{ $attachment_image->url }}" class="thumb-md">
+								    	</div>
+										<div class="table-cell" style="vertical-align:top;"><i data-attachment-id="{{ $attachment_image->attachment_id }}" class="fa fa-times removeImage pull-right removeImage"></i></div>
+									</div>
+									<label class="margin-top-2">
+										<input type="radio" <?php if ($attachment_image->featured == 1) echo 'checked' ?> name="images[{{ $attachment_image->id }}][featured]">
+										&nbsp;Featured Image
+									</label>
+					    		</li>
+							@endforeach
+						</ul>
+						<button type="button" class="btn btn-default margin-top-2" id="add-image"><i class="fa fa-plus"></i> Add Image</button>
 					</div>
 				    
 				    <div class="form-group">
-				        {{ Form::label('price', 'Price') }}
+				        {{ Form::label('retail_price', 'Retail Price') }}
 				        <div class="input-group">
 				        	<span class="input-group-addon">$</span>
-				        	{{ Form::text('price', Input::old('price'), array('class' => 'form-control')) }}
+				        	{{ Form::text('retail_price', Input::old('retail_price'), array('class' => 'form-control')) }}
+				        </div>
+				    </div>
+				    
+				    <div class="form-group">
+				        {{ Form::label('rep_price', 'Rep Price') }}
+				        <div class="input-group">
+				        	<span class="input-group-addon">$</span>
+				        	{{ Form::text('rep_price', Input::old('rep_price'), array('class' => 'form-control')) }}
 				        </div>
 				    </div>
 				    
@@ -91,9 +104,8 @@
 				    		1 => 'Disabled'
 				    	], null, ['class' => 'form-control']) }}
 				    </div>
-				    <br>
 	
-			    {{ Form::submit('Update Product', array('class' => 'btn btn-primary')) }}
+			    	{{ Form::submit('Update Product', array('class' => 'btn btn-primary')) }}
 			
 			</div>
 		</div>
@@ -102,4 +114,10 @@
 @stop
 @section('modals')
 	@include('_helpers.wysiwyg_modals')
+@stop
+@section('scripts')
+	<script>
+		var product_id = {{ $product->id }};
+		var attachment_images_count = {{ $attachment_images_count }};
+	</script>
 @stop

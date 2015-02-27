@@ -27,9 +27,9 @@
 		'preregistration_fee' => 2000.00,
 
 		'default_from_email' => 'no-reply@mylularoe.com',
-		'contact_email' => 'mfrederico@gmail.com',
-		'contact_first_name' => 'Matt',
-		'contact_last_name'  => 'Frederico',
+		'contact_email' => 'info@lularoe.com',
+		'contact_first_name' => 'Support',
+		'contact_last_name'  => 'LuLaRoe',
 		'rep_title'			=> 'FC',
 		'company_name' => 'LulaRoe',
 		//'subdomain' => Route::getCurrentRoute()->getParameter('subdomain'),

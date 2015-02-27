@@ -44,6 +44,7 @@
 			@endif
 		</div><!-- col -->
 	</div><!-- row -->
+	<br>
 	<div class="row">
 		@if ($media->type == 'Image')
 			<div class="col col-md-6">
@@ -82,7 +83,7 @@
 		        
 		        @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && $media->reps)
 			        <tr>
-			            <th>Shared with {{ Config::get('site.rep_title') }}:</th>
+			            <th>Shared with Reps:</th>
 			            <td><i class="fa fa-check"></i></td>
 			        </tr>
 		        @endif

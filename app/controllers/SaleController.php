@@ -1,25 +1,6 @@
 <?php
 
-class SaleController extends \BaseController {
-
-	/**
-	 * Data only
-	 */
-	public function getAllSales(){
-        $count = Sale::count();
-		$sales = Sale::all();
-		foreach ($sales as $sale)
-		{
-			if (strtotime($sale['created_at']) >= (time() - Config::get('site.new_time_frame') ))
-			{
-				$sale['new'] = 1;
-			}
-		}
-		return [
-            'count'=>$count,
-            'data'=>$sales
-        ];
-	}
+class saleController extends \BaseController {
 
 	/**
 	 * Display a listing of sales
@@ -40,7 +21,39 @@ class SaleController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('sale.create');
+		if (Auth::check()) $user = Auth::user();
+		$billing_address = Address::where('addressable_type', 'User')->where('addressable_id', $user->id)->where('label', 'Billing')->get()->first();
+		$shipping_address = Address::where('addressable_type', 'User')->where('addressable_id', $user->id)->where('label', 'Shipping')->get()->first();
+		if (!isset($billing_address)) {
+			$billing_address = [
+				'address_1' => '',
+				'address_2' => '',
+				'city' => '',
+				'state' => '',
+				'zip' => '',
+			];
+		}
+		if (!isset($shipping_address)) {
+			$shipping_address = [
+				'address_1' => '',
+				'address_2' => '',
+				'city' => '',
+				'state' => '',
+				'zip' => '',
+			];
+		}
+		$subtotal = 0;
+		foreach(Session::get('products') as $product) {
+			if (Session::get('party_id') != null) $price = $product->rep_price;
+			else $price = $product->price;
+			$subtotal += ($price * $product->purchase_quantity);
+		}
+		$tax = Config::get('site.tax') * $subtotal;
+		$shipping = Config::get('site.shipping');
+		$total = $subtotal + $tax + $shipping;
+		// echo '<pre>'; print_r($billing_address); echo '</pre>';
+		// exit;
+		return View::make('sale.create', compact('subtotal', 'tax', 'shipping', 'total', 'user', 'billing_address', 'shipping_address'));
 	}
 
 	/**
@@ -50,16 +63,120 @@ class SaleController extends \BaseController {
 	 */
 	public function store()
 	{
-		$validator = Validator::make($data = Input::all(), Sale::$rules);
-
-		if ($validator->fails())
-		{
+		$rules = User::$rules;
+		$rules['address_1'] = 'required|between:2,28';
+		$rules['city'] = 'required';
+		$rules['state'] = 'required|size:2';
+		$rules['zip'] = ['required','numeric','regex:/(^\d{5}$)|(^\d{5}-\d{4}$)/'];
+		$rules['card_number'] = 'required|numeric|digits_between:13,17';
+		$rules['security'] = 'required|numeric|digits_between:3,4';
+		$rules['expires_year'] = 'required|digits:4';
+		$rules['expires_month'] = 'required|digits:2';
+		$rules['email'] = 'required|unique:users,email';
+		$validator = Validator::make($data = Input::all(), $rules);
+		if ($validator->fails()) {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
+		$data['details'] = [];
+		foreach (Session::get('products') as $product) {
+			$data['details'][] = $product->purchase_quantity . ' &times; ' . $product->name;
+		}
+		$params = array(
+			"command" => "sale",
+			"type" => 'CreditCard', //Name of the account holder.
+			"account_holder" => $data['first_name']." ".$data['last_name'], //Name of the account holder.
+			//"customer_id" => $user->id,
+			"billing_address" => array(
+				"first_name" => $data['first_name'],
+				"last_name" => $data['last_name'],
+				"email" => $data['email'],
+				//"company" => "",
+				"street_1" => $data['address_1'],
+				"street_2" => $data['address_2'],
+				"city" => $data['city'],
+				"state" => $data['state'],
+				"zip" => $data['zip']
+			), //address object or add later
+			"software" => "", 
+			//"recurring_billing" => array(), //recurring billing object or add later
+			"details" => array(
+				//"amount" => $data['amount'],  //  ***Required*** integer
+				"amount" => $data['amount'],  //  ***Required*** integer
+				"comments" => "",  // text
+				"description" => $data['details'],  // text 
+			), 
+			"credit_card_data" => array(
+				"type" => 'CreditCard',
+				"card_number" => $data['card_number'],
+				"card_code" => $data['security'],
+				"card_exp" => $data['expires_month'].$data['expires_year'],
+				"card_street" => $data['address_1'],
+				"card_zip" => $data['zip'],
+			), //credit card payment object or add later
+			//"check_data" => array(), //e-check payment object or add later
+		);
+		//echo"<pre>"; print_r($params); echo"</pre>";
+		//exit;
+		$cmspayment = new CMSPayment();
+		//exit;
+		$cmspayment->create_request($params);
+		//echo"<pre>"; print_r($data); echo"</pre>";
+		//echo"<pre>"; print_r($user); echo"</pre>";
+		//echo"<pre>"; print_r($address); echo"</pre>";
+		//echo"<pre>"; print_r($event); echo"</pre>";
+		//$cmspayment->expose($data);
+		//exit;
+		//exit;
+		if($cmspayment->send_request())
+		{
+			// $data['dob'] = date('Y-m-d',strtotime($data['dob']));
+			// $data['password'] = \Hash::make($data['password']);
+			// $user = User::create($data);
 
-		Sale::create($data);
+			//now the address
+			$address = [
+				'address_1'=>$data['address_1'],
+				'address_2'=>$data['address_2'],
+				'city'=>$data['city'],
+				'state'=>$data['state'],
+				'zip'=>$data['zip'],
 
-		return Redirect::route('sales.index')->with('message', 'Sale created.');
+			];
+			$address = Address::create($address);
+			$user->addresses()->save($address);
+			//$user->addresses()->save($address);
+
+			$data['transaction_id'] = $cmspayment->transaction_id;
+			$data['details'] = '';
+			$data['tender'] = 'Credit Card';
+			$new_payment = Payment::create($data);
+			
+			$new_payment->user()->associate($user);
+			//associate the payment to the new user
+			$new_payment->save();
+
+			$role = Role::where('name','Rep')->first();
+			//echo"<pre>"; print_r($role); echo"</pre>";
+			$user->role()->associate($role);
+			$user->save();
+			//exit('we got to here');
+		}
+		else
+		{
+			$errors = $cmspayment->errors_public;
+			foreach($errors as $key => $error)
+			{
+				$validator->getMessageBag()->add($key, $error);
+			}
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+		//User::create($data);
+		//exit;
+		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
+		$user->userSite()->associate($userSite);
+		Event::fire('rep.create', array('rep_id' => $user->id));
+		Auth::loginUsingId($user->id);
+		return Redirect::to('/dashboard');
 	}
 
 	/**

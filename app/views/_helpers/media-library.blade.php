@@ -7,17 +7,15 @@
     	<div class="page-actions">
 	        <div class="row">
 	            <div class="col-md-12">
-	                <div class="pull-left margin-right-2">
-	                    <div class="input-group">
-	                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
-	                        <span class="input-group-btn no-width">
-	                            <button class="btn btn-default" type="button" disabled>
-	                                <i class="fa fa-search"></i>
-	                            </button>
-	                        </span>
-	                    </div>
-	                </div>
-                    <div class="pull-left">
+	            	@if (Auth::user()->hasRole(['Rep']))
+	                    <div class="pull-left margin-right-2">
+	                    	<select class="selectpicker" ng-model="selectedCollection" ng-change="changeCollection()">
+	                    		<option value="images-by-user/{{ Auth::user()->id }}" selected>My Images</option>
+	                    		<option value="images-shared-with-reps">Image Library</option>
+	                    	</select>
+	                	</div>
+	                @endif
+                    <div class="pull-left margin-right-2">
                     	<div class="btn-group">
 		                	<button type="button" class="btn btn-default active" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date
 		                		<span>
@@ -37,6 +35,16 @@
 		            		</span>
 		            	</div>
                 	</div>
+	                <div class="pull-left margin-right-2">
+	                    <div class="input-group">
+	                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
+	                        <span class="input-group-btn no-width">
+	                            <button class="btn btn-default" type="button" disabled>
+	                                <i class="fa fa-search"></i>
+	                            </button>
+	                        </span>
+	                    </div>
+	                </div>
 	            	<!-- <div ng-if="media.length > 10" class="pull-right hidable-xs"> -->
 		            	<div class="pull-right hidable-xs">
 		                    <!-- <div class="input-group pull-right">
@@ -51,24 +59,7 @@
 	    </div><!-- page-actions -->
 	    <br>
         <div class="row">
-            <div class="col col-md-12">
-                <!-- <table class="table">
-                    <thead>
-                        <tr>
-                            <th>
-                            	<input type="checkbox">
-                            </th>
-                        </tr>
-                    </thead>
-                </table> -->
-            	<!-- <div class="link" ng-click="orderByField='type'; reverseSort = !reverseSort">Filter by Type
-            		<span>
-            			<span ng-show="orderByField == 'type'">
-                			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-                			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-            			</span>
-            		</span>
-        		</div> -->
+            <div class="col col-md-12" ng-show="!loading">
         		<div ng-hide="val">
             		<ul class="tiles tiles-small">
 	                    <li ng-click="selectMedia(media)" ng-class="{highlight: media.new == 1}" dir-paginate-start="media in mediaList | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
@@ -85,22 +76,22 @@
 		                        	<a href="/uploads/@include('_helpers.media_url')" download="/uploads/@include('_helpers.media_url')"><i class="fa fa-download"></i></a>
 	                        	</div>
 	                        	<?php // image ?>
-	                        	<img title="@include('_helpers.media_title')" ng-if="media.type == 'Image'" ng-class="{semitransparent : media.disabled}" src="/uploads/@include('_helpers.media_url')">
+	                        	<img title="@include('_helpers.media_title')" ng-if="media.type == 'Image'" ng-class="{ semitransparent : media.disabled == 1 }" src="/uploads/@include('_helpers.media_url')">
 	                        	<div class="file" ng-if="media.type != 'Image'">
-	                        		<i ng-if="media.type == 'Database'" class="fa fa-database" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'Document'" class="fa fa-file-word-o" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'Image file'" class="fa fa-image" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'Text'" class="fa fa-file-text-o" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'Spreadsheet'" class="fa fa-file-excel-o" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'Audio'" class="fa fa-file-audio-o" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'Video'" class="fa fa-file-video-o" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'Code'" class="fa fa-file-code-o" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'File'" class="fa fa-file-o" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'PDF'" class="fa fa-file-pdf-o" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'Presentation'" class="fa fa-file-powerpoint-o" ng-class="{semitransparent : media.disabled}"></i>
-	                        		<i ng-if="media.type == 'Archive'" class="fa fa-file-archive-o" ng-class="{semitransparent : media.disabled}"></i>
+	                        		<i ng-if="media.type == 'Database'" class="fa fa-database" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'Document'" class="fa fa-file-word-o" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'Image file'" class="fa fa-image" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'Text'" class="fa fa-file-text-o" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'Spreadsheet'" class="fa fa-file-excel-o" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'Audio'" class="fa fa-file-audio-o" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'Video'" class="fa fa-file-video-o" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'Code'" class="fa fa-file-code-o" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'File'" class="fa fa-file-o" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'PDF'" class="fa fa-file-pdf-o" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'Presentation'" class="fa fa-file-powerpoint-o" ng-class="{ semitransparent : media.disabled == 1 }"></i>
+	                        		<i ng-if="media.type == 'Archive'" class="fa fa-file-archive-o" ng-class="{ semitransparent : media.disabled == 1 }"></i>
 	                        		<br>
-	                        		<div ng-class="{semitransparent : media.disabled}" class="file-title" ng-bind="media.title"></div>
+	                        		<div ng-class="{ semitransparent : media.disabled == 1 }" class="file-title" ng-bind="media.title"></div>
 	                        	</div>
 	                        <!-- </div> -->
 	                    </li>
@@ -114,6 +105,11 @@
                     </div>
                 </div>
             </div><!-- col -->
+            <div class="col-md-12 align-center" ng-show="loading">
+            	<img src="/img/loading.gif">
+            	<br>
+            	<br>
+            </div>
         </div><!-- row -->
     </div><!-- app -->
 @section('scripts3')
@@ -122,60 +118,79 @@
 		var app = angular.module('app', ['angularUtils.directives.dirPagination']);
 		
 		function MediaController($scope, $http) {
-		
-			<?php
-				/*
-				if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $id = 0;
-				else $id = Auth::user()->id;
-				*/
-				$id = Auth::user()->id;
-			?>
 			
-			$http.get('/api/images-by-user/{{ $id }}').success(function(media) {
-	
-				$scope.mediaList = media;
-				
-				// insert image
-				$scope.chooseImage = function() {
-					$('.mce-combobox.mce-last.mce-abs-layout-item .mce-textbox').attr('value', '/uploads/' + shownMedia.url);
-				}
-	
-				// hide if object empty
-				$scope.val = "";
-				
-				// download file
-				$scope.download = function(url) {
-					window.location.href = '/uploads/' + url;
-				}
-				
-				@include('_helpers.bulk_action_checkboxes')
-				
-			  var shownMedia; //Set you default media
+			@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+				$scope.selectedCollection = 'images-by-user/0';
+			@else
+				$scope.selectedCollection = 'images-by-user/{{ Auth::user()->id }}';
+			@endif
 			
-			  $scope.selectMedia = function(media) {
-			    shownMedia = media; //on click, set the new media as selected media
-			  }
+			// get images
+			$scope.getImages = function(object) {
+				$scope.loading = true;
+				console.log($scope.loading);
+				$http.get('/api/' + $scope.selectedCollection).success(function(media) {
+					$scope.mediaList = media;
+					$scope.loading = false;
+					console.log($scope.loading);
+				});
+			};
+			$scope.getImages();
+			$scope.changeCollection = function() {
+				$scope.getImages();
+			};
+
+			// insert image
+			$scope.chooseImage = function() {
+		        if (image_id == undefined) {
+		        	var destination = ".mce-combobox.mce-last.mce-abs-layout-item input.mce-textbox.mce-placeholder";
+		        }
+		        else {
+		        	var destination = $('input[name="images[' + image_id + '][path]"]');
+		        }
+				$(destination).attr('value', '/uploads/' + shownMedia.url);
+                if (image_id != undefined) {
+                	var parent = $(destination).parents('.list-group-item');
+                	$('.swappable', parent).html('<img src="/uploads/' + shownMedia.url + '" class="thumb-md">');
+                }
+			};
+
+			// hide if object empty
+			$scope.val = "";
 			
-			  $scope.canShow = function(media) {
-			    return angular.equals(shownMedia, media); //Check if this is the displayed media
-			  }
-				
-				$scope.currentPage = 1;
-				$scope.pageSize = 20;
-				$scope.meals = [];
-				
-			});
+			// download file
+			$scope.download = function(url) {
+				window.location.href = '/uploads/' + url;
+			};
 			
+			@include('_helpers.bulk_action_checkboxes')
+
+			var shownMedia;
+			//Set you default media
+			
+			$scope.selectMedia = function(media) {
+				shownMedia = media;
+				//on click, set the new media as selected media
+			}
+			
+			$scope.canShow = function(media) {
+				return angular.equals(shownMedia, media);
+				//Check if this is the displayed media
+			}
+				
+			$scope.currentPage = 1;
+			$scope.pageSize = 20;
+							
 			$scope.pageChangeHandler = function(num) {
 				
 			};
 			
-		}
+		};
 		
 		function OtherController($scope) {
 			$scope.pageChangeHandler = function(num) {
 			};
-		}
+		};
 	
 	</script>
 @stop
