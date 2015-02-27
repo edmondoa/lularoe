@@ -209,7 +209,7 @@ class InventoryController extends \BaseController {
 
 		if (!$cardauth->error) return View::make('inventory.validpurchase');
 		else {
-				//return View::make('inventory.invalidpurchase');
+			return View::make('inventory.invalidpurchase');
 		}
 	}
 

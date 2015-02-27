@@ -21,6 +21,7 @@
 		'preregistration_fee' => 2000.00,
 		'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
 
+		'customer_service'=>'951-737-7875',
 		'company_logo' => '/img/llr-logo.png',
 		'company_logo_minimal' => '/img/llr-logo-minimal.png',
 		'preregistration_fee' => 2000.00,

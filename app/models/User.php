@@ -30,6 +30,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	// Don't forget to fill this array
 	protected $fillable = [
 		'sponsor_id',
+		'original_sponsor_id',
 		'email',
 		'password',
 		'first_name',
@@ -48,6 +49,31 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;
 
+	##############################################################################################
+	# append custom Attribs
+	##############################################################################################
+	
+	protected $appends = [
+		'descendant_count',
+		'front_line_count',
+		'personally_sponsored_count',
+		'rank_name',
+		'rank_id',
+		'role_name',
+		'new_record',
+		'formatted_phone',
+		//'volume',
+		//'account_balance',
+		'public_gender',
+		'public_dob',
+		'full_name',
+		'public_email',
+		'formatted_created_at',
+		'public_phone', 
+		'level',
+		//'public_billing_address',
+		//'public_shipping_address'
+	];
 	##############################################################################################
 	# Relationships
 	##############################################################################################
@@ -69,6 +95,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_descendants')->withPivot('level');
 	}
 
+	public function descendants_sm() {
+		return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->select(['users.id'])->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_descendants_sm')->withPivot('level');
+	}
+
 	public function ancestors() {
 		return $this -> belongsToMany('User', 'levels', 'user_id','ancestor_id')->orderBy('level','desc')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_ancestors')->whereNotNull('sponsor_id')->withPivot('level');
 	}
@@ -81,6 +111,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this -> hasMany('User', 'sponsor_id', 'id');
 	}
 
+	public function personally_sponsored() {
+		return $this -> hasMany('User', 'original_sponsor_id', 'id');
+	}
+
 	public function role() {
 		return $this->belongsTo('Role');
 	}
@@ -89,8 +123,16 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsToMany('Product','plans');
 	}
 	
-	public function payments() {
-		return $this->hasMany('Payment');
+	public function orders() {
+		return $this->hasMany('Order');
+	}
+	
+	public function stats() {
+		return $this->hasMany('Userstat');
+	}
+	
+	public function stats_to_date() {
+		return $this->hasMany('Userstat')->where('commission_period',date('Y-m-00'))->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_stats')->first();
 	}
 	
 	public function userSite() {
@@ -114,6 +156,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public function frontlineCountRelation()
 	{
 		return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_frontline_count')->first();
+	}
+
+	public function personallySponsoredCountRelation()
+	{
+		return $this->personally_sponsored()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_personally_sponsored_count')->first();
 	}
 
 	public function orgVolumeRelation()
@@ -143,6 +190,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	
 	public function getFrontLineCountAttribute() {
 		return (int) (isset($this->frontlineCountRelation()->count))?$this->frontlineCountRelation()->count:0;
+	}
+
+	public function getPersonallySponsoredCountAttribute() {
+		return (int) (isset($this->personallySponsoredCountRelation()->count))?$this->personallySponsoredCountRelation()->count:0;
 	}
 
 
@@ -182,44 +233,27 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			}
 		}
 	}
-
-	// public function getPublicBillingAddressAttribute() {
-		// if (isset($this->addresses)) {
-			// foreach ($this->addresses as $address) {
-				// if ($address->label == 'Billing') {
-					// if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $address;
-					// return ($this->hide_billing_address != true)?$address:'';
-				// }
-			// }
-		// }
-	// }
-// 	
-	// public function getPublicShippingAddressAttribute() {
-		// if (isset($this->addresses)) {
-			// foreach ($this->addresses as $address) {
-				// if ($address->label == 'Billing') {
-					// if ($this->id == Auth::user()->id || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9) return $address;
-					// return ($this->hide_shipping_address != true)?$address:'';
-				// }
-			// }
-		// }
-	// }
 	
 	public function getDescendantCountAttribute() {
 		return (int) (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
 	}
 
-
-	public function getAccountBalanceAttribute()
+/*	
+public function getAccountBalanceAttribute()
 	{
-	    return (double) $this->payments()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_balance')->sum('amount');    
+	    return (double) $this->orders()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_balance')->sum('total_price');    
+	}
+
+	public function getPVAttribute()
+	{
+	    return (double) $this->orders()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_balance')->sum('total_points');    
 	}
 
 	public function getVolumeAttribute() {
 		return false;
 		return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_volume')->volume:0;
 	}
-
+*/	
 	public function getRankNameAttribute() {
 		if(isset($this->currentRank()->name))
 		{
@@ -271,12 +305,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         $this->attributes['phone'] = preg_replace('/\D+/', '', $value);
     }
 
-
-	##############################################################################################
-	# append custom Attribs
-	##############################################################################################
-	
-	protected $appends = array('descendant_count','front_line_count','rank_name', 'rank_id', 'role_name', 'new_record', 'formatted_phone','volume','account_balance', 'public_gender', 'public_dob', 'full_name', 'public_email', 'formatted_created_at', 'public_phone'/*, 'public_billing_address', 'public_shipping_address'*/);
+	public function getLevelAttribute()
+	{
+		return (isset($this->pivot->level))?$this->pivot->level:null;
+	}
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -350,6 +382,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 				'user_'.$this->id.'_rank2',
 				'user_'.$this->id.'_desc_count',
 				'user_'.$this->id.'_frontline_count',
+				'user_'.$this->id.'_personally_sponsored_count',
 				'user_'.$this->id.'_org_volume',
 				'user_'.$this->id.'_balance',
 				'user_'.$this->id.'_volume',
