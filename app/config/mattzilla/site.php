@@ -4,7 +4,7 @@
             'contact_email' => 'mfrederico@gmail.com',
 			'mwl_api'       => 'http://mwl.controlpad.com:8080/cms/',
 			'mwl_db'        => 'llr',
-			'mwl_username' 	=> 'admin',
+			'mwl_username' 	=> '0',
 			'mwl_password'	=> 'CY9rzUYh03PK3k6DJie09g==',
 			'admin_uid'     => 0,
             'contact_first_name' => 'Matt',

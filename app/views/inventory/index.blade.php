@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'inventories/checkout', 'method' => 'POST','name'=>'inven')) }}
+    {{ Form::open(array('url' => 'inv/checkout', 'method' => 'POST','name'=>'inven')) }}
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
                 <div class="col-md-8">

@@ -213,7 +213,7 @@ try {
             $http.post('/llrapi/v1/reorder/',$scope.orders)
                 .success(function(data, status,headers,config){
                     console.log(data.message);
-					$window.location.href = "/inventories/checkout";
+					$window.location.href = "/inv/checkout";
                 })
                 .error(function(data, status, headers, config){
                     console.log(data.message);
