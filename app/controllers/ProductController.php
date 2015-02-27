@@ -1,6 +1,6 @@
 <?php
 
-class ProductController extends \BaseController {
+class productController extends \BaseController {
 
 	/**
 	 * Display a listing of products
@@ -13,6 +13,19 @@ class ProductController extends \BaseController {
 		$categories = ProductCategory::all();
 		$tags = ProductTag::all();
 		return View::make('product.index', compact('products', 'categories', 'tags'));
+	}
+	
+	/**
+	 * Display a listing of public products
+	 *
+	 * @return Response
+	 */
+	public function publicIndex()
+	{
+		$products = Product::all();
+		$categories = ProductCategory::all();
+		$tags = ProductTag::all();
+		return View::make('product.public_index', compact('products', 'categories', 'tags'));
 	}
 
 	/**
@@ -45,18 +58,24 @@ class ProductController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
-		// process image
-		if ($data['image'] != '' || $data['image_url'] != '') {
-			if ($data['image_url'] == '') {
-				include app_path() . '/helpers/processMedia.php';
-				if (isset($data['url'])) $data['image'] = $data['url'];
-			}
-			else $data['image'] = $data['image_url'];
-		}
-		else unset($data['image']);
-
 		$product = Product::create($data);
-		
+
+		// store product images
+		if (isset($data['images'])) {
+			foreach($data['images'] as $key => $image) {
+				$image['featured'] = isset($image['featured']) ? 1 : 0;
+				$image['path'] = explode('/uploads/', $image['path']);
+				$image['path'] = $image['path'][1];
+				$media = Media::where('url', $image['path'])->get()->first();
+				$attachment = Attachment::create([
+					'attachable_type' => 'Product',
+					'attachable_id' => $product->id,
+					'media_id' => $media->id,
+					'featured' => $image['featured'],
+				]);
+			}
+		}
+
 		// store tags
 		if (isset($data['tag_names'])) {
 			foreach ($data['tag_names'] as $tag_name) {
@@ -81,9 +100,52 @@ class ProductController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$product = Product::findOrFail($id);
 
-		return View::make('product.show', compact('product'));
+		// get product
+		$product = Product::findOrFail($id);
+		
+		// get product images
+		$attachment_images = [];
+		$attachments = Attachment::where('attachable_type', 'Product')->where('attachable_id', $product->id)->get();
+		foreach ($attachments as $attachment) {
+			$image = Media::find($attachment->media_id);
+			// die($attachment->media_id);
+			if ($attachment->featured == 1) $product->featured_image = $image;
+			$image_sm = explode('.', $image->url);
+			if (isset($image_sm[1])) $image_sm = $image_sm[0] . '-sm.' . $image_sm[1];
+			else $image_sm = '';
+			$attachment_images[] = $image_sm;
+		}
+		
+		// get product tags
+		$tags = Product::find($id)->tags;
+		
+		// determine whether to show the public or back office view if an extra parameter has been concatenated to $id
+		if (strpos($id,'-') !== false) {
+			$string = explode('-', $id);
+			$id = $string[0];
+			$public = $string[1];
+		}
+		if (isset($public)) $view = 'product.public_show';
+		else $view = 'product.show';
+		
+		// get party organizer if applicable
+		if (Session::get('party_id') != null) {
+			$organizer = User::find(Session::get('organizer_id'));
+		}
+		
+		return View::make($view, compact('product', 'attachment_images', 'tags', 'organizer'));
+	}
+
+	/**
+	 * Display the public view for the specified product.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function publicShow($id)
+	{
+		return $this->show($id . '-' . 'public');
 	}
 
 	/**
@@ -102,7 +164,23 @@ class ProductController extends \BaseController {
 			$selectCategories[$productCategory->id] = /*$tab . */$productCategory->name;
 		}
 		$tags = Product::find($id)->tags;
-		return View::make('product.edit', compact('product', 'selectCategories', 'tags'));
+		
+		// get product images
+		$attachment_images = [];
+		$image_attachments = Attachment::where('attachable_type', 'Product')->where('attachable_id', $product->id)->orderBy('id', 'desc')->get();
+		foreach ($image_attachments as $image_attachment) {
+			$media = Media::find($image_attachment->media_id);
+			$media->featured = $image_attachment->featured;
+			$media->attachment_id = $image_attachment->id;
+			$attachment_images[] = $media;
+		}
+		if (count($attachment_images) > 0) {
+			$attachment_images_count = end($attachment_images);
+			$attachment_images_count = $attachment_images_count->id;
+		}
+		else $attachment_images_count = 0;
+
+		return View::make('product.edit', compact('product', 'selectCategories', 'tags', 'attachment_images', 'attachment_images_count'));
 	}
 
 	/**
@@ -122,16 +200,6 @@ class ProductController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
-		// process image
-		if ($data['image'] != '' || $data['image_url'] != '') {
-			if ($data['image_url'] == '') {
-				include app_path() . '/helpers/processMedia.php';
-				if (isset($data['url'])) $data['image'] = $data['url'];
-			}
-			else $data['image'] = $data['image_url'];
-		}
-		else unset($data['image']);
-
 		// store tags
 		if (isset($data['tag_names'])) {
 			foreach ($data['tag_names'] as $tag_name) {
@@ -140,6 +208,36 @@ class ProductController extends \BaseController {
 				$productTag['taggable_id'] = $product->id;
 				$productTag['product_category_id'] = $data['category_id'];
 				ProductTag::create($productTag);
+			}
+		}
+
+		// store/update product images
+		if (isset($data['images'])) {
+			foreach($data['images'] as $key => $image) {
+				
+				// new images
+				if (isset($image['new_attachment_image'])) {
+					$image['featured'] = isset($image['featured']) ? 1 : 0;
+					$image['path'] = explode('/uploads/', $image['path']);
+					$image['path'] = $image['path'][1];
+					$media = Media::where('url', $image['path'])->get()->first();
+					$attachment = Attachment::create([
+						'attachable_type' => 'Product',
+						'attachable_id' => $product->id,
+						'media_id' => $media->id,
+						'featured' => $image['featured'],
+					]);
+				}
+				
+				// update existing images
+				else {
+					$image['featured'] = isset($image['featured']) ? 1 : 0;
+					$attachment = Attachment::find($image['attachment_id']);
+					$attachment->update([
+						'featured' => $image['featured'],
+					]);
+				}
+				
 			}
 		}
 

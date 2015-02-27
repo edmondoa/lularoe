@@ -11,6 +11,12 @@ function format_currency($unformatted_number,$number_digits = 6) {
 	return "$".str_replace(" ", "&nbsp;", str_pad(number_format($unformatted_number,2),$number_digits," ",STR_PAD_LEFT));
 }
 
+// another way to format currency
+function money($amount, $symbol = '$')
+{
+	return $symbol . money_format('%i', $amount);
+}
+
 // format phone numbers (remove parenthases, spaces, and hyphens)
 function formatPhone($phone) {
 	return preg_replace('/\D+/', '', $phone);

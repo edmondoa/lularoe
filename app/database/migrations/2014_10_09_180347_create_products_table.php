@@ -18,26 +18,6 @@ class CreateProductsTable extends Migration
 			$table->boolean('disabled');
 			$table->timestamps();
 		});
-		Product::create([
-			'name'=>'Ulmtd Talk & Text 1G Data',
-			'price'=>40.00,
-			'created_at'=>date('Y-m-d H:i:s'),
-			'updated_at'=> date('Y-m-d H:i:s')
-		]);
-
-		Product::create([
-			'name'=>'Ulmtd Talk & Text 3G Data',
-			'price'=>50.00,
-			'created_at'=>date('Y-m-d H:i:s'),
-			'updated_at'=> date('Y-m-d H:i:s')
-		]);
-
-		Product::create([
-			'name'=>'Ulmtd Talk & Text 5G Data',
-			'price'=>60.00,
-			'created_at'=>date('Y-m-d H:i:s'),
-			'updated_at'=> date('Y-m-d H:i:s')
-		]);
 	}
 
 	public function down()

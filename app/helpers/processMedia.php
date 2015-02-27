@@ -21,13 +21,6 @@
 
 				$path = date('Y') . '/' . date('m') . '/';
                 $fullPath = public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/';
-				if (!file_exists($fullPath)) {
-					@mkdir(public_path().'/uploads/');
-					@mkdir(public_path().'/uploads/'. date('Y'));
-					@mkdir($fullPath);
-					@mkdir($fullPath.'/thumbs');
-				}
-
                 $extension = $file->getClientOriginalExtension();
 
 				// generate media name and check for existing
@@ -68,7 +61,7 @@
 					$img = Image::make(public_path() . '/uploads/' . $path . $filename . '.' . $extension)
 	                // now you are able to resize the instance
 	                ->save(public_path() . '/uploads/' . $path . $filename . '.' . $extension)
-					->fit(200, 150)
+					->fit(200, 200)
 	                ->save(public_path() . '/uploads/' . $path . $filename . '-sm' . '.' . $extension)
 					->destroy();
 					// unlink(public_path() . '/uploads/' . $path . $filename);

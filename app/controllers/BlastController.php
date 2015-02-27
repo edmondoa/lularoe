@@ -67,7 +67,7 @@ class BlastController extends \BaseController {
 			//echo"<pre>"; print_r($user->toArray()); echo"</pre>";
 			//continue;
 			/*
-			if(!LLR::check_for_mobile($user->phone))
+			if(!IAP::check_for_mobile($user->phone))
 			{
 				if(empty($user->phone_sms))
 				{
@@ -133,6 +133,36 @@ class BlastController extends \BaseController {
 		return View::make('blasts.createmail', compact('users', 'leads'));
 	}
 
+	public function CreatePartyInvite()
+	{
+		$parties = Party::where('organizer_id', Auth::user()->id)->where('date_start', '>', time())->where('disabled', 0)->get();
+		$data = Input::all();
+		if (isset($data['leads'])) {
+			$users = Lead::whereIn('id', Input::get('user_ids'))->get();
+			$leads = 1;
+		}
+		else {
+			$users = User::whereIn('id', Input::get('user_ids'))->where('block_email', '!=', true)->get();
+			$leads = 0;
+		}
+		return View::make('blasts.create-party-invite', compact('users', 'parties', 'leads'));
+	}
+
+	public function CreatePartyHostInvite()
+	{
+		$parties = Party::where('organizer_id', Auth::user()->id)->where('date_start', '>', time())->where('disabled', 0)->get();
+		$data = Input::all();
+		if (isset($data['leads'])) {
+			$user = Lead::whereIn('id', Input::get('user_ids'))->get()->first();
+			$leads = 1;
+		}
+		else {
+			$user = User::whereIn('id', Input::get('user_ids'))->where('block_email', '!=', true)->get()->first();
+			$leads = 0;
+		}
+		return View::make('blasts.create-party-host-invite', compact('user', 'parties', 'leads'));
+	}
+
 	/**
 	 * Store a newly created resource in storage.
 	 * POST /blast
@@ -184,6 +214,115 @@ class BlastController extends \BaseController {
 			else return Redirect::route('dashboard')->with('message','The email message was sent to '. $count .' users');
 		}
 		//return Redirect::back()->with('message','The email message was sent successfully to '. $count .' users');
+
+	}
+
+	/**
+	 * Store a newly created party invite in storage.
+	 * POST /blast
+	 *
+	 * @return Response
+	 */
+	public function StorePartyInvites()
+	{
+		$data = Input::all();
+		$rules = [
+			'user_ids' => 'required',
+			'body' => 'required',
+			// 'subject_line' => 'required',
+		];
+		$validator = Validator::make($data,$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		// data
+		$data['subject_line'] = 'Invitation';
+		$data['party'] = Party::find($data['party_id']);
+		$data['address'] = Party::find($data['party_id'])->address;
+
+		if (isset($data['leads']) && $data['leads'] == 1) {
+			$users = Lead::whereIn('id', $data['user_ids'])->get();
+		}
+		else $users = User::whereIn('id', $data['user_ids'])->get();
+
+		$count = 0;
+		foreach($users as $user)
+		{
+			$data['user'] = $user->toArray();
+			$data['body'] = $data['body'];
+
+			Mail::send('emails.party-invite', $data, function($body) use($user,$data)
+			{
+				$body->to($user->email, $user->first_name.' '.$user->last_name)->subject($data['subject_line']);
+				$body->from(Auth::user()->email, Auth::user()->first_name . ' ' . Auth::user()->last_name);
+			});
+			$count ++;
+		}
+		if (count(Mail::failures()) > 0)
+		{
+			//errors ocurred
+			return Redirect::route('leads')->with('message','Errors occurred while sending. Please contact a system administrator for further details.');
+		}
+		else
+		{
+			if ($count == 1) return Redirect::route('leads')->with('message','The invitation was sent.');
+			else return Redirect::route('leads')->with('message','The invitation was sent to '. $count .' recipients');
+		}
+
+	}
+
+	/**
+	 * Store a newly created party host invite in storage.
+	 * POST /blast
+	 *
+	 * @return Response
+	 */
+	public function StorePartyHostInvite()
+	{
+		$data = Input::all();
+		$rules = [
+			'user_id' => 'required',
+			// 'body' => 'required',
+			// 'subject_line' => 'required',
+		];
+		$validator = Validator::make($data,$rules);
+
+		if ($validator->fails())
+		{
+			return Redirect::back()->withErrors($validator)->withInput();
+		}
+
+		// data
+		$data['subject_line'] = 'Invitation';
+		$data['party'] = Party::find($data['party_id']);
+		$data['address'] = Party::find($data['party_id'])->address;
+
+		if (isset($data['leads']) && $data['leads'] == 1) {
+			$user = Lead::find($data['user_id']);
+		}
+		else $user = User::find($data['user_id']);
+
+		$data['user'] = $user->toArray();
+		$data['body'] = $data['body'];
+
+		Mail::send('emails.party-host-invite', $data, function($body) use($user,$data)
+		{
+			$body->to($user->email, $user->first_name.' '.$user->last_name)->subject($data['subject_line']);
+			$body->from(Auth::user()->email, Auth::user()->first_name . ' ' . Auth::user()->last_name);
+		});
+
+		if (count(Mail::failures()) > 0)
+		{
+			//errors ocurred
+			return Redirect::route('leads')->with('message','Errors occurred while sending. Please contact a system administrator for further details.');
+		}
+		else
+		{
+			return Redirect::route('leads')->with('message','The invitation was sent to ' . $user->first_name . ' ' . $user->last_name . '.');
+		}
 
 	}
 

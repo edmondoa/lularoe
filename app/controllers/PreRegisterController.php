@@ -141,7 +141,7 @@ class PreRegisterController extends \BaseController {
 				'city'=>$data['city'],
 				'state'=>$data['state'],
 				'zip'=>$data['zip'],
-
+				'label'=>'Billing',
 			];
 			$address = Address::create($address);
 			$user->addresses()->save($address);

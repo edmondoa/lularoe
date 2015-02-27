@@ -1,16 +1,12 @@
 <?php
 
-class AddressController extends \BaseController {
+class addressController extends \BaseController {
 
 	/**
 	 * Data only
 	 */
-    public function getAllAddresses(){
-	    
-		return [
-            'count' => Address::count(),
-            'data' => Address::all()
-        ];
+	public function getAllRecords(){
+		return Address::all();
 	}
 
 	/**
@@ -20,9 +16,10 @@ class AddressController extends \BaseController {
 	 */
 	public function index()
 	{
-		$addresses = Address::all();
-
-		return View::make('address.index', compact('addresses'));
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			$addresses = Address::all();
+			return View::make('address.index', compact('addresses'));
+		}
 	}
 
 	/**
@@ -49,9 +46,13 @@ class AddressController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+		if (Auth::user()->hasRole(['Rep'])) {
+			$data['addressable_id'] = Auth::user()->id;
+			$data['addressable_type'] = 'User';
+		}
 		Address::create($data);
-
-		return Redirect::route('addresses.index')->with('message', 'Address created.');
+		if (Auth::user()->hasRole(['Rep'])) return Redirect::route('settings');
+		else return Redirect::back()->with('message', 'Address created.');
 	}
 
 	/**
@@ -63,8 +64,9 @@ class AddressController extends \BaseController {
 	public function show($id)
 	{
 		$address = Address::findOrFail($id);
-
-		return View::make('address.show', compact('address'));
+		if (Auth::user()->hasRole(['Superadmin', 'Admin']) || $address->addressable_id == Auth::user()->id) {
+			return View::make('address.show', compact('address'));
+		}
 	}
 
 	/**
@@ -76,7 +78,11 @@ class AddressController extends \BaseController {
 	public function edit($id)
 	{
 		$address = Address::find($id);
-		if (Auth::user()->hasRole(['Superadmin', 'Admin']) || $address->addressable_id == Auth::user()->id) {
+		if ($address->addressable_type == 'Party') {
+			$party = Party::where('id', $address->addressable_id)->get()->first();
+			if (isset($party) && $party->organizer_id == Auth::user()->id) $party_organizer = true;
+		};
+		if (Auth::user()->hasRole(['Superadmin', 'Admin']) || $address->addressable_id == Auth::user()->id || isset($party_organizer)) {
 			return View::make('address.edit', compact('address'));
 		}
 	}
@@ -111,9 +117,12 @@ class AddressController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		Address::destroy($id);
-
-		return Redirect::route('addresses.index')->with('message', 'Address deleted.');
+		$address = Address::find($id);
+		if (Auth::user()->hasRole(['Superadmin', 'Admin']) || $address->addressable_id = Auth::user()->id) {
+			Address::destroy($id);
+			if (Auth::user()->hasRole(['Rep'])) return Redirect::route('settings')->with('message', 'Address deleted.');
+			else return Redirect::route('addresses.index')->with('message', 'Address deleted.');
+		}
 	}
 	
 	/**

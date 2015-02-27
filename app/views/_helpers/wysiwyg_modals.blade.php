@@ -60,13 +60,22 @@
 	        var form_data = new FormData();
 	        form_data.append('media', file);
 	        form_data.append('ajax', 1);
+	        if (attachment_images_count == undefined) {
+	        	var destination = ".mce-combobox.mce-last.mce-abs-layout-item input.mce-textbox.mce-placeholder";
+	        }
+	        else {
+	        	var destination = $('input[name="images[' + attachment_images_count + '][path]"]');
+	        }
 	        $.ajax({
 	            type: "post",
 	            url: "/upload-media",
 	            data: form_data,
 	            success: function(response) {
-	            	console.log(response);
-	                $(".mce-combobox.mce-last.mce-abs-layout-item input.mce-textbox.mce-placeholder").attr("value", response.url);
+	                $(destination).attr("value", response.url);
+	                if (attachment_images_count != undefined) {
+	                	var parent = $(destination).parents('.list-group-item');
+	                	$('.swappable', parent).html('<img src="' + response.url + '" class="thumb-md">');
+	                }
 	            },
 	            cache: false,
 	            contentType: false,

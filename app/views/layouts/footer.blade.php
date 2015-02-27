@@ -29,38 +29,17 @@
 		@if (!Session::has('timezone'))
 			<!-- get timezone -->
 			<script>
-				console.log('Running script');
-			    // if (localStorage['timezone'] == undefined) {
-			        // get timezone
-			        var tz = jstz.determine();
-			        console.log('var tz = ' + tz);
-			        // Determines the time zone of the browser client
-			        var timezone = tz.name();
-			        console.log('var timezone = ' + timezone);
-
-			        //'Asia/Kolhata' for Indian Time.
-			        $.post('/set-timezone', { timezone : timezone }, function(result) {
-			        	//alert('Result!');
-			        	console.log('result: ' + result);
-			        });
-			        console.log('Ran AJAX');
-
-			    // }
+		        // get timezone
+		        var tz = jstz.determine();
+		        // Determines the time zone of the browser client
+		        var timezone = tz.name();
+		        //'Asia/Kolhata' for Indian Time.
+		        $.post('/set-timezone', { timezone : timezone }, function(result) {
+		        	//alert('Result!');
+		        });
 			</script>
 		@endif
-		<!-- ShopSocially plugin -->
-		<script type='text/javascript'>
-		    SSConfig = {
-			partner_id: 'c951217223d677d6b72f8f839913a3b6' /*REQUIRED: Also known as Account ID */
-		    };
-		    _ssq = (typeof _ssq === 'undefined')?[]:_ssq;
-		    _ssq.push(['init', SSConfig]);
-		    (function() {
-			var ss = document.createElement('script');ss.src = '//shopsocially.com/js/all.js';
-			ss.type = 'text/javascript';ss.async = 'true';
-			var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ss, s);
-		    })();
-		</script>		@section('scripts1')
+		@section('scripts1')
 		@show
 		@section('scripts')
 		@show

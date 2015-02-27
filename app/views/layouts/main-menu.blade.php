@@ -112,6 +112,16 @@
 						<i class="fa fa-file"></i> <span class="text">Pages</span>
  					</a>
  				@endif
+ 				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Rep'])))
+ 					<a href="javascript:void(0)" data-href="/parties" class='list-group-item' data-toggle="popover" data-content="
+ 						<a target='_blank' href='/public-parties'><i class='fa fa-globe'></i> Public Parties Page</a>
+ 						<a href='/parties'><i class='fa fa-users'></i> Upcoming Parties</a>
+ 						<a href='/past-parties'><i class='fa fa-reply'></i> Past Parties</a>
+ 						<a href='/parties/create'><i class='fa fa-plus'></i> New Party</a>
+ 					">
+ 						<i class="fa fa-users"></i> <span class="text">Parties</span>
+ 					</a>
+ 				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
  					<a href="javascript:void(0)" data-href="/posts" class='list-group-item' data-toggle="popover" data-content="
  						<a target='_blank' href='/public-posts'><i class='fa fa-globe'></i> Public Announcements Page</a>
