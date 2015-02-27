@@ -208,7 +208,9 @@ class InventoryController extends \BaseController {
 		$cardauth	= json_decode(App::make('ExternalAuthController')->purchase($authinfo->mwl)->getContent());
 
 		if (!$cardauth->error) return View::make('inventory.validpurchase');
-		else return View::make('inventory.invalidpurchase');
+		else {
+				//return View::make('inventory.invalidpurchase');
+		}
 	}
 
     
