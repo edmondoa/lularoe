@@ -54,10 +54,16 @@ class userController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
+
+		// Need to pass plain pass to MWL auth
+		$plainpass = $data['password'];
+
 		$data['password'] = Hash::make($data['password']);
 		$data['email'] = strtolower($data['email']);
 		$user = User::create($data);
 		
+		// Update MWL data
+		App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
 		// store address
 	    $address = Address::create([
 	    	'address'=>$data['address_1'],
@@ -235,6 +241,11 @@ class userController extends \BaseController {
 				return Redirect::back()->withErrors($validator)->withInput();
 			}
 
+			// Update MWL data
+			// Need to pass plain pass to MWL auth
+			$plainpass = $data['password'];
+			App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
+
 			// before save we need to control a couple of things
 			// second, if the password was submitted blank we need to make sure it doesn't get saved
 			if(empty($data['password']))
@@ -252,6 +263,8 @@ class userController extends \BaseController {
 				Event::fire('sponsor.update', array('rep_id' => $user->id));
 			}
 			Event::fire('rep.update', array('rep_id' => $user->id));
+
+
 			return Redirect::route('users.show', $id)->with('message', 'Updates saved.');
 		}
 	}
