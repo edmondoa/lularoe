@@ -15,6 +15,9 @@ class ExternalAuthController extends \BaseController {
 	public 	$logdata = false;
 
 
+	public function rmInventory($key) {
+
+	}
 
 
 	public function getInventory($key = 0, $location='')
@@ -125,7 +128,7 @@ class ExternalAuthController extends \BaseController {
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
 				'price'			=>$item['Item']['Price'],
-				'image'			=>'http://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
+				'image'			=>'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
 				
 				'quantities'	=> array()); 
 			}
