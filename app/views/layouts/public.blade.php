@@ -55,7 +55,7 @@
         @include('_helpers/analytics')
         <div id="header-space"></div>
 
-        <div id="header-outer"  data-cart="false" data-transparency-option="0" data-shrink-num="6" data-full-width="false" data-using-secondary="0" data-using-logo="1" data-logo-height="" data-padding="28" data-header-resize="1">
+        <div id="header-outer" data-cart="false" data-transparency-option="0" data-shrink-num="6" data-full-width="false" data-using-secondary="0" data-using-logo="1" data-logo-height="" data-padding="28" data-header-resize="1">
 
             <div id="search-outer" class="nectar">
 
@@ -88,13 +88,13 @@
 
                     <div class="row">
 
-                        <div class="col span_3">
+                        <div class="col span_3" id="logo-container">
                         	
                             <a id="logo" href="//{{ Config::get('site.domain') }}" > <img class=" dark-version" alt="{{ Config::get('site.company_name') }}" src="{{ Config::get('site.company_logo') }}" height="48" width="169" /> <!-- <div id="lets-talk">Let's Talk.</div> --></a>
 
                         </div><!--/span_3-->
 
-                        <div class="col span_9 col_last">
+                        <div class="col span_9 col_last" id="header-nav">
 
                             <a href="#mobilemenu" id="toggle-nav"><i class="icon-reorder"></i></a>
 
@@ -181,7 +181,8 @@
             </div>
 
         </div>
-
+@section('banner')
+@show
         <div id="ajax-loading-screen">
             <span class="loading-icon "> <span class="default-skin-loading-icon"></span> </span>
         </div>
