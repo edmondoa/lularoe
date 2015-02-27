@@ -53,7 +53,7 @@
                     </div>
                     <h3>Payment Information</h3>
                     <div class="well">
-						{{ Form::open(array('url' => 'inventories/purchase', 'method' => 'POST','name'=>'inven')) }}
+						{{ Form::open(array('url' => 'inv/purchase', 'method' => 'POST','name'=>'inven')) }}
                         <table class="table">
                             <tbody>
                                 <tr>

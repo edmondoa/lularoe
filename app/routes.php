@@ -189,10 +189,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         #Route::resource('inventories', 'InventoryController');
         Route::get('inventories/', 'InventoryController@index');
         Route::get('inv/checkout', 'InventoryController@checkout');
+        Route::post('inv/purchase', 'InventoryController@purchase');
         #Route::post('inventories/disable', 'InventoryController@disable');
         #Route::post('inventories/enable', 'InventoryController@enable');
         #Route::post('inventories/delete', 'InventoryController@delete');
-        Route::post('inventories/purchase', 'InventoryController@purchase');
+		Route::get('inventory/validpurchase', function () { return(View::make('inventory.validpurchase')); });
+        Route::get('inventory/invalidpurchase', function () { return(View::make('inventory.invalidpurchase')); });
         
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
