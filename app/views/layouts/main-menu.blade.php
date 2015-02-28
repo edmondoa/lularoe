@@ -93,14 +93,13 @@
                      ">
                          <i class="fa fa-list-ol"></i> <span class="text">Inventories</span>
                      </a>
-<!--
  				    <a href="javascript:void(0)" data-href="/sales" class='list-group-item' data-toggle="popover" data-content="
                          <a href='/sales'><i class='fa fa-check'></i> New Sale</a>
-                         <a href='/sales/ledger'><i class='fa fa-plus'></i> Previous Sales</a>
+<!--                         <a href='/sales/ledger'><i class='fa fa-plus'></i> Previous Sales</a> -->
                      ">
                          <i class="fa fa-bank"></i> <span class="text">Sales</span>
                      </a>
--->
+
  					<a href="javascript:void(0)" data-href="/opportunities" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/opportunities'><i class='fa fa-check'></i> All Opportunities</a>
  						@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
