@@ -93,6 +93,7 @@ try {
                             if(!size.value || size.value < 0) size.value = 0;
                             
                             $scope.orders.push({
+                                'id':n.id,
                                 'model':n.model,
                                 'itemnumber':n.itemnumber,
                                 'size':size.key,
@@ -207,6 +208,20 @@ try {
             $scope.tax = $total * 0.0825; // Get this from avalara?
             $scope.total = $scope.tax + $total;
             return $total;
+        };
+
+        $scope.doSale = function(){
+			if ($scope.orders.length > 0) 
+			{
+				$http.post('/llrapi/v1/reorder/',$scope.orders)
+					.success(function(data, status,headers,config){
+						console.log(data.message);
+						$window.location.href = "/inv/sales";
+					})
+					.error(function(data, status, headers, config){
+						console.log(data.message);
+					});
+			}
         };
         
         $scope.checkout = function(){

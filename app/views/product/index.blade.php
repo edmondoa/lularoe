@@ -139,7 +139,7 @@
 	                            
 					            <td>
 					                <a href="/products/@include('_helpers.product_id')">
-					                	<img class="thumb" src="/uploads/@include('_helpers.attachment_image_sm')">
+					                	<img class="thumb" src="@include('_helpers.attachment_image_sm')">
 					                </a>
 					            </td>
 								
