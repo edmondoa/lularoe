@@ -15,6 +15,17 @@ class ExternalAuthController extends \BaseController {
 	public 	$logdata = false;
 
 
+	// STUB for removing inventory
+	public function rmInventory($key) {
+		// Magic database voodoo
+        $mbr	= User::where('key', 'LIKE', $key.'|%')->first();
+		$data	= Input::all();
+		
+		if (isset($mbr->id))
+			return(Response::json(array('error'=>false,'message'=>'success!','member_id'=>$mbr->id),200));
+		else
+			return(Response::json(array('error'=>true,'message'=>'fail','member_id'=>null),200));
+	}
 
 
 	public function getInventory($key = 0, $location='')
@@ -125,8 +136,7 @@ class ExternalAuthController extends \BaseController {
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
 				'price'			=>$item['Item']['Price'],
-				'image'			=>'http://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
-				
+				'image'			=>'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
 				'quantities'	=> array()); 
 			}
 
@@ -664,6 +674,9 @@ class ExternalAuthController extends \BaseController {
 			$status = 'Cannot authorize';
 			$mbr->update(array('key'=>''));
 		}
+
+		// Set session key to null 
+		if (empty($sessionkey)) $sessionkey = null;
 		
         return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),200);
 
