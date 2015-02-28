@@ -58,6 +58,9 @@ class productController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+		// Also check if this user is superadmin just in case
+		$data['user_id'] = Input::get('user_id', Auth::user()->id);
+
 		$product = Product::create($data);
 
 		// store product images
