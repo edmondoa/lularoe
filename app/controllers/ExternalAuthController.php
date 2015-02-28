@@ -51,6 +51,50 @@ class ExternalAuthController extends \BaseController {
 
 		$server_output = '';
 
+		// Generates the list of items from the product table per user
+		if ($mbr->id > 0) {
+			$p = Product::where('user_id','=',$mbr->id)->get(array('name','quantity','make','model','rep_price','size','sku','image'));
+			$itemlist	= [];
+			$count		= 0;
+
+			foreach($p as $item) 
+			{
+				$quantity	= $item->quantity;
+				$model		= $item->name;
+				$image 		= (!empty($item->image)) ? $item->image : 'https://mylularoe.com/img/media/notfound.jpg';
+				$size		= $item->size;
+
+				// Initialize this set of item data
+				if (!isset($items[$model]))
+				{
+					$items[$model] = array(
+					'model'			=>$model,
+					'id'			=>$item->id,
+					'UPC'			=>$item->sku,
+					'SKU'			=>$item->sku,
+					'price'			=>$item->rep_price,
+					'image'			=>$image,
+					'quantities'	=> array()); 
+				}
+
+				// Set up the quantities of each size
+				if (!isset($items[$model]['quantities'][$size])) 
+				{
+					$items[$model]['quantities'][$size] = $quantity;
+				}			
+
+			}
+
+			// Reorder this with numerical indeces
+			foreach($items as $k=>$v)
+			{
+				$itemlist[$count++] = $v;
+			}
+
+			return(Response::json($itemlist,200));
+		}
+
+
 		// Simple caching - probably a better way to do this
 		@mkdir($this->mwl_cache);
 		$mwlcachefile = $this->mwl_cache.urlencode($location).'.json';
