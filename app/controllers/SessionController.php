@@ -52,6 +52,9 @@ class SessionController extends \BaseController {
 				return 'The back office is currently down for maintenance until Monday January 26th.';
 			}
 */			
+			$plainpass	= $input['password'];
+			$userid		= Auth::user()->id;
+			App::make('ExternalAuthController')->auth($userid, $plainpass);
 
 			return Redirect::intended('/dashboard');		
 		} 
