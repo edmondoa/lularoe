@@ -230,8 +230,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         #Route::resource('inventories', 'InventoryController');
         Route::get('inventories/', 'InventoryController@index');
         Route::get('inv/checkout', 'InventoryController@checkout');
+        Route::get('inv/sales', 'InventoryController@sales');
+
         Route::post('inv/purchase', 'InventoryController@purchase');
-        Route::post('inv/sale', 'InventoryController@sale');
         #Route::post('inventories/disable', 'InventoryController@disable');
         #Route::post('inventories/enable', 'InventoryController@enable');
         #Route::post('inventories/delete', 'InventoryController@delete');

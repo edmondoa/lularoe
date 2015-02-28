@@ -5,7 +5,7 @@
 	@list($key,$timeout) = explode('|',$user->key);
 ?>
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'sales/checkout', 'method' => 'POST','name'=>'inven')) }}
+    {{ Form::open(array('url' => 'inv/sales', 'method' => 'POST','name'=>'inven')) }}
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
                 <div class="col-md-4">
@@ -27,7 +27,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <button type="button" class="pull-right btn btn-sm btn-success" ng-click="checkout()">Checkout</button>
+                                        <button type="button" class="pull-right btn btn-sm btn-success" ng-click="doSale()">Checkout</button>
                                         <button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
                                     </td>
                                 </tr>
@@ -61,7 +61,6 @@
                                         </div>
                                         <div class="col-lg-8 col-md-8 col-sm-9 col-xs-9">
                                             <h4 class="media-heading"> @{{order.model}} - @{{order.size}}</h4>
-                                            <p class="">Some semblance of a description could go here</p>
                                             <div class="row">
                                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                                     <div class="input-group">
@@ -85,7 +84,7 @@
                 </div>
                 <div class="col-md-8">
                     <div class="clearfix">
-                        <h1 class="pull-left no-pull-xs">Current Inventory</h1>
+                        <h3 class="pull-left no-pull-xs">Current Inventory</h3>
                         <div class="input-group pull-right no-pull-xs width-xs">
                             <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
                             <span class="input-group-btn no-width">
@@ -127,9 +126,9 @@
                                                 <ul class="nav nav-pills">
                                                     <li ng-repeat="(key,size) in inventory.sizes">
                                                         <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
-                                                            <input ng-class="{disabled:!size.value}" class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
                                                         </a>
                                                         <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}}</span><span> - </span>
+                                                            <input ng-class="{disabled:!size.value}" class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
                                                             <span ng-if="size.value > 1" class="label label-info">@{{size.value}}</span>
                                                         </a>
                                                     </li>

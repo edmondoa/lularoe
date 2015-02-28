@@ -2,6 +2,11 @@
 
 class SaleController extends \BaseController {
 
+
+	public function chekcout() {
+		return View::make('inventory.checkout');
+	}
+
 	/**
 	 * Display a listing of sales
 	 *
