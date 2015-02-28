@@ -81,8 +81,9 @@ class ExternalAuthController extends \BaseController {
 			$server_output = curl_exec ($ch);
 
 			if ($errno = curl_errno($ch)) {
-				print json_encode(array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno));
-				return(false);
+				$result = array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
+				return(Response::json($result,200));
+				die();
 			}
 			curl_close ($ch);
 			file_put_contents($mwlcachefile, $server_output);
@@ -280,9 +281,9 @@ class ExternalAuthController extends \BaseController {
 }
 */
 
-	public function purchase($key = 0)
+	public function purchase($key = 0, $cart = '')
 	{
-		$cartdata = Input::get('cart');
+		$cartdata = Input::get('cart', $cart);
 
 		// Wish we could use sessions on all this
         $mbr = User::where('key', 'LIKE', $key.'|%')->first();
@@ -585,6 +586,13 @@ class ExternalAuthController extends \BaseController {
 			$response_obj->TransactionResponse->AuthAmount	= 0;
 		}
 
+		if (isset($response_obj->Error)) {
+			$response_obj->TransactionResponse->Result = 'Declined';
+			$response_obj->TransactionResponse->ResultCode	= $response_obj->Error->Code;
+			$response_obj->TransactionResponse->Status		= $response_obj->Error->Description;
+			$response_obj->TransactionResponse->AuthAmount	= 0;
+		}
+			
 		// Having to transform this since what is returned is not in a uniform format!!
 		// Bug Mike Carpenter about this .. :-)
 		if (isset($response_obj->Status) && $response_obj->Status == 'D') {
@@ -610,8 +618,8 @@ class ExternalAuthController extends \BaseController {
         return ($returndata);
 	}
 
-	public function auth($id) {
-		$pass	= trim(Input::get('pass'));
+	public function auth($id, $pass = '') {
+		$pass	= trim(Input::get('pass', $pass));
         $status = 'ERR';
         $error  = true;
 		$data   = [];

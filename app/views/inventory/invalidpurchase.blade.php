@@ -6,13 +6,10 @@
             <div class="row">
                 <div class="col-sm-6">
                     <h3>Your purhcase did not complete</h3>
-                    <div ng-if="isEmpty()">
-						<div class="well">
-							<div class="row">
-								<h4>Some error message here</h4>
-							</div>
-						</div>
-                    </div>
+					<div class="row">
+						<blockquote>{{ $cardauth->status; }}</blockquote>
+						<p>Click back to try again</p>
+					</div>
                 </div>
             </div>
     </div><!-- app -->
