@@ -42,7 +42,7 @@ class InventoryController extends \BaseController {
 	 */
 	public function create()
 	{
-		$inventories = Inventory::all();
+		$inventory = Inventory::all();
 
 		return View::make('inventory.create', compact('inventory'));
 	}
@@ -183,14 +183,14 @@ class InventoryController extends \BaseController {
 		$invitems	= Session::get('orderdata');
 
 		$user = Config::get('site.mwl_username');
-						//Config::get('site.mwl_password');
-		$pass = 'test'; // Must be plaintext in auth 
+		$pass = Config::get('site.mwl_password');
 
-		// MATT HACKERY!
+		// MATT HACKERY - Watch for changes in password on ZERO account!!
 		$oldInput = Input::all();
-		// Auth into the 0 mid
-		Input::replace(array('pass'=>$pass));
-		$authinfo = json_decode(App::make('ExternalAuthController')->auth('0')->getContent());
+		$data = App::make('ExternalAuthController')->auth($user, 'test')->getContent();
+
+		// $request	= Request::create('llrapi/v1/auth/0?pass=test','GET', array());
+		$authinfo	= json_decode($data);
 
 		$purchaseInfo = array(
 					'subtotal'		=>$subtotal,
@@ -204,13 +204,13 @@ class InventoryController extends \BaseController {
 					'cart'			=>json_encode($invitems)
 				);
 		
+		
 		Input::replace($purchaseInfo);
-		$cardauth	= json_decode(App::make('ExternalAuthController')->purchase($authinfo->mwl)->getContent());
+		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		$cardauth	= json_decode(Route::dispatch($request)->getContent());
 
-		if (!$cardauth->error) return View::make('inventory.validpurchase');
-		else {
-			return View::make('inventory.invalidpurchase');
-		}
+		if (!$cardauth->error) return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+		else return View::make('inventory.invalidpurchase',compact('cardauth'));
 	}
 
     
