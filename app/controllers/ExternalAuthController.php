@@ -21,14 +21,20 @@ class ExternalAuthController extends \BaseController {
 		
 		$prod = Product::where('user_id','=',$mbr->id)->where('id','=',$id)->get()->first();
 
-		if ($prod->quantity >= intval($quan)+1) {
-			$prod->quantity = $prod->quantity - intval($quan);
-			$prod->save();
-			return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
+		if (!empty($prod)) { 
+			if ($prod->quantity >= intval($quan)+1) {
+				$prod->quantity = $prod->quantity - intval($quan);
+				$prod->save();
+				return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
+			}
+			else {
+				return(Response::json(array('error'=>true,'message'=>'fail','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
+			}
 		}
 		else {
-			return(Response::json(array('error'=>true,'message'=>'fail','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
+			return(Response::json(array('error'=>true,'message'=>'Item not found'),200));
 		}
+
 	}
 
 	public function getInventory($key = 0, $location='')
