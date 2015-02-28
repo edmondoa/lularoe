@@ -61,7 +61,7 @@ class ExternalAuthController extends \BaseController {
 		$server_output = '';
 
 		// Generates the list of items from the product table per user
-		if ($mbr->id > 0) {
+		if (!empty($mbr) && $mbr->id > 0) {
 			$p = Product::where('user_id','=',$mbr->id)->get(array('id','name','quantity','make','model','rep_price','size','sku','image'));
 			$itemlist	= [];
 			$count		= 0;
