@@ -12,7 +12,7 @@ class Product extends \Eloquent
 
 	// Don't forget to fill this array    
 	protected $table = 'products';
-	protected $fillable = array('sku','name','blurb','description','price','quantity','category_id','image','points_value','disabled');
+	protected $fillable = array('sku','name','blurb','description','price','retail_price','rep_price','quantity','category_id','image','points_value','make','model','size','disabled');
 
 	public function getNewRecordAttribute() {
 		return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;

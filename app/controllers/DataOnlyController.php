@@ -354,8 +354,8 @@ class DataOnlyController extends \BaseController
 	public function getAllProducts() {
 		
 		// get products
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $products = Product::with('tags')->get();
-		else $products = Product::where('disabled', 0)->with('tags')->get();
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) $products = Product::with('tags')->get();
+		elseif (Auth::user()->hasRole(['Rep'])) $products = Product::where('user_id', Auth::user()->id)->where('disabled', 0)->with('tags')->get();
 			
 		// get product images		
 		foreach($products as $product) {

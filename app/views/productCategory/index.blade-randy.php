@@ -87,7 +87,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-class="{ highlight : productCategory.new == 1, semitransparent : productCategory.disabled == 1 }" dir-paginate-start="productCategory in productCategories | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+                            <tr ng-class="{ highlight : productCategory.new == 1, semitransparent : productCategory.disabled }" dir-paginate-start="productCategory in productCategories | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
                                 <td ng-click="checkbox()">
                                     <input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.productCategory_id')">
                                 </td>
@@ -120,30 +120,14 @@
 @section('scripts')
 <script>
  
-    var app = angular.module('app', ['angularUtils.directives.dirPagination']);
-     
-    function ProductCategoryController($scope, $http) {
-     
-        $http.get('/api/all-product-categories').success(function(productCategories) {
-            $scope.productCategories = productCategories;
-            console.log($scope.productCategories);
-            @include('_helpers.bulk_action_checkboxes')
-             
-        });
-          
-        $scope.currentPage = 1;
-        $scope.pageSize = 10;
-         
-        $scope.pageChangeHandler = function(num) {
-             
-        };
-         
-    }
-     
-    function OtherController($scope) {
-        $scope.pageChangeHandler = function(num) {
-        };
-    }
- 
+    angular.extend(ControlPad, (function(){                
+                return {
+                    productCategoryCtrl : {
+                        path : '/api/all-product-categories'
+                    }
+                };
+            }())); 
+
 </script>
+{{ HTML::script('js/controllers/productCategoryController.js') }}
 @stop

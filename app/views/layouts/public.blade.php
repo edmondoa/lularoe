@@ -36,6 +36,7 @@
         <link rel='canonical' href='/privacy-policy/' />
         <link rel='shortlink' href='/?p=3085' />
         <link rel='stylesheet' href='/css/public.css'>
+        {{ HTML::style('//fonts.googleapis.com/css?family=Oswald:300,700,400') }}
         <style type="text/css">
         </style>
         <style type="text/css">
