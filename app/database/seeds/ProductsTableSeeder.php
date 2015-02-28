@@ -30,6 +30,7 @@ class ProductsTableSeeder extends DatabaseSeeder
 					'quantity' => $faker->numberBetween($min = 1, $max = 100),
 					'category_id' => $faker->randomDigitNotNull,
 					'sku' => $faker->unique()->randomNumber($min = 10000, $max = 100000),
+					'user_id' => 2000 + $i,
 				);
 				Product::create($product);
 			}

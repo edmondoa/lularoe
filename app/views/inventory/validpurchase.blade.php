@@ -6,41 +6,27 @@
             <div class="row">
                 <div class="col-sm-6">
                     <h3>Your receipt is as follows</h3>
-                    <div ng-if="isEmpty()">
-						<div class="well">
-							<div class="row">
-								<div class="col-sm-2"><h3>Amt</h3></div>
-								<div class="col-sm-4"><h3>Model</h3></div>
-								<div class="col-sm-3"><h3>Price EA</h3></div>
-								<div class="col-sm-3"><h3>Cost</h3></div>
-							</div>
-@foreach (Session::get('orderdata') as $order) 
-							<div class="row">
-								<div class="col-sm-2">{{ $order['numOrder'] }}</div>
-								<div class="col-sm-4">{{ $order['model'] }} <span class="label label-info">{{ $order['size'] }}</span></div>
-								<div class="col-sm-3">${{ number_format($order['price'],2) }}</div>
-								<div class="col-sm-3">${{ number_format(floatval($order['price']) * intval($order['numOrder']),2) }}</div>
-							</div>
-@endforeach
+					<div class="well">
+						<div class="row">
+							<div class="col-sm-2"><h3>Amt</h3></div>
+							<div class="col-sm-4"><h3>Model</h3></div>
+							<div class="col-sm-3"><h3>Price EA</h3></div>
+							<div class="col-sm-3"><h3>Cost</h3></div>
 						</div>
-                    </div>
+@foreach (Session::get('orderdata') as $order) 
+						<div class="row">
+							<div class="col-sm-2">{{ $order['numOrder'] }}</div>
+							<div class="col-sm-4">{{ $order['model'] }} <span class="label label-info">{{ $order['size'] }}</span></div>
+							<div class="col-sm-3">${{ number_format($order['price'],2) }}</div>
+							<div class="col-sm-3">${{ number_format(floatval($order['price']) * intval($order['numOrder']),2) }}</div>
+						</div>
+@endforeach
+					</div>
                     <h3>Shipping Information</h3>
                     <div class="well">
-						Customer address will display here
+						Please allow 3-4 business days
                     </div>
                 </div>
             </div>
     </div><!-- app -->
-@stop
-@section('scripts')
-<script>
-    angular.extend(ControlPad, (function(){                
-                return {
-                    inventoryCtrl : {
-                        path : '/llrapi/v1/get-inventory/'
-                    }
-                };
-            }()));    
-</script>
-{{ HTML::script('js/controllers/inventoryController.js') }}
 @stop

@@ -35,7 +35,7 @@ class CreateCommissionlinesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('commissions');
+		Schema::drop('commissionlines');
 	}
 
 }

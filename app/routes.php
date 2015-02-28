@@ -26,6 +26,9 @@ Route::pattern('id', '[0-9]+');
 
 		// API for IOS App
 		Route::get('llrapi/v1/auth/{id}', 						'ExternalAuthController@auth');
+		Route::get('llrapi/v1/remove-inventory/{key}',			'ExternalAuthController@rmInventory');
+		Route::get('llrapi/v1/remove-inventory/{key}/{id}/{quantity}',			'ExternalAuthController@rmInventory');
+
 		Route::get('llrapi/v1/get-inventory/',					'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/get-inventory/{key}',				'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory');
@@ -238,6 +241,18 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('opportunities/enable', 'OpportunityController@enable');
 		Route::post('opportunities/delete', 'OpportunityController@delete');
 
+		// products
+		Route::resource('products', 'ProductController');
+		Route::post('products/disable', 'ProductController@disable');
+		Route::post('products/enable', 'ProductController@enable');
+		Route::post('products/delete', 'ProductController@delete');
+
+		// productCategories
+		Route::resource('productCategories', 'ProductCategoryController');
+		Route::post('productCategories/disable', 'ProductCategoryController@disable');
+		Route::post('productCategories/enable', 'ProductCategoryController@enable');
+		Route::post('productCategories/delete', 'ProductCategoryController@delete');
+
 		// parties
 		Route::resource('parties', 'PartyController');
 		Route::post('parties/disable', 'PartyController@disable');
@@ -421,18 +436,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::post('mobilePlans/disable', 'MobilePlanController@disable');
 			Route::post('mobilePlans/enable', 'MobilePlanController@enable');
 			Route::post('mobilePlans/delete', 'MobilePlanController@delete');
-			
-			// products
-			Route::resource('products', 'ProductController');
-			Route::post('products/disable', 'ProductController@disable');
-			Route::post('products/enable', 'ProductController@enable');
-			Route::post('products/delete', 'ProductController@delete');
-			
-			// productCategories
-			Route::resource('productCategories', 'ProductCategoryController');
-			Route::post('productCategories/disable', 'ProductCategoryController@disable');
-			Route::post('productCategories/enable', 'ProductCategoryController@enable');
-			Route::post('productCategories/delete', 'ProductCategoryController@delete');
 			
 			// profile
 			Route::resource('profiles', 'ProfileController');

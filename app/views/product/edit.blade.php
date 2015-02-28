@@ -52,6 +52,21 @@
 					</div>
 				    
 				    <div class="form-group">
+				        {{ Form::label('make', 'Make') }}
+				        {{ Form::text('make', null, array('class' => 'form-control')) }}
+				    </div>
+	
+				    <div class="form-group">
+				        {{ Form::label('model', 'Model') }}
+				        {{ Form::text('model', null, array('class' => 'form-control')) }}
+				    </div>
+					
+				    <div class="form-group">
+				        {{ Form::label('size', 'Size') }}
+				        {{ Form::text('size', null, array('class' => 'form-control')) }}
+				    </div>
+				    
+				    <div class="form-group">
 				        {{ Form::label('retail_price', 'Retail Price') }}
 				        <div class="input-group">
 				        	<span class="input-group-addon">$</span>

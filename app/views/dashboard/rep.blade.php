@@ -78,7 +78,7 @@
 			<div class="list-group">
 				<a class="link list-group-item" href="{{ url() }}/join/{{ $user->public_id }}">My sign up form</a></li>
 				<a class="link list-group-item" href='//{{ Auth::user()->public_id }}.{{ Config::get("site.base_domain") }}'>My site</a></li>
-				<a class="link list-group-item" target='_blank' href='https://rightsignature.com/forms/W-9-2c6211/token/3733c94a942'>W9 form</a></li>
+				<a class="link list-group-item" target='_blank' href='https://rightsignature.com/forms/2014w9-4555d8/token/12e754b6c0b'>W9 form</a></li>
 			</div>
 		</div><!-- panel -->
 	</div><!-- col -->

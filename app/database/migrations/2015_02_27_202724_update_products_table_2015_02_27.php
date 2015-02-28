@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class UpdateProductsTable20150210 extends Migration {
+class UpdateProductsTable20150227 extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -14,7 +14,10 @@ class UpdateProductsTable20150210 extends Migration {
 	{
 		Schema::table('products', function(Blueprint $table)
 		{
-			$table->string('sku')->nullable()->unique();
+			$table->integer('user_id');
+			$table->string('make');
+			$table->string('model');
+			$table->string('size');
 		});
 	}
 
@@ -28,10 +31,7 @@ class UpdateProductsTable20150210 extends Migration {
 	{
 		Schema::table('products', function(Blueprint $table)
 		{
-			if (Schema::hasColumn('products','sku'))
-			{
-				$table->dropColumn('sku');
-			}
+			
 		});
 	}
 

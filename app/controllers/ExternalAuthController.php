@@ -14,8 +14,22 @@ class ExternalAuthController extends \BaseController {
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
 	public 	$logdata = false;
 
+	// STUB for removing inventory
+	public function rmInventory($key,$id,$quan) {
+		// Magic database voodoo
+        $mbr	= User::where('key', 'LIKE', $key.'|%')->first();
+		
+		$prod = Product::where('user_id','=',$mbr->id)->where('id','=',$id)->get()->first();
 
-
+		if ($prod->quantity >= intval($quan)+1) {
+			$prod->quantity = $prod->quantity - intval($quan);
+			$prod->save();
+			return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
+		}
+		else {
+			return(Response::json(array('error'=>true,'message'=>'fail','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
+		}
+	}
 
 	public function getInventory($key = 0, $location='')
 	{
@@ -39,6 +53,50 @@ class ExternalAuthController extends \BaseController {
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','TLoc: '.$location."\n",FILE_APPEND);
 
 		$server_output = '';
+
+		// Generates the list of items from the product table per user
+		if ($mbr->id > 0) {
+			$p = Product::where('user_id','=',$mbr->id)->get(array('id','name','quantity','make','model','rep_price','size','sku','image'));
+			$itemlist	= [];
+			$count		= 0;
+
+			foreach($p as $item) 
+			{
+				$quantity	= $item->quantity;
+				$model		= $item->name;
+				$image 		= (!empty($item->image)) ? $item->image : 'https://mylularoe.com/img/media/notfound.jpg';
+				$size		= $item->size;
+
+				// Initialize this set of item data
+				if (!isset($items[$model]))
+				{
+					$items[$model] = array(
+					'model'			=>$model,
+					'id'			=>$item->id,
+					'UPC'			=>$item->sku,
+					'SKU'			=>$item->sku,
+					'price'			=>$item->rep_price,
+					'image'			=>$image,
+					'quantities'	=> array()); 
+				}
+
+				// Set up the quantities of each size
+				if (!isset($items[$model]['quantities'][$size])) 
+				{
+					$items[$model]['quantities'][$size] = $quantity;
+				}			
+
+			}
+
+			// Reorder this with numerical indeces
+			foreach($items as $k=>$v)
+			{
+				$itemlist[$count++] = $v;
+			}
+
+			return(Response::json($itemlist,200));
+		}
+
 
 		// Simple caching - probably a better way to do this
 		@mkdir($this->mwl_cache);
@@ -70,8 +128,9 @@ class ExternalAuthController extends \BaseController {
 			$server_output = curl_exec ($ch);
 
 			if ($errno = curl_errno($ch)) {
-				print json_encode(array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno));
-				return(false);
+				$result = array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
+				return(Response::json($result,200));
+				die();
 			}
 			curl_close ($ch);
 			file_put_contents($mwlcachefile, $server_output);
@@ -125,8 +184,7 @@ class ExternalAuthController extends \BaseController {
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
 				'price'			=>$item['Item']['Price'],
-				'image'			=>'http://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
-				
+				'image'			=>'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
 				'quantities'	=> array()); 
 			}
 
@@ -270,9 +328,9 @@ class ExternalAuthController extends \BaseController {
 }
 */
 
-	public function purchase($key = 0)
+	public function purchase($key = 0, $cart = '')
 	{
-		$cartdata = Input::get('cart');
+		$cartdata = Input::get('cart', $cart);
 
 		// Wish we could use sessions on all this
         $mbr = User::where('key', 'LIKE', $key.'|%')->first();
@@ -575,6 +633,13 @@ class ExternalAuthController extends \BaseController {
 			$response_obj->TransactionResponse->AuthAmount	= 0;
 		}
 
+		if (isset($response_obj->Error)) {
+			$response_obj->TransactionResponse->Result = 'Declined';
+			$response_obj->TransactionResponse->ResultCode	= $response_obj->Error->Code;
+			$response_obj->TransactionResponse->Status		= $response_obj->Error->Description;
+			$response_obj->TransactionResponse->AuthAmount	= 0;
+		}
+			
 		// Having to transform this since what is returned is not in a uniform format!!
 		// Bug Mike Carpenter about this .. :-)
 		if (isset($response_obj->Status) && $response_obj->Status == 'D') {
@@ -600,8 +665,8 @@ class ExternalAuthController extends \BaseController {
         return ($returndata);
 	}
 
-	public function auth($id) {
-		$pass	= trim(Input::get('pass'));
+	public function auth($id, $pass = '') {
+		$pass	= trim(Input::get('pass', $pass));
         $status = 'ERR';
         $error  = true;
 		$data   = [];
@@ -664,6 +729,9 @@ class ExternalAuthController extends \BaseController {
 			$status = 'Cannot authorize';
 			$mbr->update(array('key'=>''));
 		}
+
+		// Set session key to null 
+		if (empty($sessionkey)) $sessionkey = null;
 		
         return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),200);
 
