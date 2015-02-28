@@ -14,19 +14,22 @@ class ExternalAuthController extends \BaseController {
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
 	public 	$logdata = false;
 
-
 	// STUB for removing inventory
-	public function rmInventory($key) {
+	public function rmInventory($key,$id,$quan) {
 		// Magic database voodoo
         $mbr	= User::where('key', 'LIKE', $key.'|%')->first();
-		$data	= Input::all();
 		
-		if (isset($mbr->id))
-			return(Response::json(array('error'=>false,'message'=>'success!','member_id'=>$mbr->id),200));
-		else
-			return(Response::json(array('error'=>true,'message'=>'fail','member_id'=>null),200));
-	}
+		$prod = Product::where('user_id','=',$mbr->id)->where('id','=',$id)->get()->first();
 
+		if ($prod->quantity >= intval($quan)+1) {
+			$prod->quantity = $prod->quantity - intval($quan);
+			$prod->save();
+			return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
+		}
+		else {
+			return(Response::json(array('error'=>true,'message'=>'fail','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
+		}
+	}
 
 	public function getInventory($key = 0, $location='')
 	{
@@ -53,7 +56,7 @@ class ExternalAuthController extends \BaseController {
 
 		// Generates the list of items from the product table per user
 		if ($mbr->id > 0) {
-			$p = Product::where('user_id','=',$mbr->id)->get(array('name','quantity','make','model','rep_price','size','sku','image'));
+			$p = Product::where('user_id','=',$mbr->id)->get(array('id','name','quantity','make','model','rep_price','size','sku','image'));
 			$itemlist	= [];
 			$count		= 0;
 
