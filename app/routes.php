@@ -166,6 +166,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 	// sales
 	Route::resource('sales', 'SaleController');
+	Route::get('sales/create', 'SaleController@create');
+	Route::get('sales/checkout', 'SaleController@checkout');
 
 	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
@@ -229,6 +231,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('inventories/', 'InventoryController@index');
         Route::get('inv/checkout', 'InventoryController@checkout');
         Route::post('inv/purchase', 'InventoryController@purchase');
+        Route::post('inv/sale', 'InventoryController@sale');
         #Route::post('inventories/disable', 'InventoryController@disable');
         #Route::post('inventories/enable', 'InventoryController@enable');
         #Route::post('inventories/delete', 'InventoryController@delete');

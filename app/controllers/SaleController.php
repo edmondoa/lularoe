@@ -1,6 +1,6 @@
 <?php
 
-class saleController extends \BaseController {
+class SaleController extends \BaseController {
 
 	/**
 	 * Display a listing of sales
@@ -9,9 +9,9 @@ class saleController extends \BaseController {
 	 */
 	public function index()
 	{
-		$sales = Sale::all();
+		//$sales = Sale::all();
 
-		return View::make('sale.index', compact('sales'));
+		return View::make('sale.index');
 	}
 
 	/**
