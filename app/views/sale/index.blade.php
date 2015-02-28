@@ -1,8 +1,8 @@
 @extends('layouts.default')
 @section('content')
 <?php 
-	$user = Auth::user(); 
-	@list($key,$timeout) = explode('|',$user->key);
+	$userkey = Auth::user()->key; 
+	@list($key,$timeout) = explode('|',$userkey);
 ?>
 <div ng-app="app" class="index">
     {{ Form::open(array('url' => 'inv/sales', 'method' => 'POST','name'=>'inven')) }}
