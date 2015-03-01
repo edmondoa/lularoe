@@ -205,16 +205,20 @@ class ExternalAuthController extends \BaseController {
 
 		if (!isset($items)) $items = [];
 
+		usort($items, function($a, $b) {
+				return strcmp($a["model"], $b["model"]);
+			}
+		);
+
 		// Reorder this with numerical indeces
-		foreach($items as $k=>$v)
-		{
+		foreach($items as $k=>$v) {
 			$itemlist[$count++] = $this->arrangeByGirth($v);
 		}
 
-		//print json_encode($itemlist, JSON_PRETTY_PRINT);
-		return(Response::json($itemlist,200));
-		// STUB
-//		return(file_get_contents('SampleInventory.json'));
+		return(Response::json($itemlist,200, array(), JSON_PRETTY_PRINT));
+	}
+
+	function compareByModel($a, $b) {
 	}
 
 	// Lovely Large Ladies Lambasted in Luxurious Linens
