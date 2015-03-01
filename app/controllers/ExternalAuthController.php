@@ -339,36 +339,58 @@ class ExternalAuthController extends \BaseController {
 		$cartdata	= Input::get('cart', $cart);
 		$endpoint	= '';
 
-		if (Input::get('cash')) $txtype = 'CASH';
-		else 					$txtype = 'CARD';
+		if 		(Input::get('cash')) 	$txtype = 'CASH';
+		elseif	(Input::get('check'))	$txtype = 'ACH';
+		else 							$txtype = 'CARD';
 
-		// Wish we could use sessions on all this
+		// Wish we could use sessions on all this, thanks IOS!
         $mbr = User::where('key', 'LIKE', $key.'|%')->first();
 
-		$txdata = array(
-			'Subtotal'          => Input::get('subtotal'),
-			'Tax'               => Input::get('tax'),
-			'Account-name'      => Input::get('cardname'),
-			'Card-Number'       => Input::get('cardnumber'),
-			'Card-Code'     	=> Input::get('cardcvv'),
-			'Card-Expiration'   => Input::get('cardexp'),
-			'Card-Address'      => Input::get('cardaddress'),
-			'Card-Zip'          => Input::get('cardzip'),
-			'Description'       => json_encode($cartdata)
-		);
 
-		$txtype = 'CASH';
 		// Set up appropraite transaction headers
 		if ($txtype == 'CARD'){
+			$txdata = array(
+				'Subtotal'          => Input::get('subtotal'),
+				'Tax'               => Input::get('tax'),
+				'Account-name'      => Input::get('cardname'),
+				'Card-Number'       => Input::get('cardnumber'),
+				'Card-Code'     	=> Input::get('cardcvv'),
+				'Card-Expiration'   => Input::get('cardexp'),
+				'Card-Address'      => Input::get('cardaddress'),
+				'Card-Zip'          => Input::get('cardzip'),
+				'Description'       => json_encode($cartdata)
+			);
 			$endpoint = 'sale';
 			foreach($txdata as $k=>$v) {
 				$txheaders[] = "{$k}: {$v}";
 			}
 		}
 		else if ($txtype == 'CASH') {
+			$txdata = array(
+				'Subtotal'          => Input::get('subtotal'),
+				'Tax'               => Input::get('tax'),
+				'Description'       => json_encode($cartdata)
+			);
 			$endpoint = 'cash';
 			foreach($txdata as $k=>$v) {
 				$cashparameters = array('Tax','Subtotal','Description');
+				if (in_array($k, $cashparameters)) $txheaders[] = "{$k}: {$v}";
+			}
+		}
+		else if ($txtype == 'CHECK') {
+			$txdata = array(
+				'Account-Name' 		=> Input::get('accountname'),
+				'Routing-Number' 	=> Input::get('routing'),
+				'Account-Number' 	=> Input::get('account'),
+				'License-State' 	=> Input::get('dlstate'),
+				'License-Number' 	=> Input::get('dlnum'),
+				'Check-Number' 		=> Input::get('checknum'),
+				'Subtotal'          => Input::get('subtotal'),
+				'Tax'               => Input::get('tax'),
+				'Description'       => json_encode($cartdata)
+			);
+			$endpoint = 'checkSale';
+			foreach($txdata as $k=>$v) {
 				if (in_array($k, $cashparameters)) $txheaders[] = "{$k}: {$v}";
 			}
 		}
