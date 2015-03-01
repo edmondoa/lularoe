@@ -205,6 +205,7 @@ class ExternalAuthController extends \BaseController {
 
 		if (!isset($items)) $items = [];
 
+		// Sort alpha by model name
 		usort($items, function($a, $b) {
 				return strcmp($a["model"], $b["model"]);
 			}
@@ -218,18 +219,27 @@ class ExternalAuthController extends \BaseController {
 		return(Response::json($itemlist,200, array(), JSON_PRETTY_PRINT));
 	}
 
-	function compareByModel($a, $b) {
-	}
-
 	// Lovely Large Ladies Lambasted in Luxurious Linens
 	public function arrangeByGirth($item) {
 		$magnitude 		= array('XXS','XS','S','M','L','XL','XXL','XXXL','2XL','3XL');
 		$orderedGirth	= array();
 
+		// Sort by numeric size title
+		if (!empty($item['quantities']))
+		{
+			uksort($item['quantities'], function($a, $b) {
+					return(intval($a) > intval($b));
+				}
+			);
+		}
+
+		// Sort by TEXT size title
 		foreach ($magnitude as $girth) {
 			if (isset($item['quantities'][$girth])) 
 				$orderedGirth[$girth] = $item['quantities'][$girth];
 		}
+
+		// Only return orderedGirth if we have put values in it
 		if (!empty($orderedGirth)) $item['quantities'] = $orderedGirth;
 		return($item);
 	}
