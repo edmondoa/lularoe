@@ -1,8 +1,7 @@
 <?php
 
-class InventoryController extends \BaseController {
+class SellController extends \BaseController {
 
-	var $mwlpass = 'test';
     /**
      * Data only
      */
@@ -20,7 +19,7 @@ class InventoryController extends \BaseController {
      */
     public function checkout()
     {
-            return View::make('inventory.checkout');
+            return View::make('sell.checkout');
     }
 
     
@@ -33,23 +32,23 @@ class InventoryController extends \BaseController {
 	{
 		$inventories = Inventory::all();
 
-		return View::make('inventory.index', compact('inventories'));
+		return View::make('sell.index', compact('inventories'));
 	}
 
 	/**
-	 * Show the form for creating a new inventory
+	 * Show the form for creating a new sell
 	 *
 	 * @return Response
 	 */
 	public function create()
 	{
-		$inventory = Inventory::all();
+		$sell = Inventory::all();
 
-		return View::make('inventory.create', compact('inventory'));
+		return View::make('sell.create', compact('sell'));
 	}
 
 	/**
-	 * Store a newly created inventory in storage.
+	 * Store a newly created sell in storage.
 	 *
 	 * @return Response
 	 */
@@ -64,24 +63,24 @@ class InventoryController extends \BaseController {
 
 		Inventory::create($data);
 
-		return Redirect::route('inventory.index');
+		return Redirect::route('sell.index');
 	}
 
 	/**
-	 * Display the specified inventory.
+	 * Display the specified sell.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
 	public function show($id)
 	{
-		//$inventory = Inventory::findOrFail($id);
+		//$sell = Inventory::findOrFail($id);
 
-		return View::make('inventory.show', compact('inventory'));
+		return View::make('sell.show', compact('sell'));
 	}
 
 	/**
-	 * Show the form for editing the specified inventory.
+	 * Show the form for editing the specified sell.
 	 *
 	 * @param  int  $id
 	 * @return Response
@@ -89,21 +88,21 @@ class InventoryController extends \BaseController {
 	public function edit($id)
 	{
         
-		$inventory = Inventory::find($id);
+		$sell = Inventory::find($id);
         if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
-		    return View::make('inventory.edit', compact('inventory'));
+		    return View::make('sell.edit', compact('sell'));
         }
 	}
 
 	/**
-	 * Update the specified inventory in storage.
+	 * Update the specified sell in storage.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
 	public function update($id)
 	{
-		$inventory = Inventory::findOrFail($id);
+		$sell = Inventory::findOrFail($id);
 
 		$validator = Validator::make($data = Input::all(), Inventory::$rules);
 
@@ -112,13 +111,13 @@ class InventoryController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
-		$inventory->update($data);
+		$sell->update($data);
 
 		return Redirect::route('inventories.index');
 	}
 
 	/**
-	 * Remove the specified inventory from storage.
+	 * Remove the specified sell from storage.
 	 *
 	 * @param  int  $id
 	 * @return Response
@@ -178,21 +177,7 @@ class InventoryController extends \BaseController {
         }
     }
 
-    /**
-     * Process order checkout
-     * 
-     */
-    public function sales()
-    {
-            return View::make('inventory.repsales');
-    }
-
-
 	public function purchase(){
-		// If it IS a rep sale, 
-		// Deduct inventory, if not, ADD inventory
-		$repsale	= Input::get('repsale', 0); 
-
 		$tax		= Session::get('tax');
 		$subtotal	= Session::get('subtotal');
 		$invitems	= Session::get('orderdata');
@@ -200,20 +185,12 @@ class InventoryController extends \BaseController {
 		$user = Config::get('site.mwl_username');
 		$pass = Config::get('site.mwl_password');
 
-		$authinfo = new stdClass();
-		$oldInput = Input::all();
-
 		// MATT HACKERY - Watch for changes in password on ZERO account!!
-		if (!$repsale) {
-			$data = App::make('ExternalAuthController')->auth($user, $this->mwlpass)->getContent();
-			$authinfo	= json_decode($data);
-		}
-		// This is the individual REP TID
-		else {
-			$authkey = Auth::user()->key;
-			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
-		}
+		$oldInput = Input::all();
+		$data = App::make('ExternalAuthController')->auth($user, 'test')->getContent();
+
+		// $request	= Request::create('llrapi/v1/auth/0?pass=test','GET', array());
+		$authinfo	= json_decode($data);
 
 		$purchaseInfo = array(
 					'subtotal'		=>$subtotal,
@@ -227,21 +204,14 @@ class InventoryController extends \BaseController {
 					'cart'			=>json_encode($invitems)
 				);
 		
+		
 		Input::replace($purchaseInfo);
 		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
 
-		if (!$cardauth->error) {
-			if ($repsale) {
-				// Deduct item quantity from inventory
-				foreach ($invitems as $item) {
-					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-					$deduction	= json_decode(Route::dispatch($request)->getContent());
-				}
-			}
-			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
-		}
-		else return View::make('inventory.invalidpurchase',compact('cardauth'));
+		if (!$cardauth->error) return View::make('sell.validpurchase',compact('cardauth','invitems'));
+		else return View::make('sell.invalidpurchase',compact('cardauth'));
 	}
+
     
 }
