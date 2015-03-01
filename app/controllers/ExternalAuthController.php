@@ -336,7 +336,11 @@ class ExternalAuthController extends \BaseController {
 
 	public function purchase($key = 0, $cart = '')
 	{
-		$cartdata = Input::get('cart', $cart);
+		$cartdata	= Input::get('cart', $cart);
+		$endpoint	= '';
+
+		if (Input::get('cash')) $txtype = 'CASH';
+		else 					$txtype = 'CARD';
 
 		// Wish we could use sessions on all this
         $mbr = User::where('key', 'LIKE', $key.'|%')->first();
@@ -353,11 +357,23 @@ class ExternalAuthController extends \BaseController {
 			'Description'       => json_encode($cartdata)
 		);
 
-		foreach($txdata as $k=>$v) {
-			$txheaders[] = "{$k}: {$v}";
+		$txtype = 'CASH';
+		// Set up appropraite transaction headers
+		if ($txtype == 'CARD'){
+			$endpoint = 'sale';
+			foreach($txdata as $k=>$v) {
+				$txheaders[] = "{$k}: {$v}";
+			}
+		}
+		else if ($txtype == 'CASH') {
+			$endpoint = 'cash';
+			foreach($txdata as $k=>$v) {
+				$cashparameters = array('Tax','Subtotal','Description');
+				if (in_array($k, $cashparameters)) $txheaders[] = "{$k}: {$v}";
+			}
 		}
 
-        $purchase = self::makePayment($key, $txheaders);
+		$purchase = self::makePayment($key, $txheaders, $endpoint);
 
 		// Drop this into product table too.
 		if (!$purchase['error']) {
@@ -367,7 +383,7 @@ class ExternalAuthController extends \BaseController {
 			$lg->account		= '';
 			$lg->amount			= Input::get('subtotal');
 			$lg->tax			= Input::get('tax');
-			$lg->txtype			= 'CARD';
+			$lg->txtype			= $txtype; 
 			$lg->transactionid	= $purchase['id'];
 			$lg->data			= json_encode($cartdata);
 			$lg->save();
@@ -591,7 +607,7 @@ class ExternalAuthController extends \BaseController {
 									'data'=>$raw_response),200);
 	}
 
-	private function makePayment($key, $txdata = array()) {
+	private function makePayment($key, $txdata = array(), $type='sale') {
 		// Whether or not to write to /tmp/request.txt for debuggification
 		$verbose = false; 
 
@@ -599,7 +615,7 @@ class ExternalAuthController extends \BaseController {
 		$ch = curl_init();
 
 		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/sale?sessionkey=".Session::get('mwl_id', $key);
+		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/{$type}?sessionkey=".Session::get('mwl_id', $key);
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		curl_setopt($ch, CURLOPT_POST, 1);
@@ -625,6 +641,7 @@ class ExternalAuthController extends \BaseController {
 		// card decline
 		*/
 		$raw_response = $response_obj;
+
 		if (!isset($response_obj->TransactionResponse)) {
 			$response_obj = new stdClass();
 			$response_obj = $raw_response;
