@@ -135,8 +135,7 @@ class ExternalAuthController extends \BaseController {
 
 			if ($errno = curl_errno($ch)) {
 				$result = array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
-				return(Response::json($result,200));
-				die();
+				return(Response::json($result,500));
 			}
 			curl_close ($ch);
 			file_put_contents($mwlcachefile, $server_output);
@@ -149,10 +148,15 @@ class ExternalAuthController extends \BaseController {
 		$count		= 0;
 		$itemlist	= [];
 
+		if (empty($output)) { 
+			// Last resort!
+			$output = json_decode(file_get_contents($mwlcachefile));
+			//return Response::json(array('errors'=>true,'message'=>'Nothing returned from inventory system.'),500);
+		}
+
         if(array_key_exists('Code',$output) && $output['Code'] == '400'){
 			unlink($mwlcachefile);
-            print json_encode(array('errors'=>true,'message'=> $output['Message'],'errno'=>'400'));
-            return(false);
+            return Response::json(array('errors'=>true,'message'=> $output['Message'],'errno'=>'400'), 500);
         }
 
 		// Transform the output to the appropriate IOS format
