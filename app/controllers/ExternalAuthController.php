@@ -89,7 +89,7 @@ class ExternalAuthController extends \BaseController {
 				// Set up the quantities of each size
 				if (!isset($items[$model]['quantities'][$size])) 
 				{
-					$items[$model]['quantities'][$size] = $quantity;
+					$items[$model]['quantities'][$size] = intval($quantity);
 				}			
 
 			}
@@ -188,7 +188,7 @@ class ExternalAuthController extends \BaseController {
 				'model'			=>$model,
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
-				'price'			=>$item['Item']['Price'],
+				'price'			=>floatval($item['Item']['Price']),
 				'image'			=>'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
 				'quantities'	=> array()); 
 			}
