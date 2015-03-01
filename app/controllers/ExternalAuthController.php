@@ -177,7 +177,6 @@ class ExternalAuthController extends \BaseController {
 			// Delimiting sizes with hyphen and spaces
 			if (strpos($itemnumber,' -') === false) 
 			{
-				// $model = $itemnumber; // ??
 				$size  = 'NA';	
 			}
 			else list($model, $size) = explode(' -',$itemnumber);
@@ -195,27 +194,40 @@ class ExternalAuthController extends \BaseController {
 			}
 
 			// Cut useless spaces
-			$size = str_replace(' ','',$size);
+			$size = ltrim($size); // str_replace('/^ /','',$size);
 
 			// Set up the quantities of each size
 			if (!isset($items[$model]['quantities'][$size])) 
 			{
 				$items[$model]['quantities'][$size] = $quantity;
 			}			
-
 		}
+
 		if (!isset($items)) $items = [];
 
 		// Reorder this with numerical indeces
 		foreach($items as $k=>$v)
 		{
-			$itemlist[$count++] = $v;
+			$itemlist[$count++] = $this->arrangeByGirth($v);
 		}
 
 		//print json_encode($itemlist, JSON_PRETTY_PRINT);
 		return(Response::json($itemlist,200));
 		// STUB
 //		return(file_get_contents('SampleInventory.json'));
+	}
+
+	// Lovely Large Ladies Lambasted in Luxurious Linens
+	public function arrangeByGirth($item) {
+		$magnitude 		= array('XXS','XS','S','M','L','XL','XXL','XXXL','2XL','3XL');
+		$orderedGirth	= array();
+
+		foreach ($magnitude as $girth) {
+			if (isset($item['quantities'][$girth])) 
+				$orderedGirth[$girth] = $item['quantities'][$girth];
+		}
+		if (!empty($orderedGirth)) $item['quantities'] = $orderedGirth;
+		return($item);
 	}
 
 	// What is this hackery?!
