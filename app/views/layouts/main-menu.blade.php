@@ -88,8 +88,9 @@
  						<i class="fa fa-file-image-o"></i> <span class="text">Resources</span>
  					</a>
  				    <a href="javascript:void(0)" data-href="/inventories" class='list-group-item' data-toggle="popover" data-content="
+ 						 <a href='/products/create'><i class='fa fa-plus'></i> Add Inventory</a>
                          <a href='/inventories'><i class='fa fa-check'></i> Purchase Inventory</a>
-						 <a href='/products'><i class='fa fa-plus'></i> Current Inventory</a>
+						 <a href='/products'><i class='fa fa-book'></i> My Inventory</a>
                      ">
                          <i class="fa fa-list-ol"></i> <span class="text">Inventories</span>
                      </a>
@@ -144,6 +145,7 @@
 					<!-- <a href="/emailMessages" class="list-group-item"><i class="fa fa-envelope"></i> <span class="text">EmailMessages</span></a> -->
 					<!-- <a href="/levels" class="list-group-item"><i class="fa fa-sitemap"></i> Levels</a> -->
 					<!-- <a href="/payments" class="list-group-item">Payments</a> -->
+<!--
  					<a href="javascript:void(0)" data-href="/products" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/products'><i class='fa fa-female'></i> All Products</a>
  						<a href='/productCategories'><i class='fa fa-female'></i> All Product Categories</a>
@@ -152,6 +154,7 @@
  					">
 						<i class="fa fa-female"></i> <span class="text">Products</span>
 					</a>
+-->
 					<!-- <a href="/profiles" class="list-group-item"><i class="fa fa-user"></i> Profiles</a> -->
 					<!-- <a href="/ranks" class="list-group-item"><i class="fa fa-certificate"></i> Ranks</a> -->
 					<!-- <a href="/reviews" class="list-group-item"><i class="fa fa-comments"></i> Reviews</a> -->

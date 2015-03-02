@@ -89,7 +89,7 @@ class ExternalAuthController extends \BaseController {
 				// Set up the quantities of each size
 				if (!isset($items[$model]['quantities'][$size])) 
 				{
-					$items[$model]['quantities'][$size] = $quantity;
+					$items[$model]['quantities'][$size] = intval($quantity);
 				}			
 
 			}
@@ -135,8 +135,7 @@ class ExternalAuthController extends \BaseController {
 
 			if ($errno = curl_errno($ch)) {
 				$result = array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
-				return(Response::json($result,200));
-				die();
+				return(Response::json($result,500));
 			}
 			curl_close ($ch);
 			file_put_contents($mwlcachefile, $server_output);
@@ -149,10 +148,15 @@ class ExternalAuthController extends \BaseController {
 		$count		= 0;
 		$itemlist	= [];
 
+		if (empty($output)) { 
+			// Last resort!
+			$output = json_decode(file_get_contents($mwlcachefile));
+			//return Response::json(array('errors'=>true,'message'=>'Nothing returned from inventory system.'),500);
+		}
+
         if(array_key_exists('Code',$output) && $output['Code'] == '400'){
 			unlink($mwlcachefile);
-            print json_encode(array('errors'=>true,'message'=> $output['Message'],'errno'=>'400'));
-            return(false);
+            return Response::json(array('errors'=>true,'message'=> $output['Message'],'errno'=>'400'), 500);
         }
 
 		// Transform the output to the appropriate IOS format
@@ -177,7 +181,6 @@ class ExternalAuthController extends \BaseController {
 			// Delimiting sizes with hyphen and spaces
 			if (strpos($itemnumber,' -') === false) 
 			{
-				// $model = $itemnumber; // ??
 				$size  = 'NA';	
 			}
 			else list($model, $size) = explode(' -',$itemnumber);
@@ -189,33 +192,60 @@ class ExternalAuthController extends \BaseController {
 				'model'			=>$model,
 				'UPC'			=>$item['Item']['UPC'],
 				'SKU'			=>$item['Item']['Sku'],
-				'price'			=>$item['Item']['Price'],
+				'price'			=>floatval($item['Item']['Price']),
 				'image'			=>'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
 				'quantities'	=> array()); 
 			}
 
 			// Cut useless spaces
-			$size = str_replace(' ','',$size);
+			$size = ltrim($size); // str_replace('/^ /','',$size);
 
 			// Set up the quantities of each size
 			if (!isset($items[$model]['quantities'][$size])) 
 			{
 				$items[$model]['quantities'][$size] = $quantity;
 			}			
-
 		}
+
 		if (!isset($items)) $items = [];
 
+		// Sort alpha by model name
+		usort($items, function($a, $b) {
+				return strcmp($a["model"], $b["model"]);
+			}
+		);
+
 		// Reorder this with numerical indeces
-		foreach($items as $k=>$v)
-		{
-			$itemlist[$count++] = $v;
+		foreach($items as $k=>$v) {
+			$itemlist[$count++] = $this->arrangeByGirth($v);
 		}
 
-		//print json_encode($itemlist, JSON_PRETTY_PRINT);
-		return(Response::json($itemlist,200));
-		// STUB
-//		return(file_get_contents('SampleInventory.json'));
+		return(Response::json($itemlist,200, array(), JSON_PRETTY_PRINT));
+	}
+
+	// Lovely Large Ladies Lambasted in Luxurious Linens
+	public function arrangeByGirth($item) {
+		$magnitude 		= array('XXS','XS','S','M','L','XL','XXL','XXXL','2XL','3XL');
+		$orderedGirth	= array();
+
+		// Sort by numeric size title
+		if (!empty($item['quantities']))
+		{
+			uksort($item['quantities'], function($a, $b) {
+					return(intval($a) > intval($b));
+				}
+			);
+		}
+
+		// Sort by TEXT size title
+		foreach ($magnitude as $girth) {
+			if (isset($item['quantities'][$girth])) 
+				$orderedGirth[$girth] = $item['quantities'][$girth];
+		}
+
+		// Only return orderedGirth if we have put values in it
+		if (!empty($orderedGirth)) $item['quantities'] = $orderedGirth;
+		return($item);
 	}
 
 	// What is this hackery?!
@@ -336,28 +366,66 @@ class ExternalAuthController extends \BaseController {
 
 	public function purchase($key = 0, $cart = '')
 	{
-		$cartdata = Input::get('cart', $cart);
+		$cartdata	= Input::get('cart', $cart);
+		$endpoint	= '';
 
-		// Wish we could use sessions on all this
+		if 		(Input::get('cash')) 	$txtype = 'CASH';
+		elseif	(Input::get('check'))	$txtype = 'ACH';
+		else 							$txtype = 'CARD';
+
+		// Wish we could use sessions on all this, thanks IOS!
         $mbr = User::where('key', 'LIKE', $key.'|%')->first();
 
-		$txdata = array(
-			'Subtotal'          => Input::get('subtotal'),
-			'Tax'               => Input::get('tax'),
-			'Account-name'      => Input::get('cardname'),
-			'Card-Number'       => Input::get('cardnumber'),
-			'Card-Code'     	=> Input::get('cardcvv'),
-			'Card-Expiration'   => Input::get('cardexp'),
-			'Card-Address'      => Input::get('cardaddress'),
-			'Card-Zip'          => Input::get('cardzip'),
-			'Description'       => json_encode($cartdata)
-		);
 
-		foreach($txdata as $k=>$v) {
-			$txheaders[] = "{$k}: {$v}";
+		// Set up appropraite transaction headers
+		if ($txtype == 'CARD'){
+			$txdata = array(
+				'Subtotal'          => Input::get('subtotal'),
+				'Tax'               => Input::get('tax'),
+				'Account-name'      => Input::get('cardname'),
+				'Card-Number'       => Input::get('cardnumber'),
+				'Card-Code'     	=> Input::get('cardcvv'),
+				'Card-Expiration'   => Input::get('cardexp'),
+				'Card-Address'      => Input::get('cardaddress'),
+				'Card-Zip'          => Input::get('cardzip'),
+				'Description'       => json_encode($cartdata)
+			);
+			$endpoint = 'sale';
+			foreach($txdata as $k=>$v) {
+				$txheaders[] = "{$k}: {$v}";
+			}
+		}
+		else if ($txtype == 'CASH') {
+			$txdata = array(
+				'Subtotal'          => Input::get('subtotal'),
+				'Tax'               => Input::get('tax'),
+				'Description'       => json_encode($cartdata)
+			);
+			$endpoint = 'cash';
+			foreach($txdata as $k=>$v) {
+				$cashparameters = array('Tax','Subtotal','Description');
+				if (in_array($k, $cashparameters)) $txheaders[] = "{$k}: {$v}";
+			}
+		}
+		else if ($txtype == 'CHECK') {
+			$txdata = array(
+				'Account-Name' 		=> Input::get('accountname'),
+				'Routing-Number' 	=> Input::get('routing'),
+				'Account-Number' 	=> Input::get('account'),
+				'License-State' 	=> Input::get('dlstate'),
+				'License-Number' 	=> Input::get('dlnum'),
+				'Check-Number' 		=> Input::get('checknum'),
+				'Subtotal'          => Input::get('subtotal'),
+				'Tax'               => Input::get('tax'),
+				'Description'       => json_encode($cartdata)
+			);
+			$endpoint = 'checkSale';
+			foreach($txdata as $k=>$v) {
+				if (in_array($k, $cashparameters)) $txheaders[] = "{$k}: {$v}";
+			}
 		}
 
-        $purchase = self::makePayment($key, $txheaders);
+		$purchase = self::makePayment($key, $txheaders, $endpoint);
 
 		// Drop this into product table too.
 		if (!$purchase['error']) {
@@ -367,7 +435,7 @@ class ExternalAuthController extends \BaseController {
 			$lg->account		= '';
 			$lg->amount			= Input::get('subtotal');
 			$lg->tax			= Input::get('tax');
-			$lg->txtype			= 'CARD';
+			$lg->txtype			= $txtype; 
 			$lg->transactionid	= $purchase['id'];
 			$lg->data			= json_encode($cartdata);
 			$lg->save();
@@ -591,7 +659,7 @@ class ExternalAuthController extends \BaseController {
 									'data'=>$raw_response),200);
 	}
 
-	private function makePayment($key, $txdata = array()) {
+	private function makePayment($key, $txdata = array(), $type='sale') {
 		// Whether or not to write to /tmp/request.txt for debuggification
 		$verbose = false; 
 
@@ -599,7 +667,7 @@ class ExternalAuthController extends \BaseController {
 		$ch = curl_init();
 
 		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/sale?sessionkey=".Session::get('mwl_id', $key);
+		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/payment/{$type}?sessionkey=".Session::get('mwl_id', $key);
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		curl_setopt($ch, CURLOPT_POST, 1);
@@ -625,6 +693,7 @@ class ExternalAuthController extends \BaseController {
 		// card decline
 		*/
 		$raw_response = $response_obj;
+
 		if (!isset($response_obj->TransactionResponse)) {
 			$response_obj = new stdClass();
 			$response_obj = $raw_response;

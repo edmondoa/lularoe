@@ -50,7 +50,17 @@
 	    
 	    <div class="form-group">
 		    {{ Form::label('dob', 'Date of Birth') }}
-	        {{ Form::text('dob', Input::old('dob'), array('class' => 'dateonlypicker form-control')) }}
+	        {{ Form::text('dob', Input::old('dob'), array('placeholder'=>'YYYY-MM-DD','class' => 'dateonlypicker form-control')) }}
+	    </div>
+
+	    <div class="form-group">
+	        {{ Form::label('phone', 'Driver License#') }}
+	        {{ Form::text('phone', Input::old('phone'), array('class' => 'form-control','placeholder'=>'UT############')) }}
+	    </div>
+
+	    <div class="form-group">
+	        {{ Form::label('phone', 'Social Security #') }}
+	        {{ Form::text('phone', Input::old('ssn'), array('class' => 'form-control')) }}
 	    </div>
 	    
 	    <div class="form-group">
@@ -84,59 +94,12 @@
 	        {{ Form::text('zip', Input::old('zip'), array('class' => 'form-control')) }}
 	    </div>
 	    <br>
-	<div class="alert alert-success">Prelaunch Membership Fee: ${{number_format(Config::get('settings.pre-registration-fee'),2)}}</div>
-
-	    
-	<div class="form-group">
-		{{ Form::label('name_on_card','* Name on Card') }}
-		{{ Form::text('name_on_card',null, array('class' => 'form-control')) }}
-	</div>
-	
-	<div class="form-group">
-		{{ Form::label('card_number','* Card Number') }}
-		{{ Form::text('card_number',null, array('class' => 'form-control')) }}
-	</div>
-
-	<div class="form-group">
-		{{ Form::label('expires_year','* Expires') }}
-		<br>
-		<?php
-		
-			// generate months
-			$months = [];
-			for ($m = 1; $m <= 12; $m ++) {
-				if ($m < 10) $m = "0" . $m;
-				$months[$m] = $m;
-				// echo '</pre>'; print_r($months); echo '</pre>';
-				// exit;
-			}
-			
-			// generate years
-			$y = date('Y');
-			$x = $y + 10;
-			$years = [];
-			for ($y = date('Y'); $y <= $x; $y ++) {
-				$years[$y] = $y;
-			}
-			
-		?>
-		{{ Form::select('expires_month', $months, null, ['class' => 'form-control inline-block width-auto']) }}
-		{{ Form::select('expires_year', $years, null, ['class' => 'form-control inline-block width-auto']) }}
-	</div>
-
-	<div class="form-group">
-		{{ Form::label('security','* Security Code') }}
-		{{ Form::text('security', null, array('class' => 'form-control', 'style' => 'width:50px')) }}
-	</div>
 
 	<div class="form-group">
 		<label for="agree" style="font-size:10pt; !important; max-width:250px; display:inline-block; vertical-align:top;">
 			{{ Form::checkbox('agree', null, null, array('id' => 'agree')) }}
 			&nbsp;I agree to the <a target="_blank" href="/terms-conditions">terms and conditions</a>.
 		</label>
-	</div>
-	<div style="position:relative; top:-10px;">
-		<small class="tiny">This is beta software.</small>
 	</div>
 	<br>
    
