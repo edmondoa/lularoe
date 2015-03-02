@@ -100,6 +100,9 @@ class PreRegisterController extends \BaseController {
 		$user->userSite()->associate($userSite);
 		Event::fire('rep.create', array('rep_id' => $user->id));
 		Auth::loginUsingId($user->id);
+        
+        
+        
 		return Redirect::to('/dashboard');
 	}
 
