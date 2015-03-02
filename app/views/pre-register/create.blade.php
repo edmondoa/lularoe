@@ -50,7 +50,17 @@
 	    
 	    <div class="form-group">
 		    {{ Form::label('dob', 'Date of Birth') }}
-	        {{ Form::text('dob', Input::old('dob'), array('class' => 'dateonlypicker form-control')) }}
+	        {{ Form::text('dob', Input::old('dob'), array('placeholder'=>'YYYY-MM-DD','class' => 'dateonlypicker form-control')) }}
+	    </div>
+
+	    <div class="form-group">
+	        {{ Form::label('phone', 'Driver License#') }}
+	        {{ Form::text('phone', Input::old('phone'), array('class' => 'form-control','placeholder'=>'UT############')) }}
+	    </div>
+
+	    <div class="form-group">
+	        {{ Form::label('phone', 'Social Security #') }}
+	        {{ Form::text('phone', Input::old('ssn'), array('class' => 'form-control')) }}
 	    </div>
 	    
 	    <div class="form-group">
