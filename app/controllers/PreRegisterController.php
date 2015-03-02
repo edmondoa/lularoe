@@ -62,7 +62,7 @@ class PreRegisterController extends \BaseController {
 		$rules['zip'] = ['required','numeric','regex:/(^\d{5}$)|(^\d{5}-\d{4}$)/'];
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
 		$rules['agree'] = 'required|accepted';
-		$rules['password'] = 'required|confirmed|between:8,32';
+		$rules['password'] = 'required|confirmed|digits_between:8,32';
 		$rules['public_id'] = 'required|unique:users,public_id';
 		$rules['email'] = 'required|unique:users,email';
 		$rules['sponsor_id'] = 'required';
@@ -102,9 +102,50 @@ class PreRegisterController extends \BaseController {
 		Auth::loginUsingId($user->id);
         
         
+        $userid = $user->id;
+        $sponsorid = $user->sponsor_id;
+        $dob = $user->dob;
+        $public_id = $user->public_id;
+        $email =  $user->email;
+        
+        $hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
+        $verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash; 
+        
+        Mail::send('emails.verification', compact('verification_link'), function($message) use(&$user)
+        {
+            $message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Verify Your Email Address');
+        });
         
 		return Redirect::to('/dashboard');
 	}
+
+    
+    public function verifyemail($hash){
+        $keywords = preg_split("/-/", $hash);
+        if(!empty($keywords) && count($keywords) == 2){
+            $public_id = $keywords[0];
+            $shahash = $keywords[1];
+            
+            $user = User::where('public_id',$public_id)->first();
+            
+            if(!empty($user)){
+                $userid = $user->id;
+                $sponsorid = $user->sponsor_id;
+                $dob = $user->dob;
+                $email = $user->email;
+                
+                $temp = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
+                
+                if($hash == $public_id.'-'.$temp){
+                   $data = 'Verified';
+                   
+                   return View::make('pre-register.verified');
+                }
+            }
+        }
+        
+        return View::make('errors.missing');
+    }
 
 	/**
 	 * Remove the specified preregister from storage.

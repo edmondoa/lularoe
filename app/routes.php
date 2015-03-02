@@ -537,6 +537,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		//Route::get('join', 'PreRegisterController@sponsor');
 		Route::get('join/{public_id}', 'PreRegisterController@create');
 		Route::get('join', 'PreRegisterController@create');
+        Route::get('u/{key}', 'PreRegisterController@verifyemail');
 		Route::post('find-sponsor', 'PreRegisterController@redirect');
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
 	});

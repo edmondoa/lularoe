@@ -23,7 +23,7 @@ class SessionController extends \BaseController {
 	{
 	 	//dont' need a client to login twice so if they are logged in it will take them to their default area
 	 	if(Auth::check())
-		{
+		{   
 			return Redirect::to('/dashboard');
 		}
 		$title = 'Log In';
