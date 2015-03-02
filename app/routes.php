@@ -272,9 +272,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		//put routes in here that we would like to cache
 		Route::group(['before' => 'cache.fetch'], function() {
 			Route::group(['after' => 'cache.put'], function() {
-				Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
-				Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
-				Route::get('api/all-users', 'DataOnlyController@getAllUsers');
+				
 				Route::get('cache-testing',function(){
 					return 'jake_'.date('H:i:s');
 				});
@@ -284,6 +282,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		# API functions that shouldn't be cached
 		##############################################################################################
+        Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+        Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
+        Route::get('api/all-users', 'DataOnlyController@getAllUsers');
+        
 		Route::get('api/all-addresses', 'AddressController@getAllAddresses');
 		Route::get('api/all-bonuses', 'BonusController@getAllBonuses');
 		Route::get('api/all-carts', 'CartController@getAllCarts');
