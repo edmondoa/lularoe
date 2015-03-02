@@ -223,7 +223,7 @@
 	
 		$http.get('/api/{{ $object }}').success(function(leads) {
 			$scope.leads = leads;
-			
+			console.log($scope.leads);
 			@include('_helpers.bulk_action_checkboxes')
 			
 		});

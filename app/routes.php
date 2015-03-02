@@ -125,6 +125,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	// leads
 	Route::get('leads', ['as' => 'leads', 'uses' => 'LeadController@index']);
 	Route::resource('leads', 'LeadController');
+	Route::post('leads/disable', 'LeadController@disable');
+	Route::post('leads/enable', 'LeadController@enable');
+	Route::post('leads/delete', 'LeadController@delete');
 
 	// opportunities (public view)
 	Route::get('opportunity/{id}', function($id)
@@ -352,9 +355,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		# Superadmin, Admin, Editor routes
 		##############################################################################################
 		Route::group(array('before' => ['superadmin','admin','editor']), function() {
-			Route::post('leads/disable', 'LeadController@disable');
-			Route::post('leads/enable', 'LeadController@enable');
-			Route::post('leads/delete', 'LeadController@delete');
 			Route::controller('dev','DevelopController');
 		});
 
