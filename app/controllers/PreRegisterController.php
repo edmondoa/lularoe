@@ -127,20 +127,29 @@ class PreRegisterController extends \BaseController {
             $shahash = $keywords[1];
             
             $user = User::where('public_id',$public_id)->first();
+            $status = '';
             
             if(!empty($user)){
                 $userid = $user->id;
                 $sponsorid = $user->sponsor_id;
                 $dob = $user->dob;
                 $email = $user->email;
-                
-                $temp = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
-                
-                if($hash == $public_id.'-'.$temp){
-                   $data = 'Verified';
-                   
-                   return View::make('pre-register.verified');
+                if(!$user->verified){
+                    $temp = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
+                    
+                    if($hash == $public_id.'-'.$temp){
+                        $user->verified = true;
+                        $user->save();
+                        $status = 'verified';
+                    }else{
+                        return View::make('errors.missing');    
+                    }
+                }else{
+                    $status = 'done';
                 }
+                
+                
+                return View::make('pre-register.verified',compact('status'));
             }
         }
         
