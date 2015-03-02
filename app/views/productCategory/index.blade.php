@@ -87,7 +87,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-class="{ highlight : productCategory.new == 1, semitransparent : productCategory.disabled == 1 }" dir-paginate-start="productCategory in productCategories | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+                            <tr ng-class="{ highlight : productCategory.new == 1, semitransparent : productCategory.disabled }" dir-paginate-start="productCategory in productCategories | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
                                 <td ng-click="checkbox()">
                                     <input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.productCategory_id')">
                                 </td>
@@ -130,9 +130,10 @@
             @include('_helpers.bulk_action_checkboxes')
              
         });
-          
+         
         $scope.currentPage = 1;
         $scope.pageSize = 10;
+        $scope.meals = [];
          
         $scope.pageChangeHandler = function(num) {
              

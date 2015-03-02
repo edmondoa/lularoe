@@ -114,10 +114,10 @@ class LeadController extends \BaseController {
 	 */
 	public function delete()
 	{
-		foreach (Input::get('ids') as $id) {
+		foreach (Input::get('user_ids') as $id) {
 			Lead::destroy($id);
 		}
-		if (count(Input::get('ids')) > 1) {
+		if (count(Input::get('user_ids')) > 1) {
 			return Redirect::route('leads.index')->with('message', 'Leads deleted.');
 		}
 		else {
@@ -130,10 +130,10 @@ class LeadController extends \BaseController {
 	 */
 	public function disable()
 	{
-		foreach (Input::get('ids') as $id) {
+		foreach (Input::get('user_ids') as $id) {
 			Lead::find($id)->update(['disabled' => 1]);	
 		}
-		if (count(Input::get('ids')) > 1) {
+		if (count(Input::get('user_ids')) > 1) {
 			return Redirect::route('leads.index')->with('message', 'Leads disabled.');
 		}
 		else {
@@ -146,10 +146,10 @@ class LeadController extends \BaseController {
 	 */
 	public function enable()
 	{
-		foreach (Input::get('ids') as $id) {
+		foreach (Input::get('user_ids') as $id) {
 			Lead::find($id)->update(['disabled' => 0]);	
 		}
-		if (count(Input::get('ids')) > 1) {
+		if (count(Input::get('user_ids')) > 1) {
 			return Redirect::route('leads.index')->with('message', 'Leads enabled.');
 		}
 		else {

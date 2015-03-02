@@ -296,7 +296,7 @@ class BlastController extends \BaseController {
 		}
 
 		// data
-		$data['subject_line'] = 'Invitation';
+		$data['subject_line'] = 'Invitation to Host';
 		$data['party'] = Party::find($data['party_id']);
 		$data['address'] = Party::find($data['party_id'])->address;
 

@@ -490,47 +490,55 @@ class DataOnlyController extends \BaseController
 		return Item::all();
 	}
 	
-	// leads
+	/**********
+	 * Leads
+	 * ********/
 	public function getAllLeads() {
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "last_name";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
-		return [
-            'count' =>Lead::count(),
-            'data' => Lead::orderBy("updated_at", "DESC")
-                            ->orderBy($order, $sequence)
-                            ->skip($offset)
-                            ->limit($limit)
-                            ->get()
-        ];
+		return Lead::all();
 	}
 	public function getAllLeadsByRep($id) {
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "last_name";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
-		return [
-            'count' => User::find($id)->leads()->count(),
-            'data' =>  User::find($id)
-                            ->leads()
-                            ->orderBy("updated_at", "DESC")
-                            ->orderBy($order, $sequence)
-                            ->skip($offset)
-                            ->limit($limit)
-                            ->get()
-        ];
+		return User::find($id)->leads;
 	}
+	// public function getAllLeads() {
+        // $p = Input::get('p');
+        // $l = Input::get('l');
+        // $o = Input::get('o');
+        // $s = Input::get('s');
+        // $page = $p ? $p : 1;
+        // $limit = $l ? $l : 10;
+        // $order = $o ? $o : "last_name";
+        // $sequence = $s == "true" || !$s ? "ASC" : "DESC";
+        // $offset = ($page - 1) * $limit;
+		// return [
+            // 'count' =>Lead::count(),
+            // 'data' => Lead::orderBy("updated_at", "DESC")
+                            // ->orderBy($order, $sequence)
+                            // ->skip($offset)
+                            // ->limit($limit)
+                            // ->get()
+        // ];
+	// }
+	// public function getAllLeadsByRep($id) {
+        // $p = Input::get('p');
+        // $l = Input::get('l');
+        // $o = Input::get('o');
+        // $s = Input::get('s');
+        // $page = $p ? $p : 1;
+        // $limit = $l ? $l : 10;
+        // $order = $o ? $o : "last_name";
+        // $sequence = $s == "true" || !$s ? "ASC" : "DESC";
+        // $offset = ($page - 1) * $limit;
+		// return [
+            // 'count' => User::find($id)->leads()->count(),
+            // 'data' =>  User::find($id)
+                            // ->leads()
+                            // ->orderBy("updated_at", "DESC")
+                            // ->orderBy($order, $sequence)
+                            // ->skip($offset)
+                            // ->limit($limit)
+                            // ->get()
+        // ];
+	// }
 	
 	// pages
 	public function getAllPages(){
