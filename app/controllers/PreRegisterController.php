@@ -62,7 +62,7 @@ class PreRegisterController extends \BaseController {
 		$rules['zip'] = ['required','numeric','regex:/(^\d{5}$)|(^\d{5}-\d{4}$)/'];
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
 		$rules['agree'] = 'required|accepted';
-		$rules['password'] = 'required|confirmed|digits_between:8,32';
+		$rules['password'] = 'required|confirmed|between:8,32';
 		$rules['public_id'] = 'required|unique:users,public_id';
 		$rules['email'] = 'required|unique:users,email';
 		$rules['sponsor_id'] = 'required';
