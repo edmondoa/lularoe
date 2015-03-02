@@ -73,16 +73,23 @@ class PageController extends \BaseController {
 	public function show($url)
 	{
 		$page = Page::where('url', $url)->first();
-		$title = $page->title;
-		if ($page->public) {
-			return View::make('page.show', compact('page', 'title'));
-		}
-		elseif (Auth::check()) {
-			if ($page->public || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (Auth::user()->hasRole(['Rep']) && $page->reps) || (Auth::user()->hasRole(['Customer']) && $page->customers)) {
-				return View::make('page.show', compact('page', 'title'));
-			}
-		}
-		else return "You don't have permission to view this page.";
+        if(!empty($page)){
+		    $title = $page->title;
+            
+            if ($page->public) {
+                return View::make('page.show', compact('page', 'title'));
+            }
+            elseif (Auth::check()) {
+                if ($page->public || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (Auth::user()->hasRole(['Rep']) && $page->reps) || (Auth::user()->hasRole(['Customer']) && $page->customers)) {
+                    return View::make('page.show', compact('page', 'title'));
+                }
+            }
+        }
+		
+        $message =  "You don't have permission to view this page.";
+        
+        return View::make('errors.missing');
+        
 	}
 
 	/**

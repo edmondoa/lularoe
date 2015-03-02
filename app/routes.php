@@ -193,6 +193,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		// dashboard
 		Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@index']);
 		Route::get('settings', ['as' => 'settings', 'uses' => 'DashboardController@settings']);
+        Route::get('welcome', ['as' => 'welcome', 'uses' => 'DashboardController@onboarding']);
 
 		// downline
 		Route::get('/downline/new/{id}', 'DownlineController@newDownline');

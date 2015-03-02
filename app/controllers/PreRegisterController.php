@@ -99,7 +99,7 @@ class PreRegisterController extends \BaseController {
 		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
 		$user->userSite()->associate($userSite);
 		Event::fire('rep.create', array('rep_id' => $user->id));
-		Auth::loginUsingId($user->id);
+		$loginuser = Auth::loginUsingId($user->id);
         
         
         $userid = $user->id;
@@ -116,7 +116,7 @@ class PreRegisterController extends \BaseController {
             $message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Verify Your Email Address');
         });
         
-		return Redirect::to('/dashboard');
+		return Redirect::to('/pages/main-page');
 	}
 
     
