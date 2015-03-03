@@ -10,15 +10,9 @@
                     <div class="clearfix">
                         <h3 class="pull-left no-pull-xs">Added Products</h3>
                         <div class="pull-right">
-                            <a ng-click="addProduct()" class="btn btn-primary pull-left margin-right-1" title="Add Products" href="javascript:void(0);"><i class="fa fa-plus"></i></a>
+                            <a ng-click="addProduct()" class="btn btn-primary pull-left margin-right-1" title="Add Products" href="javascript:void(0);"><i class="fa fa-plus"></i> ADD PRODUCT</a>
                         </div>
                         <div class="input-group pull-right no-pull-xs width-xs">
-                            <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
-                            <span class="input-group-btn no-width">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
                         </div>
                     </div>
                     @include('_helpers.loading')
@@ -92,7 +86,9 @@
 <div class="onboarding_form">
     <div class="row">
         <div class="col col-xl-3 col-lg-6 col-lg-offset-3 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-12">
-                <button ng-hide='next' type="button" class="pull-right btn btn-sm btn-primary" ng-click="goto('/products')">Next</button>
+			<blockquote>Once you have added <b>all</b> the products in your inventory, please click "Save Products"</blockquote>
+				<a ng-click="addProduct()" class="btn btn-primary pull-left margin-left-1" title="Add Products" href="javascript:void(0);"><i class="fa fa-plus"></i> ADD MORE</a>
+				<button ng-hide='next' type="button" class="pull-right btn btn-sm btn-success" ng-click="goto('/bankinfo')">Next</button>
         </div>
     </div>
 </div>

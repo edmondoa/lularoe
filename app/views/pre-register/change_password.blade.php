@@ -17,8 +17,6 @@
                 @endif                            
                 <h2 class="no-top">Change Password</h2>
                 
-                <span ng-if="checkPassMsg() && !isPassError" style="">@{{changePasswd.message}}</span>
-                <span ng-if="checkPassMsg()  && isPassError" style="color:red;">@{{changePasswd.message}}</span>
                 
                 <div class="form-group">
                     {{ Form::label('password', 'Password',['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
@@ -43,9 +41,14 @@
                         </div>
                     </div>
                 </div>
+
+				<div class="clearfix pull-left">
+					<span ng-if="checkPassMsg() && !isPassError" class="well alert alert-success">@{{changePasswd.message}}</span>
+					<span ng-if="checkPassMsg()  && isPassError" class="well alert alert-danger">@{{changePasswd.message}}</span>
+				</div>
                 
-                <button ng-hide="next"  ng-show='loginForm.password.$valid && loginForm.password_confirmation.$valid' type="button" class="pull-right btn btn-sm btn-primary" ng-click="changepasswd()">Submit</button>
-                <button ng-show='next' type="button" class="pull-right btn btn-sm btn-primary" ng-click="goto('/products')">Next</button>
+                <button ng-hide="next"  ng-show='loginForm.password.$valid && loginForm.password_confirmation.$valid' type="button" class="pull-right btn btn-sm btn-info" ng-click="changepasswd()">Update</button>
+                <button ng-show='next' type="button" class="pull-right btn btn-sm btn-primary" ng-click="goto('/products')">Next &raquo;</button>
                 </form>
         </div>
     </div>
