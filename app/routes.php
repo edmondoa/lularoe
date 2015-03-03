@@ -10,13 +10,13 @@
  | and give it the Closure to execute when that URI is requested.
  |
  */
-	// load user-created pages
-	/*
-	$path = Request::path();
-	if (Page::where('url', $path)->first()) {
-		Route::get('/{' . $path . '}', 'PageController@show');
-	}
-	*/
+// load user-created pages
+/*
+ $path = Request::path();
+ if (Page::where('url', $path)->first()) {
+ Route::get('/{' . $path . '}', 'PageController@show');
+ }
+ */
 //if((Auth::check())&&(Auth::user()->hasRole(['Rep']))) Auth::logout();
 ##############################################################################################
 # Non-Replicated Site Routes
@@ -24,27 +24,26 @@
 
 Route::pattern('id', '[0-9]+');
 
-		// API for IOS App
-		Route::get('llrapi/v1/auth/{id}', 						'ExternalAuthController@auth');
-		Route::get('llrapi/v1/remove-inventory/{key}',			'ExternalAuthController@rmInventory');
-		Route::get('llrapi/v1/remove-inventory/{key}/{id}/{quantity}',			'ExternalAuthController@rmInventory');
+// API for IOS App
+Route::get('llrapi/v1/auth/{id}', 'ExternalAuthController@auth');
+Route::get('llrapi/v1/remove-inventory/{key}', 'ExternalAuthController@rmInventory');
+Route::get('llrapi/v1/remove-inventory/{key}/{id}/{quantity}', 'ExternalAuthController@rmInventory');
 
-		Route::get('llrapi/v1/get-inventory/',					'ExternalAuthController@getInventory');
-		Route::get('llrapi/v1/get-inventory/{key}',				'ExternalAuthController@getInventory');
-		Route::get('llrapi/v1/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory');
-		Route::get('llrapi/v1/inventory/{location}',			'ExternalAuthController@getInventory');
+Route::get('llrapi/v1/get-inventory/', 'ExternalAuthController@getInventory');
+Route::get('llrapi/v1/get-inventory/{key}', 'ExternalAuthController@getInventory');
+Route::get('llrapi/v1/get-inventory/{key}/{location}', 'ExternalAuthController@getInventory');
+Route::get('llrapi/v1/inventory/{location}', 'ExternalAuthController@getInventory');
 
-		Route::get('llrapi/v1/refund/{key}', 					'ExternalAuthController@refund');
-		Route::get('llrapi/v1/purchase/{key}',					'ExternalAuthController@purchase');
-		Route::get('llrapi/v1/multi-purchase/{key}',			'ExternalAuthController@multiPurchase');
+Route::get('llrapi/v1/refund/{key}', 'ExternalAuthController@refund');
+Route::get('llrapi/v1/purchase/{key}', 'ExternalAuthController@purchase');
+Route::get('llrapi/v1/multi-purchase/{key}', 'ExternalAuthController@multiPurchase');
 
-		Route::get('llrapi/v1/ledger/{key}', 					'ExternalAuthController@ledger');
-		Route::get('llrapi/v1/ledger/',		 					'ExternalAuthController@ledger');
+Route::get('llrapi/v1/ledger/{key}', 'ExternalAuthController@ledger');
+Route::get('llrapi/v1/ledger/', 'ExternalAuthController@ledger');
 
-		Route::post('llrapi/v1/reorder/', 					    	'ExternalAuthController@reorder');
+Route::post('llrapi/v1/reorder/', 'ExternalAuthController@reorder');
 
-Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
-{
+Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function() {
 	##############################################################################################
 	# Session Control
 	##############################################################################################
@@ -57,20 +56,20 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	##############################################################################################
 	# Public Routes
 	##############################################################################################
-	
+
 	// company
 	Route::get('/', ['as' => 'home', function() {
 		// if (Auth::check()) {
-			// return Redirect::to('dashboard');
+		// return Redirect::to('dashboard');
 		// }
 		// else {
-			$title = 'Home';
-			return View::make('company.home', compact('title'));
+		$title = 'Home';
+		return View::make('company.home', compact('title'));
 		//}
 	}]);
 	// Route::get('company-events', function() {
-		// $title = 'Company Events';
-		// return View::make('company.events', compact('title'));
+	// $title = 'Company Events';
+	// return View::make('company.events', compact('title'));
 	// });
 	Route::get('contact-us', function() {
 		$title = 'Contact Us';
@@ -93,20 +92,19 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		return View::make('company.presentation', compact('title'));
 	});
 
-	
 	// blasts
-	Route::get('send_text/{phoneId}','SmsMessagesController@create');
-	Route::resource('send_text','SmsMessagesController');
-	Route::get('send_mail/{personId}','MailMessagesController@create');
-	Route::resource('send_mail/','MailMessagesController');
-	Route::get('blast_email',['as'=>'blast_email','uses'=>'BlastController@CreateMail']);
-	Route::post('blast_email',['uses'=>'BlastController@StoreMail']);
-	Route::get('blast_sms',['as'=>'blast_sms','uses'=>'BlastController@CreateSms']);
-	Route::post('blast_sms',['uses'=>'BlastController@StoreSms']);
-	Route::post('party-invite','BlastController@CreatePartyInvite');
-	Route::post('party-host-invite','BlastController@CreatePartyHostInvite');
-	Route::post('blast-party-invites',['as' => 'blast-party-invites', 'uses'=>'BlastController@StorePartyInvites']);
-	Route::post('blast-party-host-invite',['as' => 'blast-party-host-invite', 'uses'=>'BlastController@StorePartyHostInvite']);
+	Route::get('send_text/{phoneId}', 'SmsMessagesController@create');
+	Route::resource('send_text', 'SmsMessagesController');
+	Route::get('send_mail/{personId}', 'MailMessagesController@create');
+	Route::resource('send_mail/', 'MailMessagesController');
+	Route::get('blast_email', ['as' => 'blast_email', 'uses' => 'BlastController@CreateMail']);
+	Route::post('blast_email', ['uses' => 'BlastController@StoreMail']);
+	Route::get('blast_sms', ['as' => 'blast_sms', 'uses' => 'BlastController@CreateSms']);
+	Route::post('blast_sms', ['uses' => 'BlastController@StoreSms']);
+	Route::post('party-invite', 'BlastController@CreatePartyInvite');
+	Route::post('party-host-invite', 'BlastController@CreatePartyHostInvite');
+	Route::post('blast-party-invites', ['as' => 'blast-party-invites', 'uses' => 'BlastController@StorePartyInvites']);
+	Route::post('blast-party-host-invite', ['as' => 'blast-party-host-invite', 'uses' => 'BlastController@StorePartyHostInvite']);
 
 	// cart
 	Route::get('cart', ['as' => 'cart', 'uses' => 'CartController@show']);
@@ -116,7 +114,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::get('api/cart', 'DataOnlyController@getCart');
 
 	// contact form
-	Route::post('send-contact-form',['as' => 'send-contact-form', 'uses' => 'ContactController@send']);
+	Route::post('send-contact-form', ['as' => 'send-contact-form', 'uses' => 'ContactController@send']);
 
 	// events
 	Route::get('api/upcoming-public-events', 'DataOnlyController@getUpcomingPublicEvents');
@@ -131,11 +129,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('leads/delete', 'LeadController@delete');
 
 	// opportunities (public view)
-	Route::get('opportunity/{id}', function($id)
-	{
+	Route::get('opportunity/{id}', function($id) {
 		$opportunity = Opportunity::findOrFail($id);
-		$sponsor = User::where('id', 0)->first();
-		return View::make('opportunity.public', compact('opportunity','sponsor'));
+		$sponsor = User::where('id', 0) -> first();
+		return View::make('opportunity.public', compact('opportunity', 'sponsor'));
 	});
 
 	// pages
@@ -143,7 +140,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('pages/disable', 'PageController@disable');
 	Route::post('pages/enable', 'PageController@enable');
 	Route::post('pages/delete', 'PageController@delete');
-	
+
 	// parties
 	Route::get('public-parties', 'PartyController@publicIndex');
 	Route::get('public-parties/{id}', 'PartyController@publicShow');
@@ -153,16 +150,17 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::get('host-rsvp/{party_id}/{person_id}/{person_type}/{status}', 'PartyController@hostRSVP');
 	Route::get('host-decline/{party_id}/{person_id}/{person_type}/{status}', 'PartyController@hostRSVP');
 	Route::get('party/{id}', 'PartyController@publicShow');
-	
+
 	// posts
 	Route::resource('posts', 'PostController');
 	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
-	Route::get('public-posts', 'PostController@publicPosts');
+	Route::get('public-posts', 'PostController@publicIndex');
+	Route::get('public-posts/{url}', 'PostController@publicShow');
 	Route::post('posts/disable', 'PostController@disable');
 	Route::post('posts/enable', 'PostController@enable');
 	Route::post('posts/delete', 'PostController@delete');
 	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
-	
+
 	// products
 	Route::get('store', 'ProductController@publicIndex');
 	Route::get('store/{id}', 'ProductController@publicShow');
@@ -175,7 +173,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
-		
+
 	##############################################################################################
 	// Protected Routes
 	##############################################################################################
@@ -194,7 +192,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		// dashboard
 		Route::get('dashboard', ['as' => 'dashboard', 'uses' => 'DashboardController@index']);
 		Route::get('settings', ['as' => 'settings', 'uses' => 'DashboardController@settings']);
-        Route::get('welcome', ['as' => 'welcome', 'uses' => 'DashboardController@onboarding']);
+		Route::get('welcome', ['as' => 'welcome', 'uses' => 'DashboardController@onboarding']);
 
 		// downline
 		Route::get('/downline/new/{id}', 'DownlineController@newDownline');
@@ -202,7 +200,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('/downline/all/{id}', 'DownlineController@allDownline');
 		Route::get('/downline/visualization/{id}', 'DownlineController@visualization');
 		Route::get('/downline/states/{id}', 'DownlineController@states');
-		
+
 		// helpers
 		Route::get('helpers/media-modals', function() {
 			return View::make('_helpers/modals');
@@ -221,7 +219,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('events/enable', 'UventController@enable');
 		Route::post('events/delete', 'UventController@delete');
 		Route::get('past-events', 'UventController@indexPast');
-		
+
 		// Media
 		Route::resource('media', 'MediaController');
 		Route::get('media/user/{id}', ['as' => 'media/user', 'uses' => 'MediaController@user']);
@@ -231,20 +229,24 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('media/disable', 'MediaController@disable');
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
-		
-        //inventories
-        #Route::resource('inventories', 'InventoryController');
-        Route::get('inventories/', 'InventoryController@index');
-        Route::get('inv/checkout', 'InventoryController@checkout');
-        Route::get('inv/sales', 'InventoryController@sales');
 
-        Route::post('inv/purchase', 'InventoryController@purchase');
-        #Route::post('inventories/disable', 'InventoryController@disable');
-        #Route::post('inventories/enable', 'InventoryController@enable');
-        #Route::post('inventories/delete', 'InventoryController@delete');
-		Route::get('inventory/validpurchase', function () { return(View::make('inventory.validpurchase')); });
-        Route::get('inventory/invalidpurchase', function () { return(View::make('inventory.invalidpurchase')); });
-        
+		//inventories
+		#Route::resource('inventories', 'InventoryController');
+		Route::get('inventories/', 'InventoryController@index');
+		Route::get('inv/checkout', 'InventoryController@checkout');
+		Route::get('inv/sales', 'InventoryController@sales');
+
+		Route::post('inv/purchase', 'InventoryController@purchase');
+		#Route::post('inventories/disable', 'InventoryController@disable');
+		#Route::post('inventories/enable', 'InventoryController@enable');
+		#Route::post('inventories/delete', 'InventoryController@delete');
+		Route::get('inventory/validpurchase', function() {
+			return (View::make('inventory.validpurchase'));
+		});
+		Route::get('inventory/invalidpurchase', function() {
+			return (View::make('inventory.invalidpurchase'));
+		});
+
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
 		Route::post('opportunities/disable', 'OpportunityController@disable');
@@ -270,7 +272,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('parties/delete', 'PartyController@delete');
 		Route::get('past-parties', 'PartyController@indexPast');
 
-
 		##############################################################################################
 		# API that should be cached
 		##############################################################################################
@@ -278,9 +279,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		//put routes in here that we would like to cache
 		Route::group(['before' => 'cache.fetch'], function() {
 			Route::group(['after' => 'cache.put'], function() {
-				
-				Route::get('cache-testing',function(){
-					return 'jake_'.date('H:i:s');
+
+				Route::get('cache-testing', function() {
+					return 'jake_' . date('H:i:s');
 				});
 			});
 		});
@@ -288,10 +289,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		# API functions that shouldn't be cached
 		##############################################################################################
-        Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
-        Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
-        Route::get('api/all-users', 'DataOnlyController@getAllUsers');
-        
+		Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
+		Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
+		Route::get('api/all-users', 'DataOnlyController@getAllUsers');
+
 		Route::get('api/all-addresses', 'AddressController@getAllAddresses');
 		Route::get('api/all-bonuses', 'BonusController@getAllBonuses');
 		Route::get('api/all-carts', 'CartController@getAllCarts');
@@ -311,30 +312,30 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 		Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
 		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
-		if (Auth::check() && Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) :
+		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin', 'Editor'])) :
 			Route::get('api/media-counts/{id}', 'DataOnlyController@getMediaCounts');
-		elseif (Auth::check() && Auth::user()->hasRole(['Rep'])) :
+		elseif (Auth::check() && Auth::user() -> hasRole(['Rep'])) :
 			Route::get('api/media-counts/{type}', 'DataOnlyController@getMediaCounts');
-		endif;	
+		endif;
 		Route::get('api/all-images', 'DataOnlyController@getAllImages');
 		Route::get('api/all-config', 'DataOnlyController@getAllConfig');
 		Route::get('api/first-branch', 'DataOnlyController@getFirstBranch');
 		Route::get('api/all-branches/{id}', 'DataOnlyController@getAllBranches');
-		
+
 		// media
 		Route::get('api/media-by-user/{id}', 'DataOnlyController@getMediaByUser');
 		Route::get('api/media-by-reps', 'DataOnlyController@getMediaByReps');
 		Route::get('api/images-by-user/{id}', 'DataOnlyController@getImagesByUser');
 		Route::get('api/media-shared-with-reps', 'DataOnlyController@getMediaSharedWithReps');
 		Route::get('api/images-shared-with-reps', 'DataOnlyController@getImagesSharedWithReps');
-		
+
 		// events
 		Route::get('api/all-events', 'DataOnlyController@getAllUvents');
 		Route::get('api/all-upcoming-events', 'DataOnlyController@getAllUpcomingEvents');
 		Route::get('api/all-upcoming-events-by-role', 'DataOnlyController@getAllUpcomingEventsByRole');
 		Route::get('api/all-past-events', 'DataOnlyController@getAllPastEvents');
 		Route::get('api/all-past-events-by-role', 'DataOnlyController@getAllPastEventsByRole');
-		
+
 		// parties
 		Route::get('api/all-parties', 'DataOnlyController@getAllParties');
 		Route::get('api/all-upcoming-parties', 'DataOnlyController@getAllUpcomingParties');
@@ -342,7 +343,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-past-parties', 'DataOnlyController@getAllPastParties');
 		Route::get('api/all-past-parties-by-role', 'DataOnlyController@getAllPastPartiesByRole');
 		Route::get('api/party/{id}', 'DataOnlyController@getParty');
-		
+
 		Route::get('api/all-opportunities', 'DataOnlyController@getAllOpportunities');
 		Route::get('api/all-leads', 'DataOnlyController@getAllLeads');
 		Route::get('api/all-leads-by-rep/{id}', 'DataOnlyController@getAllLeadsByRep');
@@ -350,47 +351,46 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-posts', 'DataOnlyController@getAllPosts');
 		Route::get('api/all-product-categories', 'DataOnlyController@getAllProductCategories');
 		Route::get('api/all-product-tags', 'DataOnlyController@getAllProductTags');
-		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline');		
-		Route::get('api/all-items', 'DataOnlyController@getAllItems');	
-        Route::get('api/search-user/{keyword}', 'DataOnlyController@getSearchUsers');    
+		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline');
+		Route::get('api/all-items', 'DataOnlyController@getAllItems');
+		Route::get('api/search-user/{keyword}', 'DataOnlyController@getSearchUsers');
 
 		// upload media
 		Route::post('upload-media', 'MediaController@store');
 
 		// userSites
 		Route::resource('user-sites', 'UserSiteController');
-		
+
 		##############################################################################################
 		# Superadmin, Admin, Editor routes
 		##############################################################################################
-		Route::group(array('before' => ['superadmin','admin','editor']), function() {
-			Route::controller('dev','DevelopController');
+		Route::group(array('before' => ['superadmin', 'admin', 'editor']), function() {
+			Route::controller('dev', 'DevelopController');
 		});
-
 
 		##############################################################################################
 		# Superadmin only routes
 		##############################################################################################
 		Route::group(array('before' => 'superadmin'), function() {
-			Route::controller('sa','SuperAdminTasksController');
-			Route::get('login-as/{id}',function($id){
+			Route::controller('sa', 'SuperAdminTasksController');
+			Route::get('login-as/{id}', function($id) {
 				//first log out the admin
-				if(!Auth::user()->hasRole(['Superadmin'])) return;
+				if (!Auth::user() -> hasRole(['Superadmin']))
+					return;
 				Auth::logout();
 				//then login automatically as the requested user
 				Auth::loginUsingId($id);
 				return Redirect::to('/dashboard');
 			});
 			Route::get('clear-all-cache', function() {
-				$users = DB::table('users')->get(['id']);
+				$users = DB::table('users') -> get(['id']);
 				$count = 0;
-				foreach($users as $user)
-				{
-					$user = User::find($user->id);
-					$user->clearUserCache();
+				foreach ($users as $user) {
+					$user = User::find($user -> id);
+					$user -> clearUserCache();
 					$count++;
 				}
-				return "Cache cleared for ".$count." users";
+				return "Cache cleared for " . $count . " users";
 			});
 
 		});
@@ -398,64 +398,64 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		# Admin only routes
 		##############################################################################################
 		Route::group(array('before' => 'admin'), function() {
-			
+
 			// site-config
 			Route::resource('config', 'SiteConfigController');
-			
+
 			// bonuses
 			Route::resource('bonuses', 'BonusController');
 			Route::post('bonuses/disable', 'BonusController@disable');
 			Route::post('bonuses/enable', 'BonusController@enable');
 			Route::post('bonuses/delete', 'BonusController@delete');
-			
+
 			// carts
 			Route::resource('carts', 'CartController');
 			Route::post('carts/disable', 'CartController@disable');
 			Route::post('carts/enable', 'CartController@enable');
 			Route::post('carts/delete', 'CartController@delete');
-			
+
 			// commissions
 			Route::resource('commissions', 'CommissionController');
 			Route::post('commissions/disable', 'CommissionController@disable');
 			Route::post('commissions/enable', 'CommissionController@enable');
 			Route::post('commissions/delete', 'CommissionController@delete');
-			
+
 			// emailMessages
 			Route::resource('emailMessages', 'EmailMessageController');
 			Route::post('emailMessages/disable', 'EmailMessageController@disable');
 			Route::post('emailMessages/enable', 'EmailMessageController@enable');
 			Route::post('emailMessages/delete', 'EmailMessageController@delete');
-			
-			// emailRecipients	
+
+			// emailRecipients
 			Route::resource('emailRecipients', 'EmailRecipientController');
 			Route::post('emailRecipients/disable', 'EmailRecipientController@disable');
 			Route::post('emailRecipients/enable', 'EmailRecipientController@enable');
 			Route::post('emailRecipients/delete', 'EmailRecipientController@delete');
-			
-			// images			
+
+			// images
 			Route::resource('images', 'ImageController');
 			Route::post('images/disable', 'ImageController@disable');
 			Route::post('images/enable', 'ImageController@enable');
 			Route::post('images/delete', 'ImageController@delete');
-			
+
 			// levels
 			Route::resource('levels', 'LevelController');
 			Route::post('levels/disable', 'LevelController@disable');
 			Route::post('levels/enable', 'LevelController@enable');
-			Route::post('levels/delete', 'LevelController@delete');	
-			
+			Route::post('levels/delete', 'LevelController@delete');
+
 			// mobile plans
 			Route::resource('mobilePlans', 'MobilePlanController');
 			Route::post('mobilePlans/disable', 'MobilePlanController@disable');
 			Route::post('mobilePlans/enable', 'MobilePlanController@enable');
 			Route::post('mobilePlans/delete', 'MobilePlanController@delete');
-			
+
 			// profile
 			Route::resource('profiles', 'ProfileController');
 			Route::post('profiles/disable', 'ProfileController@disable');
 			Route::post('profiles/enable', 'ProfileController@enable');
 			Route::post('profiles/delete', 'ProfileController@delete');
-			
+
 			// ranks
 			Route::resource('ranks', 'RankController');
 			Route::post('ranks/disable', 'RankController@disable');
@@ -473,41 +473,41 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::post('roles/disable', 'RoleController@disable');
 			Route::post('roles/enable', 'RoleController@enable');
 			Route::post('roles/delete', 'RoleController@delete');
-			
+
 			// sales
 			Route::post('sales/disable', 'SaleController@disable');
 			Route::post('sales/enable', 'SaleController@enable');
 			Route::post('sales/delete', 'SaleController@delete');
-			
+
 			// smsMessages
 			Route::resource('smsMessages', 'SmsMessageController');
 			Route::post('smsMessages/disable', 'SmsMessageController@disable');
 			Route::post('smsMessages/enable', 'SmsMessageController@enable');
 			Route::post('smsMessages/delete', 'SmsMessageController@delete');
-			
+
 			// smsRecipients
 			Route::resource('smsRecipients', 'SmsRecipientController');
 			Route::post('smsRecipients/disable', 'SmsRecipientController@disable');
 			Route::post('smsRecipients/enable', 'smsRecipientController@enable');
 			Route::post('smsRecipients/delete', 'smsRecipientController@delete');
-			
+
 			// user
 			Route::post('users/disable', 'UserController@disable');
 			Route::post('users/enable', 'UserController@enable');
 			Route::post('users/delete', 'UserController@delete');
-			
+
 			// userProduct
 			Route::resource('userProducts', 'UserProductController');
 			Route::post('userProducts/disable', 'UserProductController@disable');
 			Route::post('userProducts/enable', 'UserProductController@enable');
 			Route::post('userProducts/delete', 'UserProductController@delete');
-			
+
 			// userRanks
 			Route::resource('userRanks', 'UserRankController');
 			Route::post('userRanks/disable', 'UserRankController@disable');
 			Route::post('userRanks/enable', 'UserRankController@enable');
 			Route::post('userRanks/delete', 'UserRankController@delete');
-			
+
 			// userSites
 			Route::post('userSites/disable', 'UserSiteController@disable');
 			Route::post('userSites/enable', 'UserSiteController@enable');
@@ -543,27 +543,24 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::group(array(), function() {
 		//Route::get('join', 'PreRegisterController@sponsor');
 		Route::get('join/{public_id}', 'PreRegisterController@create');
-        Route::get('join', 'PreRegisterController@create');
-        Route::get('pending-registration', 'PreRegisterController@pending');
+		Route::get('join', 'PreRegisterController@create');
+		Route::get('pending-registration', 'PreRegisterController@pending');
 		Route::post('change-password', 'PreRegisterController@changePassword');
-        Route::get('u/{key}', 'PreRegisterController@verifyemail');
-        Route::get('template/preregister/', 'PreRegisterController@template');
-        Route::get('template/preregister/{key}', 'PreRegisterController@template');
-        Route::get('bankinfo', 'PreRegisterController@bankinfo');
+		Route::get('u/{key}', 'PreRegisterController@verifyemail');
+		Route::get('template/preregister/', 'PreRegisterController@template');
+		Route::get('template/preregister/{key}', 'PreRegisterController@template');
+		Route::get('bankinfo', 'PreRegisterController@bankinfo');
 		Route::post('find-sponsor', 'PreRegisterController@redirect');
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
 	});
 
-	Route::get('populate-levels', function(){
-		$level_count = Level::all()->count();
-		DB::connection()->disableQueryLog();
+	Route::get('populate-levels', function() {
+		$level_count = Level::all() -> count();
+		DB::connection() -> disableQueryLog();
 
-		if($level_count > 0)
-		{
+		if ($level_count > 0) {
 			return $level_count;
-		}
-		else
-		{
+		} else {
 			Commission::set_levels_down(0);
 			return "Populated Levels";
 		}
@@ -574,49 +571,50 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 # Replicated Site Routes
 ##############################################################################################
 
-Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain){
+Route::group(array('domain' => '{subdomain}.' . \Config::get('site.base_domain'), 'before' => 'rep-site'), function($subdomain) {
 	// dd($subdomain);
-	function ($subdomain){
+	function($subdomain) {
 		dd($subdomain);
 	};
 
-	Route::get('/', function($subdomain)
-	{
-		$user = User::where('public_id', $subdomain)->first();
-		if ($user->image == '') $user->image = '/img/users/default-avatar.png';
-		else $user->image = '/img/users/avatars/' . $user->image;
-		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
-		$userSite->save();
+	Route::get('/', function($subdomain) {
+		$user = User::where('public_id', $subdomain) -> first();
+		if ($user -> image == '')
+			$user -> image = '/img/users/default-avatar.png';
+		else
+			$user -> image = '/img/users/avatars/' . $user -> image;
+		$userSite = UserSite::firstOrNew(['user_id' => $user -> id]);
+		$userSite -> save();
 		//return dd($userSite);
-		if ((!isset($userSite->banner))||($userSite->banner == '')) $userSite->banner = '/img/users/default-banner.png';
-		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
-		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(5)->get();
-		$opportunities = Opportunity::where('public', 1)->where('deadline', '>', time())->orWhere('deadline', '')->take(5)->orderBy('updated_at', 'DESC')->get();
+		if ((!isset($userSite -> banner)) || ($userSite -> banner == ''))
+			$userSite -> banner = '/img/users/default-banner.png';
+		else
+			$userSite -> banner = '/img/users/banners/' . $userSite -> banner;
+		$events = Uvent::where('public', 1) -> where('date_start', '>', time()) -> take(5) -> get();
+		$opportunities = Opportunity::where('public', 1) -> where('deadline', '>', time()) -> orWhere('deadline', '') -> take(5) -> orderBy('updated_at', 'DESC') -> get();
 		// echo '<pre>'; print_r($opportunities->toArray()); echo '</pre>';
 		// exit;
 		return View::make('userSite.show', compact('user', 'userSite', 'opportunities', 'events'));
 	});
 
 	// opportunities (public view)
-	Route::get('opportunity/{id}', function($subdomain, $id)
-	{
+	Route::get('opportunity/{id}', function($subdomain, $id) {
 		$opportunity = Opportunity::findOrFail($id);
-		$sponsor = User::where('public_id', $subdomain)->first();
-		return View::make('opportunity.public', compact('opportunity','sponsor'));
+		$sponsor = User::where('public_id', $subdomain) -> first();
+		return View::make('opportunity.public', compact('opportunity', 'sponsor'));
 	});
-	
+
 	// event (public view)
-	Route::get('public-events/{id}', function($subdomain, $id)
-	{
+	Route::get('public-events/{id}', function($subdomain, $id) {
 		$event = Uvent::findOrFail($id);
-		$sponsor = User::where('public_id', $subdomain)->first();
-		$title = $event->name;
-		return View::make('event.public_show', compact('event','title','sponsor'));
+		$sponsor = User::where('public_id', $subdomain) -> first();
+		$title = $event -> name;
+		return View::make('event.public_show', compact('event', 'title', 'sponsor'));
 	});
-	
+
 	//timezone
 	Route::post('set-timezone', 'TimezoneController@setTimezone');
-	
+
 });
 
 ##############################################################################################
@@ -625,30 +623,34 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 
 Route::get('test-steve', function() {
 	return Config::get('site');
-	Auth::user()->clearUserCache();
-	exit;
+	Auth::user() -> clearUserCache();
+	exit ;
 	foreach (User::all() as $user) {
-		$user->clearUserCache();
+		$user -> clearUserCache();
 	}
 });
 
 Route::get('clear-all-cache/{function}', function($function) {
-	Cache::forget('route_'.Str::slug(action('DataOnlyController@' . $function)));
+	Cache::forget('route_' . Str::slug(action('DataOnlyController@' . $function)));
 });
 
 Route::get('test-cache/{id}', function($id) {
-	$users = User::find($id)->descendants;
+	$users = User::find($id) -> descendants;
 	//$result['users'] = $users;
-	echo "<h1> Found ".$users->count()." descendants.</h1>";
-	echo"<!-- <pre>"; print_r($users->toArray()); echo"</pre> -->";
+	echo "<h1> Found " . $users -> count() . " descendants.</h1>";
+	echo "<!-- <pre>";
+	print_r($users -> toArray());
+	echo "</pre> -->";
 	$queries = DB::getQueryLog();
-	echo"<pre>"; print_r($queries); echo"</pre>";
+	echo "<pre>";
+	print_r($queries);
+	echo "</pre>";
 	//return $result;
 	return;
 });
 
 Route::get('test', function() {
-	$start = microtime (true);
+	$start = microtime(true);
 	$response['result'] = $rep = User::find(2001);
 	//$response['result'] = User::find($rep_id)->clearUserCache();
 	//$response['queries'] = Session::get('queries');
@@ -658,25 +660,25 @@ Route::get('test', function() {
 	//return (Cache::has('user_'.$id.'_descendants'))?Cache::get('user_'.$id.'_descendants'):User::find($id)->descendants;
 	//$response['result'] = User::find(2001)->plans;
 	//$response['result'] = Commission::free_service(2001);
-	$response['lapsed'] = round((microtime (true) - $start),5);
+	$response['lapsed'] = round((microtime(true) - $start), 5);
 	return $response;
-	exit;
-	return User::take(150)->remember(1,'first125')->get();
+	exit ;
+	return User::take(150) -> remember(1, 'first125') -> get();
 
-	$start = microtime (true);
+	$start = microtime(true);
 	$response['result'] = Commission::infinity(2024);
 	//$response['result'] = User::find(2024)->ancestors()->whereNotNull('users.sponsor_id')->get();
-	$response['lapsed'] = round((microtime (true) - $start),5);
+	$response['lapsed'] = round((microtime(true) - $start), 5);
 	return $response;
 
 	##############################################################################################
 	# loading commission non-statically
 	##############################################################################################
-	
+
 	$commission = new \LLR\Commission\Commission;
-	$commission->setCommissionPeriod(date('Y-m-d',strtotime('last month')));
-	$response['result'] = $commission->setRank(2001,true);
-	$response['lapsed'] = round((microtime (true) - $start),5);
+	$commission -> setCommissionPeriod(date('Y-m-d', strtotime('last month')));
+	$response['result'] = $commission -> setRank(2001, true);
+	$response['lapsed'] = round((microtime(true) - $start), 5);
 	return Response::json($response);
 	return User::find(2001);
 });
@@ -686,84 +688,78 @@ Route::get('test', function() {
 });
 
 Route::get('testfunction', function() {
-	print '<pre>'.session_id();
+	print '<pre>' . session_id();
 	print_r($_SERVER);
 	Die('This is television');
 });
 
 Route::get('test-orders', function() {
 	$reps = User::all();
-	foreach($reps as $rep)
-	{
+	foreach ($reps as $rep) {
 		$order = new Order;
-		foreach($rep->plans as $plan)
-		{
-			if($plan->price > 0)
-			{
+		foreach ($rep->plans as $plan) {
+			if ($plan -> price > 0) {
 				//Order::$timestamps = false;
 				//foreach
-				$order->user()->associate($rep);
-				$order->save();
+				$order -> user() -> associate($rep);
+				$order -> save();
 				//echo"<pre>"; print_r($order->toArray()); echo"</pre>";
-			}
-			else
-			{
+			} else {
 				//echo"<pre>"; print_r($plan->toArray()); echo"</pre>";
 			}
 		}
-		
+
 	}
 	//return $reps;
-	return User::find(2001)->payments;
+	return User::find(2001) -> payments;
 });
 
 //automatic deployment script
-if(is_file(app_path().'/controllers/Server.php')){
-	Route::get('deploy-beta',['as'=>'deploy', 'uses'=>'Server@deploy_beta']);
-	Route::get('deploy-production',['as'=>'deploy', 'uses'=>'Server@deploy_production']);
+if (is_file(app_path() . '/controllers/Server.php')) {
+	Route::get('deploy-beta', ['as' => 'deploy', 'uses' => 'Server@deploy_beta']);
+	Route::get('deploy-production', ['as' => 'deploy', 'uses' => 'Server@deploy_production']);
 }
 
 Route::get('sendonboardmail/{id}', function($id) {
 	print "<pre>";
-	$user  = User::find($id);
-	$user->remember_token = null;
-	$user->save();
+	$user = User::find($id);
+	$user -> remember_token = null;
+	$user -> save();
 
-	$userid = $user->id;
-	$sponsorid = $user->sponsor_id;
-	$dob = $user->dob;
+	$userid = $user -> id;
+	$sponsorid = $user -> sponsor_id;
+	$dob = $user -> dob;
 
 	// needs to be regular user id
-	$public_id = $user->id;
-	$email =  $user->email;
+	$public_id = $user -> id;
+	$email = $user -> email;
 
-	$sponsor = User::where('id',$sponsorid)->first();
-	Session::put('sponsor',$sponsor);
+	$sponsor = User::where('id', $sponsorid) -> first();
+	Session::put('sponsor', $sponsor);
 
-	$hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
-	$verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash;
+	$hash = sha1(sha1($userid) . sha1($dob) . sha1($sponsorid));
+	$verification_link = 'http://' . Config::get('site.domain') . '/u/' . $public_id . '-' . $hash;
 
 	print "Sending ..";
-	Mail::send('emails.verification', compact('verification_link'), function($message) use(&$user)
-	{
-		$message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Please complete your '.Config::Get('site.company_name').' registration');
+	Mail::send('emails.verification', compact('verification_link'), function($message) use (&$user) {
+		$message -> to($user -> email, $user -> first_name . ' ' . $user -> last_name) -> subject('Please complete your ' . Config::Get('site.company_name') . ' registration');
 	});
 
 	die('Sent!');
 });
 
 Route::get('routes', function() {
-$routeCollection = Route::getRoutes();
+	$routeCollection = Route::getRoutes();
 
-echo "<table style='width:100%'>";
+	echo "<table style='width:100%'>";
 	foreach ($routeCollection as $value) {
 		echo "<tr>";
-			echo "<td>" . implode(",",$value->getMethods()) . "</td>";
-			echo "<td>" . $value->getPath() . "</td>";
-			echo "<td>" . $value->getActionName() . "</td>";
-			echo "<td>" . $value->getUri() . "</td>";
-			echo "<td>" . $value->getName() . "</td>";
+		echo "<td>" . implode(",", $value -> getMethods()) . "</td>";
+		echo "<td>" . $value -> getPath() . "</td>";
+		echo "<td>" . $value -> getActionName() . "</td>";
+		echo "<td>" . $value -> getUri() . "</td>";
+		echo "<td>" . $value -> getName() . "</td>";
 		echo "</tr>";
 	}
-echo "</table>";
+	echo "</table>";
 });
