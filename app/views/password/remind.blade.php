@@ -1,4 +1,4 @@
-@extends('layouts.centered')
+@extends('layouts.public')
 @section('content')
 	<div class="row">
 		<div class="col col-md-12">

@@ -92,6 +92,7 @@ class PreRegisterController extends \BaseController {
         $role = Role::where('name','Rep')->first();
         //echo"<pre>"; print_r($role); echo"</pre>";
         $user->role()->associate($role);
+        $user->hasSignUp = true;
         $user->save();
 		
 		//User::create($data);
@@ -99,12 +100,145 @@ class PreRegisterController extends \BaseController {
 		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
 		$user->userSite()->associate($userSite);
 		Event::fire('rep.create', array('rep_id' => $user->id));
-		Auth::loginUsingId($user->id);
+		#$loginuser = Auth::loginUsingId($user->id);
         
         
+        $userid = $user->id;
+        $sponsorid = $user->sponsor_id;
+        $dob = $user->dob;
+        $public_id = $user->public_id;
+        $email =  $user->email;
         
-		return Redirect::to('/dashboard');
+        $sponsor = User::where('id',$sponsorid)->first();
+        Session::put('sponsor',$sponsor);
+        
+        $hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
+        $verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash; 
+        
+        Mail::send('emails.verification', compact('verification_link'), function($message) use(&$user)
+        {
+            $message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Verify Your Email Address');
+        });
+        
+		return Redirect::to('/pending-registration');
 	}
+
+	public function bankinfo() {
+		$user = Auth::user();
+        return View::make('pre-register.bankinfo',compact('user'));
+    }
+
+    
+    public function pending(){
+        $sponsor = Session::get('sponsor');
+        if(empty($sponsor)){
+            return Redirect::to('/join');    
+        }
+        return View::make('pre-register.pending',compact('sponsor'));
+    }
+
+    
+    public function verifyemail($hash){
+        $keywords = preg_split("/-/", $hash);
+        if(!empty($keywords) && count($keywords) == 2){
+            $public_id = $keywords[0];
+            $shahash = $keywords[1];
+            
+			// Most users won't have a public ID at this point
+            $user = User::where('id',$public_id)->first();
+            $status = '';
+            
+            if(!empty($user)){
+                $userid = $user->id;
+                $sponsorid = $user->sponsor_id;
+                $dob = $user->dob;
+                $email = $user->email;
+                if(!$user->verified){
+                    $temp = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
+                    
+                    if($hash == $public_id.'-'.$temp){
+                        $user->verified = true;
+                        $user->save();
+                        
+                        $loginuser = Auth::loginUsingId($user->id);
+                        
+                        if($user->hasSignUp){
+                            $status = 'hasSignUp';
+                        }else{
+                            $status = 'existingRep';
+                        }
+                    }else{
+                        return View::make('errors.missing');    
+                    }
+                }else{
+                    $status = 'done';
+                    //Redirect::to('/dashboard');
+                }
+                
+                Session::put('pre-register.status',$status);
+                
+                return View::make('pre-register.main',compact('status'));
+            }
+        }
+        
+        return View::make('errors.missing');
+    }
+    
+    public function template($path='index'){
+        $userid = Auth::user()->id;
+        $user = User::where('id',$userid)->first();
+        $sponsor = User::where('id',$user->sponsor_id)->first();
+        switch($path){
+            case 'products':
+                return View::make('pre-register.products',compact('user','sponsor'));
+                break;
+            default:
+                $status = Session::get('pre-register.status');
+                #if($status == 'hasSignUp'){
+                #    return View::make('pre-register.purchase_agreement',compact('user','sponsor'));
+                #}elseif($status == 'existingRep'){
+                    return View::make('pre-register.change_password',compact('user','sponsor'));    
+                #}
+                break;
+        }
+    }
+    
+    public function changePassword(){
+        $data = Input::all();
+        $loginData = array();
+        
+        array_map(function($field) use(&$loginData){
+            switch($field['name']){
+                case 'password':
+                    $loginData['password'] = $field['value'];
+                    break;
+                case 'password_confirmation':
+                    $loginData['password_confirmation'] = $field['value'];
+                    break;
+            }
+        },$data);
+        
+        $hasPass = true;
+        if($loginData['password'] != $loginData['password_confirmation']){
+            $hasPass = false;    
+            $message = 'Password and Confirmation Password must be the same';    
+        }elseif(strlen($loginData['password']) < 8 || strlen($loginData['password_confirmation']) < 8){
+            $hasPass = false;    
+            $message = 'Password must be at least 8 characters';  
+        }
+        
+        if($hasPass){
+            $user = User::where('id',Auth::user()->id)->first();
+            $user->password = \Hash::make($loginData['password']);
+            $user->save();
+            $status = 'success';
+            $message = 'Password successfully changed.';
+        }else{
+            $status = 'failed';
+        }
+        
+        return Response::json(['status'=>$status,'message'=>$message,'data'=>$loginData]);
+    }
 
 	/**
 	 * Remove the specified preregister from storage.

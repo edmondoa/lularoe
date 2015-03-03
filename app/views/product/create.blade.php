@@ -16,6 +16,7 @@
 			        {{ Form::text('name', Input::old('name'), array('class' => 'form-control')) }}
 			    </div>
 	    
+<!--
 			    <div class="form-group">
 			        {{ Form::label('blurb', 'Brief Description') }}
 			        {{ Form::textarea('blurb', Input::old('blurb'), array('class' => 'form-control')) }}
@@ -25,6 +26,7 @@
 			        {{ Form::label('description', 'Long Description') }}
 			        {{ Form::textarea('description', Input::old('description'), array('class' => 'wysiwyg form-control')) }}
 			    </div>
+-->
 			    
 			</div><!-- col -->
 		</div><!-- row -->
@@ -48,10 +50,12 @@
 			    </div>
 				
 			    <div class="form-group">
+					<span class="label label-xs">S,M,L,XL,XXL etc</span>
 			        {{ Form::label('size', 'Size') }}
-			        {{ Form::text('size', null, array('class' => 'form-control')) }}
+			        {{ Form::text('size', null, array('size'=>1,'style'=>'width:6em','class' => 'form-control')) }}
 			    </div>
 			    
+<!--
 			    <div class="form-group">
 			        {{ Form::label('retail_price', 'Retail Price') }}
 			        <div class="input-group">
@@ -59,6 +63,7 @@
 			        	{{ Form::text('retail_price', Input::old('retail_price'), array('class' => 'form-control')) }}
 			        </div>
 			    </div>
+-->
 			    
 			    <div class="form-group">
 			        {{ Form::label('rep_price', 'Rep Price') }}
@@ -73,6 +78,8 @@
 			        {{ Form::text('quantity', Input::old('quantity'), array('class' => 'form-control')) }}
 			    </div>
 			    
+				<input type="hidden" name="category_id" value="0">
+<!--
 			    <div class="form-group">
 			    	{{ Form::label('category_id', 'Category') }}
 			    	<br>
@@ -89,13 +96,15 @@
 			    	</div>
 			    	<div class="tag-list"></div>
 		        </div>
+-->
 			    
 			    <div class="form-group">
 			        {{ Form::label('disabled', 'Status') }}
 			        <br>
 			    	{{ Form::select('disabled', [
 			    		0 => 'Active',
-			    		1 => 'Disabled'
+			    		1 => 'Disabled',
+			    		2 => 'In Transit'
 			    	], null, ['class' => 'form-control']) }}
 			    </div>
 			    

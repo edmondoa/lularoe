@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<<<<<<< HEAD
 	<head>
 		<meta charset="utf-8">
 		<meta name="description" content="">
@@ -18,7 +19,6 @@
 		{{ HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css') }}
 		{{ HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css') }}
 		{{ HTML::style('packages/angular-growl-v2/build/angular-growl.min.css') }}
-
 		{{ HTML::style('css/lularoe/bootstrap-lularoe.min.css') }}
 		{{ HTML::style('css/bootstrap-xl.css') }}
 		{{ HTML::style('css/theme.css') }}

@@ -54,5 +54,11 @@ class DashboardController extends \BaseController
 		// die($shipping_address_exists);
 		return View::make('dashboard.settings', compact('addresses'));
 	}
+    
+    public function onboarding(){
+        $user = User::findOrFail(Auth::user()->id);
+        $sponsor = User::find($user->id)->sponsor;
+        return View::make('dashboard.onboarding', compact('user','sponsor'));
+    }
 	
 }

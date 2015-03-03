@@ -138,6 +138,14 @@
 					<!-- <a href="/emailMessages" class="list-group-item"><i class="fa fa-envelope"></i> <span class="text">EmailMessages</span></a> -->
 					<!-- <a href="/levels" class="list-group-item"><i class="fa fa-sitemap"></i> Levels</a> -->
 					<!-- <a href="/payments" class="list-group-item">Payments</a> -->
+ 					<a href="javascript:void(0)" data-href="/products" class='list-group-item' data-toggle="popover" data-content="
+ 						<a href='/products'><i class='fa fa-female'></i> All Products</a>
+ 						<a href='/productCategories'><i class='fa fa-female'></i> All Product Categories</a>
+ 						<a href='/products/create'><i class='fa fa-plus'></i> New Product</a>
+ 						<a href='/productCategories/create'><i class='fa fa-plus'></i> New Product Category</a>
+ 					">
+						<i class="fa fa-female"></i> <span class="text">Products</span>
+					</a>
 					<!-- <a href="/profiles" class="list-group-item"><i class="fa fa-user"></i> Profiles</a> -->
 					<!-- <a href="/ranks" class="list-group-item"><i class="fa fa-certificate"></i> Ranks</a> -->
 					<!-- <a href="/reviews" class="list-group-item"><i class="fa fa-comments"></i> Reviews</a> -->
