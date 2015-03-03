@@ -24,42 +24,60 @@
                     @include('_helpers.loading')
                     <ul class="media-list" id="currentinventory">
                         <li class="media" dir-paginate-start="inventory in inventories | filter:search | itemsPerPage: pageSize " current-page="currentPage" total-items="countItems">
-                            <a class="pull-left" href="#">
-                                <img class="media-object" src="/img/media/@{{inventory.model}}.jpg" width="100">
-                            </a>
                             <div class="media-body clearfix">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h4 class="media-heading pull-left">@{{inventory.model}}</h4>
-                                        <div class="pull-right">
-                                            <span><b>$@{{inventory.price}}</b></span>
-                                        </div>
-                                        <div>
-                                            <br class="clearfix"/><br/>
-                                            <p>@{{inventory.description|| "Click to Edit "}}&nbsp;<a href="#" editable-text="inventory.description" title="Click to edit"><i class="fa fa-edit"></i></a></p><br/>
-                                        </div>
-                                        <div class="row available-xs">
-                                            <div class="col-md-12"><br/>
-                                                <h5>Available Sizes:</h5>
-                                                <div ng-switch on="inventory.doNag">
-                                                    <div ng-switch-when="none-selected" class="pull-left alert alert-danger cleafix" role="alert">
-                                                        <strong>Oh snap!</strong> Please select at least one size and try clicking the "add" button again.
-                                                    </div>
-                                                    <div ng-switch-when="volume-too-large" class="pull-left alert alert-danger cleafix" role="alert">
-                                                        <strong>Sorry!</strong> We can't cater your order as we currently have a limited volume. You may want to reduce your quantity.
-                                                    </div>
-                                                    <div ng-switch-default></div>
-                                                </div><div ng-if="inventory.doNag"><br/><br/><br/><br/></div>
-                                                <ul class="nav nav-pills">
-                                                    <li ng-repeat="(key,size) in inventory.sizes">
-                                                        <a class="pull-left" style="padding-right: 0;padding-left: 0;display:none;" href="#">
-                                                            <input ng-class="{disabled:!size.value}" style="display:none" class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
-                                                        </a>
-                                                        <span class="label label-info">@{{size.key}}</span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
+
+										<div class="row well">
+											<div class="col-md-6">
+												<div class="form-group">
+													{{ Form::label('name', 'Name') }}
+													{{ Form::text('name', Input::old('name'), array('class' => 'form-control')) }}
+												</div>
+											</div>
+				
+											<div class="col-md-2">
+												<div class="form-group">
+													{{ Form::label('size', 'Size') }}
+													{{ Form::text('size', null, array('class' => 'form-control')) }}
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													{{ Form::label('quantity', 'Quantity') }}
+													{{ Form::text('quantity', Input::old('quantity'), array('class' => 'form-control')) }}
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													{{ Form::label('rep_price', 'Price') }}
+													<div class="input-group">
+														<span class="input-group-addon">$</span>
+														{{ Form::text('rep_price', Input::old('rep_price'), array('class' => 'form-control')) }}
+													</div>
+												</div>
+											</div>
+								
+										</div>
+<!--
+
+										<div class="row">
+											<input type="hidden" name="category_id" value="0">
+											<div class="col-md-3">
+												<div class="form-group">
+													{{ Form::label('make', 'Make') }}
+													{{ Form::text('make', null, array('class' => 'form-control')) }}
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													{{ Form::label('model', 'Model') }}
+													{{ Form::text('model', null, array('class' => 'form-control')) }}
+												</div>
+											</div>
+										</div>
+-->
+<!----------- END -->
                                     </div>
                                 </div>
                             </div>
@@ -74,8 +92,7 @@
 <div class="onboarding_form">
     <div class="row">
         <div class="col col-xl-3 col-lg-6 col-lg-offset-3 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-12">
-                <button ng-hide="next" type="button" class="pull-right btn btn-sm btn-primary" ng-click="changepasswd()">Submit</button>
-                <button ng-show='next' type="button" class="pull-right btn btn-sm btn-primary" ng-click="goto('/products')">Next</button>
+                <button ng-hide='next' type="button" class="pull-right btn btn-sm btn-primary" ng-click="goto('/products')">Next</button>
         </div>
     </div>
 </div>
