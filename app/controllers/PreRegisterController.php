@@ -156,7 +156,7 @@ class PreRegisterController extends \BaseController {
                 if(!$user->verified){
                     $temp = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
                     
-                    if($hash == $public_id.'-'.$temp){
+                    if($hash == $userid.'-'.$temp){
                         $user->verified = true;
                         $user->save();
                         
