@@ -26,14 +26,6 @@ try {
     
     app.config(function($routeProvider, $locationProvider){
         $routeProvider
-        .when('/products',{
-            templateUrl: '/template/preregister/products',
-            controller: 'PreRegisterController'
-        })
-        .when('/additional-info',{
-            templateUrl: '/template/preregister/additional-info',
-            controller: 'PreRegisterController'
-        })
         .when('/:screen',{
             templateUrl: function(params){
                 return '/template/preregister/'+params.screen;
@@ -213,6 +205,17 @@ try {
              $http.post('/register',$scope.user).success(function(data){
                 console.log(data)
             });       
-        }; 
+        };
+        
+		// bulk action checkboxes
+		$scope.checkbox = function() {
+			var checked = false;
+			$('.bulk-check').each(function() {
+			if ($(this).is(":checked")) checked = true;
+			});
+			if (checked == true) $('.applyAction').removeAttr('disabled');
+			else $('.applyAction').attr('disabled', 'disabled');
+		};
+        
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));

@@ -227,6 +227,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('media/user/{id}', ['as' => 'media/user', 'uses' => 'MediaController@user']);
 		Route::get('media-reps', 'MediaController@reps');
 		Route::get('media-shared-with-reps', 'MediaController@sharedWithReps');
+		Route::get('media/destroy/{id}', 'MediaController@destroyAJAX');
 		Route::post('media/disable', 'MediaController@disable');
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
@@ -310,7 +311,11 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 		Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
 		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
-		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
+		if (Auth::check() && Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) :
+			Route::get('api/media-counts/{id}', 'DataOnlyController@getMediaCounts');
+		elseif (Auth::check() && Auth::user()->hasRole(['Rep'])) :
+			Route::get('api/media-counts/{type}', 'DataOnlyController@getMediaCounts');
+		endif;	
 		Route::get('api/all-images', 'DataOnlyController@getAllImages');
 		Route::get('api/all-config', 'DataOnlyController@getAllConfig');
 		Route::get('api/first-branch', 'DataOnlyController@getFirstBranch');

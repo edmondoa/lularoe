@@ -106,7 +106,7 @@ class partyController extends \BaseController {
 				}
 			}
 			
-			return Redirect::route('parties.index')->with('message', 'Party created.');
+			return Redirect::route('parties.index')->with('message', 'Popup-Boutique created.');
 		}
 	}
 
@@ -302,7 +302,7 @@ class partyController extends \BaseController {
 			
 			$party->update($data);
 			
-			return Redirect::route('parties.show', $id)->with('message', 'Party updated.');
+			return Redirect::route('parties.show', $id)->with('message', 'Popup-Boutique updated.');
 		}
 	}
 
@@ -403,7 +403,7 @@ class partyController extends \BaseController {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep'])) {
 			Party::destroy($id);
 	
-			return Redirect::route('parties.index')->with('message', 'Party deleted.');
+			return Redirect::route('parties.index')->with('message', 'Popup-Boutique deleted.');
 		}
 	}
 	
@@ -417,10 +417,10 @@ class partyController extends \BaseController {
 				Party::destroy($id);
 			}
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('parties.index')->with('message', 'Parties deleted.');
+				return Redirect::route('parties.index')->with('message', 'Popup-Boutiques deleted.');
 			}
 			else {
-				return Redirect::back()->with('message', 'Party deleted.');
+				return Redirect::back()->with('message', 'Popup-Boutique deleted.');
 			}
 		}
 	}
@@ -435,10 +435,10 @@ class partyController extends \BaseController {
 				Party::find($id)->update(['disabled' => 1]);	
 			}
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('parties.index')->with('message', 'Parties disabled.');
+				return Redirect::route('parties.index')->with('message', 'Popup-Boutiques disabled.');
 			}
 			else {
-				return Redirect::back()->with('message', 'Party disabled.');
+				return Redirect::back()->with('message', 'Popup-Boutique disabled.');
 			}
 		}
 	}
@@ -453,10 +453,10 @@ class partyController extends \BaseController {
 				Party::find($id)->update(['disabled' => 0]);	
 			}
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('parties.index')->with('message', 'Parties enabled.');
+				return Redirect::route('parties.index')->with('message', 'Popup-Boutiques enabled.');
 			}
 			else {
-				return Redirect::back()->with('message', 'Party enabled.');
+				return Redirect::back()->with('message', 'Popup-Boutique enabled.');
 			}
 		}
 	}

@@ -51,6 +51,7 @@ $(document).ready(function() {
         dateFormat: 'yy-mm-dd',
         //timeFormat: 'hh:mm tt'
     });
+    $.extend($.datepicker,{_checkOffset:function(inst,offset,isFixed){return offset}});
     
     // highlight active page in main-menu
     path = path.split('/');

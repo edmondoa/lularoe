@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
-		    <h1 class="no-top">Upload Resource</h1>
+		    <h1 class="no-top">Upload Asset</h1>
 		</div>
 	</div>
 	<div class="row">
@@ -29,12 +29,12 @@
                 @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
 	                <div class="form-group">
 	                	<label>
-	                		{{ Form::checkbox('reps') }} Share with Reps
+	                		{{ Form::checkbox('reps', null, ['checked' => 'checked']) }} Share with FC's
 	                	</label>
 	                </div>
 	            @endif
 		
-			    {{ Form::submit('Upload Resource', array('class' => 'btn btn-primary')) }}
+			    {{ Form::submit('Upload Asset', array('class' => 'btn btn-primary')) }}
 	
 		    {{ Form::close() }}
 	    </div>

@@ -13,9 +13,9 @@
 		            	@endif
 		            	<h1 class="no-top pull-left no-pull-xs">
 			            	@if ($user->id == Auth::user()->id)
-			            		Your New Downline
+			            		Your New Team Members
 			            	@else
-			                	{{ $user->first_name }} {{ $user->last_name }}'s New Downline
+			                	{{ $user->first_name }} {{ $user->last_name }}'s New Team Members
 			            	@endif
 		            	</h1>
 		            	<div class="pull-right hidable-xs">
@@ -138,7 +138,7 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='front_line_count'; reverseSort = !reverseSort">Immediate Downline
+                            	<th class="link" ng-click="orderByField='front_line_count'; reverseSort = !reverseSort">Sponsored Members
                             		<span>
                             			<span ng-show="orderByField == 'rank_id'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -147,7 +147,7 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='descendant_count'; reverseSort = !reverseSort">Total Downline
+                            	<th class="link" ng-click="orderByField='descendant_count'; reverseSort = !reverseSort">Entire Team
                             		<span>
                             			<span ng-show="orderByField == 'rank_id'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -195,11 +195,11 @@
 					            </td>
 					            
 					            <td>
-					            	<a href="/downline/immediate/@include('_helpers.user_id')" title="View Direct Downline"><span ng-bind="user.front_line_count"></span></a>
+					            	<a href="/downline/immediate/@include('_helpers.user_id')" title="View Sponsored Members"><span ng-bind="user.front_line_count"></span></a>
 					            </td>
 					            
 					            <td>
-					            	<a href="/downline/all/@include('_helpers.user_id')" title="View All Downline"><span ng-bind="user.descendant_count"></span></a>
+					            	<a href="/downline/all/@include('_helpers.user_id')" title="View Entire Team"><span ng-bind="user.descendant_count"></span></a>
 					            </td>
 					            
 	                        </tr>

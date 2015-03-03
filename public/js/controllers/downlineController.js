@@ -98,7 +98,7 @@ try {
             });
             
             return promise;    
-        }
+        };
         
         $scope.getStartDate = function(range) {
             var d = new Date();
@@ -125,13 +125,13 @@ try {
                 ss='0'+ss
             }
             return $scope.startDate = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + ii + ':' + ss;
-        }
+        };
         $scope.getStartDate($scope.range);
         $scope.greaterThan = function(prop, val){
             return function(item){
               if (item[prop] > val) return true;
-            }
-        }
+            };
+        };
         
         $scope.$watch("currentPage", function(n, o){
             var promise = dRetriever(n, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
@@ -139,11 +139,22 @@ try {
                     $scope.isComplete = true;
                 },function(r){
                     return( $q.reject( "Something went wrong" ) );    
-                }) 
+                });
         });
         
         $scope.pageChangeHandler = function(num) {
             console.log('page: '+num);    
         };
+        
+		// bulk action checkboxes
+		$scope.checkbox = function() {
+			var checked = false;
+			$('.bulk-check').each(function() {
+			if ($(this).is(":checked")) checked = true;
+			});
+			if (checked == true) $('.applyAction').removeAttr('disabled');
+			else $('.applyAction').attr('disabled', 'disabled');
+		};
+        
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));

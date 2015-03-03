@@ -4,10 +4,10 @@
 	<div class="row">
 		<div class="col-md-12">
 			@include('_helpers.breadcrumbs')
-			<h1 class="no-top">Resource Details</h1>
-			@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-				<div class="page-actions">
-				    <div class="btn-group" id="record-options">
+			<h1 class="no-top">Asset Details</h1>
+			<div class="page-actions">
+				@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor', ]))
+				    <div class="btn-group pull-left" id="record-options">
 					    <a class="btn btn-default" href="{{ url('media/'.$media->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 					    @if ($media->disabled == 0)
 						    {{ Form::open(array('url' => 'media/disable', 'method' => 'DISABLE')) }}
@@ -30,18 +30,11 @@
 					    	</button>
 					    {{ Form::close() }}
 					</div>
-				</div>
-			@endif
-			@if (Auth::user()->hasRole(['Rep']))
-			    <div class="btn-group" id="record-options-rep">
-				    <a class="btn btn-default" href="{{ url('media/'.$media->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
-				    {{ Form::open(array('url' => 'media/' . $media->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this media? This cannot be undone.");')) }}
-				    	<button class="btn btn-default" title="Delete">
-				    		<i class="fa fa-trash" title="Delete"></i>
-				    	</button>
-				    {{ Form::close() }}
-				</div>
-			@endif
+				@endif
+				<button class="btn btn-default">
+					<a href="/uploads/{{ $media->url }}" download="/uploads/{{ $media->url }}"><i class="fa fa-download"></i> Download</a>
+				</button>
+			</div><!-- page-actions -->
 		</div><!-- col -->
 	</div><!-- row -->
 	<br>
@@ -83,7 +76,7 @@
 		        
 		        @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && $media->reps)
 			        <tr>
-			            <th>Shared with Reps:</th>
+			            <th>Shared with FC's:</th>
 			            <td><i class="fa fa-check"></i></td>
 			        </tr>
 		        @endif

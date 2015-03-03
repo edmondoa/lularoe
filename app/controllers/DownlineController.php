@@ -21,8 +21,7 @@ class DownlineController extends \BaseController
 	public function immediateDownline($id)
 	{
 		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id || Auth::user()->hasRole(array('Superadmin', 'Admin'))) {
-            $id = ($id == 0) ? Auth::user()->id : $id;
-			$user = User::findOrFail($id);
+            $user = User::findOrFail($id);
 			return View::make('downline.immediate', compact('user'));
 		}
 		else
@@ -35,8 +34,7 @@ class DownlineController extends \BaseController
 	{
 		//return dd(Auth::user()->hasRepInDownline($id));
 		if (Auth::user()->hasRepInDownline($id) || Auth::user()->id == $id || Auth::user()->hasRole(array('Superadmin', 'Admin'))) {
-            $id = ($id == 0) ? Auth::user()->id : $id; 
-			$user = User::findOrFail($id);
+            $user = User::findOrFail($id);
 			return View::make('downline.all', compact('user'));
 		}
 		else

@@ -29,7 +29,7 @@
 			    {{ Form::close() }}
 			</div>
 		@endif
-		<a class="btn btn-primary" target="_blank" href="/party/{{ $party->id }}"><i class="fa fa-globe"></i> View Public Party Page</a>
+		<a class="btn btn-primary" target="_blank" href="/party/{{ $party->id }}"><i class="fa fa-globe"></i> View Public Page</a>
 	</div><!-- row -->
 	<div class="row">
 		<div class="col-md-4 col-sm-6">
@@ -91,7 +91,7 @@
 				        			</tr>
 				        			<tr>
 				        				<td>@if ($party->reps == 1)<i class="fa fa-check"></i>@endif</td>
-				        				<td>&nbsp;Reps</td>
+				        				<td>&nbsp;FC's</td>
 				        			</tr>
 				        			<!--<tr>
 				        				<td>@if ($party->editors == 1)<i class="fa fa-check"></i>@endif</td>
@@ -183,7 +183,7 @@
 	    	@if (count($users_attending) > 0)
 		    	<div class="panel panel-default">
 		    		<div class="panel-heading">
-		    			<h2 class="panel-title">{{ Config::get('site.company_name') }} Reps Attending</h2>
+		    			<h2 class="panel-title">{{ Config::get('site.company_name') }} FC's Attending</h2>
 		    		</div>
 	    			<table class="table table-striped">
 		    			@foreach ($users_attending as $user)
@@ -219,7 +219,7 @@
 	    	@if (count($users_declined) > 0)
 		    	<div class="panel panel-default">
 		    		<div class="panel-heading">
-		    			<h2 class="panel-title">{{ Config::get('site.company_name') }} Reps Declined</h2>
+		    			<h2 class="panel-title">{{ Config::get('site.company_name') }} FC's Declined</h2>
 		    		</div>
 	    			<table class="table table-striped">
 		    			@foreach ($users_declined as $user)
