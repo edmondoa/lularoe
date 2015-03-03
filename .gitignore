@@ -16,6 +16,7 @@ public/nfo.php
 /.htaccess
 /*.sql
 public/img/users/
+public/bar_codes/*.png
 public/uploads/
 LLR.pem
 LLR.ppk
