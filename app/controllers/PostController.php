@@ -9,7 +9,6 @@ class PostController extends \BaseController {
 	 */
 	public function index()
 	{
-		$posts = Post::all();
 		return View::make('post.index', compact('posts'));
 	}
 
@@ -18,7 +17,7 @@ class PostController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function publicPosts()
+	public function publicIndex()
 	{
 		return View::make('post.public_index');
 	}
@@ -93,6 +92,28 @@ class PostController extends \BaseController {
 		else return "You don't have permission to view this post.";
 	}
 
+	/**
+	 * Display the specified post (public view).
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function publicShow($url)
+	{
+		
+		$post = Post::where('url', $url)->first();
+		$title = $post->title;
+		if ($post->public) {
+			return View::make('post.show', compact('post', 'title'));
+		}
+		elseif (Auth::check()) {
+			if ($post->public || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (Auth::user()->hasRole(['Rep']) && $post->reps) || (Auth::user()->hasRole(['Customer']) && $post->customers)) {
+				return View::make('post.public_show', compact('post', 'title'));
+			}
+		}
+		else return "You don't have permission to view this post.";
+	}
+	
 	/**
 	 * Show the form for editing the specified post.
 	 *

@@ -2,11 +2,11 @@
 @section('content')
 <div ng-app="app" class="index">
     {{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
-	    <div ng-controller="TeamController" class="my-controller">
+	    <div ng-controller="DownlineController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		            	@if (Auth::user()->hasRepInTeam($user->id) || (Auth::user()->hasRole(['Superadmin', 'Admin']) && isset($user->sponsor_id)))
+		            	@if (Auth::user()->hasRepInDownline($user->id) || (Auth::user()->hasRole(['Superadmin', 'Admin']) && isset($user->sponsor_id)))
 		            		<div class="breadcrumbs">
 		            			<a href="/downline/all/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
 		            		</div>
