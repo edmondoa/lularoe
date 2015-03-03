@@ -717,6 +717,35 @@ if(is_file(app_path().'/controllers/Server.php')){
 	Route::get('deploy-production',['as'=>'deploy', 'uses'=>'Server@deploy_production']);
 }
 
+Route::get('sendonboardmail/{id}', function($id) {
+	print "<pre>";
+	$user  = User::find($id);
+	$user->remember_token = null;
+	$user->save();
+
+	$userid = $user->id;
+	$sponsorid = $user->sponsor_id;
+	$dob = $user->dob;
+
+	// needs to be regular user id
+	$public_id = $user->id;
+	$email =  $user->email;
+
+	$sponsor = User::where('id',$sponsorid)->first();
+	Session::put('sponsor',$sponsor);
+
+	$hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
+	$verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash;
+
+	print "Sending ..";
+	Mail::send('emails.verification', compact('verification_link'), function($message) use(&$user)
+	{
+		$message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Please complete your '.Config::Get('site.company_name').' registration');
+	});
+
+	die('Sent!');
+});
+
 Route::get('routes', function() {
 $routeCollection = Route::getRoutes();
 

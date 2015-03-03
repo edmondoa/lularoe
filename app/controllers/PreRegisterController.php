@@ -138,7 +138,8 @@ class PreRegisterController extends \BaseController {
             $public_id = $keywords[0];
             $shahash = $keywords[1];
             
-            $user = User::where('public_id',$public_id)->first();
+			// Most users won't have a public ID at this point
+            $user = User::where('id',$public_id)->first();
             $status = '';
             
             if(!empty($user)){
