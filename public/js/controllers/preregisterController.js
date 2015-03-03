@@ -14,10 +14,15 @@ try {
     var newModules = [
             'angularUtils.directives.dirPagination',
             'ngRoute',
-            'ngResource'
+            'ngResource',
+            'xeditable'
         ];
       
     push(app.requires, newModules); 
+    
+    app.run(function(editableOptions) {
+      editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
+    });
     
     app.config(function($routeProvider, $locationProvider){
         $routeProvider
@@ -62,11 +67,11 @@ try {
                     console.log(shared);
                 };
                 
-                $scope.$watch('$location.path()',function(n,o){
+                /*$scope.$watch('$location.path()',function(n,o){
                     if(n != "/" &&  !$scope.hasOwnProperty('user')){
                         $location.path('/');
-                    }    
-                });   
+                    }*/    
+               /* });  */ 
     }]);
     
     app.controller('PreRegisterController',
@@ -89,11 +94,49 @@ try {
             message : ''
         };
         
+        
+        
+        $scope.inventories = [];
+        
+        $scope.addProduct = function(){
+            var tempProduct = {
+                model: 'sample',
+                description: 'Some description here',
+                price: 0,
+                sizes: [
+                    {
+                        'key' : 'a',
+                        'value': 100
+                    },
+                    {
+                        'key' : 'b',
+                        'value': 15454
+                    },
+                    {
+                        'key' : 'c',
+                        'value': 15465
+                    },
+                    {
+                        'key' : 'd',
+                        'value': 12545
+                    }
+                ]
+            };
+            var newProduct = angular.copy({},tempProduct);
+            newProduct.model = "Product"+($scope.inventories.length+1);
+            var len = $scope.inventories.length; 
+            $scope.inventories.splice(len+1,0,newProduct);     
+        };
+        
+        $scope.showGenAddProd = function(){
+
+        };
+        
         $scope.isPassError =false;
         
         $scope.next = false;
         
-        $scope.isComplete = false;
+        $scope.isComplete = true;
         $scope.isLoading = function(){
             return !$scope.isComplete;    
         };
@@ -113,7 +156,6 @@ try {
         $scope.changepasswd = function(){
             console.log($scope.loginForm);
             $http.post('/change-password',jQuery('form').serializeArray()).success(function(data){
-                console.log(data);
                 if(data.status == 'success'){
                     $scope.next = true;
                     $scope.isPassError = false;

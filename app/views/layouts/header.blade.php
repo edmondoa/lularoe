@@ -18,8 +18,10 @@
         {{ HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css') }}
         {{ HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css') }}
         {{ HTML::style('packages/angular-growl-v2/build/angular-growl.min.css') }}
+        
 
         {{ HTML::style('css/lularoe/bootstrap-lularoe.min.css') }}
+        {{ HTML::style('packages/angular-xeditable/css/xeditable.css') }}
          {{ HTML::style('css/theme.css') }}
         <!-- Include Editor style. -->
         <link href="/packages/froala/css/froala_editor.min.css" rel="stylesheet" type="text/css" />

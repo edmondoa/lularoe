@@ -11,6 +11,7 @@
 		{{ HTML::script('//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js') }}
 		{{ HTML::script('/packages/bootstrap-select/bootstrap-select.min.js') }}
         {{ HTML::script('packages/jquery-ui/jquery-ui-1.10.4.custom.min.js') }}
+        {{ HTML::script('/packages/angular-xeditable/js/xeditable.min.js') }}
 		{{ HTML::script('packages/angular-growl-v2/build/angular-growl.min.js') }}
 		<script>
 		    // convert PHP variables to JavaScript

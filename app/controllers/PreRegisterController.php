@@ -182,11 +182,16 @@ class PreRegisterController extends \BaseController {
         $user = User::where('id',$userid)->first();
         $sponsor = User::where('id',$user->sponsor_id)->first();
         switch($path){
-            case 'other':
-                return View::make('pre-register.purchase_agreement',compact('user','sponsor'));
+            case 'products':
+                return View::make('pre-register.products',compact('user','sponsor'));
                 break;
             default:
-                return View::make('pre-register.change_password',compact('user','sponsor'));
+                $status = Session::get('pre-register.status');
+                #if($status == 'hasSignUp'){
+                #    return View::make('pre-register.purchase_agreement',compact('user','sponsor'));
+                #}elseif($status == 'existingRep'){
+                    return View::make('pre-register.change_password',compact('user','sponsor'));    
+                #}
                 break;
         }
     }
