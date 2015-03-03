@@ -253,6 +253,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::resource('products', 'ProductController');
 		Route::post('products/disable', 'ProductController@disable');
 		Route::post('products/enable', 'ProductController@enable');
+		Route::get('products/edit/{id}', 'ProductController@edit');
 		Route::post('products/delete', 'ProductController@delete');
 
 		// productCategories

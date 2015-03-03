@@ -6,7 +6,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		                <h1 class="no-top pull-left no-pull-xs">All Products</h1>
+		                <h1 class="no-top pull-left no-pull-xs">Your current products</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
@@ -34,6 +34,7 @@
 		                                </button>
 		                            </div>
 		                        </div>
+<!--
 		                        <?php /* select categories */ ?>
 		                        <div class="pull-left margin-right-1">
 		                            <select ng-model="search" id="categories" class="form-control">
@@ -48,6 +49,7 @@
 		                                <option ng-repeat="productTag in selectedSubCategoryValues" value="@include('_helpers.productTag_name')">@include('_helpers.productTag_name')</option>
 		                            </select>
 		                    	</div>
+-->
 		                    </div>
 		                </div>
 			        </div>
@@ -85,15 +87,15 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='retail_price'; reverseSort = !reverseSort">Retail Price
+                            	<th class="link" ng-click="orderByField='rep_price'; reverseSort = !reverseSort">Rep Price
                             		<span>
-                            			<span ng-show="orderByField == 'retail_price'">
+                            			<span ng-show="orderByField == 'rep_price'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
-                        		
+
                             	<th class="hidable-xs link" ng-click="orderByField='quantity'; reverseSort = !reverseSort">Quantity
                             		<span>
                             			<span ng-show="orderByField == 'quantity'">
@@ -103,6 +105,7 @@
                             		</span>
                         		</th>
                         		
+<!--
                             	<th class="hidable-xs link" ng-click="orderByField='category_name'; reverseSort = !reverseSort">Category
                             		<span>
                             			<span ng-show="orderByField == 'category_name'">
@@ -120,7 +123,7 @@
                             			</span>
                             		</span>
                         		</th>
-                        		
+-->                     		
                             	<th class="hidable-xs link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
                             		<span>
                             			<span ng-show="orderByField == 'updated_at'">
@@ -144,17 +147,18 @@
 					            </td>
 								
 					            <td>
-					                <a href="/products/@include('_helpers.product_id')"><span ng-bind="product.name"></span></a>
+					                <a href="/products/@include('_helpers.product_id')/edit"><span ng-bind="product.name"></span></a>
 					            </td>
-					            
+
 					            <td>
-					               	<span ng-bind="product.retail_price | currency"></span>
+					               	<span ng-bind="product.rep_price | currency"></span>
 					            </td>
-					            
+
 					            <td class="hidable-xs">
 					                <span ng-bind="product.quantity"></span>
 					            </td>
 					            
+<!--
 					            <td class="hidable-xs">
 					                <a class="link" ng-click="$parent.search=product.category_name"><span ng-bind="product.category_name"></span></a>
 					            </td>
@@ -165,6 +169,7 @@
 					                </span>
 					            </td>
 					            
+-->
 					            <td class="hidable-xs">
 					            	<span ng-bind="product.updated_at"></span>
 					            </td>
