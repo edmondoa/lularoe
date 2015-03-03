@@ -99,7 +99,7 @@ class PreRegisterController extends \BaseController {
 		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
 		$user->userSite()->associate($userSite);
 		Event::fire('rep.create', array('rep_id' => $user->id));
-		$loginuser = Auth::loginUsingId($user->id);
+		#$loginuser = Auth::loginUsingId($user->id);
         
         
         $userid = $user->id;
@@ -107,6 +107,9 @@ class PreRegisterController extends \BaseController {
         $dob = $user->dob;
         $public_id = $user->public_id;
         $email =  $user->email;
+        
+        $sponsor = User::where('id',$sponsorid)->first();
+        Session::put('sponsor',$sponsor);
         
         $hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
         $verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash; 
@@ -116,8 +119,16 @@ class PreRegisterController extends \BaseController {
             $message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Verify Your Email Address');
         });
         
-		return Redirect::to('/pages/main-page');
+		return Redirect::to('/pending-registration');
 	}
+    
+    public function pending(){
+        $sponsor = Session::get('sponsor');
+        if(empty($sponsor)){
+            return Redirect::to('/join');    
+        }
+        return View::make('pre-register.pending',compact('sponsor'));
+    }
 
     
     public function verifyemail($hash){

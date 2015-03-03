@@ -281,6 +281,7 @@ var nectarLove = {"ajaxurl":"http:\/\/lularoe-wordpress\/wp-admin\/admin-ajax.ph
         <script type='text/javascript' src='/wp-content/themes/salient/wpbakery/js_composer/assets/js/js_composer_front.js?ver=3.7.3'></script>
         {{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }}
         {{ HTML::script('/packages/dirpagination/dirPagination.js') }}
+        {{ HTML::script('/packages/flowplayer-5.5.2/flowplayer.min.js') }}
 		{{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
 		@if (!Session::has('timezone'))
 			<!-- get timezone -->
