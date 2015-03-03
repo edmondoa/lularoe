@@ -364,6 +364,14 @@ class ExternalAuthController extends \BaseController {
 }
 */
 
+	public function multiPurchase($key = 0, $cart = '')
+	{
+		foreach(Input::get('payments') as $payment) {
+
+		}
+
+	}
+
 	public function purchase($key = 0, $cart = '')
 	{
 		$cartdata	= Input::get('cart', $cart);

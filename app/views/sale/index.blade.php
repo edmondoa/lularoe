@@ -128,8 +128,8 @@
                                                         <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
                                                         </a>
                                                         <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}}</span><span> - </span>
-                                                            <input ng-class="{disabled:!size.value}" class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
-                                                            <span ng-if="size.value > 1" class="label label-info">@{{size.value}}</span>
+                                                            <input ng-class="{disabled:!size.value}" class="bulk-check" type="checkbox" style="display:none" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
+                                                            <span ng-if="size.value >= 1" class="label label-info">ADD</span>
                                                         </a>
                                                     </li>
                                                 </ul>

@@ -222,7 +222,7 @@ class productController extends \BaseController {
 				if (isset($image['new_attachment_image'])) {
 					$image['featured'] = isset($image['featured']) ? 1 : 0;
 					$image['path'] = explode('/uploads/', $image['path']);
-					$image['path'] = $image['path'][1];
+					if (isset($image['path'][1])) $image['path'] = $image['path'][1];
 					$media = Media::where('url', $image['path'])->get()->first();
 					$attachment = Attachment::create([
 						'attachable_type' => 'Product',

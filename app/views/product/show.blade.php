@@ -5,7 +5,7 @@
 		<div class="col-md-12">
 			@include('_helpers.breadcrumbs')
 			<h1 class="no-top">{{ $product->name }}</h1>
-			@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+			@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (Auth::user()->id == $product->user_id))
 				<div class="page-actions">
 				    <div class="btn-group" id="record-options">
 					    <a class="btn btn-default" href="{{ url('products/'.$product->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>

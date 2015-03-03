@@ -15,6 +15,7 @@
 				        {{ Form::text('name', Input::old('name'), array('class' => 'form-control')) }}
 				    </div>
 				    
+<!--
 				    <div class="form-group">
 				        {{ Form::label('blurb', 'Brief Description') }}
 				        {{ Form::textarea('blurb', Input::old('blurb'), array('class' => 'form-control')) }}
@@ -24,6 +25,7 @@
 				        {{ Form::label('description', 'Long Description') }}
 				        {{ Form::textarea('description', Input::old('description'), array('class' => 'wysiwyg form-control')) }}
 				    </div>
+-->
 				</div><!-- col -->
 			</div><!-- row -->
 			<div class="row">
@@ -66,6 +68,7 @@
 				        {{ Form::text('size', null, array('class' => 'form-control')) }}
 				    </div>
 				    
+<!--
 				    <div class="form-group">
 				        {{ Form::label('retail_price', 'Retail Price') }}
 				        <div class="input-group">
@@ -73,7 +76,7 @@
 				        	{{ Form::text('retail_price', Input::old('retail_price'), array('class' => 'form-control')) }}
 				        </div>
 				    </div>
-				    
+-->				    
 				    <div class="form-group">
 				        {{ Form::label('rep_price', 'Rep Price') }}
 				        <div class="input-group">
@@ -86,7 +89,9 @@
 				        {{ Form::label('quantity', 'Quantity') }}
 				        {{ Form::text('quantity', Input::old('quantity'), array('class' => 'form-control')) }}
 				    </div>
+					<input type="hidden" name="category_id" value="0">
 				    
+<!--
 				    <div class="form-group">
 				    	{{ Form::label('category_id', 'Category') }}
 				    	<br>
@@ -110,6 +115,7 @@
 				    		@endforeach
 				    	</div>
 			        </div>
+-->
 				    
 				    <div class="form-group">
 				        {{ Form::label('disabled', 'Status') }}

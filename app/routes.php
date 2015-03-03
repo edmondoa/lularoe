@@ -36,6 +36,7 @@ Route::pattern('id', '[0-9]+');
 
 		Route::get('llrapi/v1/refund/{key}', 					'ExternalAuthController@refund');
 		Route::get('llrapi/v1/purchase/{key}',					'ExternalAuthController@purchase');
+		Route::get('llrapi/v1/multi-purchase/{key}',			'ExternalAuthController@multiPurchase');
 
 		Route::get('llrapi/v1/ledger/{key}', 					'ExternalAuthController@ledger');
 		Route::get('llrapi/v1/ledger/',		 					'ExternalAuthController@ledger');
