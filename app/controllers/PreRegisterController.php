@@ -156,7 +156,7 @@ class PreRegisterController extends \BaseController {
                 if(!$user->verified){
                     $temp = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
                     
-                    if($hash == $public_id.'-'.$temp){
+                    if($hash == $userid.'-'.$temp){
                         $user->verified = true;
                         $user->save();
                         
@@ -192,6 +192,8 @@ class PreRegisterController extends \BaseController {
             case 'products':
                 return View::make('pre-register.products',compact('user','sponsor'));
                 break;
+            case 'bankinfo':    
+                return View::make('pre-register.bankinfo',compact('user'));
             default:
                 $status = Session::get('pre-register.status');
                 #if($status == 'hasSignUp'){
