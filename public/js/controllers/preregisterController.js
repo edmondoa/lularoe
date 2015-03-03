@@ -26,14 +26,6 @@ try {
     
     app.config(function($routeProvider, $locationProvider){
         $routeProvider
-        .when('/products',{
-            templateUrl: '/template/preregister/products',
-            controller: 'PreRegisterController'
-        })
-        .when('/additional-info',{
-            templateUrl: '/template/preregister/additional-info',
-            controller: 'PreRegisterController'
-        })
         .when('/:screen',{
             templateUrl: function(params){
                 return '/template/preregister/'+params.screen;

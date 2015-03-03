@@ -15,31 +15,38 @@
 						<div class="row">
 							<div class="col-md-12">
 						<div class="form-group">
-						{{ Form::label('Bank Name', 'bankname',['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
+						{{ Form::label('bankname','Bank Name',['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
 						<div class="col-lg-8 col-sm-8 col-md-8">
-							<input name='bankname' class='form-control' type='text' ng-model='bank.name' ng-minlength="8" required/>
-							<small>Must be at least 8 characters <span>Valid: @{{loginForm.password.$valid}}</span></small>
+							<input name='bankname' placeholder="e.g. Chase Bank" class='form-control' type='text' ng-model='bank.name' ng-minlength="8" required/>
 						</div>
-						{{ Form::label('Account Type', 'accttype',['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
+						{{ Form::label('accttype','Account Type', ['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
 						<div class="col-lg-8 col-sm-8 col-md-8">
-							<input name='accttype' class='form-control' type='text' ng-model='bank.accttype' ng-minlength="6" required/>
-							<small>Must be at least 8 characters <span>Valid: @{{loginForm.password.$valid}}</span></small>
+							<select name="accttype" class="form-control">
+								<Option default>Checking</option>
+								<Option>Saving</option>
+							</select>
 						</div>
-						{{ Form::label('Routing Number', 'routnum',['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
+						{{ Form::label('routnum', 'Routing Number', ['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
 						<div class="col-lg-8 col-sm-8 col-md-8">
 							<input name='routnum' class='form-control' type='text' ng-model='bank.routnum' ng-minlength="6" required/>
-							<small>Must be at least 8 characters <span>Valid: @{{loginForm.password.$valid}}</span></small>
 						</div>
-						{{ Form::label('Account Number', 'acctnum',['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
+						{{ Form::label('acctnum', 'Account Number', ['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
 						<div class="col-lg-8 col-sm-8 col-md-8">
 							<input name='acctnum' class='form-control' type='text' ng-model='bank.acctnum' ng-minlength="6" required/>
-							<small>Must be at least 8 characters <span>Valid: @{{loginForm.password.$valid}}</span></small>
+						</div>
+						{{ Form::label('dlstate', 'Driver Lic. State', ['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
+						<div class="col-lg-8 col-sm-8 col-md-8">
+							<input name='acctnum' style="width:3.5em" class='form-control' maxlength="2" type='text' ng-model='bank.acctnum' ng-minlength="6" required/>
+						</div>
+						{{ Form::label('dlnum', 'Driver Lic. Num', ['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
+						<div class="col-lg-8 col-sm-8 col-md-8">
+							<input name='acctnum' class='form-control' type='text' ng-model='bank.acctnum' ng-minlength="6" required/>
+						</div>
+						{{ Form::label('socsec', 'Social Security', ['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
+						<div class="col-lg-8 col-sm-8 col-md-8">
+							<input name='acctnum' class='form-control' type='text' ng-model='bank.acctnum' ng-minlength="6" required/>
 						</div>
                 </div>
-	
-							</div>
-						</div>
-					</div>
             </div>
         </div>
     </div>
