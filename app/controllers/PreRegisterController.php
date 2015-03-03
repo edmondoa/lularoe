@@ -165,8 +165,10 @@ class PreRegisterController extends \BaseController {
                     }
                 }else{
                     $status = 'done';
+                    //Redirect::to('/dashboard');
                 }
                 
+                Session::put('pre-register.status',$status);
                 
                 return View::make('pre-register.main',compact('status'));
             }
@@ -176,14 +178,54 @@ class PreRegisterController extends \BaseController {
     }
     
     public function template($path='index'){
+        $userid = Auth::user()->id;
+        $user = User::where('id',$userid)->first();
+        $sponsor = User::where('id',$user->sponsor_id)->first();
         switch($path){
             case 'other':
-                return;
+                return View::make('pre-register.purchase_agreement',compact('user','sponsor'));
                 break;
             default:
-                return View::make('pre-register.changepassword');
+                return View::make('pre-register.change_password',compact('user','sponsor'));
                 break;
         }
+    }
+    
+    public function changePassword(){
+        $data = Input::all();
+        $loginData = array();
+        
+        array_map(function($field) use(&$loginData){
+            switch($field['name']){
+                case 'password':
+                    $loginData['password'] = $field['value'];
+                    break;
+                case 'password_confirmation':
+                    $loginData['password_confirmation'] = $field['value'];
+                    break;
+            }
+        },$data);
+        
+        $hasPass = true;
+        if($loginData['password'] != $loginData['password_confirmation']){
+            $hasPass = false;    
+            $message = 'Password and Confirmation Password must be the same';    
+        }elseif(strlen($loginData['password']) < 8 || strlen($loginData['password_confirmation']) < 8){
+            $hasPass = false;    
+            $message = 'Password must be at least 8 characters';  
+        }
+        
+        if($hasPass){
+            $user = User::where('id',Auth::user()->id)->first();
+            $user->password = \Hash::make($loginData['password']);
+            $user->save();
+            $status = 'success';
+            $message = 'Password successfully changed.';
+        }else{
+            $status = 'failed';
+        }
+        
+        return Response::json(['status'=>$status,'message'=>$message,'data'=>$loginData]);
     }
 
 	/**

@@ -29,10 +29,6 @@ try {
             templateUrl: '/template/preregister/additional-info',
             controller: 'PreRegisterController'
         })
-        .when('/create-password',{
-            templateUrl: '/template/preregister/create-password',
-            controller: 'PreRegisterController'
-        })
         .when('/:screen',{
             templateUrl: function(params){
                 return '/template/preregister/'+params.screen;
@@ -88,6 +84,14 @@ try {
         $scope.pageSize = 10;
         $scope.data = [];
         $scope.emailAlertMessage = "";
+        $scope.changePasswd = {
+            status : 'failed',
+            message : ''
+        };
+        
+        $scope.isPassError =false;
+        
+        $scope.next = false;
         
         $scope.isComplete = false;
         $scope.isLoading = function(){
@@ -102,8 +106,27 @@ try {
             return false;    
         };
         
+        $scope.checkPassMsg = function(){
+            return $scope.changePasswd.message != "";    
+        };
+        
+        $scope.changepasswd = function(){
+            console.log($scope.loginForm);
+            $http.post('/change-password',jQuery('form').serializeArray()).success(function(data){
+                console.log(data);
+                if(data.status == 'success'){
+                    $scope.next = true;
+                    $scope.isPassError = false;
+                }else{
+                    $scope.isPassError = true;
+                }
+                $scope.changePasswd.message = data.message;    
+            });
+        };
+        
         $scope.goto = function(p){
-            if(p == '/create-user'){
+            $scope.next = false;
+            if(p == '/purchase-agreement'){
                 $http.post('/register',$scope.user).success(function(data){
                     console.log(data)
                 });    
