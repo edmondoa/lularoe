@@ -92,6 +92,7 @@ class PreRegisterController extends \BaseController {
         $role = Role::where('name','Rep')->first();
         //echo"<pre>"; print_r($role); echo"</pre>";
         $user->role()->associate($role);
+        $user->hasSignUp = true;
         $user->save();
 		
 		//User::create($data);
@@ -151,7 +152,14 @@ class PreRegisterController extends \BaseController {
                     if($hash == $public_id.'-'.$temp){
                         $user->verified = true;
                         $user->save();
-                        $status = 'verified';
+                        
+                        $loginuser = Auth::loginUsingId($user->id);
+                        
+                        if($user->hasSignUp){
+                            $status = 'hasSignUp';
+                        }else{
+                            $status = 'existingRep';
+                        }
                     }else{
                         return View::make('errors.missing');    
                     }
