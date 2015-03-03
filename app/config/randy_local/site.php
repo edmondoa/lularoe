@@ -1,7 +1,7 @@
 <?php
     return [
             'domain' => 'llr-launch.controlpad.main',
-            'contact_email' => 'mfrederico@gmail.com',
+            'contact_email' => 'randyb@zylun.com',
 			'mwl_api'       => 'http://mwl.controlpad.com:8080/cms/',
 			'mwl_db'        => 'llr',
 			'admin_uid'     => 10095,

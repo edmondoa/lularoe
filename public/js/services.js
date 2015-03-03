@@ -4,10 +4,18 @@
 
 angular.module('ControlPadServices', [])
 
-.service("shared", ['$http','$q',function($http, $q){
+.service("shared", ['$http','$q', '$rootScope',function($http, $q, $rootScope){
     var isLoading = false;
-    var requestPromise = null;
-    var requestData = function(url){
+    var sharedSrv = {};
+    
+    sharedSrv.signupData = {};
+    sharedSrv.cart = [];
+    sharedSrv.getIsLoading = function () {
+        return isLoading;
+    };
+    
+    sharedSrv.requestPromise = null;  
+    sharedSrv.requestData = function(url){
         isLoading = true;
         var canceller = $q.defer();
 
@@ -41,11 +49,33 @@ angular.module('ControlPadServices', [])
         
     };
 
-    return {
-        getIsLoading: function () {
-            return isLoading;
-        },
-        requestPromise :requestPromise,
-        requestData : requestData
+    sharedSrv.updateSignUpData = function(n){
+        this.signupData = n;
+        this._brdcstUpdateSignUpData();
     };
+
+    sharedSrv.updateCart = function(n){
+        this.cart = n;
+        this._brdcstUpdateCart();    
+    };
+    
+    sharedSrv.updateLocalCart = function(){
+        this._brdcstUpdateLocalCart();    
+    };  
+    
+    /* event broadcasters */
+    
+    sharedSrv._brdcstUpdateCart = function(){
+        $rootScope.$broadcast('handleUpdateCart');
+    }
+    
+    sharedSrv._brdcstUpdateLocalCart = function(){
+        $rootScope.$broadcast('handleUpdateLocalCart');
+    }
+    
+    sharedSrv._brdcstUpdateSignUpData = function(){
+        $rootScope.$broadcast('handleUpdateSignUpData');
+    };
+    
+    return sharedSrv;
 }]);
