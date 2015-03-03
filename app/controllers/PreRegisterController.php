@@ -122,6 +122,12 @@ class PreRegisterController extends \BaseController {
         
 		return Redirect::to('/pending-registration');
 	}
+
+	public function bankinfo() {
+		$user = Auth::user();
+        return View::make('pre-register.bankinfo',compact('user'));
+    }
+
     
     public function pending(){
         $sponsor = Session::get('sponsor');
