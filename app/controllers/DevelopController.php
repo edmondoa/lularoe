@@ -26,6 +26,8 @@ class DevelopController extends \BaseController {
 	public function getJake()
 	{
 		
+		echo "<img src='".DNS1D::getBarcodePNGPath("123456789", "UPCA",3,150)."' >";
+		exit;
 		$start = microtime (true);
 		//$response['result'] = User::find(9921)->descendants()->orderBy('pivot_level')->get();
 		$response['result'] = User::find(9921)->ranks()->first();

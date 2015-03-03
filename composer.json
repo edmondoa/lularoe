@@ -10,7 +10,8 @@
 		"guzzlehttp/guzzle": "~4.0",
         "camroncade/timezone": "dev-master",
         "doctrine/dbal": "~2.3",
-		"beelab/bowerphp": "0.1.*@alpha"
+		"beelab/bowerphp": "0.1.*@alpha",
+		"dinesh/barcode": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
