@@ -1,0 +1,153 @@
+'use strict';
+
+/* PreRegisterController */
+
+var module,
+    moduleName = "app";
+try {
+    module = angular.module(moduleName);
+} catch(err) {
+    module = angular.module(moduleName, []);
+}
+
+(function(app, push, check, ctrlpad){
+    var newModules = [
+            'angularUtils.directives.dirPagination',
+            'ngRoute',
+            'ngResource'
+        ];
+      
+    push(app.requires, newModules); 
+    
+    app.config(function($routeProvider, $locationProvider){
+        $routeProvider
+        .when('/products',{
+            templateUrl: '/template/preregister/products',
+            controller: 'PreRegisterController'
+        })
+        .when('/additional-info',{
+            templateUrl: '/template/preregister/additional-info',
+            controller: 'PreRegisterController'
+        })
+        .when('/create-password',{
+            templateUrl: '/template/preregister/create-password',
+            controller: 'PreRegisterController'
+        })
+        .when('/:screen',{
+            templateUrl: function(params){
+                return '/template/preregister/'+params.screen;
+            },
+            controller: 'PreRegisterController',
+        })
+        .otherwise({
+            templateUrl: '/template/preregister',
+            controller: 'PreRegisterController',
+            redirectTo: '/'
+        });
+        if(window.history && window.history.pushState){
+            //$locationProvider.html5Mode(true).hashPrefix('!');
+        }    
+    }); 
+
+    app.controller('MainController',
+        ['$scope','$http','shared','$q','$interval','$window', '$route', '$routeParams', '$location',
+            function($scope, $http, shared, $q, $interval, $window, $route, $routeParams, $location){
+            
+                $scope.$route = $route;
+                $scope.$location = $location;
+                $scope.$routeParams = $routeParams;
+                
+                $scope.$on('handleUpdateSignUpData',function(){
+                    $scope.user = shared.signupData;   
+                });
+                
+                $scope.log = function(){
+                    console.log('loging shared');
+                    console.log(shared);
+                };
+                
+                $scope.$watch('$location.path()',function(n,o){
+                    if(n != "/" &&  !$scope.hasOwnProperty('user')){
+                        $location.path('/');
+                    }    
+                });   
+    }]);
+    
+    app.controller('PreRegisterController',
+        ['$scope','$http','shared','$q','$interval','$window', '$route', '$routeParams', '$location',
+            function($scope, $http, shared, $q, $interval, $window, $route, $routeParams, $location){
+
+        /**
+        * operations here
+        */
+        var path =  ctrlpad.preRegisterCtrl.path;
+        $scope.name = "PreRegisterController";
+        $scope.params = $routeParams;
+        $scope.countItems = 0;
+        $scope.currentPage = 1;
+        $scope.pageSize = 10;
+        $scope.data = [];
+        $scope.emailAlertMessage = "";
+        
+        $scope.isComplete = false;
+        $scope.isLoading = function(){
+            return !$scope.isComplete;    
+        };
+
+        $scope.pageChangeHandler = function(num) {
+            
+        };
+        
+        $scope.showAlert = function(){
+            return false;    
+        };
+        
+        $scope.goto = function(p){
+            if(p == '/create-user'){
+                $http.post('/register',$scope.user).success(function(data){
+                    console.log(data)
+                });    
+            }else{
+                shared.updateSignUpData($scope.user);
+                $location.path(p);        
+            }
+        };
+        
+        $scope.$on('handleUpdateSignUpData',function(){;
+            $scope.user = shared.signupData;   
+        });
+        
+        $scope.log2 = function(){
+            console.log('loging shared');
+            console.log(shared);
+        };
+        
+        $scope.checkPoint = function(){
+            if($scope.hasOwnProperty('user')){
+                if($scope.user.hasOwnProperty('first_name')){
+                    if($scope.user.first_name != ''){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+        
+        $scope.checkEmail = function(email){
+            $http.get('/preregister/checkEmailIfExist/'+email).success(function(d) {
+                console.log(d.message);
+                $scope.emailAlertMessage = d.message;
+            });
+        };
+        
+        $scope.hasEmailAlertMessage = function(){
+            
+        };
+        
+        $scope.processform1 = function(){
+             $http.post('/register',$scope.user).success(function(data){
+                console.log(data)
+            });       
+        }; 
+    }]);
+}(module, pushIfNotFound, checkExists, ControlPad));

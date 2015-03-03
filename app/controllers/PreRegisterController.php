@@ -168,11 +168,22 @@ class PreRegisterController extends \BaseController {
                 }
                 
                 
-                return View::make('pre-register.verified',compact('status'));
+                return View::make('pre-register.main',compact('status'));
             }
         }
         
         return View::make('errors.missing');
+    }
+    
+    public function template($path='index'){
+        switch($path){
+            case 'other':
+                return;
+                break;
+            default:
+                return View::make('pre-register.changepassword');
+                break;
+        }
     }
 
 	/**
