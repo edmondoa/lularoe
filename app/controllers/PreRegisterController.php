@@ -192,6 +192,8 @@ class PreRegisterController extends \BaseController {
             case 'products':
                 return View::make('pre-register.products',compact('user','sponsor'));
                 break;
+            case 'bankinfo':    
+                return View::make('pre-register.bankinfo',compact('user'));
             default:
                 $status = Session::get('pre-register.status');
                 #if($status == 'hasSignUp'){
