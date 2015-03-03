@@ -100,7 +100,7 @@ class mediaController extends \BaseController {
 		else {
 			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
 			else $user_id = Auth::user()->id;
-			return Redirect::route('media/user', compact('user_id'))->with('message', 'File updated.');
+			return Redirect::route('media/user', compact('user_id'))->with('message', 'Asset updated.');
 		}
 
 	}
@@ -176,7 +176,7 @@ class mediaController extends \BaseController {
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser', $id)));
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
 		else $user_id = Auth::user()->id;
-		return Redirect::route('media/user', compact('user_id'))->with('message', 'File updated.');
+		return Redirect::route('media/user', compact('user_id'))->with('message', 'Asset updated.');
 	}
 
 	/**
@@ -189,7 +189,18 @@ class mediaController extends \BaseController {
 	{
 		Media::destroy($id);
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		return Redirect::route('media.index')->with('message', 'File deleted.');
+		return Redirect::route('media.index')->with('message', 'Asset deleted.');
+	}
+
+	/**
+	 * Remove the specified media from storage through AJAX.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function destroyAJAX($id)
+	{
+		Media::destroy($id);
 	}
 	
 	/**
@@ -212,10 +223,10 @@ class mediaController extends \BaseController {
 			}
 			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'Files deleted.');
+				return Redirect::route('media.index')->with('message', 'Assets deleted.');
 			}
 			else {
-				return Redirect::back()->with('message', 'File deleted.');
+				return Redirect::back()->with('message', 'Asset deleted.');
 			}
 		}
 		else return Redirect::back()->with('message_danger', 'You must select at least 1 file.');
@@ -233,10 +244,10 @@ class mediaController extends \BaseController {
 			}
 			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'File disabled.');
+				return Redirect::route('media.index')->with('message', 'Asset disabled.');
 			}
 			else {
-				return Redirect::back()->with('message', 'File disabled.');
+				return Redirect::back()->with('message', 'Asset disabled.');
 			}
 		}
 		else return Redirect::back()->with('message_danger', 'You must select at least 1 file.');
@@ -254,10 +265,10 @@ class mediaController extends \BaseController {
 			}
 			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'File enabled.');
+				return Redirect::route('media.index')->with('message', 'Asset enabled.');
 			}
 			else {
-				return Redirect::back()->with('message', 'File enabled.');
+				return Redirect::back()->with('message', 'Asset enabled.');
 			}
 		}
 		else return Redirect::back()->with('message_danger', 'You must select at least 1 file.');

@@ -6,7 +6,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		                <h1 class="no-top pull-left no-pull-xs">All Opportunities</h1>
+		                <h1 class="no-top pull-left no-pull-xs">All Promotions</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
@@ -102,7 +102,7 @@
 	                            		</span>
 	                        		</th>
 	                        		
-	                            	<th class="link" ng-click="orderByField='reps'; reverseSort = !reverseSort">Reps
+	                            	<th class="link" ng-click="orderByField='reps'; reverseSort = !reverseSort">FC's
 	                            		<span>
 	                            			<span ng-show="orderByField == 'reps'">
 		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>

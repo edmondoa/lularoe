@@ -50,7 +50,7 @@ class OpportunityController extends \BaseController {
 	
 			Opportunity::create($data);
 	
-			return Redirect::route('opportunities.index')->with('message', 'Opportunity created.');
+			return Redirect::route('opportunities.index')->with('message', 'Promotion created.');
 		}
 	}
 
@@ -116,7 +116,7 @@ class OpportunityController extends \BaseController {
 	
 			$opportunity->update($data);
 	
-			return Redirect::route('opportunities.show', $id)->with('message', 'Opportunity updated.');
+			return Redirect::route('opportunities.show', $id)->with('message', 'Promotion updated.');
 			}
 	}
 
@@ -131,7 +131,7 @@ class OpportunityController extends \BaseController {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
 			Opportunity::destroy($id);
 	
-			return Redirect::route('opportunities.index')->with('message', 'Opportunity deleted.');
+			return Redirect::route('opportunities.index')->with('message', 'Promotion deleted.');
 		}
 	}
 	
@@ -145,7 +145,7 @@ class OpportunityController extends \BaseController {
 				Opportunity::destroy($id);
 			}
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('opportunities.index')->with('message', 'Opportunities deleted.');
+				return Redirect::route('opportunities.index')->with('message', 'Promotions deleted.');
 			}
 			else {
 				return Redirect::back()->with('message', 'Opportunity deleted.');
@@ -163,7 +163,7 @@ class OpportunityController extends \BaseController {
 				Opportunity::find($id)->update(['disabled' => 1]);	
 			}
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('opportunities.index')->with('message', 'Opportunities disabled.');
+				return Redirect::route('opportunities.index')->with('message', 'Promotions disabled.');
 			}
 			else {
 				return Redirect::back()->with('message', 'Opportunity disabled.');
@@ -181,7 +181,7 @@ class OpportunityController extends \BaseController {
 				Opportunity::find($id)->update(['disabled' => 0]);	
 			}
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('opportunities.index')->with('message', 'Opportunities enabled.');
+				return Redirect::route('opportunities.index')->with('message', 'Promotions enabled.');
 			}
 			else {
 				return Redirect::back()->with('message', 'Opportunity enabled.');

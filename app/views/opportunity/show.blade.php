@@ -28,14 +28,14 @@
 			    	</button>
 			    {{ Form::close() }}
 			</div>
-			<a target="_blank" href="/opportunity/{{ $opportunity->id }}" class="btn btn-primary"><i class="fa fa-globe"></i> View Opportunity</a>
+			<a target="_blank" href="/opportunity/{{ $opportunity->id }}" class="btn btn-primary"><i class="fa fa-globe"></i> View Promotion</a>
 		@endif
 	</div><!-- row -->
 	<div class="row">
 		<div class="col col-md-6">
 		    <table class="table">
 		        <tr>
-		            <th>Opportunity ID:</th>
+		            <th>Promotion ID:</th>
 		            <td>{{ $opportunity->id }}</td>
 		        </tr>
 		        @if ($opportunity->deadline != 0) 

@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
-		    <h1 class="no-top">New Lead</h1>
+		    <h1 class="no-top">New Contact</h1>
 		</div>
 	</div>
 	<div class="row">
@@ -56,12 +56,12 @@
 			    
 			    @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 				    <div class="form-group">
-				        {{ Form::label('opportunity_id', 'Opportunity ID') }}
+				        {{ Form::label('opportunity_id', 'Promotion ID') }}
 				        {{ Form::text('opportunity_id', Input::old('opportunity_id'), array('class' => 'form-control')) }}
 				    </div>
 			    @endif
 			    
-			    {{ Form::submit('Add Lead', array('class' => 'btn btn-primary')) }}
+			    {{ Form::submit('Add Contact', array('class' => 'btn btn-primary')) }}
 	
 		    {{ Form::close() }}
 	    </div>

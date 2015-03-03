@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col col-lg-4 col-md-6">
 			@include('_helpers.breadcrumbs')
-		    <h1>Edit party</h1>
+		    <h1>Edit Popup-Boutique</h1>
 		    {{ Form::model($party, array('route' => array('parties.update', $party->id), 'method' => 'PUT')) }}
 		
 			    <div class="form-group">
@@ -33,38 +33,7 @@
 			    </div>
 			    
 			    <div class="form-group">
-			        {{ Form::label('label', 'Address Description') }}
-			        {{ Form::text('label', Input::old('label'), array('class' => 'form-control', 'placeholder' => 'Ex: The John and Jane Doe Residence')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('address_1', 'Address Line 1') }}
-			        {{ Form::text('address_1', Input::old('address_1'), array('class' => 'form-control')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('address_2', 'Address Line 2') }}
-			        {{ Form::text('address_2', Input::old('address_2'), array('class' => 'form-control')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('city', 'City') }}
-			        {{ Form::text('city', Input::old('city'), array('class' => 'form-control width-auto')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('state', 'State') }}
-			        <br>
-			        {{ Form::select('state',State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('zip', 'Zip') }}
-			        {{ Form::text('zip', Input::old('zip'), array('class' => 'form-control width-auto')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('public', 'Party Visibility') }}
+			        {{ Form::label('public', 'Popup-Boutique Visibility') }}
 		   			{{ Form::select('public', [
 		   				'0' => 'Limit to people I or my guests invite',
 		   				'1' => 'Display publicly',
@@ -93,7 +62,7 @@
 					<button type="button" class="btn btn-default margin-top-2" id="add-image"><i class="fa fa-plus"></i> Add Image</button>
 				</div>
 		
-		    {{ Form::submit('Update party', array('class' => 'btn btn-primary')) }}
+		    {{ Form::submit('Update Popup-Boutique', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>
