@@ -131,5 +131,16 @@ try {
             //index = jQuery('#categories option:selected').attr('data-index');
             //if (index != undefined) $scope.selectedSubCategoryValues = $scope.productCategories[index].tags;
         });
+        
+		// bulk action checkboxes
+		$scope.checkbox = function() {
+			var checked = false;
+			$('.bulk-check').each(function() {
+			if ($(this).is(":checked")) checked = true;
+			});
+			if (checked == true) $('.applyAction').removeAttr('disabled');
+			else $('.applyAction').attr('disabled', 'disabled');
+		};
+        
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));
