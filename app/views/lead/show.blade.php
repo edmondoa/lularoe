@@ -56,7 +56,7 @@
 		<div class="col col-md-6">
 		    <table class="table">
 		        <tr>
-		            <th>Lead ID:</th>
+		            <th>Contact ID:</th>
 		            <td>{{ $lead->id }}</td>
 		        </tr>		        
 		        <tr>
@@ -105,7 +105,7 @@
 			    @endif
 		        
 		        <tr>
-		            <th>Opportunity:</th>
+		            <th>Promotion:</th>
 		            <td>{{ $lead->opportunity_name }}</td>
 		        </tr>
 		        

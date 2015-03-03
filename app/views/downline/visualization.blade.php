@@ -2,6 +2,8 @@
 @section('style')
 	<style>
 	
+	body { position:absolute; top:0; right:0; bottom:0; left:0; }
+	
 	#dendrogram-header { margin:30px 0 0 30px !important; }
 	#content { position:relative; }
 	#dendrogram-container { position:absolute; top:0; right:0; bottom:0; left:0; }
@@ -38,10 +40,10 @@
 		<div id="dendrogram">
 			<div id="dendrogram-header">
 				@include('_helpers.breadcrumbs') 
-				<h1>{{ $name }} Downline</h1>
+				<h1>{{ $name }} Team Tree</h1>
             	@if (Auth::user()->hasRepInDownline($user->id) || (Auth::user()->hasRole(['Superadmin', 'Admin']) && isset($user->sponsor_id)))
             		<div class="breadcrumbs">
-            			<a href="/downline/visualization/{{ Auth::user()->id }}"><i class="fa fa-user"></i> My Downline</a>
+            			<a href="/downline/visualization/{{ Auth::user()->id }}"><i class="fa fa-user"></i> My Team Tree</a>
             			@if (Auth::user()->id != $user->sponsor_id)
             				&nbsp;&nbsp;<a href="/downline/visualization/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
             			@endif

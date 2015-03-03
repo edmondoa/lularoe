@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
-		    <h1>Edit lead</h1>
+		    <h1>Edit Contact</h1>
 		</div>
 	</div>
 	<div class="row">
@@ -51,7 +51,7 @@
 			    </div>
 			    
 			    <div class="form-group">
-			        {{ Form::label('opportunity_id', 'Opportunity ID') }}
+			        {{ Form::label('opportunity_id', 'Promotion ID') }}
 			        {{ Form::text('opportunity_id', null, array('class' => 'form-control')) }}
 			    </div>
 			@endif
@@ -62,7 +62,7 @@
 		    </div> -->
 		    
 		
-		    {{ Form::submit('Update Lead', array('class' => 'btn btn-primary')) }}
+		    {{ Form::submit('Update Contact', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>

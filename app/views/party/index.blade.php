@@ -6,7 +6,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		                <h1 class="no-top pull-left no-pull-xs">{{ ucfirst($range) }} Parties</h1>
+		                <h1 class="no-top pull-left no-pull-xs">{{ ucfirst($range) }} Popup-Boutiques</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
@@ -23,7 +23,7 @@
 			                	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 			                    	<a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('parties/create') }}"><i class="fa fa-plus"></i></a>
 				                @elseif (Auth::user()->hasRole(['Rep']))
-			                    	<a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('parties/create') }}"><i class="fa fa-plus"></i> New Party</a>
+			                    	<a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('parties/create') }}"><i class="fa fa-plus"></i> New Popup-Boutique</a>
 				                @endif
 				                @if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 				                    <div class="pull-left">

@@ -21,7 +21,6 @@ html, body { overflow-x: hidden; }
 #logo { position:relative; top:-2px; }
 
 /* layout */
-body { position:absolute; top:0; right:0; bottom:0; left:0; }
 #main { display:table; height:100%; width:100%; }
 #content { display:table-cell; padding:40px; }
 #content h1:first-of-type { margin-top:0; }
@@ -35,12 +34,13 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
 .layout-default { padding-top:50px !important; }
 .layout-default #top-right-menu { margin-right:0; }
 
+/* masonry effect (makes panels flush) */
+.row.masonry { -moz-column-width:20em; -webkit-column-width:20em; -moz-column-gap:10px; -webkit-column-gap:10px; padding:0 0 0 14px; }
+.row.masonry > .col { display: inline-block; padding:0 14px 0 0; width:100%; float:none; }
 
-
-
-/* main content */
-
-
+.img-responsive {
+  border:0px solid #999;
+}
 
 /* global classes */
 .font-size-2 { font-size:1.25em; }

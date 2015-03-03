@@ -20,6 +20,17 @@ class Lead extends \Eloquent
 		return $this->belongsTo('Opportunity', 'opportunity_id', 'id');
 	}
 
+	public function registrations() {
+		return $this->morphMany('Registration', 'registerable');
+	}
+
+	public function getFormattedPhoneAttribute($value)
+	{
+		if (!empty($this->phone)) {
+			return substr($this->phone, 0, 3)."-".substr($this->phone, 3, 3)."-".substr($this->phone,6);
+		}
+	}
+
 	public function getSponsorNameAttribute() {
 		return ((isset($this->sponsor->first_name))&&(isset($this->sponsor->first_name)))?$this->sponsor->first_name . ' ' . $this->sponsor->last_name:'';
 	}
@@ -28,6 +39,6 @@ class Lead extends \Eloquent
 		return (isset($this->opportunity->title))?$this->opportunity->title:'';
 	}
 
-	protected $appends = array('opportunity_name', 'sponsor_name');
+	protected $appends = array('opportunity_name', 'sponsor_name', 'formatted_phone');
 
 }

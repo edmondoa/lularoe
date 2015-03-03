@@ -62,7 +62,7 @@
 				        			</tr>
 				        			<tr>
 				        				<td>@if ($party->reps == 1)<i class="fa fa-check"></i>@endif</td>
-				        				<td>&nbsp;Reps</td>
+				        				<td>&nbsp;FC's</td>
 				        			</tr>
 				        			<!--<tr>
 				        				<td>@if ($party->editors == 1)<i class="fa fa-check"></i>@endif</td>

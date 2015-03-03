@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
-		    <h1>Edit opportunity</h1>
+		    <h1>Edit Promotion</h1>
 		</div>
 	</div>
 	<div class="row">
@@ -32,7 +32,7 @@
 			        </label>
 			        <br>
 			        <label>
-			        	{{ Form::checkbox('reps') }} Reps
+			        	{{ Form::checkbox('reps') }} FC's
 			        </label>
 			    </div>
 			    
@@ -50,7 +50,7 @@
 			    </div>
 		    
 		
-		    {{ Form::submit('Update Opportunity', array('class' => 'btn btn-primary')) }}
+		    {{ Form::submit('Update Promotion', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>

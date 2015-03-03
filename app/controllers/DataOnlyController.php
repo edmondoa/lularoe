@@ -22,27 +22,10 @@ class DataOnlyController extends \BaseController
 		return $products;
 	}	 	 
 
-	/**
+	/**********
 	 * Media
-	 */
-	 
-	// all media
-	public function getAllMedia() {
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])){ 
-            return [
-                'count' => Media::count(),
-                'data' => Media::all()
-            ];
-        }
-		if (Auth::user()->hasRole(['Rep'])) {
-            $raw = Media::where('reps', 1);
-			return [
-                'count'=>$raw->count(),
-                'data'=>$raw->get()
-            ];
-		}
-	}
-	
+	 **********/
+
 	// all media
 	public function getMediaCounts($type) {
 		$file_types = [
@@ -92,9 +75,7 @@ class DataOnlyController extends \BaseController
 		
 		// count all media
 		elseif ($type == 'shared-with-reps') {
-			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-				$medias = Media::where('reps', 1)->get();
-			}
+			$medias = Media::where('reps', 1)->get();
 		}
 		
 		foreach ($medias as $media) {
@@ -118,18 +99,13 @@ class DataOnlyController extends \BaseController
 	// all media by user
 	public function getMediaByUser($id) {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->hasRole(['Rep']) && Auth::user()->id == $id) {
-            $raw = Media::where('user_id', $id);
-			return [
-                'count'=>$raw->count(),
-                'data'=>$raw->get()
-            ];
+			return Media::where('user_id', $id)->get();
 		}
 	}
 	
 	// all media by reps
 	public function getMediaByReps() {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-            $count = Media::count();
 			$medias = Media::all();
 			$media_with_reps = [];
 			foreach($medias as $media) {
@@ -142,21 +118,14 @@ class DataOnlyController extends \BaseController
 					// unset($medias[$key]);
 				// }
 			// }
-			return [
-                'count'=>$count,
-                'data'=>$media_with_reps
-            ];
+			return $media_with_reps;
 		}
 	}
 	
 	// all media share with reps
 	public function getMediaSharedWithReps() {
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-            $raw = Media::where('reps', 1);
-			return [
-                'count'=>$raw->count(),
-                'data'=>$raw->get()
-            ];
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor', 'Rep'])) {
+			return Media::where('reps', 1)->get();
 		}
 	}
 	
@@ -170,7 +139,8 @@ class DataOnlyController extends \BaseController
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id) {
 			return Media::where('user_id', $id)->where('type', 'Image')->get();
 		}
-	}
+	}	 
+
 
 	/*
 	 * Config
