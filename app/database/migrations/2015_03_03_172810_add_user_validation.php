@@ -14,7 +14,8 @@ class AddUserValidation extends Migration {
 	{
 		Schema::table('users', function(Blueprint $table)
 		{
-			$table->integer('verified');
+            $table->boolean('verified');
+			$table->boolean('hasSignUp');
 		});
 	}
 
@@ -28,7 +29,15 @@ class AddUserValidation extends Migration {
 	{
 		Schema::table('users', function(Blueprint $table)
 		{
-			$table->dropColumn('verified');
+            if (Schema::hasColumn('users', 'verified'))
+            {
+                $table->dropColumn('verified');
+            }
+            
+            if (Schema::hasColumn('users', 'hasSignUp'))
+            {
+                $table->dropColumn('hasSignUp');
+            }
 		});
 	}
 
