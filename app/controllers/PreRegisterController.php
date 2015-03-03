@@ -113,7 +113,7 @@ class PreRegisterController extends \BaseController {
         Session::put('sponsor',$sponsor);
         
         $hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
-        $verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash; 
+        $verification_link = 'http://'.Config::get('site.domain').'/u/'.$userid.'-'.$hash; 
         
         Mail::send('emails.verification', compact('verification_link'), function($message) use(&$user)
         {
@@ -141,11 +141,11 @@ class PreRegisterController extends \BaseController {
     public function verifyemail($hash){
         $keywords = preg_split("/-/", $hash);
         if(!empty($keywords) && count($keywords) == 2){
-            $public_id = $keywords[0];
+            $userid = $keywords[0];
             $shahash = $keywords[1];
             
 			// Most users won't have a public ID at this point
-            $user = User::where('id',$public_id)->first();
+            $user = User::where('id',$userid)->first();
             $status = '';
             
             if(!empty($user)){
