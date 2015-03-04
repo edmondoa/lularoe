@@ -3,13 +3,6 @@
 class BankinfoController extends \BaseController {
 
 	/**
-	 * Data only
-	 */
-	public function getAllRecords(){
-		return Bankinfo::all();
-	}
-
-	/**
 	 * Display a listing of bankinfo
 	 *
 	 * @return Response
@@ -46,6 +39,9 @@ class BankinfoController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+		// Do I really have to do this?
+		$data['user_id'] = Auth::user()->id;
+
 		Bankinfo::create($data);
 		if (Auth::user()->hasRole(['Rep'])) return Redirect::route('settings');
 		else return Redirect::back()->with('message', 'Bankinfo created.');
@@ -74,7 +70,7 @@ class BankinfoController extends \BaseController {
 	public function edit($id)
 	{
 		$bankinfo = Bankinfo::find($id);
-		if (Auth::user()->hasRole(['Superadmin', 'Admin']) || $bankinfo->user_id == Auth::user()->id || isset($party_organizer)) {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin']) || $bankinfo->user_id == Auth::user()->id) {
 			return View::make('bankinfo.edit', compact('bankinfo'));
 		}
 	}

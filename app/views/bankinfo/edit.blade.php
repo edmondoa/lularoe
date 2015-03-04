@@ -36,9 +36,11 @@
 		        {{ Form::text('license_number', null, array('class' => 'form-control')) }}
 		    </div>
 		    
-		    {{ Form::submit('Update Bank Info', array('class' => 'btn btn-primary')) }}
-		
-		    {{Form::close()}}
+		    {{ Form::submit('Update Bank Info', array('class' => 'btn btn-primary pull-right')) }}
+		    {{ Form::close() }}
+
+			{{ Form::open(array('url' => 'bankinfo/' . $bankinfo->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this record? This cannot be undone.");')) }}
+		    {{ Form::submit('Delete', array('class' => 'btn btn-warning pull-left')) }}{{ Form::close() }}
 		</div>
 	</div>
 </div>
