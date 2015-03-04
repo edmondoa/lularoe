@@ -26,11 +26,16 @@ class DevelopController extends \BaseController {
 	public function getJake()
 	{
 		
-		echo "<img src='".DNS1D::getBarcodePNGPath("123456789", "EAN13",3,150)."' >";
-		exit;
+		//echo "<img src='".DNS1D::getBarcodePNGPath("123456789", "EAN13",3,150)."' >";
+		//exit;
 		$start = microtime (true);
 		//$response['result'] = User::find(9921)->descendants()->orderBy('pivot_level')->get();
-		$response['result'] = User::find(9921)->ranks()->first();
+		foreach(Product::all() as $product)
+		{
+			echo"<p><strong>".$product->name." - ".$product->sku."</strong><br />";
+			echo "<img src='".DNS1D::getBarcodePNGPath($product->sku, "C128",3,75)."' ></p>";
+		}
+		//$response['result'] = User::find(9921)->ranks()->first();
 		$response['lapsed'] = round((microtime (true) - $start),5);
 		return $response;
 		//return Rank::all();
