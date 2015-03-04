@@ -1,0 +1,76 @@
+		<div id="modals">
+		    <?php $__env->startSection('modals'); ?>
+		    <?php echo $__env->yieldSection(); ?>
+		</div>
+		<?php echo HTML::script('/js/lib/jquery1.js'); ?>
+
+        <?php echo HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js'); ?>
+
+        <?php echo HTML::script('//code.angularjs.org/1.2.0/angular-animate.min.js'); ?>
+
+        <?php echo HTML::script('//code.angularjs.org/1.2.0/angular-route.min.js'); ?>
+
+        <?php echo HTML::script('//code.angularjs.org/1.2.0/angular-resource.min.js'); ?>
+
+		<?php echo HTML::script('//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js'); ?>
+
+		<?php echo HTML::script('//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'); ?>
+
+		<?php echo HTML::script('/packages/bootstrap-select/bootstrap-select.min.js'); ?>
+
+        <?php echo HTML::script('packages/jquery-ui/jquery-ui-1.10.4.custom.min.js'); ?>
+
+        <?php echo HTML::script('/packages/angular-xeditable/js/xeditable.min.js'); ?>
+
+		<?php echo HTML::script('packages/angular-growl-v2/build/angular-growl.min.js'); ?>
+
+		<script>
+		    // convert PHP variables to JavaScript
+		    var domain = '<?php echo Config::get("site.domain"); ?>';
+		    var path = '<?php echo Request::path(); ?>';
+		
+		</script>
+		<?php echo HTML::script('//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js'); ?>
+
+		<?php echo HTML::script('js/functions.js'); ?>
+
+        <?php echo HTML::script('js/services.js'); ?>
+
+        <?php echo HTML::script('js/directives/validNumberDirective.js'); ?>
+
+        <?php echo HTML::script('/js/controllers/datepickerController.js'); ?>
+
+        <?php echo HTML::script('js/controllers.js'); ?>
+
+		<?php echo HTML::script('js/app.js'); ?>
+
+		<?php echo HTML::script('/packages/jquery-ui/timepicker.js'); ?>
+
+		<?php echo HTML::script('/packages/dirpagination/dirPagination.js'); ?>
+
+		<?php echo HTML::script('/packages/tinymce/tinymce.min.js'); ?>
+
+		<?php if(!Session::has('timezone')): ?>
+			<!-- get timezone -->
+			<script>
+		        // get timezone
+		        var tz = jstz.determine();
+		        // Determines the time zone of the browser client
+		        var timezone = tz.name();
+		        //'Asia/Kolhata' for Indian Time.
+		        $.post('/set-timezone', { timezone : timezone }, function(result) {
+		        	//alert('Result!');
+		        });
+			</script>
+		<?php endif; ?>
+		<?php $__env->startSection('scripts1'); ?>
+		<?php echo $__env->yieldSection(); ?>
+		<?php $__env->startSection('scripts'); ?>
+		<?php echo $__env->yieldSection(); ?>
+		<?php $__env->startSection('scripts2'); ?>
+		<?php echo $__env->yieldSection(); ?>
+		<?php $__env->startSection('scripts3'); ?>
+		<?php echo $__env->yieldSection(); ?>
+	</body>
+</html>
+<?php echo $__env->make('_helpers.store_previous_pages', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

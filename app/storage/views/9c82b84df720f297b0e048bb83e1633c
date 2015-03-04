@@ -1,0 +1,46 @@
+<?php $layout = 'default' ?>
+<?php echo $__env->make('layouts.header', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<div id="header-menu" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+    <?php echo $__env->make('layouts.header-menu', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+</div><!-- /.navbar -->
+<div id="main">
+    <div id="sidebar" role="navigation">
+        <?php echo $__env->make('layouts.main-menu', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    </div><!--/col-->
+    <div id="content">
+        <div class="row">
+            <div class="col col-md-12">
+                <?php echo $__env->make('_helpers.errors', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                <?php echo $__env->make('_helpers.message', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+            </div>
+        </div>
+        <?php $__env->startSection('content'); ?>
+        <?php echo $__env->yieldSection(); ?>
+        <hr>
+        <footer>
+            <?php
+                if (Auth::check()) {
+                    if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+                        $pages = Page::where('Reps', 1)->orWhere('Customers', 1)->orWhere('Public', 1)->where('back_office_footer', 1)->get();
+                    }
+                    elseif (Auth::user()->hasRole(['Customer'])) {
+                        $pages = Page::where('Customers', 1)->orWhere('Public', 1)->where('back_office_footer', 1)->get();
+                    }
+                    elseif (Auth::user()->hasRole(['Rep'])) {
+                        $pages = Page::where('Reps', 1)->orWhere('Public', 1)->where('back_office_footer', 1)->get();
+                    }
+                }
+                else $pages = Page::where('back_office_footer', 1)->where('Public', 1)->get();
+            ?>
+            <?php if(isset($pages)): ?>
+                <ul class="footer-links">
+                    <?php foreach($pages as $page): ?>
+                        <li><a href="//<?php echo Config::get('site.domain'); ?>/pages/<?php echo $page->url; ?>"><?php echo $page->short_title; ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+            <p>&copy; <?php echo Config::get('site.company_name'); ?> <?php echo date('Y'); ?></p>
+        </footer>
+    </div><!--/col-->
+</div><!--/row-->
+<?php echo $__env->make('layouts.footer', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

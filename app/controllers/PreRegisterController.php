@@ -53,16 +53,14 @@ class PreRegisterController extends \BaseController {
 	public function store()
 	{
 		//get the rules from the model
-		$rules = User::$rules;
-		//create som new ones for this form
-
-		$rules['address_1'] = 'required|between:2,28';
-		$rules['city'] = 'required';
-		$rules['state'] = 'required|size:2';
-		$rules['zip'] = ['required','numeric','regex:/(^\d{5}$)|(^\d{5}-\d{4}$)/'];
+		$rules = [];
+		// $rules['address_1'] = 'required|between:2,28';
+		// $rules['city'] = 'required';
+		// $rules['state'] = 'required|size:2';
+		// $rules['zip'] = ['required','numeric','regex:/(^\d{5}$)|(^\d{5}-\d{4}$)/'];
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
 		$rules['agree'] = 'required|accepted';
-		$rules['password'] = 'required|confirmed|between:8,32';
+		// $rules['password'] = 'required|confirmed|between:8,32';
 		$rules['public_id'] = 'required|unique:users,public_id';
 		$rules['email'] = 'required|unique:users,email';
 		$rules['sponsor_id'] = 'required';
@@ -74,20 +72,20 @@ class PreRegisterController extends \BaseController {
 		}
         
         $data['dob'] = date('Y-m-d',strtotime($data['dob']));
-        $data['password'] = \Hash::make($data['password']);
+        // $data['password'] = \Hash::make($data['password']);
         $user = User::create($data);
         
         //now the address
-        $address = [
-            'address_1'=>$data['address_1'],
-            'address_2'=>$data['address_2'],
-            'city'=>$data['city'],
-            'state'=>$data['state'],
-            'zip'=>$data['zip'],
-            'label'=>'Billing',
-        ];
-        $address = Address::create($address);
-        $user->addresses()->save($address);
+        // $address = [
+            // 'address_1'=>$data['address_1'],
+            // 'address_2'=>$data['address_2'],
+            // 'city'=>$data['city'],
+            // 'state'=>$data['state'],
+            // 'zip'=>$data['zip'],
+            // 'label'=>'Billing',
+        // ];
+        // $address = Address::create($address);
+        // $user->addresses()->save($address);
         
         $role = Role::where('name','Rep')->first();
         //echo"<pre>"; print_r($role); echo"</pre>";

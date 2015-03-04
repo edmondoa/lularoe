@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>LulaRoe</title>
+		<?php echo HTML::style('//fonts.googleapis.com/css?family=Oswald:300,700,400'); ?>
+
+		<!--<?php echo HTML::style('bootstrap/css/bootstrap.min.css'); ?>
+
+		<?php echo HTML::style('bootstrap/css/bootstrap-theme.min.css'); ?>-->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+		<?php echo HTML::style('packages/bootstrap-select/bootstrap-select.min.css'); ?>
+
+		<?php echo HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'); ?>
+
+		<?php echo HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css'); ?>
+
+		<?php echo HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css'); ?>
+
+		<?php echo HTML::style('packages/angular-growl-v2/build/angular-growl.min.css'); ?>
+
+		<?php echo HTML::style('css/lularoe/bootstrap-lularoe.min.css'); ?>
+
+		<?php echo HTML::style('css/bootstrap-xl.css'); ?>
+
+		<?php echo HTML::style('css/theme.css'); ?>
+
+		<?php echo $__env->yieldContent('style'); ?>
+		<script>
+			// This is only for JavaScript that doesn't work in the footer
+
+			// disable enter key submit for certain forms
+			function disableEnterKey(e) {
+				var key;
+				if (window.event)
+					key = window.event.keyCode;
+				//IE
+				else
+					key = e.which;
+				//firefox
+				return (key != 13);
+			}
+
+		</script>
+	</head>
+	<body class="layout-<?php echo $layout; ?> <?php echo $__env->yieldContent('classes'); ?>">
+		<?php echo $__env->make('_helpers/analytics', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -9,11 +9,11 @@
 
         <!--Shortcut icon-->
 
-        <title><?php if (isset($title)) echo $title . ' | ' ?>{{ Config::get('site.company_name') }}</title>
+        <title><?php if (isset($title)) echo $title . ' | ' ?><?php echo Config::get('site.company_name'); ?></title>
 
-        <link rel="alternate" type="application/rss+xml" title="{{ Config::get('site.company_name') }} &raquo; Feed" href="/feed/" />
-        <link rel="alternate" type="application/rss+xml" title="{{ Config::get('site.company_name') }} &raquo; Comments Feed" href="/comments/feed/" />
-        <meta property='og:site_name' content='{{ Config::get('site.company_name') }}'/>
+        <link rel="alternate" type="application/rss+xml" title="<?php echo Config::get('site.company_name'); ?> &raquo; Feed" href="/feed/" />
+        <link rel="alternate" type="application/rss+xml" title="<?php echo Config::get('site.company_name'); ?> &raquo; Comments Feed" href="/comments/feed/" />
+        <meta property='og:site_name' content='<?php echo Config::get('site.company_name'); ?>'/>
         <meta property='og:url' content='/privacy-policy/'/>
         <meta property='og:title' content='Privacy Policy'/>
         <meta property='og:type' content='article'/>
@@ -36,7 +36,8 @@
         <link rel='canonical' href='/privacy-policy/' />
         <link rel='shortlink' href='/?p=3085' />
         <link rel='stylesheet' href='/css/public.css'>
-        {{ HTML::style('//fonts.googleapis.com/css?family=Oswald:300,700,400') }}
+        <?php echo HTML::style('//fonts.googleapis.com/css?family=Oswald:300,700,400'); ?>
+
         <style type="text/css">
         </style>
         <style type="text/css">
@@ -47,14 +48,18 @@
             }
         </style>
         <meta name="generator" content="Powered by Visual Composer - drag and drop page builder for WordPress."/>
-        {{ HTML::style('bootstrap/css/bootstrap.min.css') }}
-        {{ HTML::style('bootstrap/css/bootstrap-theme.min.css') }}
-        {{ HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css') }}
-        {{ HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css') }}
+        <?php echo HTML::style('bootstrap/css/bootstrap.min.css'); ?>
+
+        <?php echo HTML::style('bootstrap/css/bootstrap-theme.min.css'); ?>
+
+        <?php echo HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'); ?>
+
+        <?php echo HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css'); ?>
+
     </head>
 
-    <body class="@yield('classes')@show page page-id-3085 page-template-default wpb-js-composer js-comp-ver-3.7.3 vc_responsive" data-ajax-transitions="false" data-loading-animation="none" data-bg-header="false" data-ext-responsive="true" data-header-resize="1" data-header-color="light" data-transparent-header="false" data-smooth-scrolling="0" data-responsive="1" >
-        @include('_helpers/analytics')
+    <body class="<?php echo $__env->yieldContent('classes'); ?><?php echo $__env->yieldSection(); ?> page page-id-3085 page-template-default wpb-js-composer js-comp-ver-3.7.3 vc_responsive" data-ajax-transitions="false" data-loading-animation="none" data-bg-header="false" data-ext-responsive="true" data-header-resize="1" data-header-color="light" data-transparent-header="false" data-smooth-scrolling="0" data-responsive="1" >
+        <?php echo $__env->make('_helpers/analytics', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
         <div id="header-space"></div>
 
         <div id="header-outer" data-cart="false" data-transparency-option="0" data-shrink-num="6" data-full-width="false" data-using-secondary="0" data-using-logo="1" data-logo-height="" data-padding="28" data-header-resize="1">
@@ -92,7 +97,7 @@
 
                         <div class="col span_3" id="logo-container">
                         	
-                            <a id="logo" href="//{{ Config::get('site.domain') }}" > <img class=" dark-version" alt="{{ Config::get('site.company_name') }}" src="{{ Config::get('site.company_logo') }}" height="48" width="169" /> <!-- <div id="lets-talk">Let's Talk.</div> --></a>
+                            <a id="logo" href="//<?php echo Config::get('site.domain'); ?>" > <img class=" dark-version" alt="<?php echo Config::get('site.company_name'); ?>" src="<?php echo Config::get('site.company_logo'); ?>" height="48" width="169" /> <!-- <div id="lets-talk">Let's Talk.</div> --></a>
 
                         </div><!--/span_3-->
 
@@ -103,10 +108,10 @@
                             <nav>
                                 <ul class="sf-menu">
                                     <li id="menu-item-3074" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3074">
-                                        <a href="//{{ Config::get('site.domain') }}/contact-us/">Contact Us</a>
+                                        <a href="//<?php echo Config::get('site.domain'); ?>/contact-us/">Contact Us</a>
                                     </li>
                                     <li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
-                                        <a href="//{{ Config::get('site.domain') }}/public-events">Events</a>
+                                        <a href="//<?php echo Config::get('site.domain'); ?>/public-events">Events</a>
                                     </li>
 				                    <?php
 				                    	if (Auth::check()) {
@@ -122,17 +127,17 @@
 										}
 										else $pages = Page::where('public_header', 1)->where('Public', 1)->get();
 				                    ?>
-				                    @if (isset($pages))
-										@foreach ($pages as $page)
-											<li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
-										@endforeach
-									@endif
+				                    <?php if(isset($pages)): ?>
+										<?php foreach($pages as $page): ?>
+											<li><a href="//<?php echo Config::get('site.domain'); ?>/pages/<?php echo $page->url; ?>"><?php echo $page->short_title; ?></a></li>
+										<?php endforeach; ?>
+									<?php endif; ?>
                                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
-                                        @if (!Auth::check())
-                                        	<a href="//{{ Config::get('site.domain') }}/login">Log In</a>
-                                        @else
-                                        	<a href="//{{ Config::get('site.domain') }}/dashboard">Dashboard</a>
-                                        @endif
+                                        <?php if(!Auth::check()): ?>
+                                        	<a href="//<?php echo Config::get('site.domain'); ?>/login">Log In</a>
+                                        <?php else: ?>
+                                        	<a href="//<?php echo Config::get('site.domain'); ?>/dashboard">Dashboard</a>
+                                        <?php endif; ?>
                                     </li>
                                     <!-- <li id="search-btn">
                                         <div>
@@ -164,15 +169,15 @@
                     <li id="menu-item-3251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3251">
                         <a href="/public-events">Events</a>
                     </li>
-					@foreach ($pages as $page)
-						<li><a href="/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
-					@endforeach
+					<?php foreach($pages as $page): ?>
+						<li><a href="/pages/<?php echo $page->url; ?>"><?php echo $page->short_title; ?></a></li>
+					<?php endforeach; ?>
                     <li id="menu-item-3215" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3215">
-                        @if (!Auth::check())
-                        	<a href="//{{ Config::get('site.domain') }}/login">Log In</a>
-                        @else
-                        	<a href="//{{ Config::get('site.domain') }}/dashboard">Dashboard</a>
-                        @endif
+                        <?php if(!Auth::check()): ?>
+                        	<a href="//<?php echo Config::get('site.domain'); ?>/login">Log In</a>
+                        <?php else: ?>
+                        	<a href="//<?php echo Config::get('site.domain'); ?>/dashboard">Dashboard</a>
+                        <?php endif; ?>
                     </li>
                     <!-- <li id="search-btn">
                         <div>
@@ -183,8 +188,8 @@
             </div>
 
         </div>
-@section('banner')
-@show
+<?php $__env->startSection('banner'); ?>
+<?php echo $__env->yieldSection(); ?>
         <div id="ajax-loading-screen">
             <span class="loading-icon "> <span class="default-skin-loading-icon"></span> </span>
         </div>
@@ -194,10 +199,10 @@
 
                 <div class="container main-content">
                 	<div class="row">
-                		@include('_helpers.errors')
-                		@include('_helpers.message')
-	                	@section('content')
-	                	@show
+                		<?php echo $__env->make('_helpers.errors', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                		<?php echo $__env->make('_helpers.message', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+	                	<?php $__env->startSection('content'); ?>
+	                	<?php echo $__env->yieldSection(); ?>
                 	</div><!--/row-->
                 </div><!--/container-->
 
@@ -225,17 +230,17 @@
 								}
 								else $pages = Page::where('public_footer', 1)->where('Public', 1)->get();
 		                    ?>
-		                    @if (isset($pages))
+		                    <?php if(isset($pages)): ?>
 			                    <ul class="footer-menu">
 									<li><a href="/privacy-policy">Privacy Policy</a></li>
 									<li><a href="/terms-conditions">Terms and Conditions</a></li>
-									@foreach ($pages as $page)
-										<li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
-									@endforeach
+									<?php foreach($pages as $page): ?>
+										<li><a href="//<?php echo Config::get('site.domain'); ?>/pages/<?php echo $page->url; ?>"><?php echo $page->short_title; ?></a></li>
+									<?php endforeach; ?>
 								</ul>
-							@endif
+							<?php endif; ?>
 							<br>
-                            <div id="copyright-text">&copy; {{ date('Y') }} {{ Config::get('site.company_name') }} an LLR INC company
+                            <div id="copyright-text">&copy; <?php echo date('Y'); ?> <?php echo Config::get('site.company_name'); ?> an LLR INC company
 							</div><!--/span_7-->
 
                         </div><!--/span_5-->
@@ -280,11 +285,14 @@ var nectarLove = {"ajaxurl":"http:\/\/lularoe-wordpress\/wp-admin\/admin-ajax.ph
         </script>
         <script type='text/javascript' src='/wp-content/themes/salient/nectar/love/js/nectar-love.js?ver=1.0'></script>
         <script type='text/javascript' src='/wp-content/themes/salient/wpbakery/js_composer/assets/js/js_composer_front.js?ver=3.7.3'></script>
-        {{ HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js') }} 
-        {{ HTML::script('/packages/dirpagination/dirPagination.js') }}
-        {{ HTML::script('/packages/flowplayer-5.5.2/flowplayer.min.js') }}
-		{{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
-		@if (!Session::has('timezone'))
+        <?php echo HTML::script('//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js'); ?> 
+        <?php echo HTML::script('/packages/dirpagination/dirPagination.js'); ?>
+
+        <?php echo HTML::script('/packages/flowplayer-5.5.2/flowplayer.min.js'); ?>
+
+		<?php echo HTML::script('//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js'); ?>
+
+		<?php if(!Session::has('timezone')): ?>
 			<!-- get timezone -->
 			<script>
 			        // get timezone
@@ -299,9 +307,9 @@ var nectarLove = {"ajaxurl":"http:\/\/lularoe-wordpress\/wp-admin\/admin-ajax.ph
 
 			    // }
 			</script>
-		@endif
-		@section('scripts')
-		@show
+		<?php endif; ?>
+		<?php $__env->startSection('scripts'); ?>
+		<?php echo $__env->yieldSection(); ?>
     </body>
 </html>
-@include('_helpers.store_previous_pages')
+<?php echo $__env->make('_helpers.store_previous_pages', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -16,7 +16,6 @@
 		{{ HTML::style('packages/bootstrap-select/bootstrap-select.min.css') }}
 		{{ HTML::style('//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css') }}
 		{{ HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css') }}
-		{{ HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css') }}
 		{{ HTML::style('packages/angular-growl-v2/build/angular-growl.min.css') }}
 		{{ HTML::style('css/lularoe/bootstrap-lularoe.min.css') }}
 		{{ HTML::style('css/bootstrap-xl.css') }}
