@@ -37,7 +37,7 @@ class ExternalAuthController extends \BaseController {
 
 	}
 
-	public function getInventory($key = 0, $location='')
+	public function getInventory($key = '', $location='')
 	{
 		// Magic database voodoo
         $mbr = User::where('key', 'LIKE', $key.'|%')->first();
@@ -52,7 +52,7 @@ class ExternalAuthController extends \BaseController {
 			$location = 'Main';
 
 			// Return the user is able to log in, but shut out of MWL
-			$key = Self::midauth(); // stub parameters
+			$key = Self::midauth(Config::get('site.mwl_username'), Config::get('site.mwl_password')); 
 		}
 
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','TKey: '.$key."\n",FILE_APPEND);
@@ -456,8 +456,7 @@ class ExternalAuthController extends \BaseController {
 
 	private function midcrypt($pass)
 	{
-		$penc = base64_encode(md5($pass,true));
-		return($penc);
+		return base64_encode(md5($pass,true));
 	}
 
 	private function midauth($username = '', $password = '')
@@ -471,7 +470,8 @@ class ExternalAuthController extends \BaseController {
 			$username = urlencode(Config::get('site.mwl_username'));
 			$password = urlencode(Config::get('site.mwl_password'));
 		}
-		else $password = Self::midcrypt($password);
+
+		$password = Self::midcrypt($password);
 
 		// Set this to HTTPS TLS / SSL
 		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/login/?username={$username}&password={$password}";
