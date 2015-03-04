@@ -415,7 +415,7 @@ class ExternalAuthController extends \BaseController {
 				if (in_array($k, $cashparameters)) $txheaders[] = "{$k}: {$v}";
 			}
 		}
-		else if ($txtype == 'CHECK') {
+		else if ($txtype == 'ACH') {
 			$txdata = array(
 				'Account-Name' 		=> Input::get('accountname'),
 				'Routing-Number' 	=> Input::get('routing'),
@@ -429,7 +429,7 @@ class ExternalAuthController extends \BaseController {
 			);
 			$endpoint = 'checkSale';
 			foreach($txdata as $k=>$v) {
-				if (in_array($k, $cashparameters)) $txheaders[] = "{$k}: {$v}";
+				$txheaders[] = "{$k}: {$v}";
 			}
 		}
 

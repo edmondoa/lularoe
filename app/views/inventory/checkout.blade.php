@@ -64,9 +64,13 @@
                     <div class="well tab-pane fade in active" id="bankinfo">
 						<div class="row">
 							<div class="col-lg-12 col-sm-12 col-md-12">
-						{{ Form::open(array('url' => 'inv/achpurchase', 'method' => 'post','name'=>'inven')) }}
-						{{ Form::label('bankinfo', 'Bank Account') }}
-						{{ Form::select('state',$bi->lists('bank_name'), null, array('class' => 'form-control')) }}
+							{{ Form::open(array('url' => 'inv/achpurchase', 'method' => 'post','name'=>'inven')) }}
+							{{ Form::label('bankinfo', 'Bank Account') }}
+							<select name="account" class="form-control">
+							@foreach ($bi as $bank)
+								<option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
+							@endforeach
+							</select>
 							<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
 							<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
 							</div>
@@ -114,7 +118,8 @@
 				</div> <!-- tabcontent -->
 			</div>
 		</div>
-    </div><!-- app -->
+    </div>
+</div><!-- app -->
 @stop
 @section('scripts')
 <script>
