@@ -10,7 +10,7 @@
 	#dendrogram { position:absolute; top:0; right:0; bottom:0; left:0; overflow:auto !important; height:100%; }
 	hr, footer { display:none; }
 	
-	svg { width:2000px; height:1800px; overflow:auto !important; }
+	svg { width:2000px; height:750px; overflow:auto !important; }
 	
 	.node {
 	  cursor: pointer;
@@ -59,7 +59,7 @@
 	
 		var margin = {top: 20, right: 120, bottom: 20, left: 120},
 		    width = 2000 - margin.right - margin.left,
-		    height = 1750 - margin.top - margin.bottom;
+		    height = 750 - margin.top - margin.bottom;
 		    
 		var i = 0,
 		    duration = 750,
