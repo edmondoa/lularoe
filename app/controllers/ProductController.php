@@ -261,8 +261,9 @@ class productController extends \BaseController {
 	{
 		// delete images
 		$product = Product::find($id);
-		unlink('uploads/' . $product->image);
-		unlink('uploads/' . $product->image_sm);
+		if (file_exists('uploads/' . $product->image)) unlink('uploads/' . $product->image);
+		if (file_exists('uploads/' . $product->image_sm)) unlink('uploads/' . $product->image_sm);
+
 		// delete record
 		Product::destroy($id);
 		// clear cache
@@ -278,8 +279,8 @@ class productController extends \BaseController {
 		foreach (Input::get('ids') as $id) {
 			// delete images
 			$product = Product::find($id);
-			unlink('uploads/' . $product->image);
-			unlink('uploads/' . $product->image_sm);
+			if (file_exists('uploads/' . $product->image)) unlink('uploads/' . $product->image);
+			if (file_exists('uploads/' . $product->image_sm)) unlink('uploads/' . $product->image_sm);
 			// delete record
 			Product::destroy($id);
 		}
