@@ -2,7 +2,7 @@
 
 class InventoryController extends \BaseController {
 
-	var $mwlpass = 'test';
+	var $mwlpass = 'controlpad1';
     /**
      * Data only
      */
