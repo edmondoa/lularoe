@@ -12,7 +12,8 @@ class CreateUserBankinfo extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('user_bankinfo', function(Blueprint $table)
+		if (Schema::exists('user_bankinfo')) { Schema::drop('user_bankinfo'); }
+		Schema::create('bankinfo_user', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
@@ -34,7 +35,7 @@ class CreateUserBankinfo extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('user_bankinfo');
+		Schema::drop('bankinfo_user');
 	}
 
 }
