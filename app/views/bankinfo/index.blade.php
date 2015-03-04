@@ -1,26 +1,12 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => '/users/email', 'method' => 'POST')) }}
-	    <div ng-controller="DownlineController" class="my-controller">
+    {{ Form::open(array('url' => 'addresses/disable', 'method' => 'POST')) }}
+	    <div ng-controller="AddressController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		            	@if (Auth::user()->hasRepInDownline($user->id) || (Auth::user()->hasRole(['Superadmin', 'Admin']) && isset($user->sponsor_id)))
-		            		<div class="breadcrumbs">
-		            			<a href="/downline/all/{{ $user->sponsor_id }}"><i class="fa fa-arrow-up"></i> Up One Level</a>
-		            		</div>
-		            	@endif
-		            	<h1 class="no-top pull-left no-pull-xs">
-			            	@if ($user->id == Auth::user()->id)
-			            		Your Entire Team
-			            	@else
-			                	{{ $user->first_name }} {{ $user->last_name }}'s Entire Team
-			            	@endif
-			            	<span class="badge">
-				            	{{ number_format($user->descendant_count) }}
-			            	</span>
-		            	</h1>
+		                <h1 class="no-top pull-left no-pull-xs">All Addresses</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
@@ -33,11 +19,13 @@
 		        <div class="row">
 		            <div class="col-md-6 col-sm-6 col-xs-12 page-actions-left">
 		                <div class="pull-left">
+		                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('addresses/create') }}"><i class="fa fa-plus"></i></a>
 		                    <div class="pull-left">
 		                        <div class="input-group">
 		                            <select class="form-control selectpicker actions">
-		                                <option value="/users/public_email">Send Email</option>
-		                                <option value="/users/sms">Send Text (SMS)</option>
+		                                <option value="addresses/disable" selected>Disable</option>
+		                                <option value="addresses/enable">Enable</option>
+		                                <option value="addresses/delete">Delete</option>
 		                            </select>
 		                            <div class="input-group-btn no-width">
 		                                <button class="btn btn-default applyAction" disabled>
@@ -68,123 +56,117 @@
 	                            <th>
 	                            	<input type="checkbox">
 	                            </th>
-	                            
-	                            @if (Auth::user()->hasRole(['Rep']))
-	                            	<th class="link" ng-click="orderByField='pivot.level'; reverseSort = !reverseSort">Level
-	                            		<span>
-	                            			<span ng-show="orderByField == 'pivot.level'">
-		                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-		                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-	                            			</span>
-	                            		</span>
-	                        		</th>
-	                        	@endif
-                            	                     			
-                            	<th class="link" ng-click="orderByField='last_name'; reverseSort = !reverseSort">Name
+                            	
+                            	<th class="link" ng-click="orderByField='address_1'; reverseSort = !reverseSort">Address 1
                             		<span>
-                            			<span ng-show="orderByField == 'last_name'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-                        	
-                            	<th class="link" ng-click="orderByField='public_gender'; reverseSort = !reverseSort">Gender
-                            		<span>
-                            			<span ng-show="orderByField == 'public_gender'">
+                            			<span ng-show="orderByField == 'address_1'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='public_email'; reverseSort = !reverseSort">Email
+                            	<th class="link" ng-click="orderByField='address_2'; reverseSort = !reverseSort">Address 2
                             		<span>
-                            			<span ng-show="orderByField == 'public_email'">
+                            			<span ng-show="orderByField == 'address_2'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='public_phone'; reverseSort = !reverseSort">Phone
+                            	<th class="link" ng-click="orderByField='city'; reverseSort = !reverseSort">City
                             		<span>
-                            			<span ng-show="orderByField == 'public_phone'">
+                            			<span ng-show="orderByField == 'city'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='min_commission'; reverseSort = !reverseSort">Rank
+                            	<th class="link" ng-click="orderByField='state'; reverseSort = !reverseSort">State
                             		<span>
-                            			<span ng-show="orderByField == 'rank_id'">
+                            			<span ng-show="orderByField == 'state'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='front_line_count'; reverseSort = !reverseSort">Sponsored Members
+                            	<th class="link" ng-click="orderByField='addressable_id'; reverseSort = !reverseSort">Addressable Id
                             		<span>
-                            			<span ng-show="orderByField == 'rank_id'">
+                            			<span ng-show="orderByField == 'addressable_id'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='descendant_count'; reverseSort = !reverseSort">Entire Team
+                            	<th class="link" ng-click="orderByField='zip'; reverseSort = !reverseSort">Zip
                             		<span>
-                            			<span ng-show="orderByField == 'rank_id'">
+                            			<span ng-show="orderByField == 'zip'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
-
+                        		
+                            	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
+                            		<span>
+                            			<span ng-show="orderByField == 'disabled'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
+                        		
+                            	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
+                            		<span>
+                            			<span ng-show="orderByField == 'updated_at'">
+	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+                            			</span>
+                            		</span>
+                        		</th>
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: 'last_name' | orderBy: 'pivot.level' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="address in addresses | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
-	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
+	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.address_id')">
 	                            </td>
-	                            
-	                            @if (Auth::user()->hasRole(['Rep']))
-		                            <td>
-						                <span ng-bind="user.pivot.level"></span></a>
-		                            </td>
-	                            @endif
-	                            
-	                            <td>
-					                <a href="/users/@include('_helpers.user_id')" title="View Details"><span ng-bind="user.last_name"></span>, <span ng-bind="user.first_name"></span></a>
+								
+					            <td>
+					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.address_1"></span></a>
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="user.public_gender"></span>
+					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.address_2"></span></a>
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="user.public_email"></span>
-					            </td>
-					            		            
-					            <td>
-					                <span ng-bind="user.public_phone"></span>
+					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.city"></span></a>
 					            </td>
 					            
 					            <td>
-					            	<span ng-bind="user.rank_name"></span> (<span ng-bind="user.rank_id"></span>)
+					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.state"></span></a>
 					            </td>
 					            
 					            <td>
-					            	<a href="/downline/immediate/@include('_helpers.user_id')" title="View Sponsored Members"><span ng-bind="user.front_line_count"></span></a>
+					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.addressable_id"></span></a>
 					            </td>
 					            
 					            <td>
-					            	<a href="/downline/all/@include('_helpers.user_id')" title="View Entire Team"><span ng-bind="user.descendant_count"></span></a>
+					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.zip"></span></a>
 					            </td>
 					            
+					            <td>
+					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.disabled"></span></a>
+					            </td>
+					            
+					            <td>
+					            	<a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.updated_at"></span></a>
+					            </td>
 	                        </tr>
 	                        <tr dir-paginate-end></tr>
 	                    </tbody>
@@ -203,11 +185,11 @@
 <script>
     angular.extend(ControlPad, (function(){                
                 return {
-                    downlineCtrl : {
-                        path : '/api/all-downline/{{ $user->id }}'
+                    addressCtrl : {
+                        path : '/api/all-addresses'
                     }
                 };
             }()));    
 </script>
-{{ HTML::script('js/controllers/downlineController.js') }}
+{{ HTML::script('js/controllers/addressController.js') }}
 @stop

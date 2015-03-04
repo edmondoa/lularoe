@@ -45,7 +45,7 @@ class LeadController extends \BaseController {
 			return Redirect::back()->with('message', 'Your application has been received.');
 		}
 		else {
-			return Redirect::route('leads.index')->with('message', 'Lead created.');
+			return Redirect::route('leads.index')->with('message', 'Contact created.');
 		}
 	}
 
@@ -93,7 +93,7 @@ class LeadController extends \BaseController {
 
 		$lead->update($data);
 
-		return Redirect::route('leads.show', $id)->with('message', 'Lead updated.');
+		return Redirect::route('leads.show', $id)->with('message', 'Contact updated.');
 	}
 
 	/**
@@ -106,7 +106,7 @@ class LeadController extends \BaseController {
 	{
 		Lead::destroy($id);
 
-		return Redirect::route('leads.index')->with('message', 'Lead deleted.');
+		return Redirect::route('leads.index')->with('message', 'Contact deleted.');
 	}
 	
 	/**
@@ -118,10 +118,10 @@ class LeadController extends \BaseController {
 			Lead::destroy($id);
 		}
 		if (count(Input::get('user_ids')) > 1) {
-			return Redirect::route('leads.index')->with('message', 'Leads deleted.');
+			return Redirect::route('leads.index')->with('message', 'Contacts deleted.');
 		}
 		else {
-			return Redirect::back()->with('message', 'Lead deleted.');
+			return Redirect::back()->with('message', 'Contact deleted.');
 		}
 	}
 	
@@ -134,10 +134,10 @@ class LeadController extends \BaseController {
 			Lead::find($id)->update(['disabled' => 1]);	
 		}
 		if (count(Input::get('user_ids')) > 1) {
-			return Redirect::route('leads.index')->with('message', 'Leads disabled.');
+			return Redirect::route('leads.index')->with('message', 'Contacts disabled.');
 		}
 		else {
-			return Redirect::back()->with('message', 'Lead disabled.');
+			return Redirect::back()->with('message', 'Contact disabled.');
 		}
 	}
 	
@@ -150,10 +150,10 @@ class LeadController extends \BaseController {
 			Lead::find($id)->update(['disabled' => 0]);	
 		}
 		if (count(Input::get('user_ids')) > 1) {
-			return Redirect::route('leads.index')->with('message', 'Leads enabled.');
+			return Redirect::route('leads.index')->with('message', 'Contacts enabled.');
 		}
 		else {
-			return Redirect::back()->with('message', 'Lead enabled.');
+			return Redirect::back()->with('message', 'Contact enabled.');
 		}
 	}
 

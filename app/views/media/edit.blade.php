@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
-		    <h1>Edit Resource</h1>
+		    <h1>Edit Asset</h1>
 		</div>
 	</div>
 	<div class="row">
@@ -29,12 +29,12 @@
                 @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
 	                <div class="form-group">
 	                	<label>
-	                		{{ Form::checkbox('reps') }} Share with Reps
+	                		{{ Form::checkbox('reps') }} Share with FC's
 	                	</label>
 	                </div>
 	            @endif
 		    
-		    {{ Form::submit('Update Resource', array('class' => 'btn btn-primary')) }}
+		    {{ Form::submit('Update Asset', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>

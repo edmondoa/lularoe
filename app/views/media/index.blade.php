@@ -19,16 +19,20 @@
 		                <h1 class="no-top pull-left no-pull-xs">
 		                	@if (isset($user->id))
 		                		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && Auth::user()->id != $user->id || (Auth::user()->id == 0 && $user->id == 0))
-		                			{{ $user->full_name }}'s Resources
+		                			{{ $user->full_name }}'s Tools/Assets
 		                		@else
-		                			My Resources
+		                			My Tools/Assets
 		                		@endif
 		                	@elseif (isset($reps))
-		                		Rep Resources
+		                		Rep Tools/Assets
 		                	@elseif (isset($shared_with_reps))
-		                		Resources Shared with Reps
+		                		@if (Auth::user()->hasRole(['Rep']))
+		                			Tool/Asset Library
+		                		@else
+		                			Tools/Assets Shared with FC's
+		                		@endif
 		                	@else
-		                		Resource Library
+		                		Tools/Assets Library
 		                	@endif
 		                </h1>
 		            	<div ng-if="media.length > 10" class="pull-right hidable-xs">
@@ -132,9 +136,7 @@
 		                        <div ng-click="checkbox()">
 		                        	<div class="options" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
-										    <form action="/media/@include('_helpers.media_id')'" method="DELETE" onsubmit="return confirm('Are you sure you want to delete this file? This cannot be undone.')">
-										    	<button class="form-link pull-left"><i class="fa fa-trash" title="Delete"></i></button>
-										    </form>
+										    <span class="form-link pull-left"><i class="fa fa-trash" title="Delete" ng-click="deleteFile(media.id)"></i></span>
 										@endif
 			                        	<a target="_blank" href="/uploads/@include('_helpers.media_url')"><i class="fa fa-eye"></i></a>
 			                        	<a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a>
@@ -229,12 +231,24 @@
 				window.location.href = '/uploads/' + url;
 			}
 			
+			// delete file
+			$scope.deleteFile = function(id) {
+				confirm = confirm('Are you sure you want to delete this file?');
+				if (confirm == true) {
+					$http.get('/media/destroy/' + id).success(function() {
+						$scope.media.splice($scope.media[id], 1);
+						$scope.media_counts --;
+					});
+				}
+			}
+			
 			@include('_helpers.bulk_action_checkboxes')
 			
 		});
 		
 		$http.get('{{ $count_url }}').success(function(media_counts) {
 			$scope.media_counts = media_counts;
+			console.log($scope.media_counts);
 		});
 		
 		$scope.currentPage = 1;

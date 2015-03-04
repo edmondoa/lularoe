@@ -14,7 +14,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		                <h1 class="no-top pull-left no-pull-xs">All Leads</h1>
+		                <h1 class="no-top pull-left no-pull-xs">All Contacts</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
@@ -129,7 +129,7 @@
 	                        		</th>
                         		@endif
                         		
-                            	<th class="link hidable-sm" ng-click="orderByField='opportunity_name'; reverseSort = !reverseSort">Opportunity
+                            	<th class="link hidable-sm" ng-click="orderByField='opportunity_name'; reverseSort = !reverseSort">Promotion
                             		<span>
                             			<span ng-show="orderByField == 'opportunity_name'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>

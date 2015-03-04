@@ -5,7 +5,7 @@
     	<div class="page-actions">
 	        <div class="row">
 	            <div class="col col-md-8">
-	                <h1 class="no-top">Upcoming Parties</h1>
+	                <h1 class="no-top">Upcoming Popup-Boutiques</h1>
 	            </div>
 	            <div class="col col-md-4">
 	                <div>

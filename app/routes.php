@@ -43,8 +43,7 @@ Route::pattern('id', '[0-9]+');
 
 		Route::post('llrapi/v1/reorder/', 					    	'ExternalAuthController@reorder');
 
-Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function()
-{
+Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function() {
 	##############################################################################################
 	# Session Control
 	##############################################################################################
@@ -93,7 +92,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		return View::make('company.presentation', compact('title'));
 	});
 
-	
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');
 	Route::resource('send_text','SmsMessagesController');
@@ -130,9 +128,10 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('leads/enable', 'LeadController@enable');
 	Route::post('leads/delete', 'LeadController@delete');
 
+	Route::resource('bankinfo', 'BankinfoController');
+
 	// opportunities (public view)
-	Route::get('opportunity/{id}', function($id)
-	{
+	Route::get('opportunity/{id}', function($id) {
 		$opportunity = Opportunity::findOrFail($id);
 		$sponsor = User::where('id', 0)->first();
 		return View::make('opportunity.public', compact('opportunity','sponsor'));
@@ -157,7 +156,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	// posts
 	Route::resource('posts', 'PostController');
 	Route::get('api/public-posts', 'DataOnlyController@getPublicPosts');
-	Route::get('public-posts', 'PostController@publicPosts');
+	Route::get('public-posts', 'PostController@publicIndex');
+	Route::get('public-posts/{url}', 'PostController@publicShow');
 	Route::post('posts/disable', 'PostController@disable');
 	Route::post('posts/enable', 'PostController@enable');
 	Route::post('posts/delete', 'PostController@delete');
@@ -227,6 +227,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('media/user/{id}', ['as' => 'media/user', 'uses' => 'MediaController@user']);
 		Route::get('media-reps', 'MediaController@reps');
 		Route::get('media-shared-with-reps', 'MediaController@sharedWithReps');
+		Route::get('media/destroy/{id}', 'MediaController@destroyAJAX');
 		Route::post('media/disable', 'MediaController@disable');
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
@@ -238,11 +239,16 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('inv/sales', 'InventoryController@sales');
 
         Route::post('inv/purchase', 'InventoryController@purchase');
+		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
         #Route::post('inventories/disable', 'InventoryController@disable');
         #Route::post('inventories/enable', 'InventoryController@enable');
         #Route::post('inventories/delete', 'InventoryController@delete');
-		Route::get('inventory/validpurchase', function () { return(View::make('inventory.validpurchase')); });
-        Route::get('inventory/invalidpurchase', function () { return(View::make('inventory.invalidpurchase')); });
+		Route::get('inventory/validpurchase', function() {
+			return (View::make('inventory.validpurchase'));
+		});
+		Route::get('inventory/invalidpurchase', function() {
+			return (View::make('inventory.invalidpurchase'));
+		});
         
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
@@ -268,7 +274,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('parties/enable', 'PartyController@enable');
 		Route::post('parties/delete', 'PartyController@delete');
 		Route::get('past-parties', 'PartyController@indexPast');
-
 
 		##############################################################################################
 		# API that should be cached
@@ -310,7 +315,11 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/all-userProducts', 'UserProductController@getAllUserProducts');
 		Route::get('api/all-userRanks', 'UserRankController@getAllUserRanks');
 		Route::get('api/all-media', 'DataOnlyController@getAllMedia');
-		Route::get('api/all-media-counts', 'DataOnlyController@getAllMediaCounts');
+		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin', 'Editor'])) :
+			Route::get('api/media-counts/{id}', 'DataOnlyController@getMediaCounts');
+		elseif (Auth::check() && Auth::user() -> hasRole(['Rep'])) :
+			Route::get('api/media-counts/{type}', 'DataOnlyController@getMediaCounts');
+		endif;
 		Route::get('api/all-images', 'DataOnlyController@getAllImages');
 		Route::get('api/all-config', 'DataOnlyController@getAllConfig');
 		Route::get('api/first-branch', 'DataOnlyController@getFirstBranch');
@@ -362,7 +371,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::controller('dev','DevelopController');
 		});
 
-
 		##############################################################################################
 		# Superadmin only routes
 		##############################################################################################
@@ -370,7 +378,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::controller('sa','SuperAdminTasksController');
 			Route::get('login-as/{id}',function($id){
 				//first log out the admin
-				if(!Auth::user()->hasRole(['Superadmin'])) return;
+				if (!Auth::user() -> hasRole(['Superadmin']))
+					return;
 				Auth::logout();
 				//then login automatically as the requested user
 				Auth::loginUsingId($id);
@@ -379,8 +388,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			Route::get('clear-all-cache', function() {
 				$users = DB::table('users')->get(['id']);
 				$count = 0;
-				foreach($users as $user)
-				{
+				foreach ($users as $user) {
 					$user = User::find($user->id);
 					$user->clearUserCache();
 					$count++;
@@ -554,12 +562,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		$level_count = Level::all()->count();
 		DB::connection()->disableQueryLog();
 
-		if($level_count > 0)
-		{
+		if ($level_count > 0) {
 			return $level_count;
-		}
-		else
-		{
+		} else {
 			Commission::set_levels_down(0);
 			return "Populated Levels";
 		}
@@ -576,16 +581,19 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 		dd($subdomain);
 	};
 
-	Route::get('/', function($subdomain)
-	{
+	Route::get('/', function($subdomain) {
 		$user = User::where('public_id', $subdomain)->first();
-		if ($user->image == '') $user->image = '/img/users/default-avatar.png';
-		else $user->image = '/img/users/avatars/' . $user->image;
+		if ($user -> image == '')
+			$user -> image = '/img/users/default-avatar.png';
+		else
+			$user -> image = '/img/users/avatars/' . $user -> image;
 		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
 		$userSite->save();
 		//return dd($userSite);
-		if ((!isset($userSite->banner))||($userSite->banner == '')) $userSite->banner = '/img/users/default-banner.png';
-		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
+		if ((!isset($userSite -> banner)) || ($userSite -> banner == ''))
+			$userSite -> banner = '/img/users/default-banner.png';
+		else
+			$userSite -> banner = '/img/users/banners/' . $userSite -> banner;
 		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(5)->get();
 		$opportunities = Opportunity::where('public', 1)->where('deadline', '>', time())->orWhere('deadline', '')->take(5)->orderBy('updated_at', 'DESC')->get();
 		// echo '<pre>'; print_r($opportunities->toArray()); echo '</pre>';
@@ -594,16 +602,14 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	});
 
 	// opportunities (public view)
-	Route::get('opportunity/{id}', function($subdomain, $id)
-	{
+	Route::get('opportunity/{id}', function($subdomain, $id) {
 		$opportunity = Opportunity::findOrFail($id);
 		$sponsor = User::where('public_id', $subdomain)->first();
 		return View::make('opportunity.public', compact('opportunity','sponsor'));
 	});
 	
 	// event (public view)
-	Route::get('public-events/{id}', function($subdomain, $id)
-	{
+	Route::get('public-events/{id}', function($subdomain, $id) {
 		$event = Uvent::findOrFail($id);
 		$sponsor = User::where('public_id', $subdomain)->first();
 		$title = $event->name;
@@ -636,9 +642,13 @@ Route::get('test-cache/{id}', function($id) {
 	$users = User::find($id)->descendants;
 	//$result['users'] = $users;
 	echo "<h1> Found ".$users->count()." descendants.</h1>";
-	echo"<!-- <pre>"; print_r($users->toArray()); echo"</pre> -->";
+	echo "<!-- <pre>";
+	print_r($users -> toArray());
+	echo "</pre> -->";
 	$queries = DB::getQueryLog();
-	echo"<pre>"; print_r($queries); echo"</pre>";
+	echo "<pre>";
+	print_r($queries);
+	echo "</pre>";
 	//return $result;
 	return;
 });
@@ -689,21 +699,16 @@ Route::get('testfunction', function() {
 
 Route::get('test-orders', function() {
 	$reps = User::all();
-	foreach($reps as $rep)
-	{
+	foreach ($reps as $rep) {
 		$order = new Order;
-		foreach($rep->plans as $plan)
-		{
-			if($plan->price > 0)
-			{
+		foreach ($rep->plans as $plan) {
+			if ($plan -> price > 0) {
 				//Order::$timestamps = false;
 				//foreach
 				$order->user()->associate($rep);
 				$order->save();
 				//echo"<pre>"; print_r($order->toArray()); echo"</pre>";
-			}
-			else
-			{
+			} else {
 				//echo"<pre>"; print_r($plan->toArray()); echo"</pre>";
 			}
 		}
@@ -740,8 +745,7 @@ Route::get('sendonboardmail/{id}', function($id) {
 	$verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash;
 
 	print "Sending ..";
-	Mail::send('emails.verification', compact('verification_link'), function($message) use(&$user)
-	{
+	Mail::send('emails.verification', compact('verification_link'), function($message) use (&$user) {
 		$message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Please complete your '.Config::Get('site.company_name').' registration');
 	});
 
