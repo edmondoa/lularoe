@@ -30,7 +30,7 @@
 										    <div class="col-md-4">
 											    <div class="form-group">
 												    {{ Form::label('name', 'Name') }}
-                                                    <div editable-text="user.name" e-name="name" e-required>@{{ user.name || 'empty' }}</div>
+                                                    <div editable-text="product.name" e-name="name" e-required>@{{ product.name || 'empty' }}</div>
 											    </div>
 										    </div>
 			                                
@@ -49,7 +49,7 @@
 										    <div class="col-md-2">
 											    <div class="form-group">
 												    {{ Form::label('rep_price', 'Price') }}
-												    <div editable-text="product.price" e-min="1" e-name="rep_price" onbeforesave="productForm.checkprice($data)" e-required>@{{ product.price || 'empty' }}</div>
+												    <div editable-text="product.rep_price" e-min="1" e-name="rep_price" onbeforesave="productForm.checkprice($data)" e-required>@{{ product.rep_price || 'empty' }}</div>
 											    </div>
                                             </div>
                                         </div>
