@@ -140,7 +140,7 @@ try {
                 var newProduct = angular.copy({},tempProduct);
                 newProduct.name = "Product"+($scope.products.length+1);
                 newProduct.description = "";
-                newProduct.price = 1;
+                newProduct.rep_price = parseFloat(0.00);
                 newProduct.quantity = 1;
                 newProduct.size = "";
                 newProduct.save = false;
@@ -153,7 +153,19 @@ try {
                 $scope.productForm.message = "Please edit and submit the last form before adding another product";
             }     
         };
-        
+
+        $scope.saveBankinfo = function(){
+            $http.post('/bankinfo',jQuery('form').serializeArray()).success(function(data){
+                if(data.status == 'success'){
+					document.location.href = '/inventories';
+                    $scope.next = true;
+                    $scope.isBankError = false;
+                }else{
+                    $scope.isBankError = true;
+                }
+            });
+        };
+
         $scope.saveProduct = function(d){
             console.log(d);
             $http.post('/add-product',d).success(function(data){

@@ -555,6 +555,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('template/preregister/', 'PreRegisterController@template');
         Route::get('template/preregister/{key}', 'PreRegisterController@template');
         Route::get('bankinfo', 'PreRegisterController@bankinfo');
+        Route::post('bankinfo', 'PreRegisterController@updatebankinfo');
 		Route::post('find-sponsor', 'PreRegisterController@redirect');
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
 	});

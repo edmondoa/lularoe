@@ -123,9 +123,17 @@ class PreRegisterController extends \BaseController {
 		return Redirect::to('/pending-registration');
 	}
 
-	public function bankinfo() {
-		$user = Auth::user();
-        return View::make('pre-register.bankinfo',compact('user'));
+	public function updatebankinfo() {
+		foreach(Input::get() as $kvp) {
+			$data[$kvp['name']] = $kvp['value'];
+		}
+
+        $data['user_id'] = Auth::user()->id;
+		Bankinfo::create($data);
+
+		$status = 'success';
+		$message = 'Bank info created';
+        return Response::json(['status'=>$status,'message'=>$message]);
     }
 
     
