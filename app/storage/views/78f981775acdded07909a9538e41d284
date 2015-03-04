@@ -21,8 +21,6 @@
 
 		<?php echo HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css'); ?>
 
-		<?php echo HTML::style('packages/jquery-ui/jquery-ui-1.10.4.custom.min.css'); ?>
-
 		<?php echo HTML::style('packages/angular-growl-v2/build/angular-growl.min.css'); ?>
 
 		<?php echo HTML::style('css/lularoe/bootstrap-lularoe.min.css'); ?>

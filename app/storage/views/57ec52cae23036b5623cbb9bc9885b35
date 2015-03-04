@@ -1,0 +1,7 @@
+<html>
+	<body>
+		<?php $__env->startSection('body'); ?>
+		<?php echo $__env->yieldSection(); ?>
+		<p><img src="http://<?php echo Config::get('site.domain'); ?>/img/iap-logo.png" alt="<?php echo Config::get('site.company_name'); ?>"></p>
+	</body>
+</html>

@@ -133,6 +133,20 @@ class PreRegisterController extends \BaseController {
 		$message = 'Bank info created';
         return Response::json(['status'=>$status,'message'=>$message]);
     }
+	
+	public function shippingAddress() {
+		foreach(Input::get() as $kvp) {
+			$data[$kvp['name']] = $kvp['value'];
+		}
+
+        $data['label'] = 'Shipping';
+		$user = User::find(Auth::user()->id);
+		$user->addresses()->save($data);
+
+		$status = 'success';
+		$message = 'Shipping Address Saved';
+        return Response::json(['status'=>$status,'message'=>$message]);
+    }
 
     
     public function pending(){
@@ -239,11 +253,6 @@ class PreRegisterController extends \BaseController {
             $user = User::where('id',Auth::user()->id)->first();
             $user->password = \Hash::make($loginData['password']);
             $user->save();
-
-			// Change out the password for the MWL
-			App::make('ExternalAuthController')->setmwlpassword($user->id, $loginData['password']);
-			App::make('ExternalAuthController')->auth($user->id, $loginData['password']);
-
             $status = 'success';
             $message = 'Password successfully changed.';
         }else{

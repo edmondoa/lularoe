@@ -33,6 +33,7 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
 .layout-centered { padding-top:70px; }
 .layout-default { padding-top:50px !important; }
 .layout-default #top-right-menu { margin-right:0; }
+.container { width:1100px; }
 
 /* masonry effect (makes panels flush) */
 .row.masonry { -moz-column-width:20em; -webkit-column-width:20em; -moz-column-gap:10px; -webkit-column-gap:10px; padding:0 0 0 14px; }

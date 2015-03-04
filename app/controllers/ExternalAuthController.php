@@ -779,8 +779,7 @@ class ExternalAuthController extends \BaseController {
 				'email'			=> $mbr['attributes']['email']
 			);
 
-
-			@list($sessionkey, $tstamp) = explode('|',$mbr['attributes']['key']);
+			if (!empty($mbr['attributes']['key'])) @list($sessionkey, $tstamp) = explode('|',$mbr['attributes']['key']);
 
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
 			if (empty($sessionkey) || $tstamp < (time() - 10))

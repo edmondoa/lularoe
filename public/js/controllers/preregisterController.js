@@ -154,12 +154,24 @@ try {
             }     
         };
 
+        $scope.saveShippingAddress = function(){
+            $http.post('/shipping_address',jQuery('form').serializeArray()).success(function(data){
+                if(data.status == 'success'){
+					$scope.goto('add-product')
+                    $scope.next = true;
+                    $scope.isBankError = false;
+                }else{
+                    $scope.isBankError = true;
+                }
+            });
+        };
+
         $scope.saveBankinfo = function(){
             $http.post('/bankinfo',jQuery('form').serializeArray()).success(function(data){
                 if(data.status == 'success'){
-					document.location.href = '/inventories';
-                    $scope.next = true;
+					$scope.next = true;
                     $scope.isBankError = false;
+                	$scope.goto('shipping_address');
                 }else{
                     $scope.isBankError = true;
                 }
@@ -181,6 +193,7 @@ try {
             d.save = true;
             console.log(d);
             console.log("saveproduct");
+            document.location.href = '/inventories'; // Final destination
         };
         
         $scope.next = false;
@@ -211,6 +224,8 @@ try {
                 if(data.status == 'success'){
                     $scope.next = true;
                     $scope.isPassError = false;
+                    $scope.goto('bankinfo')
+                    
                 }else{
                     $scope.isPassError = true;
                 }
