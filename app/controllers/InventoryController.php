@@ -2,7 +2,6 @@
 
 class InventoryController extends \BaseController {
 
-	var $mwlpass = 'test';
     /**
      * Data only
      */
@@ -199,15 +198,18 @@ class InventoryController extends \BaseController {
 		$subtotal	= Session::get('subtotal');
 		$invitems	= Session::get('orderdata');
 
-		$user = Config::get('site.mwl_username');
-		$pass = Config::get('site.mwl_password');
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
 
+
 		// MATT HACKERY - Watch for changes in password on ZERO account!!
 		if (!$repsale) {
-			$data = App::make('ExternalAuthController')->auth($user, $this->mwlpass)->getContent();
+			// For MWL user loginstuff
+			$user = Config::get('site.mwl_username');
+			$pass = Config::get('site.mwl_password');
+
+			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
 			$authinfo	= json_decode($data);
 		}
 		// This is the individual REP TID
@@ -255,15 +257,17 @@ class InventoryController extends \BaseController {
 		$subtotal	= Session::get('subtotal');
 		$invitems	= Session::get('orderdata');
 
-		$user = Config::get('site.mwl_username');
-		$pass = Config::get('site.mwl_password');
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
 
-		// MATT HACKERY - Watch for changes in password on ZERO account!!
+		// MATT HACKERY - 
+		// Watch for changes in mwl_password
+		// It is no longer encoded in the site.php file. 
 		if (!$repsale) {
-			$data = App::make('ExternalAuthController')->auth($user, $this->mwlpass)->getContent();
+			$user = Config::get('site.mwl_username');
+			$pass = Config::get('site.mwl_password');
+			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
 			$authinfo	= json_decode($data);
 		}
 		// This is the individual REP TID
