@@ -262,19 +262,19 @@ class PreRegisterController extends \BaseController {
 
         if ($validator->fails())
         {
-            $status = 'success';
+            $status = 'failed';
             $message = $validator->errors();
         }else{
             $data['user_id'] = Auth::user()->id;
-            if(array_key_exists('prodid',$data) && $data['prodid'] != '-1'){
-                error_log($data['prodid']);
-                $product = Product::where('id',$data['prodid'])->first();   
+            if(array_key_exists('id',$data)){
+                $product = Product::where('id',$data['id'])->first();   
+                $message = "Successfully updated product details";
             }else{
-                $product = Product::create($data);
+                $product = Product::create($data); 
+                $message = "Successfully added product";
             }
             $product->save();
             $status = 'success';
-            $message = 'Successfully added product';
             
             $data = $product;    
         }
