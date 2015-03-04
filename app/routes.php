@@ -297,6 +297,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
         Route::get('api/all-users', 'DataOnlyController@getAllUsers');
         
+        Route::get('api/all-bankinfos', 'BankinfoController@getAllBankInfos');
 		Route::get('api/all-addresses', 'AddressController@getAllAddresses');
 		Route::get('api/all-bonuses', 'BonusController@getAllBonuses');
 		Route::get('api/all-carts', 'CartController@getAllCarts');

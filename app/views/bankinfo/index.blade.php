@@ -1,12 +1,12 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'addresses/disable', 'method' => 'POST')) }}
-	    <div ng-controller="AddressController" class="my-controller">
+    {{ Form::open(array('url' => 'bankinfo/disable', 'method' => 'POST')) }}
+	    <div ng-controller="BankInfoController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		                <h1 class="no-top pull-left no-pull-xs">All Addresses</h1>
+		                <h1 class="no-top pull-left no-pull-xs">Bank Information</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
@@ -19,13 +19,13 @@
 		        <div class="row">
 		            <div class="col-md-6 col-sm-6 col-xs-12 page-actions-left">
 		                <div class="pull-left">
-		                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('addresses/create') }}"><i class="fa fa-plus"></i></a>
+		                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('bankinfo/create') }}"><i class="fa fa-plus"></i></a>
 		                    <div class="pull-left">
 		                        <div class="input-group">
 		                            <select class="form-control selectpicker actions">
-		                                <option value="addresses/disable" selected>Disable</option>
-		                                <option value="addresses/enable">Enable</option>
-		                                <option value="addresses/delete">Delete</option>
+		                                <option value="bankinfo/disable" selected>Disable</option>
+		                                <option value="bankinfo/enable">Enable</option>
+		                                <option value="bankinfo/delete">Delete</option>
 		                            </select>
 		                            <div class="input-group-btn no-width">
 		                                <button class="btn btn-default applyAction" disabled>
@@ -57,59 +57,52 @@
 	                            	<input type="checkbox">
 	                            </th>
                             	
-                            	<th class="link" ng-click="orderByField='address_1'; reverseSort = !reverseSort">Address 1
+                            	<th class="link" ng-click="orderByField='bank_name'; reverseSort = !reverseSort">Bank Name
                             		<span>
-                            			<span ng-show="orderByField == 'address_1'">
+                            			<span ng-show="orderByField == 'bank_name'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='address_2'; reverseSort = !reverseSort">Address 2
+                            	<th class="link" ng-click="orderByField='bank_routing'; reverseSort = !reverseSort">Routing #
                             		<span>
-                            			<span ng-show="orderByField == 'address_2'">
+                            			<span ng-show="orderByField == 'bank_routing'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='city'; reverseSort = !reverseSort">City
+                            	<th class="link" ng-click="orderByField='bank_account'; reverseSort = !reverseSort">Account #
                             		<span>
-                            			<span ng-show="orderByField == 'city'">
+                            			<span ng-show="orderByField == 'bank_account'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='state'; reverseSort = !reverseSort">State
+                            	<th class="link" ng-click="orderByField='license_state'; reverseSort = !reverseSort">Driver License State
                             		<span>
-                            			<span ng-show="orderByField == 'state'">
+                            			<span ng-show="orderByField == 'license_state'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='addressable_id'; reverseSort = !reverseSort">Addressable Id
+                            	<th class="link" ng-click="orderByField='license_number'; reverseSort = !reverseSort">Driver License Number
                             		<span>
-                            			<span ng-show="orderByField == 'addressable_id'">
+                            			<span ng-show="orderByField == 'license_number'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
                             			</span>
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='zip'; reverseSort = !reverseSort">Zip
-                            		<span>
-                            			<span ng-show="orderByField == 'zip'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
+                            	
                         		
                             	<th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
                             		<span>
@@ -131,41 +124,37 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="address in addresses | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
+	                        <tr ng-class="{highlight: bankinfo.new == 1}" dir-paginate-start="bankinfo in bankinfos | filter:search | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="ids[]" value="@include('_helpers.address_id')">
 	                            </td>
 								
 					            <td>
-					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.address_1"></span></a>
+					                <a href="/bankinfo/@include('_helpers.bankinfo_id')"><span ng-bind="bankinfo.bank_name"></span></a>
 					            </td>
 					            
 					            <td>
-					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.address_2"></span></a>
+					                <a href="/bankinfo/@include('_helpers.bankinfo_id')"><span ng-bind="bankinfo.bank_routing"></span></a>
 					            </td>
 					            
 					            <td>
-					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.city"></span></a>
+					                <a href="/bankinfo/@include('_helpers.bankinfo_id')"><span ng-bind="bankinfo.bank_account"></span></a>
 					            </td>
 					            
 					            <td>
-					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.state"></span></a>
+					                <a href="/bankinfo/@include('_helpers.bankinfo_id')"><span ng-bind="bankinfo.license_state"></span></a>
 					            </td>
 					            
 					            <td>
-					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.addressable_id"></span></a>
+					                <a href="/bankinfo/@include('_helpers.bankinfo_id')"><span ng-bind="bankinfo.license_number"></span></a>
 					            </td>
 					            
 					            <td>
-					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.zip"></span></a>
+					                <a href="/bankinfo/@include('_helpers.bankinfo_id')"><span ng-bind="bankinfo.disabled"></span></a>
 					            </td>
 					            
 					            <td>
-					                <a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.disabled"></span></a>
-					            </td>
-					            
-					            <td>
-					            	<a href="/addresses/@include('_helpers.address_id')"><span ng-bind="address.updated_at"></span></a>
+					            	<a href="/bankinfo/@include('_helpers.bankinfo_id')"><span ng-bind="bankinfo.updated_at"></span></a>
 					            </td>
 	                        </tr>
 	                        <tr dir-paginate-end></tr>
@@ -185,11 +174,11 @@
 <script>
     angular.extend(ControlPad, (function(){                
                 return {
-                    addressCtrl : {
-                        path : '/api/all-addresses'
+                    bankinfoCtrl : {
+                        path : '/api/all-bankinfos'
                     }
                 };
             }()));    
 </script>
-{{ HTML::script('js/controllers/addressController.js') }}
+{{ HTML::script('js/controllers/bankinfoController.js') }}
 @stop
