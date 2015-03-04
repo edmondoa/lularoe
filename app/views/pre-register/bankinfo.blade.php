@@ -36,12 +36,19 @@
 						</div>
 						{{ Form::label('dlstate', 'Driver Lic. State', ['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
 						<div class="col-lg-8 col-sm-8 col-md-8">
+							<input name='dlstate' style="width:3.5em" class='form-control' maxlength="2" type='text' ng-model='bank.dlstate' ng-minlength="6" required/>
 						</div>
 						{{ Form::label('dlnum', 'Driver Lic. Num', ['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
 						<div class="col-lg-8 col-sm-8 col-md-8">
+							<input name='dlnum' class='form-control' type='text' ng-model='bank.dlnum' ng-minlength="6" required/>
 						</div>
 						{{ Form::label('socsec', 'Social Security', ['class'=>'control-label col-lg-4 col-sm-4 col-md-4']) }}
 						<div class="col-lg-8 col-sm-8 col-md-8">
+							<input name='socsec' class='form-control' type='text' ng-model='bank.socsec' ng-minlength="6" required/>
+						</div>
+						<div class="col-lg-8 col-sm-8 col-md-8">
+						{{ Form::checkbox('agree', 1, true,['class'=>'pull-left']) }}
+						{{ Form::label('agree', 'I agree to the terms and conditions', ['class'=>'control-label col-lg-8 col-sm-8 col-md-8']) }}
 						</div>
                 </div>
             </div>
