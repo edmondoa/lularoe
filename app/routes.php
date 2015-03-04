@@ -239,6 +239,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('inv/sales', 'InventoryController@sales');
 
 		Route::post('inv/purchase', 'InventoryController@purchase');
+		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
 		#Route::post('inventories/disable', 'InventoryController@disable');
 		#Route::post('inventories/enable', 'InventoryController@enable');
 		#Route::post('inventories/delete', 'InventoryController@delete');

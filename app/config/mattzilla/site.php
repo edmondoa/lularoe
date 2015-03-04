@@ -2,23 +2,7 @@
     return [
             'domain' => 'mylularoe.local',
             'contact_email' => 'mfrederico@gmail.com',
-			'mwl_api'       => 'http://mwl.controlpad.com:8080/cms/',
-			'mwl_db'        => 'llr',
-			'mwl_username' 	=> '0',
-			'mwl_password'	=> 'CY9rzUYh03PK3k6DJie09g==',
-			'admin_uid'     => 0,
-            'contact_first_name' => 'Matt',
-            'contact_last_name'  => 'Frederico',
             'base_domain' => 'mylularoe.local',
-            'company_logo' => '/img/llr-logo.png',
-            'preregistration_fee' => 2000.00,
-            'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
-            'default_from_email' => 'no-reply@mylularoe.com',
-            'company_name' => 'LulaRoe - Dev',
-            //'subdomain' => Route::getCurrentRoute()->getParameter('subdomain'),
-            'locked_subdomains' => [
-                    'www'
-            ],
-            'cache_length' => 10
+            'company_name' => 'LulaRoe - Dev'
     ];
 
