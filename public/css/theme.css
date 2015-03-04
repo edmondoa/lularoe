@@ -209,3 +209,6 @@ i { width:16px; } /* standardizes font awesome icons */
 
 #logo { overflow:hidden }
 #logo img { margin-top:-8px; }
+.editable-wrap{
+    display:block;
+}

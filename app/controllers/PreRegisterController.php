@@ -123,9 +123,17 @@ class PreRegisterController extends \BaseController {
 		return Redirect::to('/pending-registration');
 	}
 
-	public function bankinfo() {
-		$user = Auth::user();
-        return View::make('pre-register.bankinfo',compact('user'));
+	public function updatebankinfo() {
+		foreach(Input::get() as $kvp) {
+			$data[$kvp['name']] = $kvp['value'];
+		}
+
+        $data['user_id'] = Auth::user()->id;
+		Bankinfo::create($data);
+
+		$status = 'success';
+		$message = 'Bank info created';
+        return Response::json(['status'=>$status,'message'=>$message]);
     }
 
     
@@ -239,7 +247,40 @@ class PreRegisterController extends \BaseController {
             $status = 'failed';
         }
         
-        return Response::json(['status'=>$status,'message'=>$message,'data'=>$loginData]);
+        return Response::json(['status'=>$status,'message'=>$message]);
+    }
+    
+    public function addProduct(){
+        $data = Input::all();
+        
+        $rules['name'] = 'required';
+        $rules['quantity'] = 'required|numeric';
+        $rules['rep_price'] = 'required|numeric';
+        $rules['size'] = 'required';
+        
+        $validator = Validator::make($data = Input::all(), $rules);
+
+        if ($validator->fails())
+        {
+            $status = 'success';
+            $message = $validator->errors();
+        }else{
+            $data['user_id'] = Auth::user()->id;
+            if(array_key_exists('prodid',$data) && $data['prodid'] != '-1'){
+                error_log($data['prodid']);
+                $product = Product::where('id',$data['prodid'])->first();   
+            }else{
+                $product = Product::create($data);
+            }
+            $product->save();
+            $status = 'success';
+            $message = 'Successfully added product';
+            
+            $data = $product;    
+        }
+        
+        
+        return Response::json(['status'=>$status,'message'=>$message,'data'=>$data]);
     }
 
 	/**

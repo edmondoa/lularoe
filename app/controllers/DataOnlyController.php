@@ -634,7 +634,7 @@ class DataOnlyController extends \BaseController
 			}
 		}
 
-		return ['count'=>Product::with('tags')
+		return ['count'=>$products
                         ->count(),'data'=>$products];
 
 	}

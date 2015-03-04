@@ -87,7 +87,7 @@
 	</div>
 @stop
 @section('scripts')
-	<script src="//d3js.org/d3.v3.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 	<script>
 	
 		/*
