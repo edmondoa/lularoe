@@ -10,6 +10,7 @@ angular.module('ControlPadServices', [])
     
     sharedSrv.signupData = {};
     sharedSrv.cart = [];
+    sharedSrv.next = false;
     sharedSrv.getIsLoading = function () {
         return isLoading;
     };
@@ -61,7 +62,17 @@ angular.module('ControlPadServices', [])
     
     sharedSrv.updateLocalCart = function(){
         this._brdcstUpdateLocalCart();    
-    };  
+    }; 
+    
+    sharedSrv.updateNext = function(d){
+        this.next = d;
+        this._brdcstUpdateNext();    
+    };
+    
+    sharedSrv.updateLocalNext = function(d){
+        this.next = d;
+        this._brdcstUpdateLocalNext();    
+    }; 
     
     /* event broadcasters */
     
@@ -75,6 +86,14 @@ angular.module('ControlPadServices', [])
     
     sharedSrv._brdcstUpdateSignUpData = function(){
         $rootScope.$broadcast('handleUpdateSignUpData');
+    };
+    
+    sharedSrv._brdcstUpdateNext = function(){
+        $rootScope.$broadcast('handleUpdateNext');
+    };
+    
+    sharedSrv._brdcstUpdateLocalNext = function(){
+        $rootScope.$broadcast('handleUpdateLocalNext');
     };
     
     return sharedSrv;
