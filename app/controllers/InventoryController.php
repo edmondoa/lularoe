@@ -188,6 +188,10 @@ class InventoryController extends \BaseController {
     }
 
 
+	public function achpurchase() {
+		die('GOT HERE');
+	}
+
 	public function purchase(){
 		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
