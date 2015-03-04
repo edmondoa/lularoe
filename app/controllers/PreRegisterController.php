@@ -239,6 +239,11 @@ class PreRegisterController extends \BaseController {
             $user = User::where('id',Auth::user()->id)->first();
             $user->password = \Hash::make($loginData['password']);
             $user->save();
+
+			// Change out the password for the MWL
+			App::make('ExternalAuthController')->setmwlpassword($user->id, $loginData['password']);
+			App::make('ExternalAuthController')->auth($user->id, $loginData['password']);
+
             $status = 'success';
             $message = 'Password successfully changed.';
         }else{
