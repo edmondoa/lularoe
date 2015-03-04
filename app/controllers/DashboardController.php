@@ -51,8 +51,9 @@ class DashboardController extends \BaseController
 	public function settings()
 	{
 		$addresses = User::find(Auth::user()->id)->addresses;
+		$bankinfo  = User::find(Auth::user()->id)->bankinfo;
 		// die($shipping_address_exists);
-		return View::make('dashboard.settings', compact('addresses'));
+		return View::make('dashboard.settings', compact('addresses','bankinfo'));
 	}
     
     public function onboarding(){

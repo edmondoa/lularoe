@@ -128,6 +128,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('leads/enable', 'LeadController@enable');
 	Route::post('leads/delete', 'LeadController@delete');
 
+	Route::resource('bankinfo', 'BankinfoController');
+
 	// opportunities (public view)
 	Route::get('opportunity/{id}', function($id) {
 		$opportunity = Opportunity::findOrFail($id);
