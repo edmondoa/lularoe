@@ -100,7 +100,7 @@ class ExternalAuthController extends \BaseController {
 				$itemlist[$count++] = $v;
 			}
 
-			return(Response::json($itemlist,200));
+			return(Response::json($itemlist, 200, [], JSON_PRETTY_PRINT));
 		}
 
 
@@ -308,7 +308,7 @@ class ExternalAuthController extends \BaseController {
 			$txns[] = $txn;
 		}	
 		$mysqli->close();
-		return(Response::json($txns, 200));
+		return(Response::json($txns, 200, [], JSON_PRETTY_PRINT));
 	}
 
 	// Keep these separate for now
