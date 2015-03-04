@@ -12,7 +12,7 @@ class CreateUserBankinfo extends Migration {
 	 */
 	public function up()
 	{
-		if (Schema::exists('user_bankinfo')) { Schema::drop('user_bankinfo'); }
+		if (Schema::hasTable('user_bankinfo')) { Schema::drop('user_bankinfo'); }
 		Schema::create('bankinfo_user', function(Blueprint $table)
 		{
 			$table->increments('id');
