@@ -540,7 +540,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('join/{public_id}', 'PreRegisterController@create');
         Route::get('join', 'PreRegisterController@create');
         Route::get('pending-registration', 'PreRegisterController@pending');
-		Route::post('change-password', 'PreRegisterController@changePassword');
+        Route::post('change-password', 'PreRegisterController@changePassword');
+		Route::post('add-product', 'PreRegisterController@addProduct');
         Route::get('u/{key}', 'PreRegisterController@verifyemail');
         Route::get('template/preregister/', 'PreRegisterController@template');
         Route::get('template/preregister/{key}', 'PreRegisterController@template');

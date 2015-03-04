@@ -50,20 +50,24 @@ try {
                 $scope.$location = $location;
                 $scope.$routeParams = $routeParams;
                 
-                $scope.$on('handleUpdateSignUpData',function(){
-                    $scope.user = shared.signupData;   
-                });
-                
                 $scope.log = function(){
                     console.log('loging shared');
                     console.log(shared);
                 };
                 
-                /*$scope.$watch('$location.path()',function(n,o){
-                    if(n != "/" &&  !$scope.hasOwnProperty('user')){
-                        $location.path('/');
-                    }*/    
-               /* });  */ 
+                $scope.$on("handleUpdateNext",function(){
+                    //$scope.next = shared.next;
+                });
+                
+                $scope.$watch('$location.path()',function(n,o){
+                    if(n != o){
+                        shared.updateLocalNext(true);
+                        console.log('path changed');
+                        /*if(n != "/" &&  !$scope.hasOwnProperty('user')){
+                            $location.path('/');
+                        }*/    
+                    }
+                });
     }]);
     
     app.controller('PreRegisterController',
@@ -81,50 +85,91 @@ try {
         $scope.pageSize = 10;
         $scope.data = [];
         $scope.emailAlertMessage = "";
+        
+        $scope.isPassError =false;
+        
         $scope.changePasswd = {
-            status : 'failed',
+            status : false,
             message : ''
         };
         
+        $scope.productForm = {
+            status : false,
+            message : '',
+            checkName : function(d){
+                if(d == ""){
+                    return "Must not be empty";
+                }    
+            },
+            checkSize : function(d){
+                if(d == ""){
+                    return "Must not be empty";
+                } 
+            },
+            checkQuantity : function(d){
+                if(d < 1){
+                    return "Must be a positive number.";
+                } 
+            },
+            checkprice : function(d){
+                if(d < 1){
+                    return "Must be a positive number.";
+                }
+            }
+        };
         
         
-        $scope.inventories = [];
+        
+        $scope.products = [];
         
         $scope.addProduct = function(){
             var tempProduct = {
-                model: 'sample',
-                description: 'Some description here',
+                name: '',
+                description: '',
                 price: 0,
-                sizes: [
-                    {
-                        'key' : 'a',
-                        'value': 100
-                    },
-                    {
-                        'key' : 'b',
-                        'value': 15454
-                    },
-                    {
-                        'key' : 'c',
-                        'value': 15465
-                    },
-                    {
-                        'key' : 'd',
-                        'value': 12545
-                    }
-                ]
+                quantity:1,
+                size:"",
+                save:false
             };
-            var newProduct = angular.copy({},tempProduct);
-            newProduct.model = "Product"+($scope.inventories.length+1);
-            var len = $scope.inventories.length; 
-            $scope.inventories.splice(len+1,0,newProduct);     
+            var hasNewForm = $scope.products.filter(function(product){
+                console.log(product);
+                return product.size == 0;    
+            });
+            console.log(hasNewForm);
+            if(!hasNewForm.length){
+                var newProduct = angular.copy({},tempProduct);
+                newProduct.name = "Product"+($scope.products.length+1);
+                newProduct.description = "";
+                newProduct.price = 1;
+                newProduct.quantity = 1;
+                newProduct.size = "";
+                newProduct.save = false;
+                
+                var len = $scope.products.length; 
+                $scope.products.splice(len+1,0,newProduct);
+                $scope.next = false;
+            }else{
+                $scope.productForm.status = false;
+                $scope.productForm.message = "Please edit and submit the last form before adding another product";
+            }     
         };
         
-        $scope.showGenAddProd = function(){
-
+        $scope.saveProduct = function(d){
+            console.log(d);
+            $http.post('/add-product',d).success(function(data){
+                //d.id = data.id;
+                $http.get('/api/all-products').success(function(all){
+                    $scope.products.splice(0);
+                    $scope.products = all.data;
+                });
+               console.log(data); 
+            }).error(function(error){
+                console.log(error);
+            });
+            d.save = true;
+            console.log(d);
+            console.log("saveproduct");
         };
-        
-        $scope.isPassError =false;
         
         $scope.next = false;
         
@@ -145,8 +190,11 @@ try {
             return $scope.changePasswd.message != "";    
         };
         
+        $scope.checkProductMsg = function(){
+            return $scope.productForm.message != "";
+        };
+        
         $scope.changepasswd = function(){
-            console.log($scope.loginForm);
             $http.post('/change-password',jQuery('form').serializeArray()).success(function(data){
                 if(data.status == 'success'){
                     $scope.next = true;
@@ -159,7 +207,6 @@ try {
         };
         
         $scope.goto = function(p){
-            $scope.next = false;
             if(p == '/purchase-agreement'){
                 $http.post('/register',$scope.user).success(function(data){
                     console.log(data)
@@ -170,41 +217,28 @@ try {
             }
         };
         
-        $scope.$on('handleUpdateSignUpData',function(){;
-            $scope.user = shared.signupData;   
-        });
-        
         $scope.log2 = function(){
             console.log('loging shared');
             console.log(shared);
         };
-        
-        $scope.checkPoint = function(){
-            if($scope.hasOwnProperty('user')){
-                if($scope.user.hasOwnProperty('first_name')){
-                    if($scope.user.first_name != ''){
-                        return true;
-                    }
-                }
+
+        $scope.$watch('next',function(n,o){
+            if(n!=o){
+                shared.updateNext(n);
+                console.log('next update');
+                console.log(n);
             }
-            return false;
-        };
+        });
         
-        $scope.checkEmail = function(email){
-            $http.get('/preregister/checkEmailIfExist/'+email).success(function(d) {
-                console.log(d.message);
-                $scope.emailAlertMessage = d.message;
-            });
-        };
+        $scope.$on("handleUpdateNext",function(){
+            $scope.next = shared.next;
+        });
         
-        $scope.hasEmailAlertMessage = function(){
-            
-        };
+        $scope.$on("handleUpdateLocalNext",function(){
+            console.log('handleUpdateLocalNext');
+            console.log(shared.next);
+            $scope.next = shared.next; 
+        });
         
-        $scope.processform1 = function(){
-             $http.post('/register',$scope.user).success(function(data){
-                console.log(data)
-            });       
-        }; 
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));
