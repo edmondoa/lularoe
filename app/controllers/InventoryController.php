@@ -186,6 +186,58 @@ class InventoryController extends \BaseController {
             return View::make('inventory.repsales');
     }
 
+	public function cashpurchase() {
+		// If it IS a rep sale, 
+		// Deduct inventory, if not, ADD inventory
+		$repsale	= Input::get('repsale', 1);  // This is almost always a rep sale
+
+		$tax		= Session::get('tax');
+		$subtotal	= Session::get('subtotal');
+		$invitems	= Session::get('orderdata');
+
+
+		$authinfo = new stdClass();
+		$oldInput = Input::all();
+
+		// MATT HACKERY - Watch for changes in password on ZERO account!!
+		if (!$repsale) {
+			// For MWL user loginstuff
+			$user = Config::get('site.mwl_username');
+			$pass = Config::get('site.mwl_password');
+
+			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
+			$authinfo	= json_decode($data);
+		}
+		// This is the individual REP TID
+		else {
+			$authkey = Auth::user()->key;
+			@list($key,$exp) = explode('|',$authkey);
+			$authinfo->mwl = $key;
+		}
+
+		$purchaseInfo = array(
+					'subtotal'		=>$subtotal,
+					'tax'			=>$tax,
+					'cash'			=>1,
+					'cart'			=>json_encode($invitems)
+				);
+
+		Input::replace($purchaseInfo);
+		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		$cardauth	= json_decode(Route::dispatch($request)->getContent());
+
+		if (!$cardauth->error) {
+			if ($repsale) {
+				// Deduct item quantity from inventory
+				foreach ($invitems as $item) {
+					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
+					$deduction	= json_decode(Route::dispatch($request)->getContent());
+				}
+			}
+			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+		}
+		else return View::make('inventory.invalidpurchase',compact('cardauth'));
+	}
 
 	public function achpurchase() {
 		$checking = Auth::user()->bankinfo->find(Input::get('account'));
