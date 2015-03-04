@@ -83,27 +83,27 @@
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <td>name on card</td>
+                                    <td>Name on card</td>
                                     <td align="right"><input size="16" style="width:16em" name="accountname"></td>
                                 </tr>
                                 <tr>
-                                    <td>billing street address </td>
+                                    <td>Billing street address </td>
                                     <td align="right"><input size="16" style="width:16em" name="address"></td>
                                 </tr>
                                 <tr>
-                                    <td>billing zip </td>
+                                    <td>Billing zip </td>
                                     <td align="right"><input size="16" style="width:10em" name="zip"></td>
                                 </tr>
                                 <tr>
-                                    <td>card # </td>
+                                    <td>Card # </td>
                                     <td align="right"><input size="16" style="width:16em" name="cardno"></td>
                                 </tr>
                                 <tr>
-                                    <td>card expiration</td>
+                                    <td>Card expiration</td>
                                     <td align="right"><input size="16" placeholder="mmyy" style="width:4em" name="cardexp"></td>
                                 </tr>
                                 <tr>
-                                    <td>security code (# on back of card)</td>
+                                    <td>Security code (# on back of card)</td>
                                     <td align="right"><input size="16" style="width:4em" name="cvv"></td>
                                 </tr>
                                     <td colspan="2">
