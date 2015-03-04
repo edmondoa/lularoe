@@ -8,7 +8,13 @@
                     <h3>Your purhcase did not complete</h3>
 					<div class="row">
 						<blockquote>{{ $cardauth->status; }}</blockquote>
-						<p>Click back to try again</p>
+						@if (isset($checking))
+							<div class="col-sm-6">
+								<a class="btn btn-primary" href="/bankinfo/{{ $checking->id }}/edit">Click here to update account info</a>
+							</div>
+						@else
+							<p>Click back to try again</p>
+						@endif
 					</div>
                 </div>
             </div>

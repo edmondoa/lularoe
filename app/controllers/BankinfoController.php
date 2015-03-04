@@ -94,7 +94,12 @@ class BankinfoController extends \BaseController {
 
 		$bankinfo->update($data);
 
-		return Redirect::to(Session::get('previous_page_2'))->with('message', 'Bankinfo updated.');
+		
+		if (preg_match('/achpurchase/',Session::get('previous_page_2'))){
+			$redirect = '/inv/checkout';	
+		}
+		else $redirect = Session::get('previous_page_2');
+		return Redirect::to($redirect)->with('message', 'Bankinfo updated.');
 	}
 
 	/**

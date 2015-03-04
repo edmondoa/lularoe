@@ -297,7 +297,7 @@ class InventoryController extends \BaseController {
 			}
 			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
 		}
-		else return View::make('inventory.invalidpurchase',compact('cardauth'));
+		else return View::make('inventory.invalidpurchase',compact('cardauth','checking'));
 	}
 
 	public function purchase(){
