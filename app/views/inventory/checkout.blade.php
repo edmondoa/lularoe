@@ -3,11 +3,15 @@
 <div ng-app="app" class="index">
 <?php 
 	$subtotal	= 0; 
-	$inittotal	= 0; 
+	$inittotal	= 0;
+    $orders = Session::get('orderdata');
+    if(empty($orders)) $orders = array(); 
 ?>
-@foreach (Session::get('orderdata') as $order) 
-	<?php $inittotal += floatval($order['price']) * intval($order['numOrder']); ?>
-@endforeach
+	<?php 
+        array_map(function($order) use(&$inittotal){
+            $inittotal += floatval($order['price']) * intval($order['numOrder']);
+        },$orders);
+    ?>
 <?php
 	// Corona California tax
 	$data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$inittotal);
@@ -32,7 +36,7 @@
 								<th style="Border-bottom:1px solid black;text-align:left"><h3>Price EA</h3></th>
 								<th style="Border-bottom:1px solid black;text-align:left"><h3>Total</h3></th>
 							</tr>
-	@foreach (Session::get('orderdata') as $order) 
+	@foreach ($orders as $order) 
 							
 							<tr>
 								<td>{{ $order['numOrder'] }}</td>
