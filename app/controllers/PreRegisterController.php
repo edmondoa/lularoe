@@ -136,16 +136,20 @@ class PreRegisterController extends \BaseController {
 	
 	public function shippingAddress() {
 		$user = User::find(Auth::user()->id);
-		foreach(Input::get() as $kvp) {
-			$data[$kvp['name']] = $kvp['value'];
-		}
+		$request = Request::instance();
+		parse_str($request->getContent(), $data);
 
 		$rules = [];
 		$rules['address_1'] = 'required|between:2,28';
 		$rules['city'] = 'required';
 		$rules['state'] = 'required|size:2';
 		$rules['zip'] = ['required','numeric','regex:/(^\d{5}$)|(^\d{5}-\d{4}$)/'];
-		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
+
+		// Set shipping same as billing
+		if (isset($data['shippingsameasbilling'])) {
+			$data['addresses'][2] = $data['addresses'][1];
+			$data['addresses'][2]['label'] = 'Shipping';
+		}
 		
 		foreach($data['addresses'] as $address) {
 			$validator = Validator::make($address, $rules);
@@ -157,7 +161,7 @@ class PreRegisterController extends \BaseController {
 			else {
 				$user->addresses()->save($address);
 				$status = 'success';
-				$message = 'Shipping Address Saved';
+				$message = 'Addresses Saved';
 			}
 		}
         return Response::json(['status'=>$status,'message'=>$message]);

@@ -155,7 +155,12 @@ try {
         };
 
         $scope.saveShippingAddress = function(){
-            $http.post('/shipping_address',jQuery('form').serializeArray()).success(function(data){
+			// Randy, 
+			// Don't use serializeArray it comes in extremely messy json
+			// We don't know the magic voodoo to parse it out correctly
+
+            //$http.post('/shipping_address',jQuery('form').serializeArray()).success(function(data){
+            $http.post('/shipping_address',jQuery('form').serialize()).success(function(data){
                 if(data.status == 'success'){
 					$scope.goto('add-product')
                     $scope.next = true;
