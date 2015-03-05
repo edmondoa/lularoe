@@ -297,6 +297,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
         Route::get('api/all-users', 'DataOnlyController@getAllUsers');
         
+        Route::get('api/all-bankinfos', 'BankinfoController@getAllBankInfos');
 		Route::get('api/all-addresses', 'AddressController@getAllAddresses');
 		Route::get('api/all-bonuses', 'BonusController@getAllBonuses');
 		Route::get('api/all-carts', 'CartController@getAllCarts');
@@ -555,6 +556,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('template/preregister/', 'PreRegisterController@template');
         Route::get('template/preregister/{key}', 'PreRegisterController@template');
         Route::get('bankinfo', 'PreRegisterController@bankinfo');
+        Route::get('shipping_address', 'PreRegisterController@shippingAddressForm');
         Route::post('shipping_address', 'PreRegisterController@shippingAddress');
         Route::post('bankinfo', 'PreRegisterController@updatebankinfo');
 		Route::post('find-sponsor', 'PreRegisterController@redirect');

@@ -2,56 +2,81 @@
 	<div class="row">
 		<div class="col col-md-12">
 		    @include('_helpers.breadcrumbs')
-		    <h1 class="no-top">Step 3: Bank Account Information</h1>
+		    <h1 class="no-top">Step 4: Address Information</h1>
 		    <p><small>(You can change these settings later.)</small></p>
 		</div>
 	</div>
 	<form editable-form name="editableForm" onaftersave="saveShippingAddress($data)">
 	    <div class="row">
 	        <div class="col col-xl-3 col-lg-4 col-sm-6 col-sm-6">
-	            <!-- {{ Form::open(array('url' => '/bankinfo')) }} -->
 	
 				<input type="hidden" name="onboard_process" value="true">
 	
-			    <div class="form-group">
-			        {{ Form::label('phone', 'Driver License#') }}
-			        {{ Form::text('phone', Input::old('phone'), array('class' => 'form-control','placeholder'=>'UT############')) }}
-			    </div>
-		
-			    <div class="form-group">
-			        {{ Form::label('phone', 'Social Security #') }}
-			        {{ Form::text('phone', Input::old('ssn'), array('class' => 'form-control')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('phone', 'Phone') }}
-			        {{ Form::text('phone', Input::old('phone'), array('class' => 'form-control')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('address_1', 'Address 1') }}
-			        {{ Form::text('address_1', Input::old('address_1'), array('class' => 'form-control')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('address_2', 'Address 2') }}
-			        {{ Form::text('address_2', Input::old('address_2'), array('class' => 'form-control')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('city', 'City') }}
-			        {{ Form::text('city', Input::old('city'), array('class' => 'form-control')) }}
-			    </div>
-			    
-			    <div class="form-group">
-			        {{ Form::label('state', 'State') }}
-			        <br>
-			        {{ Form::select('state',State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto')) }}
+			    <div id="address-billing">
+			    	<h3>Billing Address</h3>
+			    	{{ Form::hidden('type', 'billing') }}
+				    <div class="form-group">
+				        {{ Form::label('addresses[1]["address_1"]', 'Address 1') }}
+				        {{ Form::text('addresses[1]["address_1"]', null, array('class' => 'form-control', 'ng-model' => 'billing.address_1')) }}
+				    </div>
+				    
+				    <div class="form-group">
+				        {{ Form::label('addresses[1]["address_2"]', 'Address 2') }}
+				        {{ Form::text('addresses[1]["address_2"]', null, array('class' => 'form-control', 'ng-model' => 'billing.address_2')) }}
+				    </div>
+				    
+				    <div class="form-group">
+				        {{ Form::label('addresses[1]["city"]', 'City') }}
+				        {{ Form::text('addresses[1]["city"]', null, array('class' => 'form-control', 'ng-model' => 'billing.city')) }}
+				    </div>
+				    
+				    <div class="form-group">
+				        {{ Form::label('addresses[1]["state"]', 'State') }}
+				        <br>
+				        {{ Form::select('addresses[1]["state"]', State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto', 'ng-model' => 'billing.state')) }}
+				    </div>
+				    
+				    <div class="form-group">
+				        {{ Form::label('addresses[1]["zip"]', 'Zip') }}
+				        {{ Form::text('addresses[1]["zip"]', null, array('class' => 'form-control', 'ng-model' => 'billing.zip')) }}
+				    </div>
 			    </div>
 			    
 			    <div class="form-group">
-			        {{ Form::label('zip', 'Zip') }}
-			        {{ Form::text('zip', Input::old('zip'), array('class' => 'form-control')) }}
+				    <label>
+				    	<input type="checkbox" ng-click="show=!show" checked>
+				    	Shipping address same as billing address
+				    </label>
+				</div>
+				
+			    <div ng-show="show" id="address-shipping">
+			    	<h3>Shipping Address</h3>
+			    	{{ Form::hidden('type', 'shipping') }}
+				    <div class="form-group">
+				        {{ Form::label('addresses[1]["address_1"]', 'Address 1') }}
+				        {{ Form::text('addresses[1]["address_1"]', null, array('class' => 'form-control')) }}
+				    </div>
+				    
+				    <div class="form-group">
+				        {{ Form::label('addresses[1]["address_2"]', 'Address 2') }}
+				        {{ Form::text('addresses[1]["address_2"]', null, array('class' => 'form-control')) }}
+				    </div>
+				    
+				    <div class="form-group">
+				        {{ Form::label('addresses[1]["city"]', 'City') }}
+				        {{ Form::text('addresses[1]["city"]', null, array('class' => 'form-control')) }}
+				    </div>
+				    
+				    <div class="form-group">
+				        {{ Form::label('addresses[1]["state"]', 'State') }}
+				        <br>
+				        {{ Form::select('addresses[1]["state"]', State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto')) }}
+				    </div>
+				    
+				    <div class="form-group">
+				        {{ Form::label('addresses[1]["zip"]', 'Zip') }}
+				        {{ Form::text('addresses[1]["zip"]', null, array('class' => 'form-control')) }}
+				    </div>
 			    </div>
 				
 				<div class="form-group">
@@ -62,4 +87,3 @@
 	    </div><!-- row -->
 	{{Form::close()}}
 </div>
-

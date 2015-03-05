@@ -2,6 +2,16 @@
 
 class BankinfoController extends \BaseController {
 
+    public function getAllBankInfos(){
+        if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+            $bankinfo = Bankinfo::all();
+            return ['count'=>Bankinfo::count(),'data'=>$bankinfo];
+        }elseif (Auth::user()->hasRole(['Rep'])) {
+            $bankinfo = Bankinfo::where('user_id',Auth::user()->id);
+            return ['count'=>$bankinfo->count(),'data'=>$bankinfo->get()];
+        }
+    }
+    
 	/**
 	 * Display a listing of bankinfo
 	 *
