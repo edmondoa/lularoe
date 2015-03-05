@@ -24,7 +24,7 @@
 	        <small>You will use this email to log in.</small>
 	    </div>
 	    
-	    <div class="form-group">
+	    <!-- <div class="form-group">
 	        {{ Form::label('password', 'Password') }}
 	        {{ Form::password('password', array('class' => 'form-control')) }}
 	    </div>
@@ -32,7 +32,7 @@
 		<div class="form-group">
 			{{ Form::label('password_confirmation','Enter it again') }}
 			{{ Form::password('password_confirmation', array('class' => 'form-control')) }}
-		</div>
+		</div> -->
 		
 	    <div class="form-group">
 	        {{ Form::label('public_id', 'Public ID') }}
@@ -40,20 +40,20 @@
 	        <small>This will be used in the URL of your public website. Example for John Doe: "jdoe"</small>
 	    </div>
 	    
-		<div class="form-group">
+		<!-- <div class="form-group">
 			{{ Form::radio('gender', 'M', true, array('id' => 'gender_male')) }}
 			{{ Form::label('gender_male', 'Male') }}
 			<br>
 			{{ Form::radio('gender', 'F', false, array('id' => 'gender_female')) }}
 			{{ Form::label('gender_female', 'Female') }}
-		</div>
+		</div>-->
 	    
 	    <div class="form-group">
 		    {{ Form::label('dob', 'Date of Birth') }}
 	        {{ Form::text('dob', Input::old('dob'), array('placeholder'=>'YYYY-MM-DD','class' => 'dateonlypicker form-control')) }}
 	    </div>
 
-	    <div class="form-group">
+	    <!--<div class="form-group">
 	        {{ Form::label('phone', 'Driver License#') }}
 	        {{ Form::text('phone', Input::old('phone'), array('class' => 'form-control','placeholder'=>'UT############')) }}
 	    </div>
@@ -93,10 +93,10 @@
 	        {{ Form::label('zip', 'Zip') }}
 	        {{ Form::text('zip', Input::old('zip'), array('class' => 'form-control')) }}
 	    </div>
-	    <br>
+	    <br> -->
 
 	<div class="form-group">
-		<label for="agree" style="font-size:10pt; !important; max-width:250px; display:inline-block; vertical-align:top;">
+		<label for="agree" style="font-weight:normal;">
 			{{ Form::checkbox('agree', null, null, array('id' => 'agree')) }}
 			&nbsp;I agree to the <a target="_blank" href="/terms-conditions">terms and conditions</a>.
 		</label>
@@ -108,4 +108,26 @@
 	    {{ Form::close() }}
 	</div>
 </div>
+@stop
+@section('scripts')
+    {{ HTML::script('packages/jquery-ui/jquery-ui-1.10.4.custom.min.js') }}
+	{{ HTML::script('/packages/jquery-ui/timepicker.js') }}
+	<script>
+	    // jQUery UI
+	    var today = new Date();
+	    var firstYear = today.getFullYear() - 18;
+	    jQuery('.datepicker').datetimepicker({
+	        controlType: 'select',
+	        timeFormat: 'hh:mm tt'
+	    });
+	    jQuery('.dateonlypicker').datepicker({
+	        controlType: 'select',
+	        changeMonth: true,
+	        changeYear: true,
+	        yearRange: '1900:' + firstYear,
+	        dateFormat: 'yy-mm-dd',
+	        //timeFormat: 'hh:mm tt'
+	    });
+	    jQuery.extend(jQuery.datepicker,{_checkOffset:function(inst,offset,isFixed){return offset}});
+	</script>
 @stop

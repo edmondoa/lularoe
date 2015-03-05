@@ -1,0 +1,10 @@
+
+<?php $__env->startSection('body'); ?>
+	<h1>LulaRoe Email Confirmation</h1>
+	<p>Thank you for signing up with LuLaRoe.</p>
+	<p><a href="<?php echo $verification_link; ?>">Click here to verify your email address and continue the sign up process.</a></p>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('footer'); ?>
+	@parent
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('emails.layouts.default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

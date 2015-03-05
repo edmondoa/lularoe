@@ -105,7 +105,7 @@ class ExternalAuthController extends \BaseController {
 
 
 		// Simple caching - probably a better way to do this
-		@mkdir($this->mwl_cache);
+		if (!is_dir($this->mwl_cache)) @mkdir($this->mwl_cache);
 		$mwlcachefile = $this->mwl_cache.urlencode($location).'.json';
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','File: '.$mwlcachefile."\n",FILE_APPEND);
 		if (file_exists($mwlcachefile)) {
@@ -779,8 +779,7 @@ class ExternalAuthController extends \BaseController {
 				'email'			=> $mbr['attributes']['email']
 			);
 
-
-			@list($sessionkey, $tstamp) = explode('|',$mbr['attributes']['key']);
+			if (!empty($mbr['attributes']['key'])) @list($sessionkey, $tstamp) = explode('|',$mbr['attributes']['key']);
 
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
 			if (empty($sessionkey) || $tstamp < (time() - 10))

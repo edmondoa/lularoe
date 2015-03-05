@@ -1,0 +1,176 @@
+
+<?php $__env->startSection('content'); ?>
+<div class="row">
+	<div class="col col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+		<h2>Sign Up</h2>
+	    <?php echo Form::open(array('action' => 'PreRegisterController@store', 'class' => 'full')); ?>
+
+        <?php echo Form::hidden('sponsor_id', $sponsor->id); ?>
+
+        <?php if(isset($sponsor->id)): ?>
+        <div class="alert alert-success">Your Sponsor is <?php echo $sponsor->first_name; ?> <?php echo $sponsor->last_name; ?></div>
+        <?php endif; ?>
+	    <div class="form-group">
+	        <?php echo Form::label('first_name', 'First Name'); ?>
+
+	        <?php echo Form::text('first_name', Input::old('first_name'), array('class' => 'form-control')); ?>
+
+	    </div>
+	    
+	    <div class="form-group">
+	        <?php echo Form::label('last_name', 'Last Name'); ?>
+
+	        <?php echo Form::text('last_name', Input::old('last_name'), array('class' => 'form-control')); ?>
+
+	    </div>
+	    
+	    <div class="form-group">
+	        <?php echo Form::label('email', 'Email'); ?>
+
+	        <?php echo Form::text('email', Input::old('email'), array('class' => 'form-control')); ?>
+
+	        <small>You will use this email to log in.</small>
+	    </div>
+	    
+	    <!-- <div class="form-group">
+	        <?php echo Form::label('password', 'Password'); ?>
+
+	        <?php echo Form::password('password', array('class' => 'form-control')); ?>
+
+	    </div>
+	    
+		<div class="form-group">
+			<?php echo Form::label('password_confirmation','Enter it again'); ?>
+
+			<?php echo Form::password('password_confirmation', array('class' => 'form-control')); ?>
+
+		</div> -->
+		
+	    <div class="form-group">
+	        <?php echo Form::label('public_id', 'Public ID'); ?>
+
+	        <?php echo Form::text('public_id', Input::old('public_id'), array('class' => 'form-control')); ?>
+
+	        <small>This will be used in the URL of your public website. Example for John Doe: "jdoe"</small>
+	    </div>
+	    
+		<!-- <div class="form-group">
+			<?php echo Form::radio('gender', 'M', true, array('id' => 'gender_male')); ?>
+
+			<?php echo Form::label('gender_male', 'Male'); ?>
+
+			<br>
+			<?php echo Form::radio('gender', 'F', false, array('id' => 'gender_female')); ?>
+
+			<?php echo Form::label('gender_female', 'Female'); ?>
+
+		</div>-->
+	    
+	    <div class="form-group">
+		    <?php echo Form::label('dob', 'Date of Birth'); ?>
+
+	        <?php echo Form::text('dob', Input::old('dob'), array('placeholder'=>'YYYY-MM-DD','class' => 'dateonlypicker form-control')); ?>
+
+	    </div>
+
+	    <!--<div class="form-group">
+	        <?php echo Form::label('phone', 'Driver License#'); ?>
+
+	        <?php echo Form::text('phone', Input::old('phone'), array('class' => 'form-control','placeholder'=>'UT############')); ?>
+
+	    </div>
+
+	    <div class="form-group">
+	        <?php echo Form::label('phone', 'Social Security #'); ?>
+
+	        <?php echo Form::text('phone', Input::old('ssn'), array('class' => 'form-control')); ?>
+
+	    </div>
+	    
+	    <div class="form-group">
+	        <?php echo Form::label('phone', 'Phone'); ?>
+
+	        <?php echo Form::text('phone', Input::old('phone'), array('class' => 'form-control')); ?>
+
+	    </div>
+	    
+	    <div class="form-group">
+	        <?php echo Form::label('address_1', 'Address 1'); ?>
+
+	        <?php echo Form::text('address_1', Input::old('address_1'), array('class' => 'form-control')); ?>
+
+	    </div>
+	    
+	    <div class="form-group">
+	        <?php echo Form::label('address_2', 'Address 2'); ?>
+
+	        <?php echo Form::text('address_2', Input::old('address_2'), array('class' => 'form-control')); ?>
+
+	    </div>
+	    
+	    <div class="form-group">
+	        <?php echo Form::label('city', 'City'); ?>
+
+	        <?php echo Form::text('city', Input::old('city'), array('class' => 'form-control')); ?>
+
+	    </div>
+	    
+	    <div class="form-group">
+	        <?php echo Form::label('state', 'State'); ?>
+
+	        <br>
+	        <?php echo Form::select('state',State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto')); ?>
+
+	    </div>
+	    
+	    <div class="form-group">
+	        <?php echo Form::label('zip', 'Zip'); ?>
+
+	        <?php echo Form::text('zip', Input::old('zip'), array('class' => 'form-control')); ?>
+
+	    </div>
+	    <br> -->
+
+	<div class="form-group">
+		<label for="agree" style="font-weight:normal;">
+			<?php echo Form::checkbox('agree', null, null, array('id' => 'agree')); ?>
+
+			&nbsp;I agree to the <a target="_blank" href="/terms-conditions">terms and conditions</a>.
+		</label>
+	</div>
+	<br>
+   
+	    <?php echo Form::submit('Sign Up', array('class' => 'btn btn-primary')); ?>
+
+	
+	    <?php echo Form::close(); ?>
+
+	</div>
+</div>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('scripts'); ?>
+    <?php echo HTML::script('packages/jquery-ui/jquery-ui-1.10.4.custom.min.js'); ?>
+
+	<?php echo HTML::script('/packages/jquery-ui/timepicker.js'); ?>
+
+	<script>
+	    // jQUery UI
+	    var today = new Date();
+	    var firstYear = today.getFullYear() - 18;
+	    jQuery('.datepicker').datetimepicker({
+	        controlType: 'select',
+	        timeFormat: 'hh:mm tt'
+	    });
+	    jQuery('.dateonlypicker').datepicker({
+	        controlType: 'select',
+	        changeMonth: true,
+	        changeYear: true,
+	        yearRange: '1900:' + firstYear,
+	        dateFormat: 'yy-mm-dd',
+	        //timeFormat: 'hh:mm tt'
+	    });
+	    jQuery.extend(jQuery.datepicker,{_checkOffset:function(inst,offset,isFixed){return offset}});
+	</script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.public', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

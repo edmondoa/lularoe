@@ -1,0 +1,27 @@
+
+<?php $__env->startSection('content'); ?>
+<div ng-app="app" class="index">
+    <div ng-controller="MainController" class="my-controller">
+        <base href="/u/" />
+        <!--<pre>$location.path() = {{$location.path()}}</pre>
+        <pre>$route.current.templateUrl = {{$route.current.templateUrl}}</pre>
+        <pre>user = {{user}}</pre>>-->
+        <div ng-view></div>
+    </div>
+</div>
+<!-- app -->
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('scripts'); ?>
+<script>
+    angular.extend(ControlPad, (function(){                
+        return {
+                preRegisterCtrl : {
+                    path : '/api/preregister'
+            }
+        };
+    }()));
+</script>
+<?php echo HTML::script('js/controllers/preregisterController.js'); ?>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.centered', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -53,16 +53,14 @@ class PreRegisterController extends \BaseController {
 	public function store()
 	{
 		//get the rules from the model
-		$rules = User::$rules;
-		//create som new ones for this form
-
-		$rules['address_1'] = 'required|between:2,28';
-		$rules['city'] = 'required';
-		$rules['state'] = 'required|size:2';
-		$rules['zip'] = ['required','numeric','regex:/(^\d{5}$)|(^\d{5}-\d{4}$)/'];
+		$rules = [];
+		// $rules['address_1'] = 'required|between:2,28';
+		// $rules['city'] = 'required';
+		// $rules['state'] = 'required|size:2';
+		// $rules['zip'] = ['required','numeric','regex:/(^\d{5}$)|(^\d{5}-\d{4}$)/'];
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
 		$rules['agree'] = 'required|accepted';
-		$rules['password'] = 'required|confirmed|between:8,32';
+		// $rules['password'] = 'required|confirmed|between:8,32';
 		$rules['public_id'] = 'required|unique:users,public_id';
 		$rules['email'] = 'required|unique:users,email';
 		$rules['sponsor_id'] = 'required';
@@ -74,20 +72,20 @@ class PreRegisterController extends \BaseController {
 		}
         
         $data['dob'] = date('Y-m-d',strtotime($data['dob']));
-        $data['password'] = \Hash::make($data['password']);
+        // $data['password'] = \Hash::make($data['password']);
         $user = User::create($data);
         
         //now the address
-        $address = [
-            'address_1'=>$data['address_1'],
-            'address_2'=>$data['address_2'],
-            'city'=>$data['city'],
-            'state'=>$data['state'],
-            'zip'=>$data['zip'],
-            'label'=>'Billing',
-        ];
-        $address = Address::create($address);
-        $user->addresses()->save($address);
+        // $address = [
+            // 'address_1'=>$data['address_1'],
+            // 'address_2'=>$data['address_2'],
+            // 'city'=>$data['city'],
+            // 'state'=>$data['state'],
+            // 'zip'=>$data['zip'],
+            // 'label'=>'Billing',
+        // ];
+        // $address = Address::create($address);
+        // $user->addresses()->save($address);
         
         $role = Role::where('name','Rep')->first();
         //echo"<pre>"; print_r($role); echo"</pre>";
@@ -133,6 +131,35 @@ class PreRegisterController extends \BaseController {
 
 		$status = 'success';
 		$message = 'Bank info created';
+        return Response::json(['status'=>$status,'message'=>$message]);
+    }
+	
+	public function shippingAddress() {
+		$user = User::find(Auth::user()->id);
+		foreach(Input::get() as $kvp) {
+			$data[$kvp['name']] = $kvp['value'];
+		}
+
+		$rules = [];
+		$rules['address_1'] = 'required|between:2,28';
+		$rules['city'] = 'required';
+		$rules['state'] = 'required|size:2';
+		$rules['zip'] = ['required','numeric','regex:/(^\d{5}$)|(^\d{5}-\d{4}$)/'];
+		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
+		
+		foreach($data['addresses'] as $address) {
+			$validator = Validator::make($address, $rules);
+			if ($validator->fails())
+			{
+				$status = 'error';
+				$message = 'One or more of your adddress fields is invalid.';
+			}
+			else {
+				$user->addresses()->save($address);
+				$status = 'success';
+				$message = 'Shipping Address Saved';
+			}
+		}
         return Response::json(['status'=>$status,'message'=>$message]);
     }
 
@@ -202,6 +229,10 @@ class PreRegisterController extends \BaseController {
                 break;
             case 'bankinfo':    
                 return View::make('pre-register.bankinfo',compact('user'));
+				break;
+            case 'shipping_address':    
+                return View::make('pre-register.shipping_address',compact('user'));
+				break;
             default:
                 $status = Session::get('pre-register.status');
                 #if($status == 'hasSignUp'){
@@ -262,19 +293,19 @@ class PreRegisterController extends \BaseController {
 
         if ($validator->fails())
         {
-            $status = 'success';
+            $status = 'failed';
             $message = $validator->errors();
         }else{
             $data['user_id'] = Auth::user()->id;
-            if(array_key_exists('prodid',$data) && $data['prodid'] != '-1'){
-                error_log($data['prodid']);
-                $product = Product::where('id',$data['prodid'])->first();   
+            if(array_key_exists('id',$data)){
+                $product = Product::where('id',$data['id'])->first();   
+                $message = "Successfully updated product details";
             }else{
-                $product = Product::create($data);
+                $product = Product::create($data); 
+                $message = "Successfully added product";
             }
             $product->save();
             $status = 'success';
-            $message = 'Successfully added product';
             
             $data = $product;    
         }
