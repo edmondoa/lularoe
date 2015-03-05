@@ -28,7 +28,8 @@
 		    
 		    <div class="form-group">
 		        {{ Form::label('license_state', 'Driver License State') }}
-		        {{ Form::text('license_state', null, array('class' => 'form-control')) }}
+				{{ Form::select('license_state', State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto')) }}
+
 		    </div>
 
 		    <div class="form-group">
