@@ -7,6 +7,11 @@ class Media extends \Eloquent
  protected $table = 'media';
  
 	protected $fillable = array('type','url','user_id','title','description','reps','disabled');
+
+	public function tags()
+	{
+		return $this->morphMany('Tag', 'taggable');
+	}
  
 	public function getOwnerAttribute() {
 		return User::find($this->user_id)->full_name;

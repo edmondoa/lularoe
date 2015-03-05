@@ -53,6 +53,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('OpportunitiesTableSeeder');
 		$this->call('LeadsTableSeeder');
 		// $this->call('MediaTableSeeder');
+		$this->call('TagsTableSeeder');
 	}
 
 }

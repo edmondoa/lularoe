@@ -1,0 +1,197 @@
+
+<?php $__env->startSection('content'); ?>
+<div class="show">
+	<div class="row page-actions">
+		<?php echo $__env->make('_helpers.breadcrumbs', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+		<h1><?php echo $user->first_name; ?> <?php echo $user->last_name; ?></h1>
+	    <div class="btn-group" id="record-options">
+			<a class="btn btn-default" href="<?php echo url('users/'.$user->id .'/edit'); ?>" title="Edit"><i class="fa fa-pencil"></i></a>
+			<?php if(Auth::user()->id != $user->id): ?>
+				<?php if(Auth::user()->hasRole(['Superadmin', 'Admin'])): ?>
+				    <?php if($user->disabled == 0): ?>
+					    <?php echo Form::open(array('url' => 'users/disable', 'method' => 'DISABLE')); ?>
+
+					    	<input type="hidden" name="ids[]" value="<?php echo $user->id; ?>">
+					    	<button class="btn btn-default active" title="Currently enabled. Click to disable.">
+					    		<i class="fa fa-eye"></i>
+					    	</button>
+					    <?php echo Form::close(); ?>
+
+					<?php else: ?>
+					    <?php echo Form::open(array('url' => 'users/enable', 'method' => 'ENABLE')); ?>
+
+					    	<input type="hidden" name="ids[]" value="<?php echo $user->id; ?>">
+					    	<button class="btn btn-default" title="Currently disabled. Click to enable.">
+					    		<i class="fa fa-eye"></i>
+					    	</button>
+					    <?php echo Form::close(); ?>
+
+					<?php endif; ?>
+				    <?php echo Form::open(array('url' => 'users/' . $user->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this record? This cannot be undone.");')); ?>
+
+				    	<button class="btn btn-default" title="Delete">
+				    		<i class="fa fa-trash" title="Delete"></i>
+				    	</button>
+				    <?php echo Form::close(); ?>
+
+				<?php endif; ?>
+			<?php endif; ?>
+		</div>
+		<?php if(!$user->block_email && !$user->block_sms): ?>
+			<div class="btn-group" id="communication-options">
+		<?php endif; ?>
+				<?php if(Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep'])): ?>
+					<?php if(!$user->block_email): ?>
+						<?php echo Form::open(array('url' => '/users/email', 'method' => 'POST')); ?>
+
+		            		<?php echo Form::hidden('user_ids[]', $user->id); ?>
+
+		            		<button class="btn btn-default" title="Send Email">
+		            			<i class="fa fa-envelope"></i>
+		            		</button>
+		            	<?php echo Form::close(); ?>
+
+		            <?php endif; ?>
+		            <?php if(!$user->block_sms): ?>
+						<?php echo Form::open(array('url' => '/users/sms', 'method' => 'POST')); ?>
+
+		            		<?php echo Form::hidden('user_ids[]', $user->id); ?>
+
+		            		<button class="btn btn-default" title="Send Text Message (SMS)">
+		            			<i class="fa fa-mobile-phone"></i>
+		            		</button>
+		            	<?php echo Form::close(); ?>
+
+		            <?php endif; ?>
+	            <?php endif; ?>
+		<?php if(!$user->block_email && !$user->block_sms): ?>
+			</div>
+		<?php endif; ?>
+		<a class="btn btn-primary" href="//<?php echo $user->public_id; ?>.<?php echo Config::get('site.base_domain'); ?>" target="_blank"><i class="fa fa-globe"></i> View Site</a>
+	</div><!-- row -->
+	<div class="row">
+		<div class="col col-md-6 col-sm-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2 div class="panel-title">Information
+						<?php if(Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->id == $user->id): ?>
+							<a class="pull-right" href="<?php echo url('users/'.$user->id .'/edit'); ?>" title="Edit"><i class="fa fa-pencil"></i></a>
+						<?php endif; ?>
+					</h2>
+				</div>
+			    <table class="table table-striped">
+			        <tr>
+			            <th>
+			            	<?php if($user->role_name == 'Rep'): ?>
+			            		ID:
+			            	<?php else: ?>
+			            		User ID:
+			            	<?php endif; ?>
+			            </th>
+			            <td><?php echo $user->id; ?></td>
+			        </tr>
+			        <tr>
+			            <th>
+			            	Public ID:
+			            </th>
+			            <td>
+			            	<?php echo $user->public_id; ?>
+
+			            </td>
+			        </tr>
+			        <tr>
+			            <th>
+			            	Rank:
+			            </th>
+			            <td>
+			            	<?php echo $user->rank_name; ?> (Rank <?php echo $user->rank_id; ?>)
+			            </td>
+			        </tr>
+			        <?php if($user->hide_email != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9): ?>
+				        <tr>
+				            <th>Email:</th>
+				            <td>
+				            	<?php echo $user->email; ?>
+
+				            	<?php if($user->block_email): ?>
+				            		<br>
+				            		<span class="label label-warning">
+				            			<?php echo $user->first_name; ?> has opted out of receiving emails.
+				            		</span>
+				            	<?php endif; ?>
+				            </td>
+				        </tr>
+				        <tr>
+				            <th>Phone:</th>
+				            <td>
+				            	<?php echo $user->formatted_phone; ?>
+
+				            	<?php if($user->block_sms): ?>
+				            		<br>
+				            		<span class="label label-warning">
+				            			<?php echo $user->first_name; ?> has opted out of receiving text messages.
+				            		</span>
+				            	<?php endif; ?>
+				            </td>
+				        </tr>	
+				        <tr>
+				            <th>Gender:</th>
+				            <td><?php echo $user->gender; ?></td>
+				        </tr>
+						
+				        <tr>
+				            <th>DOB:</th>
+				            <td><?php echo $user->dob; ?></td>
+				        </tr>
+						  
+				        <tr>
+				            <th>Role:</th>
+				            <td><?php echo $user->formatted_role_name; ?></td>
+				        </tr>
+				
+				        <tr>
+				            <th>Sponsor:</th>
+				            <td>
+				            	<a href="/users/<?php echo $user->sponsor_id; ?>">
+				            		<?php if(isset($user->sponsor->first_name)): ?>
+				            			<?php echo $user->sponsor->first_name; ?> <?php echo $user->sponsor->last_name; ?>
+
+				            		<?php endif; ?>
+				            	</a>
+				            </td>
+				        </tr>
+					<?php endif; ?>
+			    </table>
+			</div><!-- panel -->
+		</div><!-- col -->
+		<div class="col col-md-6 col-sm-12">
+			<?php foreach($addresses as $address): ?>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h2 div class="panel-title"><?php echo $address->label; ?> Address
+							<?php if(Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->id == $user->id): ?>
+								<a class="pull-right" href="<?php echo url('addresses/'.$address->id .'/edit'); ?>" title="Edit"><i class="fa fa-pencil"></i></a>
+							<?php endif; ?>
+						</h2>
+					</div>
+				    <table class="table table-striped">
+				        <tr>
+				            <td><?php echo $address->address_1; ?></td>
+				        </tr>
+				        
+				        <?php if(!empty($address->address_2)): ?>
+					        <tr>
+					            <td><?php echo $address->address_2; ?></td>
+					        </tr>
+				        <?php endif; ?>
+				        <tr>
+				            <td><?php echo $address->city; ?>, <?php echo $address->state; ?> <?php echo $address->zip; ?></td>
+				        </tr>
+				    </table>
+				</div><!-- panel -->
+			<?php endforeach; ?>
+		</div><!-- row -->
+	</div><!-- row -->
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

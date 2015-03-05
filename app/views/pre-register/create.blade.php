@@ -24,6 +24,11 @@
 	        <small>You will use this email to log in.</small>
 	    </div>
 	    
+		<div class="form-group">
+	        {{ Form::label('phone', 'Phone') }}
+	        {{ Form::text('phone', Input::old('phone'), array('class' => 'form-control')) }}
+	    </div>
+	    
 	    <!-- <div class="form-group">
 	        {{ Form::label('password', 'Password') }}
 	        {{ Form::password('password', array('class' => 'form-control')) }}
@@ -58,14 +63,9 @@
 	        {{ Form::text('phone', Input::old('phone'), array('class' => 'form-control','placeholder'=>'UT############')) }}
 	    </div>
 
-	    <div class="form-group">
+	    <!--<div class="form-group">
 	        {{ Form::label('phone', 'Social Security #') }}
 	        {{ Form::text('phone', Input::old('ssn'), array('class' => 'form-control')) }}
-	    </div>
-	    
-	    <div class="form-group">
-	        {{ Form::label('phone', 'Phone') }}
-	        {{ Form::text('phone', Input::old('phone'), array('class' => 'form-control')) }}
 	    </div>
 	    
 	    <div class="form-group">

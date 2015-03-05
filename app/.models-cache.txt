@@ -1,2 +1,2 @@
 resource = false
-Attachment string( type url ) integer( user_id ) boolean( disabled )
+Tag string( name ) integer( taggable_type taggable_id )

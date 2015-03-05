@@ -52,7 +52,8 @@ class mediaController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('media.create');
+		$tags = Tag::where('taggable_type', 'Media')->select('name')->groupBy('name')->get();
+		return View::make('media.create', compact('tags'));
 	}
 
 	/**
@@ -89,9 +90,17 @@ class mediaController extends \BaseController {
 		
 		// store in db and redirect
 		$media = Media::create($data);
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser', Auth::user()->id)));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser', Auth::user()->id)));
+		
+		// store tags
+		if (isset($data['tag_names'])) {
+			foreach($data['tag_names'] as $tag) {
+				$new_tag = Tag::create([
+					'name' => $tag
+				]);
+				$media->tags()->save($new_tag);
+			}
+		}
+		
 		if (isset($data['ajax'])) {
 			$response['success'] = true;
 			$response['url'] = '/uploads/' . $media->url;
@@ -114,8 +123,8 @@ class mediaController extends \BaseController {
 	public function show($id)
 	{
 		$media = Media::findOrFail($id);
-
-		return View::make('media.show', compact('media'));
+		$tags = $media->tags;
+		return View::make('media.show', compact('media', 'tags'));
 	}
 
 	/**
@@ -127,8 +136,9 @@ class mediaController extends \BaseController {
 	public function edit($id)
 	{
 		$media = Media::find($id);
-
-		return View::make('media.edit', compact('media'));
+		$tags = Tag::where('taggable_type', 'Media')->select('name')->groupBy('name')->get();
+		$assigned_tags = $media->tags;
+		return View::make('media.edit', compact('media', 'tags', 'assigned_tags'));
 	}
 
 	/**
@@ -171,9 +181,17 @@ class mediaController extends \BaseController {
 		
 		// update db
 		$media->update($data);
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getMediaByUser', $id)));
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getImagesByUser', $id)));
+
+		// store tags
+		if (isset($data['tag_names'])) {
+			foreach($data['tag_names'] as $tag) {
+				$new_tag = Tag::create([
+					'name' => $tag
+				]);
+				$media->tags()->save($new_tag);
+			}
+		}
+
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
 		else $user_id = Auth::user()->id;
 		return Redirect::route('media/user', compact('user_id'))->with('message', 'Asset updated.');

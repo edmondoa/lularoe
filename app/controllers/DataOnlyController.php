@@ -26,7 +26,7 @@ class DataOnlyController extends \BaseController
 	 * Media
 	 **********/
 
-	// all media
+	// get media counts
 	public function getMediaCounts($type) {
 		$file_types = [
 			0 => ['type' => 'Archive', 'count' => 0],
@@ -86,20 +86,20 @@ class DataOnlyController extends \BaseController
 			}
 		}
 		return $file_types;
-	}	
+	}
 	
 	// all images
 	public function getAllImages() {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) return Media::where('type', 'Image')->get();
 		if (Auth::user()->hasRole(['Rep'])) {
-			return Media::where('reps', 1)->where('type','Image')->get();
+			return Media::where('reps', 1)->where('type','Image')->with('tags')->get();
 		}
 	}
 	
 	// all media by user
 	public function getMediaByUser($id) {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->hasRole(['Rep']) && Auth::user()->id == $id) {
-			return Media::where('user_id', $id)->get();
+			return Media::where('user_id', $id)->with('tags')->get();
 		}
 	}
 	
@@ -125,22 +125,30 @@ class DataOnlyController extends \BaseController
 	// all media share with reps
 	public function getMediaSharedWithReps() {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor', 'Rep'])) {
-			return Media::where('reps', 1)->get();
+			return Media::where('reps', 1)->with('tags')->get();
 		}
 	}
 	
 	// all images by user
 	public function getImagesSharedWithReps() {
-		return Media::where('reps', 1)->where('type', 'Image')->get();
+		return Media::where('reps', 1)->where('type', 'Image')->with('tags')->get();
 	}
 	
 	// all images by user
 	public function getImagesByUser($id) {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id) {
-			return Media::where('user_id', $id)->where('type', 'Image')->get();
+			return Media::where('user_id', $id)->where('type', 'Image')->with('tags')->get();
 		}
-	}	 
+	}
 
+	// media tags
+	public function getMediaTags() {
+		$tags = Tag::where('taggable_type', 'Media')->select('name')->groupBy('name')->get();
+		foreach($tags as $tag) {
+			$tag->count = 0;
+		}
+		return $tags;
+	}
 
 	/*
 	 * Config
