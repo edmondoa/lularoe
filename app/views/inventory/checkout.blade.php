@@ -3,9 +3,11 @@
 <div ng-app="app" class="index">
 <?php 
 	$subtotal	= 0; 
-	$inittotal	= 0; 
+	$inittotal	= 0;
+    $orders = Session::get('orderdata');
+    if(empty($orders)) $orders = []; 
 ?>
-@foreach (Session::get('orderdata') as $order) 
+@foreach ($orders as $order) 
 	<?php $inittotal += floatval($order['price']) * intval($order['numOrder']); ?>
 @endforeach
 <?php
