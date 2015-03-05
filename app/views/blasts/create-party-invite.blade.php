@@ -27,7 +27,7 @@
 						@foreach ($users as $user)
 							<span>
 								<input type='hidden' name='user_ids[]' value='{{ $user->id }}'>
-								<span class="label label-default">{{ $user->first_name }} {{ $user->last_name }} &nbsp;<i class="fa fa-times"></i></span>
+								<span class="label label-default">{{ $user->first_name }} {{ $user->last_name }} &nbsp;<i class="fa fa-times removeContact"></i></span>
 							</span>
 						@endforeach
 						<br>

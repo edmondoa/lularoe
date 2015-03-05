@@ -26,6 +26,35 @@
                 	{{ Form::textarea('description', null, ['class' => 'form-control']) }}
                 </div>
                 
+			    <div class="form-group">
+					{{ Form::label('tags', 'Existing Tags') }}
+			    	<div class="input-group margin-bottom-2">
+						<select class="form-control tagger">
+							@foreach ($tags as $tag)
+								<option>{{ $tag->name }}</option>
+							@endforeach
+						</select>
+						<div class='input-group-btn'>
+							<button type="button" class="btn btn-default addTag"><i class='fa fa-plus'></i></button>
+			            </div>
+			    	</div>
+					{{ Form::label('tags', 'New Tag') }}
+			    	<div class="input-group">
+						{{ Form::text('', '', ['class' => 'form-control tagger new', 'onclick' => 'disableEnterKey(event)']) }}
+						<div class='input-group-btn'>
+							<button type="button" class="btn btn-default addTag"><i class='fa fa-plus'></i></button>
+			            </div>
+			    	</div>
+			    	<div class="tag-list">
+			    		@foreach ($assigned_tags as $assigned_tag)
+							<span class="label label-default">
+								{{ $assigned_tag->name }} &nbsp;
+								<i class="fa fa-times removeTag" data-tag-id="{{ $assigned_tag->id }}"></i>
+							</span>
+			    		@endforeach
+			    	</div>
+		        </div>
+                
                 @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
 	                <div class="form-group">
 	                	<label>

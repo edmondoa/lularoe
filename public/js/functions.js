@@ -1,4 +1,4 @@
-$(document).ready(function() { 
+$(document).ready(function() {
     
     // initialize bootstrap-select plugin
     $('.selectpicker').selectpicker();
@@ -67,7 +67,7 @@ $(document).ready(function() {
     $("[data-toggle='popover']").popover({html:true, trigger:'click'});
     
     // delete label
-    $('.form-group .label .fa-times').click(function() {
+    $('.form-group .label .removeContact').click(function() {
        $(this).parent().parent().remove();
     });
     
@@ -130,19 +130,21 @@ $(document).ready(function() {
     
     // add tag
 	$(window).keydown(function(event) {
-		if ($('#tagger').is(':focus')) {
+		element = $('.tagger.new');
+		// if ($(element).is(':focus')) {
 			if(event.keyCode == 13 /* enter */ || event.keyCode == 9 /* tab */ || event.keyCode == 188 /* comma */) {
 				event.preventDefault();
-				addTag();
+				addTag(element);
 			}
-		}
+		// }
 	}); 
-	$('#addTag').click( function() {
-		addTag();
+	$('.addTag').click( function() {
+		addTag($(this));
 	});
-	function addTag() {
-		if ($('#tagger').val() != '') {
-			var tag = $('#tagger').val();
+	function addTag(element) {
+		tagger = $(element).parents('.input-group').children('.tagger');
+		if ($(tagger).val() != '') {
+			var tag = $(tagger).val();
 			$('.tag-list').append('' +
 				'<span class="label label-default">' +
 					tag + '&nbsp;' +
@@ -150,7 +152,7 @@ $(document).ready(function() {
 					'<input type="hidden" name="tag_names[]" value="' + tag + '">' +
 				'</span>' +
 			'');
-			$('#tagger').val('');
+			$(tagger).val('');
 		}
 	};
 	
@@ -162,12 +164,8 @@ $(document).ready(function() {
     // remove tag
     $('.removeTag').click(function() {
         var id = $(this).attr('data-tag-id');
-        $('[data-tag-id="' + id + '"]').remove();
-        $.ajax({
-            type: "POST",
-            url: "/product-tags/" + id,
-            data: { '_method' : 'delete' }
-        });
+        $(this).parent().remove();
+        $.get('/api/remove-tag/' + id);
     });
     
     // add item

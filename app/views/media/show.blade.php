@@ -73,6 +73,19 @@
 		            <th>Owner:</th>
 		            <td><a href='/users/{{ $media->user_id }}'>{{ $media->owner }}</a></td>
 		        </tr>
+
+		        @if (count($tags) > 0)
+			        <tr>
+			        	<th>Tags:</th>
+			            <td class="tag-list">
+			            	@foreach($tags as $tag)
+				                <span class="label label-default">
+				                	{{ $tag->name }}
+				                </span>
+			                @endforeach
+			            </td>
+			        </tr>
+			    @endif
 		        
 		        @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && $media->reps)
 			        <tr>

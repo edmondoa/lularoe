@@ -4,11 +4,11 @@
 <?php 
 	$subtotal	= 0; 
 	$inittotal	= 0; 
-?>
-@foreach (Session::get('orderdata') as $order) 
-	<?php $inittotal += floatval($order['price']) * intval($order['numOrder']); ?>
-@endforeach
-<?php
+
+	foreach (Session::get('orderdata') as $order)  {
+		$inittotal += floatval($order['price']) * intval($order['numOrder']); 
+	}
+
 	// Where does this REP live to get tax?
 	// Corona California tax
 	$data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$inittotal);
@@ -16,8 +16,12 @@
     
 	Session::put('subtotal',$inittotal);
 	Session::put('tax',$tax->Tax);
+	if (!Session::has('grandtotal'))
+		Session::put('grandtotal', floatval($inittotal) + floatval($tax->Tax));
+	if (!Session::has('totalpaid')) Session::put('totalpaid',0.00)
 ?>
         <div ng-controller="InventoryController" class="my-controller">
+		<div ng-controller="BalanceController" class="my-controller">
             <div class="row">
                 <div class="col-sm-6">
                     <h3>Selected Inventory</h3>
@@ -44,8 +48,8 @@
 									<td>${{ number_format($tax->Tax,2) }}</td>
 								</tr>
 								<tr>
-									<td colspan="3"align="right"><b>Total</b></td>
-									<td>${{number_format($inittotal + $tax->Tax,2)}}</td>
+									<td colspan="3"align="right"><b>Balance</b></td>
+									<td>@{{balance|number:2}}</td>
 								</tr>
 							</table>
 						</div>
@@ -61,7 +65,8 @@
 								<div class="col-lg-12 col-sm-12 col-md-12">
 									{{ Form::open(array('url' => 'inv/cashpurchase', 'method' => 'post','name'=>'inven')) }}
 									{{ Form::label('cash', 'Cash Amount') }}
-									{{ Form::text('cash','',array('placeholder'=>'$')) }}
+									<!-- {{ Form::text('cash','',array('placeholder'=>'$')) }} -->
+									<input size="16" style="width:7em" ng-model="cash" ng-change="updateBalance(cash)" name="cash" placeholder="$">
 								</div>
 							</div>
 							<div class="row">
@@ -77,6 +82,10 @@
 							{{ Form::open(array('url' => 'inv/purchase', 'method' => 'post','name'=>'inven')) }}
 							<table class="table">
 								<tbody>
+									<tr>
+										<td>Amount to apply</td>
+										<td align="right"><input size="16" style="width:7em" ng-model="amount" ng-change="updateBalance(amount)" name="amount" placeholder="$"></td>
+									</tr>
 									<tr>
 										<td>Name on card</td>
 										<td align="right"><input size="16" style="width:16em" name="accountname"></td>
@@ -113,6 +122,7 @@
                     </div>
                 </div>
             </div>
+	</div>
     </div><!-- app -->
 @stop
 @section('scripts')
@@ -121,7 +131,10 @@
                 return {
                     inventoryCtrl : {
                         path : '/llrapi/v1/get-inventory/'
-                    }
+                    },
+					balanceCtrl : {
+						balance : {{ Session::get('grandtotal') - Session::get('totalpaid') }}
+					}
                 };
             }()));    
 </script>

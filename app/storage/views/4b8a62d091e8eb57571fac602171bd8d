@@ -1,0 +1,9 @@
+<?php 
+//return;
+?>
+<?php if($errors->any()): ?>
+<div class="alert alert-danger">
+	<?php echo HTML::ul($errors->all()); ?>
+
+</div>
+<?php endif; ?>

@@ -1,39 +1,41 @@
-@extends('layouts.default')
-@section('style')
+
+<?php $__env->startSection('style'); ?>
 	<style>
 		.selected { position:absolute; top:0; right:0; bottom:0; left:0; background:rgba(255,0,0,.5); }
 		.semitransparent { opacity:.33; }
 	</style>
-@stop
-@section('content')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
 <div ng-app="app" class="index">
-	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-    	{{ Form::open(array('url' => 'media/disable', 'method' => 'POST')) }}
-    @else
-    	{{ Form::open(array('url' => 'media/delete', 'method' => 'POST')) }}
-    @endif
+	<?php if(Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])): ?>
+    	<?php echo Form::open(array('url' => 'media/disable', 'method' => 'POST')); ?>
+
+    <?php else: ?>
+    	<?php echo Form::open(array('url' => 'media/delete', 'method' => 'POST')); ?>
+
+    <?php endif; ?>
     	<div ng-controller="MediaController" class="my-controller">
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
 		                <h1 class="no-top pull-left no-pull-xs">
-		                	@if (isset($user->id))
-		                		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && Auth::user()->id != $user->id || (Auth::user()->id == 0 && $user->id == 0))
-		                			{{ $user->full_name }}'s Tools/Assets
-		                		@else
+		                	<?php if(isset($user->id)): ?>
+		                		<?php if(Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && Auth::user()->id != $user->id || (Auth::user()->id == 0 && $user->id == 0)): ?>
+		                			<?php echo $user->full_name; ?>'s Tools/Assets
+		                		<?php else: ?>
 		                			My Tools/Assets
-		                		@endif
-		                	@elseif (isset($reps))
+		                		<?php endif; ?>
+		                	<?php elseif(isset($reps)): ?>
 		                		Rep Tools/Assets
-		                	@elseif (isset($shared_with_reps))
-		                		@if (Auth::user()->hasRole(['Rep']))
+		                	<?php elseif(isset($shared_with_reps)): ?>
+		                		<?php if(Auth::user()->hasRole(['Rep'])): ?>
 		                			Tool/Asset Library
-		                		@else
+		                		<?php else: ?>
 		                			Tools/Assets Shared with FC's
-		                		@endif
-		                	@else
+		                		<?php endif; ?>
+		                	<?php else: ?>
 		                		Tools/Assets Library
-		                	@endif
+		                	<?php endif; ?>
 		                </h1>
 		            	<div ng-if="media.length > 10" class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
@@ -47,16 +49,16 @@
 		        <div class="row">
 		    		<div class="col-sm-8 col-xs-12 page-actions-left">
 		                <div class="pull-left">
-		                	@if ((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-upload"></i></a>
+		                	<?php if((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])): ?>
+			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="<?php echo url('media/create'); ?>"><i class="fa fa-upload"></i></a>
 			                    <div class="pull-left">
 			                        <div class="input-group pull-left margin-right-2">
 			                            <select class="form-control selectpicker actions">
 				                            <option value="/media/delete">Delete</option>
-			                            	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+			                            	<?php if(Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])): ?>
 				                                <option value="/media/disable" selected>Disable</option>
 			                                	<option value="/media/enable">Enable</option>
-				                            @endif
+				                            <?php endif; ?>
 			                            </select>
 			                            <div class="input-group-btn no-width">
 			                                <button class="btn btn-default">
@@ -65,19 +67,19 @@
 			                            </div>
 			                        </div>
 			                    </div>
-			                @endif
+			                <?php endif; ?>
 	                        <?php /* select file types */ ?>
 	                        <div class="pull-left margin-right-1">
 	                            <select ng-model="search.$" id="categories" class="form-control">
 	                            	<option value="">All file types</option>
-	                            	<option value="@include('_helpers.media_count_type')" ng-if="count.count > 0" ng-repeat="count in media_counts">@include('_helpers.media_count_type')s (@include('_helpers.media_count_count'))</span></option>
+	                            	<option value="<?php echo $__env->make('_helpers.media_count_type', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>" ng-if="count.count > 0" ng-repeat="count in media_counts"><?php echo $__env->make('_helpers.media_count_type', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>s (<?php echo $__env->make('_helpers.media_count_count', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>)</span></option>
 	                            </select>
 	                    	</div>
 	                        <?php /* select tags */ ?>
 	                        <div class="pull-left margin-right-1">
 	                            <select ng-model="search.$" id="tags" class="form-control">
 	                            	<option value="">All tags</option>
-	                            	<option value="{{'{'.'{tag.name}'.'}'}}" ng-if="tag.count > 0" ng-repeat="tag in tags">{{'{'.'{tag.name}'.'}'}} ({{'{'.'{tag.count}'.'}'}})</span></option>
+	                            	<option value="<?php echo '{'.'{tag.name}'.'}'; ?>" ng-if="tag.count > 0" ng-repeat="tag in tags"><?php echo '{'.'{tag.name}'.'}'; ?> (<?php echo '{'.'{tag.count}'.'}'; ?>)</span></option>
 	                            </select>
 	                    	</div>
 	                        <?php /* filter and sort files */ ?>
@@ -142,26 +144,26 @@
 		                    <li ng-click="show=!show; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | filter:filter | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 		                        <div ng-click="checkbox()">
 		                        	<div class="options" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
-			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
+			                        	<?php if(Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id)): ?>
 										    <span class="form-link pull-left"><i class="fa fa-trash" title="Delete" ng-click="deleteFile(media.id)"></i></span>
-										@endif
-			                        	<a target="_blank" href="/uploads/@include('_helpers.media_url')"><i class="fa fa-eye"></i></a>
-			                        	<a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a>
-			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
-			                        		<a href="/media/@include('_helpers.media_id')/edit"><i class="fa fa-pencil"></i></a>
-			                        	@endif
-			                        	<a href="/uploads/@include('_helpers.media_url')" download="/uploads/@include('_helpers.media_url')"><i class="fa fa-download"></i></a>
+										<?php endif; ?>
+			                        	<a target="_blank" href="/uploads/<?php echo $__env->make('_helpers.media_url', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>"><i class="fa fa-eye"></i></a>
+			                        	<a href="/media/<?php echo $__env->make('_helpers.media_id', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>"><i class="fa fa-info"></i></a>
+			                        	<?php if(Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id)): ?>
+			                        		<a href="/media/<?php echo $__env->make('_helpers.media_id', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>/edit"><i class="fa fa-pencil"></i></a>
+			                        	<?php endif; ?>
+			                        	<a href="/uploads/<?php echo $__env->make('_helpers.media_url', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>" download="/uploads/<?php echo $__env->make('_helpers.media_url', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>"><i class="fa fa-download"></i></a>
 		                        	</div>
-		                        	@if (!isset($user->id) && !isset($shared_with_reps) && (!isset($user->id) && !Auth::user()->hasRole(['Rep'])))
+		                        	<?php if(!isset($user->id) && !isset($shared_with_reps) && (!isset($user->id) && !Auth::user()->hasRole(['Rep']))): ?>
 			                        	<div class="owner" ng-show="media.showOptions">
-				                        	<a href="/media/user/@include('_helpers.media_user_id')"><i class="fa fa-user"></i> <span ng-bind="media.owner"></span></a>
+				                        	<a href="/media/user/<?php echo $__env->make('_helpers.media_user_id', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>"><i class="fa fa-user"></i> <span ng-bind="media.owner"></span></a>
 			                        	</div>
-			                        @endif
+			                        <?php endif; ?>
 		                        	<div ng-if="show" class="selected" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)">
-		                        		<input class="bulk-check" type="hidden" name="ids[]" value="@include('_helpers.media_id')">
+		                        		<input class="bulk-check" type="hidden" name="ids[]" value="<?php echo $__env->make('_helpers.media_id', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>">
 		                        	</div>
 		                        	<?php // image ?>
-		                        	<img title="@include('_helpers.media_title')" ng-if="media.type == 'Image'" ng-class="{semitransparent : media.disabled == 1}" src="/uploads/@include('_helpers.media_image_sm')">
+		                        	<img title="<?php echo $__env->make('_helpers.media_title', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>" ng-if="media.type == 'Image'" ng-class="{semitransparent : media.disabled == 1}" src="/uploads/<?php echo $__env->make('_helpers.media_image_sm', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>">
 		                        	<div class="file" ng-if="media.type != 'Image'">
 		                        		<i ng-if="media.type == 'Database'" class="fa fa-database" ng-class="{semitransparent : media.disabled == 1}"></i>
 		                        		<i ng-if="media.type == 'Document'" class="fa fa-file-word-o" ng-class="{semitransparent : media.disabled == 1}"></i>
@@ -182,7 +184,7 @@
 		                    </li>
 		                    <li dir-paginate-end></li>
 	            		</ul>
-		                @include('_helpers.loading')
+		                <?php echo $__env->make('_helpers.loading', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 		            </div>
 	                <div ng-controller="OtherController" class="other-controller">
 	                    <div class="text-center">
@@ -191,10 +193,11 @@
 	                </div>
 	            </div><!-- col -->
 	        </div><!-- row -->
-        {{ Form::close() }}
+        <?php echo Form::close(); ?>
+
     </div><!-- app -->
-@stop
-@section('scripts')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('scripts'); ?>
 <script>
 
 	var app = angular.module('app', ['angularUtils.directives.dirPagination']);
@@ -220,7 +223,7 @@
 			}
 		?>
 		
-		$http.get('{{ $media_url }}').success(function(media) {
+		$http.get('<?php echo $media_url; ?>').success(function(media) {
 			$scope.media = media;
 			// hide if object empty
 			$scope.val = "";
@@ -281,11 +284,11 @@
 			filter = filter.replace('-', ' ');
 		    $scope.filter = filter;
 
-			@include('_helpers.bulk_action_checkboxes')
+			<?php echo $__env->make('_helpers.bulk_action_checkboxes', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 			
 		});
 		
-		$http.get('{{ $file_count_url }}').success(function(data) {
+		$http.get('<?php echo $file_count_url; ?>').success(function(data) {
 			$scope.media_counts = data;
 		});
 		
@@ -310,4 +313,5 @@
 	});
 
 </script>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

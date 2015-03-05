@@ -323,6 +323,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		elseif (Auth::check() && Auth::user() -> hasRole(['Rep'])) :
 			Route::get('api/media-counts/{type}', 'DataOnlyController@getMediaCounts');
 		endif;
+		Route::get('api/media-tags', 'DataOnlyController@getMediaTags');
 		Route::get('api/all-images', 'DataOnlyController@getAllImages');
 		Route::get('api/all-config', 'DataOnlyController@getAllConfig');
 		Route::get('api/first-branch', 'DataOnlyController@getFirstBranch');
@@ -360,6 +361,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('api/new-downline/{id}', 'DataOnlyController@getNewDownline');		
 		Route::get('api/all-items', 'DataOnlyController@getAllItems');	
         Route::get('api/search-user/{keyword}', 'DataOnlyController@getSearchUsers');    
+
+		// tags
+		Route::get('api/remove-tag/{id}', 'TagController@destroy');
 
 		// upload media
 		Route::post('upload-media', 'MediaController@store');
