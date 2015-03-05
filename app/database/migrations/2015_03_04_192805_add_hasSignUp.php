@@ -13,11 +13,10 @@ class AddHasSignUp extends Migration {
 	public function up()
 	{
 
-		Schema::table('hasSignUp', function(Blueprint $table)
+		if (!Schema::hasColumn('users','hasSignUp'))
 		{
 			DB::statement("ALTER TABLE users ADD hasSignUp int not null");
-			
-		});
+		}
 	}
 
 
@@ -28,10 +27,10 @@ class AddHasSignUp extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('hasSignUp', function(Blueprint $table)
+		if (Schema::hasColumn('users','hasSignUp'))
 		{
-			
-		});
+			DB::statement("ALTER TABLE users DROP hasSignUp");
+		}
 	}
 
 }
