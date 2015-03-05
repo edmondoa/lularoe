@@ -1,8 +1,0 @@
-		<div class="breadcrumbs">
-			<?php if(Session::get('previous_page') != Request::url()): ?>
-				<a href="<?php echo Session::get('previous_page'); ?>">
-			<?php else: ?>
-				<a href="<?php echo Session::get('previous_page_2'); ?>">
-			<?php endif; ?>
-			&lsaquo; Back</a>
-		</div>
