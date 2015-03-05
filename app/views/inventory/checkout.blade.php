@@ -1,27 +1,9 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-<?php 
-	$subtotal	= 0; 
-	$inittotal	= 0;
-    $orders = Session::get('orderdata');
-    if(empty($orders)) $orders = array(); 
-?>
-	<?php 
-        array_map(function($order) use(&$inittotal){
-            $inittotal += floatval($order['price']) * intval($order['numOrder']);
-        },$orders);
-    ?>
-<?php
-	// Corona California tax
-	$data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$inittotal);
-	$tax = json_decode($data);
-    
+<?php    
 	// Bank info
 	$bi =  Auth::user()->bankinfo;
-
-	Session::put('subtotal',$inittotal);
-	Session::put('tax',$tax->Tax);
 ?>
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
