@@ -36,7 +36,20 @@ try {
         }    
     });
 */
-    
+	app.controller('BalanceController', ['$scope', 
+        function($scope) {
+			$scope.balance = ctrlpad.balanceCtrl.balance;
+			$scope.$watch('amount',function(n,o) {
+				console.log('New: '+n);
+				console.log('Old: '+o);
+			});
+            $scope.updateBalance = function(amt) {
+				if (amt > 0 || amt == null || amt == undefined) 
+					$scope.balance = parseFloat(ctrlpad.balanceCtrl.balance) - parseFloat(amt);
+				else $scope.balance = ctrlpad.balanceCtrl.balance;
+            };
+    }]);
+
     app.controller('MainController',
         ['$scope','$http','shared','$q','$interval','$window', '$route', '$routeParams', '$location',
             function($scope, $http, shared, $q, $interval, $window, $route, $routeParams, $location){

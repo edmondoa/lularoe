@@ -20,7 +20,8 @@
 		Session::put('grandtotal', floatval($inittotal) + floatval($tax->Tax));
 	if (!Session::has('totalpaid')) Session::put('totalpaid',0.00)
 ?>
-        <div ng-controller="BalanceController" class="my-controller">
+        <div ng-controller="InventoryController" class="my-controller">
+		<div ng-controller="BalanceController" class="my-controller">
             <div class="row">
                 <div class="col-sm-6">
                     <h3>Selected Inventory</h3>
@@ -48,7 +49,7 @@
 								</tr>
 								<tr>
 									<td colspan="3"align="right"><b>Balance</b></td>
-									<td>@{{balance}}</td>
+									<td>@{{balance|number:2}}</td>
 								</tr>
 							</table>
 						</div>
@@ -64,7 +65,8 @@
 								<div class="col-lg-12 col-sm-12 col-md-12">
 									{{ Form::open(array('url' => 'inv/cashpurchase', 'method' => 'post','name'=>'inven')) }}
 									{{ Form::label('cash', 'Cash Amount') }}
-									{{ Form::text('cash','',array('placeholder'=>'$')) }}
+									<!-- {{ Form::text('cash','',array('placeholder'=>'$')) }} -->
+									<input size="16" style="width:7em" ng-model="cash" ng-change="updateBalance(cash)" name="cash" placeholder="$">
 								</div>
 							</div>
 							<div class="row">
@@ -82,7 +84,7 @@
 								<tbody>
 									<tr>
 										<td>Amount to apply</td>
-										<td align="right"><input size="16" style="width:7em" ng-model="amount" ng-change="updateBalance()" name="amount" placeholder="$"></td>
+										<td align="right"><input size="16" style="width:7em" ng-model="amount" ng-change="updateBalance(amount)" name="amount" placeholder="$"></td>
 									</tr>
 									<tr>
 										<td>Name on card</td>
@@ -120,6 +122,7 @@
                     </div>
                 </div>
             </div>
+	</div>
     </div><!-- app -->
 @stop
 @section('scripts')
@@ -128,16 +131,12 @@
                 return {
                     inventoryCtrl : {
                         path : '/llrapi/v1/get-inventory/'
-                    }
+                    },
+					balanceCtrl : {
+						balance : {{ Session::get('grandtotal') - Session::get('totalpaid') }}
+					}
                 };
             }()));    
-	angular.module('updateBalances', []).controller('BalanceController', ['$scope', 
-		function($scope) {
-			$scope.balance = {{ Session::get('grandtotal') - Session::get('totalpaid') }};
-			$scope.updateBalance = function() {
-				$scope.balance = $scope.balance - $scope.amount;
-			};
-    }]);
 </script>
 {{ HTML::script('js/controllers/inventoryController.js') }}
 @stop
