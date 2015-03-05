@@ -251,6 +251,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 			return (View::make('inventory.invalidpurchase'));
 		});
         
+        Route::get('tax/{amount}', 'InventoryController@getTax');
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
 		Route::post('opportunities/disable', 'OpportunityController@disable');

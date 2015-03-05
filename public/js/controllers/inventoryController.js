@@ -12,22 +12,73 @@ try {
 
 (function(app, push, check, ctrlpad){
     var newModules = [
-            'angularUtils.directives.dirPagination'
+            'angularUtils.directives.dirPagination',
+            'ngRoute',
+            'ngResource'
         ];
       
     push(app.requires, newModules);
+
+/*
+    app.config(function($routeProvider, $locationProvider){
+        $routeProvider
+        .when('/checkout',{
+            templateUrl: '/template/inventories_checkout',
+            controller: 'InventoryController'
+        })
+        .otherwise({
+            templateUrl: '/template/inventories',
+            controller: 'InventoryController',
+            redirectTo: '/'
+        });
+        if(window.history && window.history.pushState){
+            //$locationProvider.html5Mode(true).hashPrefix('!');;
+        }    
+    });
+*/
+    
+    app.controller('MainController',
+        ['$scope','$http','shared','$q','$interval','$window', '$route', '$routeParams', '$location',
+            function($scope, $http, shared, $q, $interval, $window, $route, $routeParams, $location){
+                
+                $scope.cart = [];
+                
+                $scope.$route = $route;
+                $scope.$location = $location;
+                $scope.$routeParams = $routeParams;
+                
+                $scope.$watch('$location.path()',function(n,o){
+                    if(n!= o){
+                            $scope.orders = shared.cart;
+                            console.log(shared);
+                            console.log('locationpath changed in Main');
+                            console.log(n);
+                    }
+                });
+                
+                /* event handlers */
+                $scope.$on('handleUpdateCart',function(){
+                    console.log('handle - updateCart');
+                    $scope.cart = shared.cart;
+                });
+    }]);
     
     app.controller('InventoryController',
-        ['$scope','$http','shared','$q','$interval','$window',
-            function($scope, $http, shared, $q, $interval, $window){
+        ['$scope','$http','shared','$q','$interval','$window', '$route', '$routeParams', '$location',
+            function($scope, $http, shared, $q, $interval, $window, $route, $routeParams, $location){
 
         /**
         * operations here
         */
         var path =  ctrlpad.inventoryCtrl.path;
+        
+        $scope.name = "InventoryController";
+        $scope.params = $routeParams;
+        $scope.cart = [];
         $scope.countItems = 0;
         $scope.tax = 0;
         $scope.total = 0;
+        $scope.subtotalnum = 0;
         $scope.orders = [];
         $scope.inventories = [];
         $scope.currentPage = 1;
@@ -39,6 +90,7 @@ try {
         };
         
         $http.get(path).success(function(v) {
+            shared.updateLocalCart();
             for(var i in v){
                 $scope.inventories.push(v[i]);    
             }
@@ -100,6 +152,7 @@ try {
                                 'numOrder':quantity,
                                 'price':n.price
                             });
+                            shared.updateCart($scope.orders);
                         }else{
                             n.doNag = "volume-too-large";
                         }
@@ -201,13 +254,14 @@ try {
         };
         
         $scope.subtotal = function(){
-            var $total = 0;
+            var total = 0;
             angular.forEach($scope.orders, function (order){
-                $total += order.numOrder * order.price;    
+                total += order.numOrder * order.price;    
             });
-            $scope.tax = $total * 0.0825; // Get this from avalara?
-            $scope.total = $scope.tax + $total;
-            return $total;
+            //$scope.tax = total * 0.0825; // Get this from avalara?
+            //$scope.total = $scope.tax + total;
+			$scope.subtotalnum = total;
+            return total;
         };
 
         $scope.doSale = function(){
@@ -254,5 +308,41 @@ try {
 			else $('.applyAction').attr('disabled', 'disabled');
 		};
         
+        $scope.$watch('subtotalnum', function(n,o){
+            if(n){
+                    $scope.isComplete = false;
+                    $http.get('tax/'+n).success(function(data){
+                        $scope.tax = data.Tax; 
+                        $scope.total = data.Tax + n;
+                        $scope.isComplete = true;
+                    });
+            }
+            else{
+                $scope.tax = 0;
+                $scope.total = 0;    
+            } 
+        });
+            
+        $scope.cancelCheckout = function(){
+            $location.path('/'); 
+        };
+        
+        $scope.$watch('$location.path()',function(n,o){
+            if(n!= o){
+                if(shared.cart.length){
+                    $scope.orders = shared.cart;
+                    console.log(shared);
+                    console.log('locationpath changed');
+                    console.log(n);
+                }
+            }
+        });
+        
+        /* event handlers */
+        
+        $scope.$on('handleUpdateLocalCart',function(){
+            console.log('handle - updateLocalCart');
+            $scope.cart = shared.cart;
+        });
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));
