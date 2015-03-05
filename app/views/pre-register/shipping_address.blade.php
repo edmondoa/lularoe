@@ -14,68 +14,68 @@
 	
 			    <div id="address-billing">
 			    	<h3>Billing Address</h3>
-			    	{{ Form::hidden('type', 'billing') }}
+			    	{{ Form::hidden('addresses[1][label]', 'Billing') }}
 				    <div class="form-group">
-				        {{ Form::label('addresses[1]["address_1"]', 'Address 1') }}
-				        {{ Form::text('addresses[1]["address_1"]', null, array('class' => 'form-control', 'ng-model' => 'billing.address_1')) }}
+				        {{ Form::label('addresses[1][address_1]', 'Address 1') }}
+				        {{ Form::text('addresses[1][address_1]', null, array('class' => 'form-control', 'ng-model' => 'billing.address_1')) }}
 				    </div>
 				    
 				    <div class="form-group">
-				        {{ Form::label('addresses[1]["address_2"]', 'Address 2') }}
-				        {{ Form::text('addresses[1]["address_2"]', null, array('class' => 'form-control', 'ng-model' => 'billing.address_2')) }}
+				        {{ Form::label('addresses[1][address_2]', 'Address 2') }}
+				        {{ Form::text('addresses[1][address_2]', null, array('class' => 'form-control', 'ng-model' => 'billing.address_2')) }}
 				    </div>
 				    
 				    <div class="form-group">
-				        {{ Form::label('addresses[1]["city"]', 'City') }}
-				        {{ Form::text('addresses[1]["city"]', null, array('class' => 'form-control', 'ng-model' => 'billing.city')) }}
+				        {{ Form::label('addresses[1][city]', 'City') }}
+				        {{ Form::text('addresses[1][city]', null, array('class' => 'form-control', 'ng-model' => 'billing.city')) }}
 				    </div>
 				    
 				    <div class="form-group">
-				        {{ Form::label('addresses[1]["state"]', 'State') }}
+				        {{ Form::label('addresses[1][state]', 'State') }}
 				        <br>
-				        {{ Form::select('addresses[1]["state"]', State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto', 'ng-model' => 'billing.state')) }}
+				        {{ Form::select('addresses[1][state]', State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto', 'ng-model' => 'billing.state')) }}
 				    </div>
 				    
 				    <div class="form-group">
-				        {{ Form::label('addresses[1]["zip"]', 'Zip') }}
-				        {{ Form::text('addresses[1]["zip"]', null, array('class' => 'form-control', 'ng-model' => 'billing.zip')) }}
+				        {{ Form::label('addresses[1][zip]', 'Zip') }}
+				        {{ Form::text('addresses[1][zip]', null, array('class' => 'form-control', 'ng-model' => 'billing.zip')) }}
 				    </div>
 			    </div>
 			    
 			    <div class="form-group">
 				    <label>
-				    	<input type="checkbox" ng-click="show=!show" checked>
+				    	<input type="checkbox" value="yes" name="shippingsameasbilling" ng-click="show=!show" checked>
 				    	Shipping address same as billing address
 				    </label>
 				</div>
 				
 			    <div ng-show="show" id="address-shipping">
 			    	<h3>Shipping Address</h3>
-			    	{{ Form::hidden('type', 'shipping') }}
+			    	{{ Form::hidden('addresses[2][label]', 'Shipping') }}
 				    <div class="form-group">
-				        {{ Form::label('addresses[1]["address_1"]', 'Address 1') }}
-				        {{ Form::text('addresses[1]["address_1"]', null, array('class' => 'form-control')) }}
+				        {{ Form::label('addresses[2][address_1]', 'Address 1') }}
+				        {{ Form::text('addresses[2][address_1]', null, array('class' => 'form-control')) }}
 				    </div>
 				    
 				    <div class="form-group">
-				        {{ Form::label('addresses[1]["address_2"]', 'Address 2') }}
-				        {{ Form::text('addresses[1]["address_2"]', null, array('class' => 'form-control')) }}
+				        {{ Form::label('addresses[2][address_2]', 'Address 2') }}
+				        {{ Form::text('addresses[2][address_2]', null, array('class' => 'form-control')) }}
 				    </div>
 				    
 				    <div class="form-group">
-				        {{ Form::label('addresses[1]["city"]', 'City') }}
-				        {{ Form::text('addresses[1]["city"]', null, array('class' => 'form-control')) }}
+				        {{ Form::label('addresses[2][city]', 'City') }}
+				        {{ Form::text('addresses[2][city]', null, array('class' => 'form-control')) }}
 				    </div>
 				    
 				    <div class="form-group">
-				        {{ Form::label('addresses[1]["state"]', 'State') }}
+				        {{ Form::label('addresses[2][state]', 'State') }}
 				        <br>
-				        {{ Form::select('addresses[1]["state"]', State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto')) }}
+				        {{ Form::select('addresses[2][state]', State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control width-auto')) }}
 				    </div>
 				    
 				    <div class="form-group">
-				        {{ Form::label('addresses[1]["zip"]', 'Zip') }}
-				        {{ Form::text('addresses[1]["zip"]', null, array('class' => 'form-control')) }}
+				        {{ Form::label('addresses[2][zip]', 'Zip') }}
+				        {{ Form::text('addresses[2][zip]', null, array('class' => 'form-control')) }}
 				    </div>
 			    </div>
 				

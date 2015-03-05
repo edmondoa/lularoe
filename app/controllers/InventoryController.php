@@ -13,13 +13,40 @@ class InventoryController extends \BaseController {
         ];
     }
 
+    public function getTax($value,$viaRequest=true,$doTemplate=false){
+        // Corona California tax
+        $data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$value);
+        $tax = json_decode($data);
+        if($doTemplate) return $tax;
+        if(Request::wantsJson()){
+            return Response::json($tax);
+        }else{
+            if($viaRequest){
+                return $tax->Tax;
+            }else{
+                return $tax;
+            }
+        }
+    }
+
+
     /**
      * Process order checkout
      * 
      */
     public function checkout()
     {
-            return View::make('inventory.checkout');
+        $orders = Session::get('orderdata');
+        if(empty($orders)) $orders = array();
+        $subtotal   = 0;
+        $inittotal  = 0;
+        array_map(function($order) use (&$inittotal){
+            $inittotal += floatval($order['price']) * intval($order['numOrder']);    
+        },$orders);
+        $tax = $this->getTax($inittotal,false,true);
+        Session::put('subtotal',$inittotal);
+        Session::put('tax',$tax);
+        return View::make('inventory.checkout',compact('orders','inittotal','tax','subtotal'));    
     }
 
     
