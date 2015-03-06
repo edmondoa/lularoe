@@ -278,19 +278,21 @@ try {
             return total;
         };
 
+/*
         $scope.doSale = function(){
 			if ($scope.orders.length > 0) 
 			{
 				$http.post('/llrapi/v1/reorder/',$scope.orders)
 					.success(function(data, status,headers,config){
 						console.log(data.message);
-						$window.location.href = "/inv/sales";
+						$window.location.href = "/inv/checkout";
 					})
 					.error(function(data, status, headers, config){
 						console.log(data.message);
 					});
 			}
         };
+*/
         
         $scope.checkout = function(){
 			if ($scope.orders.length > 0) 

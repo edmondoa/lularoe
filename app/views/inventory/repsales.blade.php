@@ -5,7 +5,7 @@
 	$subtotal	= 0; 
 	$inittotal	= 0; 
 
-	print_r(Session::get('repsale'));
+	Session::put('repsale',true);
 	foreach (Session::get('orderdata') as $order)  {
 		$inittotal += floatval($order['price']) * intval($order['numOrder']); 
 	}

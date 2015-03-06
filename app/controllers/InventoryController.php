@@ -9,6 +9,9 @@ class InventoryController extends \BaseController {
 			[		'title'		=>'Incentive Discount',
 					'repsale'	=>false,
 					'math'		=>array('op'=>'*','n'=>.05)],
+			[		'title'		=>'Super 15% Discount',
+					'repsale'	=>true,
+					'math'		=>array('op'=>'*','n'=>.15)],
 			//* Just as an example	
 			//['title'=>'$5 Bump','math'=>array('op'=>'=','n'=>5.00)]
 		);
@@ -98,9 +101,11 @@ class InventoryController extends \BaseController {
         },$orders);
 
 		$discounts	= $this->getDiscounts($inittotal,false,true);
-die($discounts);
-        $tax		= 0;//$this->getTax($inittotal);
+		if ($discounts['total'] > 0) $inittotal = $inittotal - $discounts['total'];
 
+		$tax = $this->getTax($inittotal);
+
+        Session::put('discounts',$discounts);
         Session::put('subtotal',$inittotal);
         Session::put('tax',$tax);
 
@@ -277,7 +282,11 @@ die($discounts);
 		// Get the full order amount currently pending purchase
 		$tax = Session::get('tax');
 		$sub = Session::get('subtotal');
-		$grandTotal = floatVal($tax) + floatVal($sub);
+		$disc = 0; // discounts
+
+		$disc = $this->getDiscounts($sub,true);
+
+		$grandTotal = floatVal($tax) + floatVal($sub - $disc);
 
 		if ($absamount > ($grandTotal - Session::get('paidout'))) 
 			$absamount = $grandTotal - Session::get('paidout');

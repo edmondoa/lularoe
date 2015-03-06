@@ -5,7 +5,7 @@
 	@list($key,$timeout) = explode('|',$userkey);
 ?>
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'inv/sales', 'method' => 'POST','name'=>'inven')) }}
+    {{ Form::open(array('url' => 'inv/checkout', 'method' => 'POST','name'=>'inven')) }}
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
                 <div class="col-md-4">
@@ -17,6 +17,30 @@
                                     <td>Subtotal</td>
                                     <td align="right">$@{{subtotal()|number:2}}</td>
                                 </tr>
+
+								<tr ng-repeat="(idx,discount) in discounts">
+									<td ng-if="discount.amount">@{{discount.title}}</td>
+									<td ng-if="discount.amount" align="right">$@{{discount.amount|number:2}}</td>
+								</tr>   
+								<tr ng-if="discounts.total">
+									<td>Total Discounts</td>
+									<td align="right">$@{{discounts.total|number:2}}</td>
+								</tr>
+
+
+							@if (!empty($discounts))
+								@foreach ($discounts as $discount)
+								<tr>
+                                    <td>{{$discount['title']}}</td>
+                                    <td align="right">${{number_format($discount['amount'],2)}}</td>
+                                </tr>
+								@endforeach
+                                <tr>
+                                    <td>Total Discounts</td>
+                                    <td align="right">${{number_format($discount['total'],2)}}</td>
+                                </tr>
+							@endif
+
                                 <tr>
                                     <td>Tax</td>
                                     <td align="right">$@{{tax|number:2}}</td>
@@ -27,7 +51,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <button type="button" class="pull-right btn btn-sm btn-success" ng-click="doSale()">Checkout</button>
+                                        <button type="button" class="pull-right btn btn-sm btn-success" ng-click="checkout()">Checkout</button>
                                         <button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
                                     </td>
                                 </tr>

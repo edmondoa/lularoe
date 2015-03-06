@@ -22,12 +22,23 @@
 						</div>
 @endforeach
 					</div>
+@if (Session::get('repsale')) 
+                    <h3>Thank you!</h3>
+                    <div class="well">
+						We hope you will enjoy the wonderful fashionable world of LuLaRoe!
+                    </div>
+
+@else
                     <h3>Shipping Information</h3>
                     <div class="well">
 						Please allow 3-4 business days
                     </div>
+@endif
                 </div>
             </div>
     </div><!-- app -->
-<?php Session::flush('orderdata'); ?>
+<?php 
+	Session::forget('orderdata'); 
+	print_r(Session::all());
+?>
 @stop
