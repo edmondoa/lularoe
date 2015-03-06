@@ -3,6 +3,9 @@
 <div ng-app="app" class="index">
 <?php    
 	// Bank info
+	if (Input::get('nuke')) {
+		Session::forget('paidout');
+	}
 	$bi =  Auth::user()->bankinfo;
 	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
 	$consignment_bal = Auth::user()->consignment;
@@ -31,11 +34,17 @@
 	@endforeach
 							<tr>
 								<td colspan="3" align="right"><b>Tax</b></td>
-								<td>${{ number_format($tax->Tax,2) }}</td>
+								<td>${{ number_format($tax,2) }}</td>
 							</tr>
+							@if (Session::get('paidout') > 0)
 							<tr>
-								<td colspan="3"align="right"><b>Total</b></td>
-								<td>${{number_format($inittotal + $tax->Tax,2)}}</td>
+								<td colspan="3"align="right"><b>Paid</b></td>
+								<td>${{number_format(Session::get('paidout',0),2)}}</td>
+							</tr>
+							@endif
+							<tr>
+								<td colspan="3"align="right"><b>Balance</b></td>
+								<td>${{number_format($inittotal + $tax - Session::get('paidout'),2)}}</td>
 							</tr>
 						</table>
                     </div>
@@ -60,17 +69,27 @@
 							{{ Form::open(array('url' => 'inv/conspurchase', 'method' => 'post','name'=>'inven')) }}
 							<h2>Consignment</h2>
 							<div class="col-lg-12 col-sm-12 col-md-12">
-								<div class="col-lg-6 col-sm-6 col-md-6">
-									<h3>Current Balance</h3>
+								<div class="row">
+									<div class="col-lg-6 col-sm-6 col-md-6">
+									</div>
+									<div class="col-lg-6 col-sm-6 col-md-6">
+										<h3>Current Balance</h3>
+									</div>
 								</div>
-								<div class="col-lg-6 col-sm-6 col-md-6">
-									<h3>Remaining Balance</h3>
+								<div class="row">
+									<div class="col-lg-6 col-sm-6 col-md-6">
+									</div>
+									<div class="col-lg-6 col-sm-6 col-md-6">
+										<h4>{{ $consignment_bal }}</h4>
+									</div>
 								</div>
-								<div class="col-lg-6 col-sm-6 col-md-6">
-									<h4>{{ $consignment_bal }}</h4>
-								</div>
-								<div class="col-lg-6 col-sm-6 col-md-6">
-									<h4>{{ $remain = $consignment_bal - ($inittotal + $tax->Tax) }}</h4>
+								<div class="row">
+									<div class="col-lg-6 col-sm-6 col-md-6">
+										<h4>Amount to apply</h4>
+									</div>
+									<div class="col-lg-6 col-sm-6 col-md-6">
+										<input type="text" name="amount" value="{{ (($inittotal + $tax - Session::get('paidout')) < $consignment_bal) ? ($inittotal+$tax - Session::get('paidout')) : $consignment_bal }}">
+									</div>
 								</div>
 							</div>
 							<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
@@ -89,9 +108,17 @@
 								<option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
 							@endforeach
 							</select>
+							</div>
+							<div class="row">
+								<div class="col-lg-6 col-sm-6 col-md-6">
+									<h4>Amount to apply</h4>
+								</div>
+								<div class="col-lg-6 col-sm-6 col-md-6">
+									<input type="text" name="amount" value="{{ (($inittotal + $tax - Session::get('paidout')) < $consignment_bal) ? ($inittotal+$tax - Session::get('paidout')) : $consignment_bal }}">
+								</div>
+							</div>
 							<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
 							<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
-							</div>
 						</div>
 						{{ Form::close() }}
                     </div><!-- ACH -->
@@ -124,6 +151,14 @@
                                     <td>Security code (# on back of card)</td>
                                     <td align="right"><input size="16" style="width:4em" name="cvv"></td>
                                 </tr>
+					
+								<tr class="row">
+								<td>
+									<h4>Amount to apply</h4>
+									<input type="text" name="amount" value="{{ ($inittotal + $tax - Session::get('paidout')) }}">
+								</div>
+								</tr>
+								<tr>
                                     <td colspan="2">
                                         <button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
                                         <button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
