@@ -338,15 +338,24 @@ try {
             if(n){
                     $scope.isComplete = false;
 						// Pre-tax discounts
-						$http.get('discounts/'+n).success(function(data){
-							$scope.discounts = data; 
-							n = n - data.total;
-							$http.get('tax/'+n).success(function(data){
-								$scope.tax = data.Tax; 
-								$scope.total = data.Tax + n;
-								$scope.isComplete = true;
-							});
-						});
+                        if(shared.requestPromise && shared.getIsLoading()){
+                            shared.requestPromise.abort();    
+                        }
+                        shared.requestPromise = shared.requestData('discounts/'+n);
+                        shared.requestPromise.then(function(data){
+                            $scope.discounts = data; 
+                            n = n - data.total;
+                            
+                            if(shared.requestPromise && shared.getIsLoading()){
+                                shared.requestPromise.abort();    
+                            }
+                            shared.requestPromise = shared.requestData('tax/'+n);
+                            shared.requestPromise.then(function(data){
+                                $scope.tax = data.Tax; 
+                                $scope.total = data.Tax + n;
+                                $scope.isComplete = true;
+                            });    
+                        });
             }
             else{
                 $scope.discounts = [];
