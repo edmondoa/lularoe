@@ -342,7 +342,7 @@ try {
                             shared.requestPromise.abort();    
                         }
                         shared.requestPromise = shared.requestData('discounts/'+n);
-                        shared.requestPromise.success(function(v){
+                        shared.requestPromise.then(function(data){
                             $scope.discounts = data; 
                             n = n - data.total;
                             
@@ -350,7 +350,7 @@ try {
                                 shared.requestPromise.abort();    
                             }
                             shared.requestPromise = shared.requestData('tax/'+n);
-                            shared.requestPromise.success(function(data){
+                            shared.requestPromise.then(function(data){
                                 $scope.tax = data.Tax; 
                                 $scope.total = data.Tax + n;
                                 $scope.isComplete = true;
