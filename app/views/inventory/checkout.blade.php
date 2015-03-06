@@ -6,20 +6,10 @@
 	if (Input::get('nuke')) {
 		Session::forget('paidout');
 	}
-	Session::forget('tax'); $tax = 0;
+
 	$bi =  Auth::user()->bankinfo;
 	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
 	$consignment_bal = Auth::user()->consignment;
-
-	
-	// Calculate all our discounts
-	$calcDisc = array();
-	foreach (Session::get('discounts') as $discount) {
-		$dc = eval('return ('.$inittotal.$discount['math'].');');
-		if ($dc){
-			$calcDisc[] = array('title'=>$discount['title'],'amount' => $dc);
-		}
-	}
 ?>
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">

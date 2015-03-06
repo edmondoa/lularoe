@@ -2,6 +2,14 @@
 
 class InventoryController extends \BaseController {
 
+	// HARDCODED for now, definitely pullable from a DB though
+	// Discounts are SUBTRACTIVE, meaning the total is combined together
+	// then SUBTRACTED from the total
+    public $discounts = array(
+			['title'=>'Incentive Discount','math'=>array('op'=>'*','n'=>.05)],
+			['title'=>'$5 Bump','math'=>array('op'=>'+','n'=>5.00)]
+		);
+
     /**
      * Data only
      */
@@ -13,10 +21,47 @@ class InventoryController extends \BaseController {
         ];
     }
 
+	public function getDiscounts($subt, $viaRequest=true,$doTemplate=false){
+		// Init my vars
+		$discounted	= array();
+		$dctotal	= 0;
+
+		// Do the MATHS
+		foreach ($this->discounts as $discount) {
+			// I <3 Eval .. NOT!
+			$dcamt = eval('return (floatVal($subt)'.$discount['math']['op'].$discount['math']['n'].');');
+			if ($dcamt){
+				$discounted[] = array(	'title'		=> $discount['title'],
+										'amount'	=> $dcamt);
+				$dctotal += $dcamt;
+			}
+		print($dctotal);
+		}
+		$discounted['total'] = $dctotal;
+
+		// Return my requestors appropriately
+        if(Request::wantsJson()){
+            return Response::json($discounted);
+        }else{
+            if($viaRequest){
+                return $dctotal;
+            }else{
+                return $discounted;
+            }
+        }
+	}
+
     public function getTax($value,$viaRequest=true,$doTemplate=false){
-        // Corona California tax
-        $data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$value);
-        $tax = json_decode($data);
+		if (Session::get('repsale'))  { 
+			// Corona California tax
+			$data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$value);
+			$tax = json_decode($data);
+		}
+		else { // No tax calculated (or flat tax!)
+			$tax = new stdClass();
+			$tax->Tax = 0;
+		}
+
         if($doTemplate) return $tax;
         if(Request::wantsJson()){
             return Response::json($tax);
@@ -43,11 +88,14 @@ class InventoryController extends \BaseController {
         array_map(function($order) use (&$inittotal){
             $inittotal += floatval($order['price']) * intval($order['numOrder']);    
         },$orders);
-        $tax = 0;//$this->getTax($inittotal);
+
+		$discounts	= $this->getDiscounts($inittotal,false,true);
+die($discounts);
+        $tax		= 0;//$this->getTax($inittotal);
+
         Session::put('subtotal',$inittotal);
         Session::put('tax',$tax);
-        Session::put('discounts',array(['title'=>'Incentive Discount',
-										'math'=>'* .05']));
+
         return View::make('inventory.checkout',compact('discounts', 'orders','inittotal','tax','subtotal'));    
     }
 
@@ -59,6 +107,7 @@ class InventoryController extends \BaseController {
 	 */
 	public function index()
 	{
+		Session::put('repsale', false);
 		$inventories = Inventory::all();
 
 		return View::make('inventory.index', compact('inventories'));
@@ -212,6 +261,7 @@ class InventoryController extends \BaseController {
      */
     public function sales()
     {
+			Session::put('repsale',true);
             return View::make('inventory.repsales');
     }
 	
@@ -234,9 +284,7 @@ class InventoryController extends \BaseController {
 		$sub = Session::get('subtotal');
 		$disc = 0; // discounts
 
-		foreach(Session::get('discounts') as $discount)  {
-			$disc += $discount['total'];
-		}
+		$disc = $this->getDiscounts($sub,true);
 
 		$grandTotal = floatVal($tax) + floatVal($sub) - floatVal($disc);
 
@@ -271,11 +319,7 @@ class InventoryController extends \BaseController {
 			Input::replace(array('amount'=>$cons));
 		}
 
-
-		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
-		$repsale	= Input::get('repsale', 0);  // This is almost always a rep PURCHASE
-
 		$tax		= $this->getTax($absamount);
 
 		// If consignment not funds available set to max amount
@@ -286,7 +330,7 @@ class InventoryController extends \BaseController {
 		$oldInput = Input::all();
 
 		// MATT HACKERY - Watch for changes in password on ZERO account!!
-		if (!$repsale) {
+		if (!Session::get('repsale')) {
 			// For MWL user loginstuff
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
@@ -324,7 +368,7 @@ class InventoryController extends \BaseController {
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
-			if ($repsale) {
+			if (Session::get('repsale')) {
 				// Deduct item quantity from inventory
 				foreach ($invitems as $item) {
 					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
@@ -343,15 +387,13 @@ class InventoryController extends \BaseController {
 		$tax		= $this->getTax($absamount);
 		$absamount = $this->totalCheck($absamount);
 
-		$repsale	= Input::get('repsale', 1);  // This is almost always a rep sale
-
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
 
 		$invitems	= Session::get('orderdata');
 
 		// MATT HACKERY - Watch for changes in password on ZERO account!!
-		if (!$repsale) {
+		if (!Session::get('repsale')) {
 			// For MWL user loginstuff
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
@@ -383,7 +425,7 @@ class InventoryController extends \BaseController {
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
-			if ($repsale) {
+			if (Session::get('repsale')) {
 				// Deduct item quantity from inventory
 				foreach ($invitems as $item) {
 					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
@@ -404,7 +446,6 @@ class InventoryController extends \BaseController {
 
 		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
-		$repsale	= Input::get('repsale', 1);  // This is almost always a rep sale
 		$invitems	= Session::get('orderdata');
 
 		$authinfo = new stdClass();
@@ -412,7 +453,7 @@ class InventoryController extends \BaseController {
 
 
 		// MATT HACKERY - Watch for changes in password on ZERO account!!
-		if (!$repsale) {
+		if (!Session::get('repsale')) {
 			// For MWL user loginstuff
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
@@ -449,7 +490,7 @@ class InventoryController extends \BaseController {
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
-			if ($repsale) {
+			if (Session::get('repsale')) {
 				// Deduct item quantity from inventory
 				foreach ($invitems as $item) {
 					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
@@ -464,8 +505,6 @@ class InventoryController extends \BaseController {
 	public function purchase(){
 		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
-		$repsale	= Input::get('repsale', 0); 
-
 		$absamount	= abs(Input::get('amount'));
 		$tax		= $this->getTax($absamount);
 		$absamount = $this->totalCheck($absamount);
@@ -478,7 +517,7 @@ class InventoryController extends \BaseController {
 		// MATT HACKERY - 
 		// Watch for changes in mwl_password
 		// It is no longer encoded in the site.php file. 
-		if (!$repsale) {
+		if (!Session::get('repsale')) {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
@@ -513,7 +552,7 @@ class InventoryController extends \BaseController {
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
-			if ($repsale) {
+			if (Session::get('repsale')) {
 				// Deduct item quantity from inventory
 				foreach ($invitems as $item) {
 					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());

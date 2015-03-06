@@ -90,6 +90,7 @@ try {
         $scope.cart = [];
         $scope.countItems = 0;
         $scope.tax = 0;
+        $scope.discounts = [];
         $scope.total = 0;
         $scope.subtotalnum = 0;
         $scope.orders = [];
@@ -324,13 +325,19 @@ try {
         $scope.$watch('subtotalnum', function(n,o){
             if(n){
                     $scope.isComplete = false;
-                    $http.get('tax/'+n).success(function(data){
-                        $scope.tax = data.Tax; 
-                        $scope.total = data.Tax + n;
-                        $scope.isComplete = true;
-                    });
+						// Pre-tax discounts
+						$http.get('discounts/'+n).success(function(data){
+							$scope.discounts = data; 
+							n = n - data.total;
+							$http.get('tax/'+n).success(function(data){
+								$scope.tax = data.Tax; 
+								$scope.total = data.Tax + n;
+								$scope.isComplete = true;
+							});
+						});
             }
             else{
+                $scope.discounts = [];
                 $scope.tax = 0;
                 $scope.total = 0;    
             } 

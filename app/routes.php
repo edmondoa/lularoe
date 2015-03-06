@@ -253,6 +253,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		});
         
         Route::get('tax/{amount}', 'InventoryController@getTax');
+        Route::get('discounts/{amount}', 'InventoryController@getDiscounts');
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
 		Route::post('opportunities/disable', 'OpportunityController@disable');
