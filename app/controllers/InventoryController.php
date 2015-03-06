@@ -7,7 +7,7 @@ class InventoryController extends \BaseController {
 	// then SUBTRACTED from the total
     public $discounts = array(
 			['title'=>'Incentive Discount','math'=>array('op'=>'*','n'=>.05)],
-			['title'=>'$5 Bump','math'=>array('op'=>'+','n'=>5.00)]
+			['title'=>'$5 Bump','math'=>array('op'=>'=','n'=>5.00)]
 		);
 
     /**
@@ -29,7 +29,11 @@ class InventoryController extends \BaseController {
 		// Do the MATHS
 		foreach ($this->discounts as $discount) {
 			// I <3 Eval .. NOT!
-			$dcamt = eval('return (floatVal($subt)'.$discount['math']['op'].$discount['math']['n'].');');
+			if ($discount['math']['op'] == '=') 
+				$dcamt = $discount['math']['n'];
+			else
+				$dcamt = eval('return (floatVal($subt)'.$discount['math']['op'].$discount['math']['n'].');');
+
 			if ($dcamt){
 				$discounted[] = array(	'title'		=> $discount['title'],
 										'amount'	=> $dcamt);
