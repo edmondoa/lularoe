@@ -7,7 +7,8 @@ class InventoryController extends \BaseController {
 	// then SUBTRACTED from the total
     public $discounts = array(
 			['title'=>'Incentive Discount','math'=>array('op'=>'*','n'=>.05)],
-			['title'=>'$5 Bump','math'=>array('op'=>'=','n'=>5.00)]
+			//* Just as an example	
+			//['title'=>'$5 Bump','math'=>array('op'=>'=','n'=>5.00)]
 		);
 
     /**
