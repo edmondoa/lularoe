@@ -45,11 +45,11 @@
 				<h3>Payment Information</h3>
 				<ul class="nav nav-tabs">
 @if ($has_bank)
-					<li class="nav"><a href="#bankinfo" data-toggle="tab">ACH / Bank Account</a></li>
+					<li class="nav"><a href="#bankinfo" data-toggle="tab">Pay With ACH / Bank Account</a></li>
 @endif
-					<li class="nav"><a href="#creditcard" data-toggle="tab">Credit Card</a></li>
+					<li class="nav"><a href="#creditcard" data-toggle="tab">Pay With Credit Card</a></li>
 @if ($consignment_bal > 0) 
-					<li class="nav"><a href="#consignment" data-toggle="tab">Consignment: ${{ $consignment_bal }}</a></li>
+					<li class="nav"><a href="#consignment" data-toggle="tab">Pay With Consignment: ${{ money_format('%i',$consignment_bal) }}</a></li>
 @endif
 				</ul>
 
@@ -67,10 +67,10 @@
 									<h3>Remaining Balance</h3>
 								</div>
 								<div class="col-lg-6 col-sm-6 col-md-6">
-									<h4>{{ $bal = Auth::user()->accounting()->where('account_name','=','Consignment')->first()->account_balance }}</h4>
+									<h4>{{ $consignment_bal }}</h4>
 								</div>
 								<div class="col-lg-6 col-sm-6 col-md-6">
-									<h4>{{ $remain = $bal - ($inittotal + $tax->Tax) }}</h4>
+									<h4>{{ $remain = $consignment_bal - ($inittotal + $tax->Tax) }}</h4>
 								</div>
 							</div>
 							<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
