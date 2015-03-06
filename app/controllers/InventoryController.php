@@ -35,7 +35,6 @@ class InventoryController extends \BaseController {
 										'amount'	=> $dcamt);
 				$dctotal += $dcamt;
 			}
-		print($dctotal);
 		}
 		$discounted['total'] = $dctotal;
 
