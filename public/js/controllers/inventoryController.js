@@ -355,7 +355,7 @@ try {
                                 $scope.total = data.Tax + n;
                                 $scope.isComplete = true;
                             });    
-                        })
+                        });
             }
             else{
                 $scope.discounts = [];
