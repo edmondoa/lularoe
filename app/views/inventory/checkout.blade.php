@@ -10,6 +10,8 @@
 	$bi =  Auth::user()->bankinfo;
 	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
 	$consignment_bal = Auth::user()->consignment;
+
+ 	$defaultAmount = $inittotal + $tax - Session::get('paidout');
 ?>
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
@@ -75,12 +77,32 @@
 					<li class="nav"><a href="#bankinfo" data-toggle="tab">Pay With ACH / Bank Account</a></li>
 @endif
 					<li class="nav"><a href="#creditcard" data-toggle="tab">Pay With Credit Card</a></li>
-@if ($consignment_bal > 0) 
+@if ($consignment_bal > 0 && !Session::get('repsale')) 
 					<li class="nav"><a href="#consignment" data-toggle="tab">Pay With Consignment: ${{ number_format($consignment_bal,2) }}</a></li>
+@endif
+@if (Session::get('repsale'))  <!-- // and has wallet balance.. ? -->
+					<li class="nav"><a href="#cash" data-toggle="tab">Cash Sale</a></li>
 @endif
 				</ul>
 
 				<div class="tab-content">
+					 <div class="well tab-pane fade" id="cash">
+						<div class="row">
+							<div class="col-lg-12 col-sm-12 col-md-12">
+								{{ Form::open(array('url' => 'inv/cashpurchase', 'method' => 'post','name'=>'inven')) }}
+								{{ Form::label('cash', 'Cash Amount') }}
+								$<input type="text" name="amount" value="{{ $defaultAmount }}">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-12 col-sm-12 col-md-12">
+								<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
+								<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
+							</div>
+						</div>
+						{{ Form::close() }}
+					</div>
+
                     <div class="well tab-pane fade" id="consignment">
 						{{ Form::open(array('url' => 'inv/conspurchase', 'method' => 'post','name'=>'inven')) }}
 						<h2>Consignment</h2>
@@ -96,7 +118,7 @@
 								<td>
 									<div class="pull-right">
 										<h4>Amount to apply to this order</h4>
-										$<input type="text" name="amount" value="{{ (($inittotal + $tax - Session::get('paidout')) < $consignment_bal) ? ($inittotal+$tax - Session::get('paidout')) : $consignment_bal }}">
+										$<input type="text" name="amount" value="{{ (($defaultAmount) < $consignment_bal) ? ($defaultAmount) : $consignment_bal }}">
 									</div>
 								</td>
 							</tr>
@@ -125,7 +147,7 @@
 							<div class="col-lg-6 col-sm-6 col-md-6"></div>
 							<div class="col-lg-6 col-sm-6 col-md-6">
 								<h4>Amount to apply to this order</h4>
-								$<input type="text" name="amount" value="{{ (($inittotal + $tax - Session::get('paidout')) < $consignment_bal) ? ($inittotal+$tax - Session::get('paidout')) : $consignment_bal }}">
+								$<input type="text" name="amount" value="{{ $defaultAmount }}">
 							</div>
 						</div>
 						<div class="row">
@@ -171,7 +193,7 @@
 										<td>
 											<div class="pull-right">
 												<h4>Amount to apply to this order</h4>
-												$<input type="text" name="amount" value="{{ (($inittotal + $tax - Session::get('paidout')) < $consignment_bal) ? ($inittotal+$tax - Session::get('paidout')) : $consignment_bal }}">
+												$<input type="text" name="amount" value="{{ $defaultAmount }}">
 											</div>
 										</td>
 									</tr>
