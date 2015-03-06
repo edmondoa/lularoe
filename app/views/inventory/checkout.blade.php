@@ -71,21 +71,21 @@
 							<div class="col-lg-12 col-sm-12 col-md-12">
 								<div class="row">
 									<div class="col-lg-6 col-sm-6 col-md-6">
+										<h3>Current Balance</h3>
 									</div>
 									<div class="col-lg-6 col-sm-6 col-md-6">
-										<h3>Current Balance</h3>
+										<h4>Amount to apply to this order</h4>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-lg-6 col-sm-6 col-md-6">
-									</div>
 									<div class="col-lg-6 col-sm-6 col-md-6">
 										<h4>{{ $consignment_bal }}</h4>
 									</div>
+									<div class="col-lg-6 col-sm-6 col-md-6">
+									</div>
 								</div>
 								<div class="row">
 									<div class="col-lg-6 col-sm-6 col-md-6">
-										<h4>Amount to apply</h4>
 									</div>
 									<div class="col-lg-6 col-sm-6 col-md-6">
 										<input type="text" name="amount" value="{{ (($inittotal + $tax - Session::get('paidout')) < $consignment_bal) ? ($inittotal+$tax - Session::get('paidout')) : $consignment_bal }}">
@@ -101,19 +101,20 @@
                     <div class="well tab-pane fade" id="bankinfo">
 						<div class="row">
 							<div class="col-lg-12 col-sm-12 col-md-12">
-							{{ Form::open(array('url' => 'inv/achpurchase', 'method' => 'post','name'=>'inven')) }}
-							{{ Form::label('bankinfo', 'Bank Account') }}
-							<select name="account" class="form-control">
-							@foreach ($bi as $bank)
-								<option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
-							@endforeach
-							</select>
+								{{ Form::open(array('url' => 'inv/achpurchase', 'method' => 'post','name'=>'inven')) }}
+								{{ Form::label('bankinfo', 'Bank Account') }}
+								<select name="account" class="form-control">
+								@foreach ($bi as $bank)
+									<option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
+								@endforeach
+								</select>
 							</div>
+						</div>
 							<div class="row">
 								<div class="col-lg-6 col-sm-6 col-md-6">
-									<h4>Amount to apply</h4>
 								</div>
 								<div class="col-lg-6 col-sm-6 col-md-6">
+									<h4>Amount to apply to this order</h4>
 									<input type="text" name="amount" value="{{ (($inittotal + $tax - Session::get('paidout')) < $consignment_bal) ? ($inittotal+$tax - Session::get('paidout')) : $consignment_bal }}">
 								</div>
 							</div>
@@ -151,12 +152,14 @@
                                     <td>Security code (# on back of card)</td>
                                     <td align="right"><input size="16" style="width:4em" name="cvv"></td>
                                 </tr>
-					
-								<tr class="row">
-								<td>
-									<h4>Amount to apply</h4>
-									<input type="text" name="amount" value="{{ ($inittotal + $tax - Session::get('paidout')) }}">
-								</div>
+								<tr>
+									<td></td>
+									<td>
+										<div class="pull-right">
+										<h4>Amount to apply</h4>
+										<input type="text" name="amount" value="{{ (($inittotal + $tax - Session::get('paidout')) < $consignment_bal) ? ($inittotal+$tax - Session::get('paidout')) : $consignment_bal }}">
+										</div>
+									</td>
 								</tr>
 								<tr>
                                     <td colspan="2">
