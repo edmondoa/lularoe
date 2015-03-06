@@ -39,6 +39,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'gender',
 		'dob',
 		'public_id',
+		'consignment',
 		'role_id',
 		'key',
 		'image',
@@ -92,8 +93,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         return $this->hasMany('Bankinfo');
 	}
 
-	public function accounting() {
-        return $this->hasMany('Accounts');
+	public function getConsignment() {
+		return($this->consignment);
+	}
+
+	public function setConsignment($val) {
+		$this->consignment = $val;
+		return($val);
 	}
 
 	public function sponsor() {

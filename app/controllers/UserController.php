@@ -63,7 +63,10 @@ class userController extends \BaseController {
 		$user = User::create($data);
 		
 		// Update MWL data
+		$plainpass = $data['password'];
 		App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
+		App::make('ExternalAuthController')->auth($user->id, $plainpass);
+
 		// store address
 	    $address = Address::create([
 	    	'address'=>$data['address_1'],
@@ -245,6 +248,7 @@ class userController extends \BaseController {
 			// Need to pass plain pass to MWL auth
 			$plainpass = $data['password'];
 			App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
+			App::make('ExternalAuthController')->auth($user->id, $plainpass);
 
 			// before save we need to control a couple of things
 			// second, if the password was submitted blank we need to make sure it doesn't get saved

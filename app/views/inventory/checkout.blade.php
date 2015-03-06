@@ -5,7 +5,7 @@
 	// Bank info
 	$bi =  Auth::user()->bankinfo;
 	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
-	$consignment_bal = Auth::user()->accounting()->where('account_name','=','Consignment')->first()->account_balance; 
+	$consignment_bal = Auth::user()->consignment;
 ?>
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
