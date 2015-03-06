@@ -97,6 +97,7 @@ try {
         $scope.inventories = [];
         $scope.currentPage = 1;
         $scope.pageSize = 10;
+        $scope.showCheckoutButton = true;
         
         $scope.isComplete = false;
         $scope.isLoading = function(){
@@ -138,7 +139,7 @@ try {
                    $scope.orders.splice(i,1);
                 }
             }
-        };                                                 
+        };
         
         $scope.addOrder = function(n){
             var checkedItems = n.sizes.filter(function(s){
@@ -269,9 +270,18 @@ try {
         
         $scope.subtotal = function(){
             var total = 0;
+            var totalQuantity = 0;
             angular.forEach($scope.orders, function (order){
-                total += order.numOrder * order.price;    
+                total += order.numOrder * order.price; 
+                totalQuantity += order.numOrder;   
             });
+            
+            //need to detect if its only reorder
+            if(totalQuantity < 33){
+                $scope.showCheckoutButton = false;
+            }else{
+                $scope.showCheckoutButton = true;
+            }
             //$scope.tax = total * 0.0825; // Get this from avalara?
             //$scope.total = $scope.tax + total;
 			$scope.subtotalnum = total;
