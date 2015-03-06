@@ -43,10 +43,12 @@ class InventoryController extends \BaseController {
         array_map(function($order) use (&$inittotal){
             $inittotal += floatval($order['price']) * intval($order['numOrder']);    
         },$orders);
-        $tax = $this->getTax($inittotal);
+        $tax = 0;//$this->getTax($inittotal);
         Session::put('subtotal',$inittotal);
         Session::put('tax',$tax);
-        return View::make('inventory.checkout',compact('orders','inittotal','tax','subtotal'));    
+        Session::put('discounts',array(['title'=>'Incentive Discount',
+										'math'=>'* .05']));
+        return View::make('inventory.checkout',compact('discounts', 'orders','inittotal','tax','subtotal'));    
     }
 
     
@@ -230,8 +232,13 @@ class InventoryController extends \BaseController {
 		// Get the full order amount currently pending purchase
 		$tax = Session::get('tax');
 		$sub = Session::get('subtotal');
+		$disc = 0; // discounts
 
-		$grandTotal = floatVal($tax) + floatVal($sub);
+		foreach(Session::get('discounts') as $discount)  {
+			$disc += $discount['total'];
+		}
+
+		$grandTotal = floatVal($tax) + floatVal($sub) - floatVal($disc);
 
 		// If the sale amount is still less than the grand total
 		if (Session::get('paidout') < $grandTotal) {

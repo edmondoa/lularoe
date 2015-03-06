@@ -95,10 +95,13 @@ class ExternalAuthController extends \BaseController {
 			}
 
 			// Reorder this with numerical indeces
-			foreach($items as $k=>$v)
-			{
-				$itemlist[$count++] = $v;
+			if (isset($items)) {
+				foreach($items as $k=>$v)
+				{
+					$itemlist[$count++] = $v;
+				}
 			}
+			else $itemlist = null;
 
 			return(Response::json($itemlist, 200, [], JSON_PRETTY_PRINT));
 		}

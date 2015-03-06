@@ -6,9 +6,20 @@
 	if (Input::get('nuke')) {
 		Session::forget('paidout');
 	}
+	Session::forget('tax'); $tax = 0;
 	$bi =  Auth::user()->bankinfo;
 	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
 	$consignment_bal = Auth::user()->consignment;
+
+	
+	// Calculate all our discounts
+	$calcDisc = array();
+	foreach (Session::get('discounts') as $discount) {
+		$dc = eval('return ('.$inittotal.$discount['math'].');');
+		if ($dc){
+			$calcDisc[] = array('title'=>$discount['title'],'amount' => $dc);
+		}
+	}
 ?>
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
@@ -32,16 +43,24 @@
 								<td>${{ number_format(floatval($order['price']) * intval($order['numOrder']),2) }}</td>
 							</tr>
 	@endforeach
+<!--
 							<tr>
 								<td colspan="3" align="right"><b>Tax</b></td>
 								<td>${{ number_format($tax,2) }}</td>
 							</tr>
+-->
 							@if (Session::get('paidout') > 0)
 							<tr>
 								<td colspan="3"align="right"><b>Paid</b></td>
 								<td>${{number_format(Session::get('paidout',0),2)}}</td>
 							</tr>
 							@endif
+							@foreach ($calcDisc as $discount)
+							<tr>
+								<td colspan="3"align="right"><b>{{ $discount['title'] }}</b></td>
+								<td><i>${{ number_format($discount['amount'],2)}}</i></td>
+							</tr>
+							@endforeach
 							<tr>
 								<td colspan="3"align="right"><b>Balance</b></td>
 								<td>${{number_format($inittotal + $tax - Session::get('paidout'),2)}}</td>
