@@ -14,6 +14,13 @@
 	<div class="row" ng-controller="UserController">
 		<div class="col col-lg-3 col-md-4 col-sm-6">
 		    {{ Form::model($user, array('route' => array('users.update', $user->id), 'method' => 'PUT')) }}
+
+			@if (Auth::user()->id == 0)
+		    <div class="form-group">
+		        {{ Form::label('consignment', 'Consignment Amount') }}
+		        {{ Form::text('consignment', null, array('class' => 'form-control')) }}
+		    </div>
+			@endif
 		
 		    <div class="form-group">
 		        {{ Form::label('first_name', 'First Name') }}

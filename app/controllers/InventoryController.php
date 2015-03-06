@@ -43,7 +43,7 @@ class InventoryController extends \BaseController {
         array_map(function($order) use (&$inittotal){
             $inittotal += floatval($order['price']) * intval($order['numOrder']);    
         },$orders);
-        $tax = $this->getTax($inittotal,false,true);
+        $tax = $this->getTax($inittotal);
         Session::put('subtotal',$inittotal);
         Session::put('tax',$tax);
         return View::make('inventory.checkout',compact('orders','inittotal','tax','subtotal'));    
@@ -212,16 +212,68 @@ class InventoryController extends \BaseController {
     {
             return View::make('inventory.repsales');
     }
+	
+	public function totalCheck($absamount) {
+		// Get the full order amount currently pending purchase
+		$tax = Session::get('tax');
+		$sub = Session::get('subtotal');
+		$grandTotal = floatVal($tax) + floatVal($sub);
 
-	public function cashpurchase() {
+		if ($absamount > ($grandTotal - Session::get('paidout'))) 
+			$absamount = $grandTotal - Session::get('paidout');
+
+		return($absamount);
+	}
+
+	public function checkFinalSaleAmount($saleAmount) {
+
+		// Get the full order amount currently pending purchase
+		$tax = Session::get('tax');
+		$sub = Session::get('subtotal');
+
+		$grandTotal = floatVal($tax) + floatVal($sub);
+
+		// If the sale amount is still less than the grand total
+		if (Session::get('paidout') < $grandTotal) {
+			$diffAmount = floatVal($grandTotal) - floatVal($saleAmount);
+
+			$po = Session::get('paidout', 0);
+			Session::put('paidout',floatval($po) + floatval($saleAmount));
+
+			return false; // Not done paying YET!
+		}
+		// else we are done paying
+		else return true; 
+	}
+
+
+	// Consignment purchase
+	public function conspurchase() {
+		// Make sure we have enough consignment to pull this off
+		$cons 		= Auth::user()->consignment;
+		$absamount	= abs(Input::get('amount'));
+		$absamount = $this->totalCheck($absamount);
+
+		if ($cons <= 0) {
+			$cardauth->status = 'No consignment is currently available to you.';
+			return View::make('inventory.invalidpurchase',compact('cardauth'));
+		}
+		
+		if ($cons < $absamount) { 
+			// Set it to maximum $cons
+			Input::replace(array('amount'=>$cons));
+		}
+
+
 		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
-		$repsale	= Input::get('repsale', 1);  // This is almost always a rep sale
+		$repsale	= Input::get('repsale', 0);  // This is almost always a rep PURCHASE
 
-		$tax		= Session::get('tax');
-		$subtotal	= Session::get('subtotal');
+		$tax		= $this->getTax($absamount);
+
+		// If consignment not funds available set to max amount
+
 		$invitems	= Session::get('orderdata');
-
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
@@ -243,17 +295,87 @@ class InventoryController extends \BaseController {
 		}
 
 		$purchaseInfo = array(
-					'subtotal'		=>$subtotal,
+					'subtotal'		=>$absamount,
+					'tax'			=>$tax,
+					'cash'			=>2,
+					'cart'			=>json_encode($invitems)
+				);
+
+		
+		$ia = Input::all();
+		Input::replace($purchaseInfo);
+		//$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		//$cardauth	= json_decode(Route::dispatch($request)->getContent());
+		$cardauth	= json_decode('{ "error":false }');
+		Input::replace($ia);
+
+		if (!$cardauth->error) {
+			$user = Auth::user();
+			$user->consignment = $user->consignment - floatval($absamount);
+			$user->save();
+
+			if (!$this->checkFinalSaleAmount($absamount)) {
+				return Redirect::to('/inv/checkout');
+			}
+			if ($repsale) {
+				// Deduct item quantity from inventory
+				foreach ($invitems as $item) {
+					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
+					$deduction	= json_decode(Route::dispatch($request)->getContent());
+				}
+			}
+			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+		}
+		else return View::make('inventory.invalidpurchase',compact('cardauth'));
+	}
+
+	public function cashpurchase() {
+		// If it IS a rep sale, 
+		// Deduct inventory, if not, ADD inventory
+		$absamount	= abs(Input::get('amount'));
+		$tax		= $this->getTax($absamount);
+		$absamount = $this->totalCheck($absamount);
+
+		$repsale	= Input::get('repsale', 1);  // This is almost always a rep sale
+
+		$authinfo = new stdClass();
+		$oldInput = Input::all();
+
+		$invitems	= Session::get('orderdata');
+
+		// MATT HACKERY - Watch for changes in password on ZERO account!!
+		if (!$repsale) {
+			// For MWL user loginstuff
+			$user = Config::get('site.mwl_username');
+			$pass = Config::get('site.mwl_password');
+
+			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
+			$authinfo	= json_decode($data);
+		}
+		// This is the individual REP TID
+		else {
+			$authkey = Auth::user()->key;
+			@list($key,$exp) = explode('|',$authkey);
+			$authinfo->mwl = $key;
+		}
+
+		$purchaseInfo = array(
+					'subtotal'		=>$absamount,
 					'tax'			=>$tax,
 					'cash'			=>1,
 					'cart'			=>json_encode($invitems)
 				);
 
+		$ia = Input::all();
 		Input::replace($purchaseInfo);
 		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
+		Input::replace($ia);
 
 		if (!$cardauth->error) {
+			if (!$this->checkFinalSaleAmount($absamount)) {
+				return Redirect::to('/inv/checkout');
+			}
 			if ($repsale) {
 				// Deduct item quantity from inventory
 				foreach ($invitems as $item) {
@@ -269,14 +391,14 @@ class InventoryController extends \BaseController {
 	public function achpurchase() {
 		$checking = Auth::user()->bankinfo->find(Input::get('account'));
 
+		$absamount	= abs(Input::get('amount'));
+		$tax		= $this->getTax($absamount);
+		$absamount	= $this->totalCheck($absamount);
+
 		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
 		$repsale	= Input::get('repsale', 1);  // This is almost always a rep sale
-
-		$tax		= Session::get('tax');
-		$subtotal	= Session::get('subtotal');
 		$invitems	= Session::get('orderdata');
-
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
@@ -299,7 +421,7 @@ class InventoryController extends \BaseController {
 		}
 
 		$purchaseInfo = array(
-					'subtotal'		=>$subtotal,
+					'subtotal'		=>$absamount,
 					'tax'			=>$tax,
 					'accountname'	=>$checking->bank_name,
 					'routing'		=>$checking->bank_routing,
@@ -310,11 +432,16 @@ class InventoryController extends \BaseController {
 					'cart'			=>json_encode($invitems)
 				);
 
+		$ia = Input::all();
 		Input::replace($purchaseInfo);
 		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
+		Input::replace($ia);
 
 		if (!$cardauth->error) {
+			if (!$this->checkFinalSaleAmount($absamount)) {
+				return Redirect::to('/inv/checkout');
+			}
 			if ($repsale) {
 				// Deduct item quantity from inventory
 				foreach ($invitems as $item) {
@@ -332,10 +459,11 @@ class InventoryController extends \BaseController {
 		// Deduct inventory, if not, ADD inventory
 		$repsale	= Input::get('repsale', 0); 
 
-		$tax		= Session::get('tax');
-		$subtotal	= Session::get('subtotal');
-		$invitems	= Session::get('orderdata');
+		$absamount	= abs(Input::get('amount'));
+		$tax		= $this->getTax($absamount);
+		$absamount = $this->totalCheck($absamount);
 
+		$invitems	= Session::get('orderdata');
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
@@ -357,7 +485,7 @@ class InventoryController extends \BaseController {
 		}
 
 		$purchaseInfo = array(
-					'subtotal'		=>$subtotal,
+					'subtotal'		=>$absamount,
 					'tax'			=>$tax,
 					'cardname'		=>$oldInput['accountname'],
 					'cardnumber'	=>$oldInput['cardno'],
@@ -368,11 +496,16 @@ class InventoryController extends \BaseController {
 					'cart'			=>json_encode($invitems)
 				);
 		
+		$ia = Input::all();
 		Input::replace($purchaseInfo);
 		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
+		Input::replace($ia);
 
 		if (!$cardauth->error) {
+			if (!$this->checkFinalSaleAmount($absamount)) {
+				return Redirect::to('/inv/checkout');
+			}
 			if ($repsale) {
 				// Deduct item quantity from inventory
 				foreach ($invitems as $item) {

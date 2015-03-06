@@ -29,4 +29,5 @@
                 </div>
             </div>
     </div><!-- app -->
+<?php Session::flush('orderdata'); ?>
 @stop
