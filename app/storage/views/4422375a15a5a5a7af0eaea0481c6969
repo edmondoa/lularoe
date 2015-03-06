@@ -1,7 +1,0 @@
-	<?php if(Session::has('message')): ?>
-		<div class="alert alert-success"><?php echo Session::get('message'); ?></div>
-	<?php elseif(Session::has('message_caution')): ?>
-		<div class="alert alert-caution"><?php echo Session::get('message_caution'); ?></div>
-	<?php elseif(Session::has('message_danger')): ?>
-		<div class="alert alert-danger"><?php echo Session::get('message_danger'); ?></div>
-	<?php endif; ?>
