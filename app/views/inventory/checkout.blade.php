@@ -4,6 +4,8 @@
 <?php    
 	// Bank info
 	$bi =  Auth::user()->bankinfo;
+	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
+	$consignment_bal = Auth::user()->accounting()->where('account_name','=','Consignment')->first()->account_balance; 
 ?>
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
@@ -42,12 +44,42 @@
                 <div class="col-lg-12 col-sm-12 col-md-12">
 				<h3>Payment Information</h3>
 				<ul class="nav nav-tabs">
-					<li class="nav active"><a href="#bankinfo" data-toggle="tab">ACH / Bank Account</a></li>
+@if ($has_bank)
+					<li class="nav"><a href="#bankinfo" data-toggle="tab">ACH / Bank Account</a></li>
+@endif
 					<li class="nav"><a href="#creditcard" data-toggle="tab">Credit Card</a></li>
+@if ($consignment_bal > 0) 
+					<li class="nav"><a href="#consignment" data-toggle="tab">Consignment: ${{ $consignment_bal }}</a></li>
+@endif
 				</ul>
 
 				<div class="tab-content">
-                    <div class="well tab-pane fade in active" id="bankinfo">
+                    <div class="well tab-pane fade" id="consignment">
+						<div class="row">
+							<div class="col-lg-12 col-sm-12 col-md-12">
+							{{ Form::open(array('url' => 'inv/conspurchase', 'method' => 'post','name'=>'inven')) }}
+							<h2>Consignment</h2>
+							<div class="col-lg-12 col-sm-12 col-md-12">
+								<div class="col-lg-6 col-sm-6 col-md-6">
+									<h3>Current Balance</h3>
+								</div>
+								<div class="col-lg-6 col-sm-6 col-md-6">
+									<h3>Remaining Balance</h3>
+								</div>
+								<div class="col-lg-6 col-sm-6 col-md-6">
+									<h4>{{ $bal = Auth::user()->accounting()->where('account_name','=','Consignment')->first()->account_balance }}</h4>
+								</div>
+								<div class="col-lg-6 col-sm-6 col-md-6">
+									<h4>{{ $remain = $bal - ($inittotal + $tax->Tax) }}</h4>
+								</div>
+							</div>
+							<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
+							<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
+							</div>
+						</div>
+						{{ Form::close() }}
+                    </div><!-- ACH -->
+                    <div class="well tab-pane fade" id="bankinfo">
 						<div class="row">
 							<div class="col-lg-12 col-sm-12 col-md-12">
 							{{ Form::open(array('url' => 'inv/achpurchase', 'method' => 'post','name'=>'inven')) }}
