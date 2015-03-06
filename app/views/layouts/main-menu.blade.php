@@ -87,6 +87,7 @@
  					</a>
  				    <a href="javascript:void(0)" data-href="/sales" class='list-group-item' data-toggle="popover" data-content="
                          <a href='/sales'><i class='fa fa-check'></i> New Sale</a>
+                         <a href='/pricing'><i class='fa fa-dollar'></i> Transaction Rates</a>
 <!--                         <a href='/sales/ledger'><i class='fa fa-plus'></i> Previous Sales</a> -->
                      ">
                          <i class="fa fa-bank"></i> <span class="text">Sales</span>
