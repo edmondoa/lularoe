@@ -6,7 +6,9 @@ class InventoryController extends \BaseController {
 	// Discounts are SUBTRACTIVE, meaning the total is combined together
 	// then SUBTRACTED from the total
     public $discounts = array(
-			['title'=>'Incentive Discount','math'=>array('op'=>'*','n'=>.05)],
+			[		'title'		=>'Incentive Discount',
+					'repsale'	=>false,
+					'math'		=>array('op'=>'*','n'=>.05)],
 			//* Just as an example	
 			//['title'=>'$5 Bump','math'=>array('op'=>'=','n'=>5.00)]
 		);
@@ -30,15 +32,17 @@ class InventoryController extends \BaseController {
 		// Do the MATHS
 		foreach ($this->discounts as $discount) {
 			// I <3 Eval .. NOT!
-			if ($discount['math']['op'] == '=') 
-				$dcamt = $discount['math']['n'];
-			else
-				$dcamt = eval('return (floatVal($subt)'.$discount['math']['op'].$discount['math']['n'].');');
+			if ($discount['repsale'] == Session::get('repsale')) {
+				if ($discount['math']['op'] == '=') 
+					$dcamt = $discount['math']['n'];
+				else
+					$dcamt = eval('return (floatVal($subt)'.$discount['math']['op'].$discount['math']['n'].');');
 
-			if ($dcamt){
-				$discounted[] = array(	'title'		=> $discount['title'],
-										'amount'	=> $dcamt);
-				$dctotal += $dcamt;
+				if ($dcamt){
+					$discounted[] = array(	'title'		=> $discount['title'],
+											'amount'	=> $dcamt);
+					$dctotal += $dcamt;
+				}
 			}
 		}
 		$discounted['total'] = $dctotal;
@@ -111,7 +115,7 @@ die($discounts);
 	 */
 	public function index()
 	{
-		Session::put('repsale', false);
+		Session::put('repsale', 0);
 		$inventories = Inventory::all();
 
 		return View::make('inventory.index', compact('inventories'));
@@ -265,7 +269,7 @@ die($discounts);
      */
     public function sales()
     {
-			Session::put('repsale',true);
+			Session::put('repsale',1);
             return View::make('inventory.repsales');
     }
 	
