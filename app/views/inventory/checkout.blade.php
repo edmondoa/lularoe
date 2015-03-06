@@ -33,24 +33,33 @@
 								<td>${{ number_format(floatval($order['price']) * intval($order['numOrder']),2) }}</td>
 							</tr>
 	@endforeach
-<!--
+
+                            @if (!empty($discounts))
+                                @foreach ($discounts as $discount) @if (!empty($discount['amount']))
+                                <tr>
+                                    <td>{{$discount['title']}}</td>
+                                    <td align="right">${{number_format($discount['amount'],2)}}</td>
+                                </tr>
+                                @endif @endforeach
+                                <tr>
+                                    <td>Total Discounts</td>
+                                    <td align="right">${{number_format($discounts['total'],2)}}</td>
+                                </tr>
+                            @endif
+
+							@if (Session::get('repsale') > 0)
 							<tr>
 								<td colspan="3" align="right"><b>Tax</b></td>
 								<td>${{ number_format($tax,2) }}</td>
 							</tr>
--->
+							@endif
+
 							@if (Session::get('paidout') > 0)
 							<tr>
 								<td colspan="3"align="right"><b>Paid</b></td>
 								<td>${{number_format(Session::get('paidout',0),2)}}</td>
 							</tr>
 							@endif
-							@foreach ($calcDisc as $discount)
-							<tr>
-								<td colspan="3"align="right"><b>{{ $discount['title'] }}</b></td>
-								<td><i>${{ number_format($discount['amount'],2)}}</i></td>
-							</tr>
-							@endforeach
 							<tr>
 								<td colspan="3"align="right"><b>Balance</b></td>
 								<td>${{number_format($inittotal + $tax - Session::get('paidout'),2)}}</td>
