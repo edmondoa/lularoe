@@ -30,12 +30,12 @@
 				</tbody>
 			</table>
 			<p>
-				<strong>For a $100 debit transaction, you'll get $97.16 deposited into your bank account in one to two business days.</strong>
+				<strong>For a $100 debit transaction, you'll get $97.16 deposited into your bank account.</strong>
 			</p>
 			<ul>
 				<li>Consistent rates for every card. No hidden fees or charges.</li>
 				<li>Accept Visa, MasterCard, Discover, and American Express.</li>
-				<li>Get deposits in your bank account in one to two business days.</li>
+				<li>Get automatic deposits in your bank account.</li>
 				<li>Lowest proccessing rates out there.</li>
 			</ul>
 		</div><!-- col -->
