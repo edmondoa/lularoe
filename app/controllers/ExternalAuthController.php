@@ -95,10 +95,13 @@ class ExternalAuthController extends \BaseController {
 			}
 
 			// Reorder this with numerical indeces
-			foreach($items as $k=>$v)
-			{
-				$itemlist[$count++] = $v;
+			if (isset($items)) {
+				foreach($items as $k=>$v)
+				{
+					$itemlist[$count++] = $v;
+				}
 			}
+			else $itemlist = null;
 
 			return(Response::json($itemlist, 200, [], JSON_PRETTY_PRINT));
 		}
@@ -693,6 +696,9 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		$server_output = curl_exec ($ch);
+		if (preg_match('/Unknown failure transaction was not written to database/',$server_output)) {
+			$server_output = str_replace('"Refnum',',"Refnum', $server_output);
+		}
 		$response_obj = json_decode($server_output);
 
 		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
@@ -707,6 +713,15 @@ class ExternalAuthController extends \BaseController {
 			$response_obj = $raw_response;
 			$response_obj->TransactionResponse = new stdClass();
 			$response_obj->TransactionResponse->Error = true;
+		}
+
+		if (isset($response_obj->Status)) { 
+			if ($response_obj->Status == 'Failed'){
+				$response_obj->TransactionResponse->Result		= 'Declined';
+				$response_obj->TransactionResponse->ResultCode	= 'F';
+				$response_obj->TransactionResponse->Status		= 'Attempt Failed';
+				$response_obj->TransactionResponse->AuthAmount	= 0;
+			}
 		}
 
 		if (isset($response_obj->Code)) {

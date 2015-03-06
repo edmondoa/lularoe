@@ -24,6 +24,12 @@
 					<h2 class="panel-title">Overview</h2>
 				</div>
 				<table class="table table-striped">
+					@if ($user->consignment > 0)
+					<tr>
+						<th>Your remaining consignment balance:</th>
+						<td>{{ $user->consignment }}</td>
+					</tr>
+					@endif
 					<tr>
 						<th>Your Leadership Level:</th>
 						<td>{{ $user->rank_name }} (Rank {{ $user->rank_id }})</td>

@@ -13,7 +13,15 @@
                                     <td>Subtotal</td>
                                     <td align="right">$@{{subtotal()|number:2}}</td>
                                 </tr>
-                                <tr>
+                                <tr ng-repeat="(idx,discount) in discounts">
+                                    <td ng-if="discount.amount">@{{discount.title}}</td>
+                                    <td ng-if="discount.amount" align="right">$@{{discount.amount|number:2}}</td>
+                                </tr>
+                                <tr ng-if="discounts.total">
+                                    <td>Total Discounts</td>
+                                    <td align="right">$@{{discounts.total|number:2}}</td>
+                                </tr>
+                                <tr ng-if="tax">
                                     <td>Tax</td>
                                     <td align="right">$@{{tax|number:2}}</td>
                                 </tr>

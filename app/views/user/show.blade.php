@@ -80,10 +80,18 @@
 			        </tr>
 			        <tr>
 			            <th>
-			            	Public ID:
+			            	Public ID / Site:
 			            </th>
 			            <td>
-			            	{{ $user->public_id }}
+			            	<A href="//{{ $user->public_id }}.{{ Config::get('site.base_domain') }}">{{ $user->public_id }}</a>
+			            </td>
+			        </tr>
+			        <tr>
+			            <th>
+			            	Consignment
+			            </th>
+			            <td>
+			            	{{ $user->consignment }}
 			            </td>
 			        </tr>
 			        <tr>

@@ -131,12 +131,12 @@ $(document).ready(function() {
     // add tag
 	$(window).keydown(function(event) {
 		element = $('.tagger.new');
-		// if ($(element).is(':focus')) {
+		if ($(element).is(':focus')) {
 			if(event.keyCode == 13 /* enter */ || event.keyCode == 9 /* tab */ || event.keyCode == 188 /* comma */) {
 				event.preventDefault();
 				addTag(element);
 			}
-		// }
+		}
 	}); 
 	$('.addTag').click( function() {
 		addTag($(this));

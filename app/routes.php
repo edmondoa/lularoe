@@ -241,6 +241,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::post('inv/purchase', 'InventoryController@purchase');
 		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
 		Route::post('inv/cashpurchase', 'InventoryController@cashpurchase');
+		Route::post('inv/conspurchase', 'InventoryController@conspurchase');
 		#Route::post('inventories/disable', 'InventoryController@disable');
 		#Route::post('inventories/enable', 'InventoryController@enable');
 		#Route::post('inventories/delete', 'InventoryController@delete');
@@ -252,11 +253,17 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		});
         
         Route::get('tax/{amount}', 'InventoryController@getTax');
+        Route::get('discounts/{amount}', 'InventoryController@getDiscounts');
 		// opportunities
 		Route::resource('opportunities', 'OpportunityController');
 		Route::post('opportunities/disable', 'OpportunityController@disable');
 		Route::post('opportunities/enable', 'OpportunityController@enable');
 		Route::post('opportunities/delete', 'OpportunityController@delete');
+
+		// pricing
+		Route::get('pricing', function() {
+			return View::make('company.pricing');
+		});
 
 		// products
 		Route::resource('products', 'ProductController');
