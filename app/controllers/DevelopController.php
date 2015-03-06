@@ -30,10 +30,14 @@ class DevelopController extends \BaseController {
 		//exit;
 		$start = microtime (true);
 		//$response['result'] = User::find(9921)->descendants()->orderBy('pivot_level')->get();
+		//return Product::all();
 		foreach(Product::all() as $product)
 		{
 			echo"<p><strong>".$product->name." - ".$product->sku."</strong><br />";
-			echo "<img src='".DNS1D::getBarcodePNGPath($product->sku, "C128",3,75)."' ></p>";
+			//$path = DNS1D::getBarcodePNGPath($product->sku, "C128",3,75);
+			echo "<img src='".$product->barcode_image."' ></p>";
+			//$product->barcode_image=$path;
+			//$product->save();
 		}
 		//$response['result'] = User::find(9921)->ranks()->first();
 		$response['lapsed'] = round((microtime (true) - $start),5);
