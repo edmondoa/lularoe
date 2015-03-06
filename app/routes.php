@@ -259,6 +259,11 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('opportunities/enable', 'OpportunityController@enable');
 		Route::post('opportunities/delete', 'OpportunityController@delete');
 
+		// pricing
+		Route::get('pricing', function() {
+			return View::make('company.pricing');
+		});
+
 		// products
 		Route::resource('products', 'ProductController');
 		Route::post('products/disable', 'ProductController@disable');
