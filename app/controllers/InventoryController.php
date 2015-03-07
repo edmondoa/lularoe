@@ -435,8 +435,6 @@ class InventoryController extends \BaseController {
 		$o->details			= json_encode(array('orders'=>Session::get('orderdata'),'payments'=>Session::get('paymentdata')));
 		$o->save();
 
-		die('check order table!');
-/*
 		// If ordering NEW inventory
 		if (!Session::get('repsale'))
 		{
@@ -467,9 +465,11 @@ class InventoryController extends \BaseController {
 		Session::forget('repsale');
 		Session::forget('orderdata');
 		Session::forget('subtotal');
+		Session::forget('subtotal');
 		Session::forget('tax');
 		Session::forget('paidout');
-/*/
+		Session::forget('payments');
+        Session::forget('paymentdata');
 
 		return View::make('inventory.validpurchase',compact('auth','invitems'));
 	}
