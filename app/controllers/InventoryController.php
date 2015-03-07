@@ -284,11 +284,9 @@ class InventoryController extends \BaseController {
 		// Get the full order amount currently pending purchase
 		$tax = Session::get('tax');
 		$sub = Session::get('subtotal');
-		$disc = 0; // discounts
 
-		$disc = $this->getDiscounts($sub,true);
-
-		$grandTotal = floatVal($tax) + floatVal($sub - $disc);
+		// Discounts are previously calculated and store in subtotal
+		$grandTotal = floatVal($tax) + floatVal($sub);
 
 		if ($absamount > ($grandTotal - Session::get('paidout'))) 
 			$absamount = $grandTotal - Session::get('paidout');
@@ -301,23 +299,22 @@ class InventoryController extends \BaseController {
 		// Get the full order amount currently pending purchase
 		$tax = Session::get('tax');
 		$sub = Session::get('subtotal');
-		$disc = 0; // discounts
 
-		$disc = $this->getDiscounts($sub,true);
+		$grandTotal = floatVal($tax) + floatVal($sub);
 
-		$grandTotal = floatVal($tax) + floatVal($sub) - floatVal($disc);
+		$po = Session::get('paidout', 0);
+		Session::put('paidout',floatval($po) + floatval($saleAmount));
 
 		// If the sale amount is still less than the grand total
 		if (Session::get('paidout') < $grandTotal) {
 			$diffAmount = floatVal($grandTotal) - floatVal($saleAmount);
 
-			$po = Session::get('paidout', 0);
-			Session::put('paidout',floatval($po) + floatval($saleAmount));
-
 			return false; // Not done paying YET!
 		}
 		// else we are done paying
-		else return true; 
+		else  {
+			return true; 
+		}
 	}
 
 
@@ -387,6 +384,7 @@ class InventoryController extends \BaseController {
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
+
 			if (Session::get('repsale')) {
 				// Deduct item quantity from inventory
 				foreach ($invitems as $item) {
@@ -394,9 +392,45 @@ class InventoryController extends \BaseController {
 					$deduction	= json_decode(Route::dispatch($request)->getContent());
 				}
 			}
-			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+
+			return $this->finalizePurchase($cardauth, $invitems);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
+	}
+
+	public function finalizePurchase($auth, $invitems){
+		$view = View::make('inventory.validpurchase',compact('auth','invitems'));
+
+		$receipt	= $view->renderSections();
+		$receipt	= $receipt['manifest'];
+		$data		= [];
+
+		if (!Session::get('repsale'))
+		{
+			$body = preg_replace('/\s\s+/', ' ',$receipt);
+			$user = Auth::user();
+
+			$data['user']	= $user;
+			$data['body']	= $body;
+			$data['email']	= $user->email;
+			
+			// This one goes to the user
+			Mail::send('emails.standard', $data, function($body) use($user,$data) {
+				$body->to($data['email'], "{$user->first_name} {$user->last_name}")
+				->subject('Order receipt from '.Config::get('site.company_name'))
+				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+			});
+
+			// This one goes to the main warehouse
+			Mail::send('emails.invoice', $data, function($body) use($user,$data) {
+				$body->to(Config::get('site.contact_email'), "Order Warehousing")
+				->subject('Invoice From: '."{$user->first_name} {$user->last_name}")
+				->replyTo($data['email'])
+				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+			});
+		}
+
+		return View::make('inventory.validpurchase',compact('auth','invitems'));
 	}
 
 	public function cashpurchase() {
@@ -441,9 +475,11 @@ class InventoryController extends \BaseController {
 		Input::replace($ia);
 
 		if (!$cardauth->error) {
+
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
+
 			if (Session::get('repsale')) {
 				// Deduct item quantity from inventory
 				foreach ($invitems as $item) {
@@ -451,7 +487,7 @@ class InventoryController extends \BaseController {
 					$deduction	= json_decode(Route::dispatch($request)->getContent());
 				}
 			}
-			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+			return $this->finalizePurchase($cardauth, $invitems);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
 	}
@@ -516,7 +552,7 @@ class InventoryController extends \BaseController {
 					$deduction	= json_decode(Route::dispatch($request)->getContent());
 				}
 			}
-			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+			return $this->finalizePurchase($cardauth, $invitems);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth','checking'));
 	}
@@ -578,7 +614,7 @@ class InventoryController extends \BaseController {
 					$deduction	= json_decode(Route::dispatch($request)->getContent());
 				}
 			}
-			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+			return $this->finalizePurchase($cardauth, $invitems);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
 	}
