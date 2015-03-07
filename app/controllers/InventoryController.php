@@ -418,6 +418,7 @@ class InventoryController extends \BaseController {
 			}
 		}
 		$view = View::make('inventory.validpurchase',compact('auth','invitems'));
+		$view2 = View::make('inventory.validpurchase',compact('auth','invitems'));
 
 		$receipt	= $view->renderSections();
 		$receipt	= $receipt['manifest'];
@@ -463,19 +464,17 @@ class InventoryController extends \BaseController {
 		});
 
 		
-/* This happens TOO SOON!! must go in the BLADE
+		// This is what is killing the last view (foreach error)
 		Session::forget('emailto');
 		Session::forget('repsale');
 		Session::forget('orderdata');
-		Session::forget('subtotal');
 		Session::forget('subtotal');
 		Session::forget('tax');
 		Session::forget('paidout');
 		Session::forget('payments');
         Session::forget('paymentdata');
-*/
 
-		return View::make('inventory.validpurchase',compact('auth','invitems'));
+		return $view2;
 	}
 
 	public function cashpurchase() {

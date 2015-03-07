@@ -4,7 +4,7 @@
 // Session is tracking all data, I want to spit this into mongodb
 // All this data is an order.
 $tax		= Session::get('tax');
-$orders		= Session::get('orderdata');
+$orderlist	= Session::get('orderdata');
 $inittotal	= Session::get('subtotal');
 $discounts	= Session::get('discounts');
 if (!Session::get('repsale'))
@@ -58,7 +58,7 @@ if (!Session::get('repsale'))
 										<th style="Border-bottom:1px solid black;text-align:left"><h3>Price EA</h3></th>
 										<th style="Border-bottom:1px solid black;text-align:left"><h3>Total</h3></th>
 									</tr>
-			@foreach ($orders as $order)
+			@foreach ($orderlist as $order)
 
 									<tr>
 										<td>{{ $order['numOrder'] }}</td>
@@ -107,15 +107,3 @@ if (!Session::get('repsale'))
             </div>
     </div><!-- app -->
 @stop
-<?php 
-// Shut it all down!
-Session::forget('emailto');
-Session::forget('repsale');
-Session::forget('orderdata');
-Session::forget('subtotal');
-Session::forget('subtotal');
-Session::forget('tax');
-Session::forget('paidout');
-Session::forget('payments');
-Session::forget('paymentdata');
-?>
