@@ -5,6 +5,14 @@
 	// Bank info
 	if (Input::get('nuke')) {
 		Session::forget('paidout');
+        Session::forget('emailto');
+        Session::forget('repsale');
+        //Session::forget('orderdata');
+        Session::forget('subtotal');
+        Session::forget('tax');
+        Session::forget('paidout');
+        Session::forget('payments');
+        Session::forget('paymentdata');
 	}
 
 	$bi =  Auth::user()->bankinfo;
