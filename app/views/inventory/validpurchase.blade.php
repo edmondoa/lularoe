@@ -107,3 +107,15 @@ if (!Session::get('repsale'))
             </div>
     </div><!-- app -->
 @stop
+<?php 
+// Shut it all down!
+Session::forget('emailto');
+Session::forget('repsale');
+Session::forget('orderdata');
+Session::forget('subtotal');
+Session::forget('subtotal');
+Session::forget('tax');
+Session::forget('paidout');
+Session::forget('payments');
+Session::forget('paymentdata');
+?>

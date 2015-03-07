@@ -326,20 +326,21 @@ class InventoryController extends \BaseController {
 		$absamount = $this->totalCheck($absamount);
 
 		if ($cons <= 0) {
+			$cardauth = new stdClass();
 			$cardauth->status = 'No consignment is currently available to you.';
 			return View::make('inventory.invalidpurchase',compact('cardauth'));
 		}
 		
+		// If we try to pay with more cons than we have
 		if ($cons < $absamount) { 
 			// Set it to maximum $cons
 			Input::replace(array('amount'=>$cons));
 		}
 
-		// Tax
+		// Tax only on repsales not on inventory purchases
 		$tax		= $this->getTax($absamount);
 
 		// If consignment not funds available set to max amount
-
 		$invitems	= Session::get('orderdata');
 
 		$authinfo = new stdClass();
@@ -461,6 +462,8 @@ class InventoryController extends \BaseController {
 			->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 		});
 
+		
+/* This happens TOO SOON!! must go in the BLADE
 		Session::forget('emailto');
 		Session::forget('repsale');
 		Session::forget('orderdata');
@@ -470,6 +473,7 @@ class InventoryController extends \BaseController {
 		Session::forget('paidout');
 		Session::forget('payments');
         Session::forget('paymentdata');
+*/
 
 		return View::make('inventory.validpurchase',compact('auth','invitems'));
 	}
