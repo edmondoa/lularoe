@@ -38,7 +38,7 @@
             </div>
     </div><!-- app -->
 <?php 
-	Session::forget('orderdata'); 
+//	Session::forget('orderdata'); 
 	print_r(Session::all());
 ?>
 @stop
