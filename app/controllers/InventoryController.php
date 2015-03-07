@@ -337,6 +337,10 @@ class InventoryController extends \BaseController {
 			Input::replace(array('amount'=>$cons));
 		}
 
+		if (!Session::has('orderdata')) {
+			return Redirect::route('dashboard');
+		}
+
 		// Tax only on repsales not on inventory purchases
 		$tax		= $this->getTax($absamount);
 
@@ -417,8 +421,19 @@ class InventoryController extends \BaseController {
 				$deduction	= json_decode(Route::dispatch($request)->getContent());
 			}
 		}
-		$view = View::make('inventory.validpurchase',compact('auth','invitems'));
-		$view2 = View::make('inventory.validpurchase',compact('auth','invitems'));
+
+		$sessiondata = Session::all();
+		Session::forget('emailto');
+		Session::forget('repsale');
+		Session::forget('orderdata');
+		Session::forget('subtotal');
+		Session::forget('tax');
+		Session::forget('paidout');
+		Session::forget('payments');
+        Session::forget('paymentdata');
+
+		$view = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
+		$view2 = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
 
 		$receipt	= $view->renderSections();
 		$receipt	= $receipt['manifest'];
@@ -464,15 +479,6 @@ class InventoryController extends \BaseController {
 		});
 
 		
-		// This is what is killing the last view (foreach error)
-		Session::forget('emailto');
-		Session::forget('repsale');
-		Session::forget('orderdata');
-		Session::forget('subtotal');
-		Session::forget('tax');
-		Session::forget('paidout');
-		Session::forget('payments');
-        Session::forget('paymentdata');
 
 		return $view2;
 	}
@@ -488,6 +494,10 @@ class InventoryController extends \BaseController {
 		$oldInput = Input::all();
 
 		$invitems	= Session::get('orderdata');
+
+		if (!Session::has('orderdata')) {
+			return Redirect::route('dashboard');
+		}
 
 		// MATT HACKERY - Watch for changes in password on ZERO account!!
 		if (!Session::get('repsale')) {
@@ -544,6 +554,9 @@ class InventoryController extends \BaseController {
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
 
+		if (!Session::has('orderdata')) {
+			return Redirect::route('dashboard');
+		}
 
 		// MATT HACKERY - Watch for changes in password on ZERO account!!
 		if (!Session::get('repsale')) {
@@ -596,12 +609,16 @@ class InventoryController extends \BaseController {
 		// Deduct inventory, if not, ADD inventory
 		$absamount	= abs(Input::get('amount'));
 		$tax		= $this->getTax($absamount);
-		$absamount = $this->totalCheck($absamount);
+		$absamount	= $this->totalCheck($absamount);
 
 		$invitems	= Session::get('orderdata');
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
+
+		if (!Session::has('orderdata')) {
+			return Redirect::route('dashboard');
+		}
 
 		// MATT HACKERY - 
 		// Watch for changes in mwl_password

@@ -3,11 +3,12 @@
 <?php
 // Session is tracking all data, I want to spit this into mongodb
 // All this data is an order.
-$tax		= Session::get('tax');
-$orderlist	= Session::get('orderdata');
-$inittotal	= Session::get('subtotal');
-$discounts	= Session::get('discounts');
-if (!Session::get('repsale'))
+$tax		= $sessiondata['tax'];
+$orderlist	= $sessiondata['orderdata'];
+$inittotal	= $sessiondata['subtotal'];
+$discounts	= $sessiondata['discounts'];
+
+if (!$sessiondata['repsale'])
 	$shipinfo	= Auth::user()->addresses()->where('label','=','Shipping')->first();
 ?>
 <div ng-app="app" class="index">
@@ -17,7 +18,7 @@ if (!Session::get('repsale'))
 				<div class="col-lg-12 col-sm-12 col-md-12">
 					  <div class="row">
 						<div class="col-lg-8 col-sm-8 col-md-8">
-@if (Session::get('repsale')) 
+@if ($sessiondata['repsale']) 
                     <h3>Thank you!</h3>
                     <div class="well">
 						We hope you will enjoy the wonderful fashionable world of LuLaRoe!
@@ -81,22 +82,22 @@ if (!Session::get('repsale'))
 										</tr>
 									@endif
 
-									@if (Session::get('repsale') > 0)
+									@if ($sessiondata['repsale'] > 0)
 									<tr>
 										<td colspan="3" align="right"><b>Tax</b></td>
 										<td>${{ number_format($tax,2) }}</td>
 									</tr>
 									@endif
 
-									@if (Session::get('paidout') > 0)
+									@if ($sessiondata['paidout'] > 0)
 									<tr>
 										<td colspan="3"align="right"><b>Paid</b></td>
-										<td>${{number_format(Session::get('paidout',0),2)}}</td>
+										<td>${{number_format($sessiondata['paidout'],2)}}</td>
 									</tr>
 									@endif
 									<tr>
 										<td colspan="3"align="right"><b>Balance</b></td>
-										<td>${{number_format($inittotal + $tax - Session::get('paidout'),2)}}</td>
+										<td>${{number_format($inittotal + $tax - $sessiondata['paidout'],2)}}</td>
 									</tr>
 								</table>
 							</div>

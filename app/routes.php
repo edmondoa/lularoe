@@ -714,13 +714,14 @@ function addOrder($order, $key = 'orderdata') {
 	Session::put($key, $c);
 	return Session::save();
 }
+*/
 
 Route::get('testfunction', function() {
-	addOrder(['title'=>'test', 'amount'=>rand(0,100)], 'orderdata');
+	$sd = Session::all();
 	print "<pre>";
-	print_r(Session::get('orderdata'));
+	
+	print_r($sd);
 });
-*/
 
 Route::get('test-orders', function() {
 	$reps = User::all();
