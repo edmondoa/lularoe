@@ -9,9 +9,11 @@ class InventoryController extends \BaseController {
 			[		'title'		=>'Incentive Discount',
 					'repsale'	=>false,
 					'math'		=>array('op'=>'*','n'=>.05)],
+/*
 			[		'title'		=>'Super 15% Discount',
 					'repsale'	=>true,
 					'math'		=>array('op'=>'*','n'=>.15)],
+*/
 			//* Just as an example	
 			//['title'=>'$5 Bump','math'=>array('op'=>'=','n'=>5.00)]
 		);
