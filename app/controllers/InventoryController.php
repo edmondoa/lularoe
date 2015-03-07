@@ -335,7 +335,7 @@ class InventoryController extends \BaseController {
 			Input::replace(array('amount'=>$cons));
 		}
 
-		// Deduct inventory, if not, ADD inventory
+		// Tax
 		$tax		= $this->getTax($absamount);
 
 		// If consignment not funds available set to max amount
@@ -369,42 +369,75 @@ class InventoryController extends \BaseController {
 				);
 
 		
-		$ia = Input::all();
-		Input::replace($purchaseInfo);
+		//$ia = Input::all();
+		//Input::replace($purchaseInfo);
 		//$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
 		//$cardauth	= json_decode(Route::dispatch($request)->getContent());
+		//Input::replace($ia);
+
+		// Always no error on consignment with positive balance
 		$cardauth	= json_decode('{ "error":false }');
-		Input::replace($ia);
 
 		if (!$cardauth->error) {
 			$user = Auth::user();
 			$user->consignment = $user->consignment - floatval($absamount);
 			$user->save();
 
+			$cardauth	= array('error'=>false,
+								'result'=>'Approved',
+								'status'=>'Consignment',
+								'balance'=>$user->consignment,
+								'amount'=>$absamount);
+
+			$this->addPayment($cardauth);
+
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
-
-			if (Session::get('repsale')) {
-				// Deduct item quantity from inventory
-				foreach ($invitems as $item) {
-					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-					$deduction	= json_decode(Route::dispatch($request)->getContent());
-				}
-			}
-
 			return $this->finalizePurchase($cardauth, $invitems);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
 	}
 
-	public function finalizePurchase($auth, $invitems){
+	public function addPayment($order, $key = 'paymentdata') {
+		$c = Session::get($key);
+		$c[] = $order;
+		Session::put($key, $c);
+		// return Session::save();
+	}
+
+
+	public function finalizePurchase($auth, $invitems) {
+
+		if (Session::get('repsale')) {
+			// Deduct item quantity from inventory
+			foreach ($invitems as $item) {
+				$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
+				$deduction	= json_decode(Route::dispatch($request)->getContent());
+			}
+		}
 		$view = View::make('inventory.validpurchase',compact('auth','invitems'));
 
 		$receipt	= $view->renderSections();
 		$receipt	= $receipt['manifest'];
 		$data		= [];
 
+		// If the session has an emailto person
+		$data['email'] = Session::get('emailto');
+
+		// A new world order
+		$o = new Order();
+		$o->user_id			= Auth::user()->id;
+		$o->total_price		= Session::get('subtotal',0);
+		$o->total_points	= Session::get('subtotal',0);
+		$o->total_tax		= Session::get('tax',0);
+		$o->total_shipping	= Session::get('shipcost',0);
+		$o->details			= json_encode(array('orders'=>Session::get('orderdata'),'payments'=>Session::get('paymentdata')));
+		$o->save();
+
+		die('check order table!');
+/*
+		// If ordering NEW inventory
 		if (!Session::get('repsale'))
 		{
 			$body = preg_replace('/\s\s+/', ' ',$receipt);
@@ -414,13 +447,6 @@ class InventoryController extends \BaseController {
 			$data['body']	= $body;
 			$data['email']	= $user->email;
 			
-			// This one goes to the user
-			Mail::send('emails.standard', $data, function($body) use($user,$data) {
-				$body->to($data['email'], "{$user->first_name} {$user->last_name}")
-				->subject('Order receipt from '.Config::get('site.company_name'))
-				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
-			});
-
 			// This one goes to the main warehouse
 			Mail::send('emails.invoice', $data, function($body) use($user,$data) {
 				$body->to(Config::get('site.contact_email'), "Order Warehousing")
@@ -429,6 +455,21 @@ class InventoryController extends \BaseController {
 				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 			});
 		}
+
+		// This one goes to the final user
+		Mail::send('emails.standard', $data, function($body) use($user,$data) {
+			$body->to($data['email'], "{$user->first_name} {$user->last_name}")
+			->subject('Order receipt from '.Config::get('site.company_name'))
+			->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+		});
+
+		Session::forget('emailto');
+		Session::forget('repsale');
+		Session::forget('orderdata');
+		Session::forget('subtotal');
+		Session::forget('tax');
+		Session::forget('paidout');
+/*/
 
 		return View::make('inventory.validpurchase',compact('auth','invitems'));
 	}
@@ -476,16 +517,10 @@ class InventoryController extends \BaseController {
 
 		if (!$cardauth->error) {
 
+			$this->addPayment($cardauth);
+
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
-			}
-
-			if (Session::get('repsale')) {
-				// Deduct item quantity from inventory
-				foreach ($invitems as $item) {
-					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-					$deduction	= json_decode(Route::dispatch($request)->getContent());
-				}
 			}
 			return $this->finalizePurchase($cardauth, $invitems);
 		}
@@ -542,15 +577,11 @@ class InventoryController extends \BaseController {
 		Input::replace($ia);
 
 		if (!$cardauth->error) {
+
+			$this->addPayment($cardauth);
+
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
-			}
-			if (Session::get('repsale')) {
-				// Deduct item quantity from inventory
-				foreach ($invitems as $item) {
-					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-					$deduction	= json_decode(Route::dispatch($request)->getContent());
-				}
 			}
 			return $this->finalizePurchase($cardauth, $invitems);
 		}
@@ -604,16 +635,13 @@ class InventoryController extends \BaseController {
 		Input::replace($ia);
 
 		if (!$cardauth->error) {
+
+			$this->addPayment($cardauth);
+
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
-			if (Session::get('repsale')) {
-				// Deduct item quantity from inventory
-				foreach ($invitems as $item) {
-					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-					$deduction	= json_decode(Route::dispatch($request)->getContent());
-				}
-			}
+
 			return $this->finalizePurchase($cardauth, $invitems);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));

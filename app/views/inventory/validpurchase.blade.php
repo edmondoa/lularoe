@@ -106,13 +106,4 @@ if (!Session::get('repsale'))
                 </div>
             </div>
     </div><!-- app -->
-<?php 
-/*
-	Session::forget('repsale');
-	Session::forget('orderdata');
-	Session::forget('subtotal');
-	Session::forget('tax');
-	Session::forget('paidout');
-*/
-?>
 @stop

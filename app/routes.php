@@ -707,12 +707,20 @@ Route::get('test', function() {
 Route::get('test', function() {
 	return App::environment();
 });
+/*
+function addOrder($order, $key = 'orderdata') {
+	$c = Session::get($key);
+	$c[] = $order;
+	Session::put($key, $c);
+	return Session::save();
+}
 
 Route::get('testfunction', function() {
-	print '<pre>'.session_id();
-	print_r($_SERVER);
-	Die('This is television');
+	addOrder(['title'=>'test', 'amount'=>rand(0,100)], 'orderdata');
+	print "<pre>";
+	print_r(Session::get('orderdata'));
 });
+*/
 
 Route::get('test-orders', function() {
 	$reps = User::all();

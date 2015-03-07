@@ -4,6 +4,8 @@
 <?php    
 	// Bank info
 	if (Input::get('nuke')) {
+		Session::forget('payments');
+		Session::forget('paymentdata');
 		Session::forget('paidout');
 	}
 
