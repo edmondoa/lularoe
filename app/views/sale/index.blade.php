@@ -49,6 +49,18 @@
                                     <td><label>Total</label></td>
                                     <td align="right">$@{{total|number:2}}</td>
                                 </tr>
+								<tr>
+									<td align="right">Send Receipt Email</td>
+                                    <td>
+										<input type="text" name="emailto" placeholder="enter email address">
+									</td>
+								</tr>
+								<tr>	
+									<td align="right">{{ Form::label('botique','I would like more information about LuLaRoe') }}</td>
+									<td>{{ Form::checkbox('botique') }}</td>
+								</tr>
+									
+	
                                 <tr>
                                     <td colspan="2">
                                         <button type="button" class="pull-right btn btn-sm btn-success" ng-click="checkout()">Checkout</button>

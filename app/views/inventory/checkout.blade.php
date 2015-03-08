@@ -19,64 +19,68 @@
 	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
 	$consignment_bal = Auth::user()->consignment;
 
- 	$defaultAmount = $inittotal + $tax - Session::get('paidout');
+ 	$balanceAmount = $inittotal + $tax - Session::get('paidout');
 ?>
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
                 <div class="col-lg-8 col-sm-8 col-md-8">
                     <h3>Selected Inventory</h3>
-                    <div ng-if="isEmpty()">
-					  <div class="well">
-						<table class="table">
+					<h5>{{ Session::get('orderinfo.emailto') }}</h5>
+					<table class="table">
+						<thead>
 							<tr>	
 								<th style="Border-bottom:1px solid black;text-align:left"><h3>Amt</h3></th>
 								<th style="Border-bottom:1px solid black;text-align:left"><h3>Model</h3></th>
 								<th style="Border-bottom:1px solid black;text-align:left"><h3>Price EA</h3></th>
 								<th style="Border-bottom:1px solid black;text-align:left"><h3>Total</h3></th>
 							</tr>
-	@foreach ($orders as $order) 
-							
-							<tr>
+						</thead>
+						<thead>
+							@foreach ($orders as $order) 
+							<tr class="table-striped">
 								<td>{{ $order['numOrder'] }}</td>
 								<td>{{ $order['model'] }} <span class="label label-info">{{ $order['size'] }}</span></td>
 								<td>${{ number_format($order['price'],2) }}</td>
 								<td>${{ number_format(floatval($order['price']) * intval($order['numOrder']),2) }}</td>
 							</tr>
-	@endforeach
+							@endforeach
 
-                            @if (!empty($discounts))
-                                @foreach ($discounts as $discount) @if (!empty($discount['amount']))
-                                <tr>
-                                    <td>{{$discount['title']}}</td>
-                                    <td align="right">${{number_format($discount['amount'],2)}}</td>
-                                </tr>
-                                @endif @endforeach
-                                <tr>
-                                    <td>Total Discounts</td>
-                                    <td align="right">${{number_format($discounts['total'],2)}}</td>
-                                </tr>
-                            @endif
+							@if (!empty($discounts) && $discounts['total'] > 0)
+								@foreach ($discounts as $discount) @if (!empty($discount['amount']))
+								<tr>
+									<td>{{$discount['title']}}</td>
+									<td colspan="2" align="right">${{number_format($discount['amount'],2)}}</td>
+									<td></td>
+								</tr>
+								@endif @endforeach
+								<tr>
+									<td>Total Discounts</td>
+									<td colspan="2"></td>
+									<td align="right">-${{number_format($discounts['total'],2)}}</td>
+								</tr>
+							@endif
 
 							@if (Session::get('repsale') > 0)
 							<tr>
 								<td colspan="3" align="right"><b>Tax</b></td>
-								<td>${{ number_format($tax,2) }}</td>
+								<td align="right">${{ number_format($tax,2) }}</td>
 							</tr>
 							@endif
 
 							@if (Session::get('paidout') > 0)
 							<tr>
 								<td colspan="3"align="right"><b>Paid</b></td>
-								<td>${{number_format(Session::get('paidout',0),2)}}</td>
+								<td align="right">${{number_format(Session::get('paidout',0),2)}}</td>
 							</tr>
 							@endif
 							<tr>
 								<td colspan="3"align="right"><b>Balance</b></td>
-								<td>${{number_format($inittotal + $tax - Session::get('paidout'),2)}}</td>
+								<td align="right" class="{{ ($balanceAmount > 0) ? 'danger' : 'success' }}">${{number_format($balanceAmount,2)}}</td>
 							</tr>
-						</table>
-                    </div>
+						</tbody>
+					</table>
 				</div>
+			</div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12 col-md-12">
 				<h3>Payment Information</h3>
@@ -99,7 +103,7 @@
 							<div class="col-lg-12 col-sm-12 col-md-12">
 								{{ Form::open(array('url' => 'inv/cashpurchase', 'method' => 'post','name'=>'inven')) }}
 								{{ Form::label('cash', 'Cash Amount') }}
-								$<input type="text" name="amount" value="{{ $defaultAmount }}">
+								$<input type="text" name="amount" value="{{ $balanceAmount }}">
 							</div>
 						</div>
 						<div class="row">
@@ -125,8 +129,10 @@
 								<td></td>
 								<td>
 									<div class="pull-right">
-										<h4>Amount to apply to this order</h4>
-										$<input type="text" name="amount" value="{{ (($defaultAmount) < $consignment_bal) ? ($defaultAmount) : $consignment_bal }}">
+										<div>
+											<h4>Amount to apply to this order</h4>
+											$<input type="text" name="amount" value="{{ (($balanceAmount) < $consignment_bal) ? ($balanceAmount) : $consignment_bal }}">
+										</div>
 									</div>
 								</td>
 							</tr>
@@ -155,7 +161,7 @@
 							<div class="col-lg-6 col-sm-6 col-md-6"></div>
 							<div class="col-lg-6 col-sm-6 col-md-6">
 								<h4>Amount to apply to this order</h4>
-								$<input type="text" name="amount" value="{{ $defaultAmount }}">
+								$<input type="text" name="amount" value="{{ $balanceAmount }}">
 							</div>
 						</div>
 						<div class="row">
@@ -197,11 +203,12 @@
 										<td align="right"><input size="16" style="width:4em" name="cvv"></td>
 									</tr>
 									<tr>
-										<td></td>
-										<td>
+										<td colspan="2">
 											<div class="pull-right">
-												<h4>Amount to apply to this order</h4>
-												$<input type="text" name="amount" value="{{ $defaultAmount }}">
+												<div>
+													<h4>Amount to apply to this order</h4>
+													$<input type="text" name="amount" value="{{ $balanceAmount }}">
+												</div>
 											</div>
 										</td>
 									</tr>
