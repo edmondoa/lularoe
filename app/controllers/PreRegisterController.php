@@ -93,7 +93,7 @@ class PreRegisterController extends \BaseController {
         $role = Role::where('name','Rep')->first();
         //echo"<pre>"; print_r($role); echo"</pre>";
         $user->role()->associate($role);
-        $user->hasSignUp = false;
+        $user->hasSignUp = 0;
         $user->save();
 		
 		//User::create($data);
@@ -208,13 +208,13 @@ class PreRegisterController extends \BaseController {
 
 				// If they are clicking the link from the email again 
 				// And have already verified and signed up
-				if ($user->verified && $user->hasSignUp) {
-					Session::flush();
-                   	//return Redirect::to(Config::get('site.base_domain').'/dashboard');
-                   	return Redirect::to('/dashboard');
+				if ($user->verified && $user->hasSignUp == 2) {
+					Session::forget('pre-register');
+					Session::forget('previous_page_2');
+                   	return Redirect::to('/inventories');
                 }
 
-                if(!$user->verified || !$user->hasSignUp) {
+                if(!$user->verified || $user->hasSignUp != 2) {
                     $temp = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
                     
                     if($hash == $userid.'-'.$temp) {
@@ -222,7 +222,7 @@ class PreRegisterController extends \BaseController {
                         
                         $loginuser = Auth::loginUsingId($user->id);
                         
-                        if($user->hasSignUp == false){
+                        if($user->hasSignUp == 0){
                             $status = 'hasSignUp';
                         }else{
                             $status = 'existingRep';
@@ -248,7 +248,7 @@ class PreRegisterController extends \BaseController {
         $user		= User::where('id',$userid)->first();
         $sponsor	= User::where('id',$user->sponsor_id)->first();
 
-		if ($user->hasSignUp && $path == 'call_in') $path = 'buystuff';
+		if ($user->hasSignUp == 2 && $path == 'call_in') $path = 'buystuff';
 
 		// These come from the query string
 		if (View::exists('pre-register.'.$path)) 
@@ -297,10 +297,10 @@ class PreRegisterController extends \BaseController {
     public function addProduct(){
         $data = Input::all();
         
-        $rules['name'] = 'required';
-        $rules['quantity'] = 'required|numeric';
+        $rules['name']		= 'required';
+        $rules['quantity']	= 'required|numeric';
         $rules['rep_price'] = 'required|numeric';
-        $rules['size'] = 'required';
+        $rules['size']		= 'required';
         
         $validator = Validator::make($data = Input::all(), $rules);
 
@@ -322,7 +322,6 @@ class PreRegisterController extends \BaseController {
             
             $data = $product;    
         }
-        
         
         return Response::json(['status'=>$status,'message'=>$message,'data'=>$data]);
     }
