@@ -570,6 +570,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('bankinfo', 'PreRegisterController@bankinfo');
         Route::get('shipping_address', 'PreRegisterController@shippingAddressForm');
         Route::post('shipping_address', 'PreRegisterController@shippingAddress');
+        Route::get('call-in', 'PreRegisterController@CallInForm');
         Route::post('bankinfo', 'PreRegisterController@updatebankinfo');
 		Route::post('find-sponsor', 'PreRegisterController@redirect');
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
