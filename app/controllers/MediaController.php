@@ -80,16 +80,13 @@ class mediaController extends \BaseController {
 			}
 		}
 		
-		include app_path() . '/helpers/processMedia.php';
-				
 		// format checkboxes for db
 		$data['reps'] = isset($data['reps']) ? 1 : 0;
+		
+		include app_path() . '/helpers/processMedia.php';
 
 		// if role is Superadmin, Admin, or Editor, set owner id to 0
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $data['user_id'] = 0;
-		
-		// echo '<pre>'; print_r($processed_files); echo '</pre>';
-		// exit;
 		
 		// store in db and redirect
 		foreach($processed_files as $processed_file) {
@@ -112,8 +109,6 @@ class mediaController extends \BaseController {
 			return $response;
 		}
 		else {
-			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
-			else $user_id = Auth::user()->id;
 			if (count($processed_files > 1)) $word = "Assets";
 			else $word = "Asset";
 			return Redirect::route('media/user', compact('user_id'))->with('message', $word . ' saved.');
@@ -213,7 +208,6 @@ class mediaController extends \BaseController {
 	public function destroy($id)
 	{
 		Media::destroy($id);
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 		return Redirect::route('media.index')->with('message', 'Asset deleted.');
 	}
 
@@ -225,6 +219,14 @@ class mediaController extends \BaseController {
 	 */
 	public function destroyAJAX($id)
 	{
+		// delete media
+		$media = Media::find($id);
+		if (file_exists(public_path() . '/uploads/' . $media->url)) {
+			unlink(public_path() . '/uploads/' . $media->url);
+		}
+		if (file_exists(public_path() . '/uploads/' . $media->image_sm)) {
+			unlink(public_path() . '/uploads/' . $media->image_sm);
+		}
 		Media::destroy($id);
 	}
 	
