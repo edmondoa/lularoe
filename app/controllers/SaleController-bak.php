@@ -1,6 +1,6 @@
 <?php
 
-class SaleController extends \BaseController {
+class SaleControllerBak extends \BaseController {
 
 	/**
 	 * Data only
