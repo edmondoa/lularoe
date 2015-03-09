@@ -83,19 +83,36 @@
 				else $data['type'] = 'File';
 
 				// assign values to data array
-				
+				if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
+				else $user_id = Auth::user()->id;
+								
 				// for single file
-                $data['url'] = $url;
-				$data['user_id'] = Auth::user()->id;
-				if (isset($data['title'])) {
-					if ($data['title'] == '') $data['title'] = $filename . '.' . $extension;
+				if (count($files) < 1) {
+	                $data['url'] = $url;
+					$data['user_id'] = $user_id;
+					if (isset($data['title'])) {
+						if ($data['title'] == '') $data['title'] = $filename . '.' . $extension;
+					}
 				}
 				
-				// for batch upload
-                $processed_files[$index]['url'] = $url;
-				$processed_files[$index]['user_id'] = Auth::user()->id;
-				$processed_files[$index]['type'] = $data['type'];
-				$index ++;
+				// for multiple files
+				else {
+					$file_number = $index + 1;
+					if ($index < 10) $file_number = '00' . $file_number;
+					elseif ($index < 100) $file_number = '0' . $file_number;
+	                $processed_files[$index]['url'] = $url;
+					$processed_files[$index]['user_id'] = $user_id;
+					$processed_files[$index]['type'] = $data['type'];
+					if (isset($data['title'])) {
+						if ($data['title'] == '') {
+							$processed_files[$index]['title'] = $filename . '.' . $extension;
+						}
+						else $processed_files[$index]['title'] = $data['title'] . ' ' . $file_number;
+					}
+					if (isset($data['description'])) $processed_files[$index]['description'] = $data['description'];
+					$processed_files[$index]['reps'] = $data['reps'];
+					$index ++;
+				}
 			}
 
         }

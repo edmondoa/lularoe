@@ -50,6 +50,7 @@
 		                	@if ((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
 			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-upload"></i></a>
 			                    <div class="pull-left">
+			                    	<button type="button" ng-click="selectAll()" class="btn btn-default pull-left margin-right-1">Select All</button>
 			                        <div class="input-group pull-left margin-right-2">
 			                            <select class="form-control selectpicker actions">
 				                            <option value="/media/delete">Delete</option>
@@ -139,13 +140,13 @@
 	            <div class="col col-md-12">
             		<div ng-hide="val">
 	            		<ul class="tiles">
-		                    <li ng-click="show=!show; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | filter:filter | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+		                    <li ng-click="media.selected=!media.selected; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | filter:filter | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 		                        <div ng-click="checkbox()">
 		                        	<div class="options" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
 										    <span class="form-link pull-left"><i class="fa fa-trash" title="Delete" ng-click="deleteFile(media.id)"></i></span>
 										@endif
-			                        	<a target="_blank" href="/uploads/@include('_helpers.media_url')"><i class="fa fa-eye"></i></a>
+			                        	<i class="link fa fa-eye" ng-click="viewFile(media.id)"></i>
 			                        	<a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a>
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
 			                        		<a href="/media/@include('_helpers.media_id')/edit"><i class="fa fa-pencil"></i></a>
@@ -157,7 +158,7 @@
 				                        	<a href="/media/user/@include('_helpers.media_user_id')"><i class="fa fa-user"></i> <span ng-bind="media.owner"></span></a>
 			                        	</div>
 			                        @endif
-		                        	<div ng-if="show" class="selected" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)">
+		                        	<div ng-if="media.selected == true" class="selected" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)">
 		                        		<input class="bulk-check" type="hidden" name="ids[]" value="@include('_helpers.media_id')">
 		                        	</div>
 		                        	<?php // image ?>
@@ -232,6 +233,41 @@
 			$scope.hoverOff = function(media) {
 				return media.showOptions = false;
 			};
+			
+			// select all
+			$scope.selectAll = function() {
+				
+				// determine whether to select all or unselect all
+				angular.forEach($scope.media, function(media) {
+					if (media.selected == undefined || media.selected == false) {
+						select_all = true;
+					}
+					else select_all = false;
+				});
+				
+				// select all
+				if (select_all == true) {
+					angular.forEach($scope.media, function(media) {
+						media.selected = true;
+					});
+				}
+				
+				// unselect all
+				else {
+					angular.forEach($scope.media, function(media) {
+						media.selected = false;
+					});
+				}
+
+			}
+			
+			// view file
+			$scope.viewFile = function(id) {
+				alert('view file');
+				$http.get('/media/' + id).success(function(data) {
+					$('body').html(data);
+				});
+			}
 			
 			// download file
 			$scope.download = function(url) {
