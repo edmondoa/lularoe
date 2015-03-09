@@ -1,22 +1,19 @@
 <?php
 
-	// process and store media
-    if (Input::file('media') || Input::file('image')) {
-		
-        // upload and link to image
-        $filename = '';
-        if (Input::hasFile('media') || Input::file('image')) {
-        	if (Input::hasFile('media')) {
-        		$files = Input::file('media');
-				$file_type = 'media';
-			}
-			else {
-				$files = Input::file('media');
-				$file_type = 'image';
-			}
-			$index = 0;
-			$processed_files = [];
-			foreach($files as $file) {
+		// process and store media
+        if (Input::file('media') || Input::file('image')) {
+
+            // upload and link to image
+            $filename = '';
+            if (Input::hasFile('media') || Input::file('image')) {
+                if (Input::hasFile('media')) {
+                	$file_type = 'media';
+                	$file = Input::file('media');
+				}
+                if (Input::hasFile('image')) {
+                	$file_type = 'image';
+                	$file = Input::file('image');
+				}
 				
 				if (!file_exists(public_path() . '/uploads/' . date('Y') . '/' . date('m'))) {
 				    mkdir(public_path() . '/uploads/' . date('Y') . '/' . date('m'), 0755, true);
@@ -24,9 +21,14 @@
 
 				$path = date('Y') . '/' . date('m') . '/';
                 $fullPath = public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/';
+				
+				echo basename($_FILES[$file_type]["name"]);
+				exit;
+				
                 $extension = $file->getClientOriginalExtension();
 
-				$filename = basename($_FILES[$file_type]["name"][$index]);
+				// generate media name and check for existing
+				$filename = basename($_FILES[$file_type]["name"]);
 				$filename = explode('.', $filename);
 				$filename = $filename[0];
 				
@@ -83,20 +85,11 @@
 				else $data['type'] = 'File';
 
 				// assign values to data array
-				
-				// for single file
-                $data['url'] = $url;
+                $data['urls'][] = $url;
 				$data['user_id'] = Auth::user()->id;
 				if (isset($data['title'])) {
 					if ($data['title'] == '') $data['title'] = $filename . '.' . $extension;
 				}
-				
-				// for batch upload
-                $processed_files[$index]['url'] = $url;
-				$processed_files[$index]['user_id'] = Auth::user()->id;
-				$processed_files[$index]['type'] = $data['type'];
-				$index ++;
-			}
 
+            }
         }
-    }
