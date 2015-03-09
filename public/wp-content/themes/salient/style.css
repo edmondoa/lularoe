@@ -2639,7 +2639,7 @@ body.ascend #boxed #header-outer.transparent.dark-slide .cart-menu .cart-icon-wr
 }
 
 .active_texture {
-	background-image: url(img/textures/grid.png);
+	/* background-image: url(img/textures/grid.png); */
 }
 
 .swiper-slide .button {

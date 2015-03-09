@@ -570,6 +570,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('bankinfo', 'PreRegisterController@bankinfo');
         Route::get('shipping_address', 'PreRegisterController@shippingAddressForm');
         Route::post('shipping_address', 'PreRegisterController@shippingAddress');
+        Route::get('call-in', 'PreRegisterController@CallInForm');
         Route::post('bankinfo', 'PreRegisterController@updatebankinfo');
 		Route::post('find-sponsor', 'PreRegisterController@redirect');
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
@@ -714,13 +715,14 @@ function addOrder($order, $key = 'orderdata') {
 	Session::put($key, $c);
 	return Session::save();
 }
+*/
 
 Route::get('testfunction', function() {
-	addOrder(['title'=>'test', 'amount'=>rand(0,100)], 'orderdata');
+	$sd = Session::all();
 	print "<pre>";
-	print_r(Session::get('orderdata'));
+	
+	print_r($sd);
 });
-*/
 
 Route::get('test-orders', function() {
 	$reps = User::all();

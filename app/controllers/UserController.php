@@ -228,6 +228,7 @@ class userController extends \BaseController {
 			if (isset($data['phone'])) $data['phone'] = formatPhone($data['phone']);
 			$validator = Validator::make($data, $rules);
 
+
 			// We cannot allow a circular reference in hierarchy
 			if (isset($data['sponsor_id']) && $old_user_data->sponsor_id != $data['sponsor_id'])
 			{
@@ -261,6 +262,17 @@ class userController extends \BaseController {
 				$data['password'] = Hash::make($data['password']);
 			}
 			$data['email'] = strtolower($data['email']);
+
+			// Double checks on signup and consignment
+			if (!Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+				unset($data['consignment']);
+			}
+			else {
+				// This means it's been edited by an 
+				// admin user and or they are existing
+				$data['hasSignUp'] = 2; 
+			}
+
 			$user->update($data);
 			if($old_user_data->sponsor_id != $user->sponsor_id)
 			{

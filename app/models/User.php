@@ -40,6 +40,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'dob',
 		'public_id',
 		'consignment',
+		'hasSignUp',
 		'role_id',
 		'key',
 		'image',

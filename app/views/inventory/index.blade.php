@@ -36,6 +36,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2">
+										<h4 ng-show="!showCheckoutButton" class="pull-right">You must add 33 items to checkout</h4>
                                         <button type="button" ng-show="showCheckoutButton" class="pull-right btn btn-sm btn-success" ng-click="checkout()">Checkout</button>
                                         <button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
                                     </td>

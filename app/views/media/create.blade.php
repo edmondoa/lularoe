@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col col-md-12">
 			@include('_helpers.breadcrumbs')
-		    <h1 class="no-top">Upload Asset</h1>
+		    <h1 class="no-top">Upload Assets</h1>
 		</div>
 	</div>
 	<div class="row">
@@ -12,7 +12,7 @@
 		    {{ Form::open(array('url' => 'media', 'files' => true)) }}
 			    
                 <div class="form-group">
-                    <input type="file" name="media">
+                    <input type="file" name="media[]" multiple="true">
                     <!-- <small>Max Media Size: 1M</small> -->
                 </div>
                 
@@ -56,7 +56,7 @@
 	                </div>
 	            @endif
 		
-			    {{ Form::submit('Upload Asset', array('class' => 'btn btn-primary')) }}
+			    {{ Form::submit('Upload Assets', array('class' => 'btn btn-primary')) }}
 	
 		    {{ Form::close() }}
 	    </div>

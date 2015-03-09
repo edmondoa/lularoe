@@ -80,24 +80,26 @@ class mediaController extends \BaseController {
 			}
 		}
 		
-		include app_path() . '/helpers/processMedia.php';
-				
 		// format checkboxes for db
 		$data['reps'] = isset($data['reps']) ? 1 : 0;
+		
+		include app_path() . '/helpers/processMedia.php';
 
 		// if role is Superadmin, Admin, or Editor, set owner id to 0
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $data['user_id'] = 0;
 		
 		// store in db and redirect
-		$media = Media::create($data);
-		
-		// store tags
-		if (isset($data['tag_names'])) {
-			foreach($data['tag_names'] as $tag) {
-				$new_tag = Tag::create([
-					'name' => $tag
-				]);
-				$media->tags()->save($new_tag);
+		foreach($processed_files as $processed_file) {
+			$media = Media::create($processed_file);
+			
+			// store tags
+			if (isset($data['tag_names'])) {
+				foreach($data['tag_names'] as $tag) {
+					$new_tag = Tag::create([
+						'name' => $tag
+					]);
+					$media->tags()->save($new_tag);
+				}
 			}
 		}
 		
@@ -107,9 +109,9 @@ class mediaController extends \BaseController {
 			return $response;
 		}
 		else {
-			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
-			else $user_id = Auth::user()->id;
-			return Redirect::route('media/user', compact('user_id'))->with('message', 'Asset updated.');
+			if (count($processed_files > 1)) $word = "Assets";
+			else $word = "Asset";
+			return Redirect::route('media/user', compact('user_id'))->with('message', $word . ' saved.');
 		}
 
 	}
@@ -206,7 +208,6 @@ class mediaController extends \BaseController {
 	public function destroy($id)
 	{
 		Media::destroy($id);
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 		return Redirect::route('media.index')->with('message', 'Asset deleted.');
 	}
 
@@ -218,6 +219,14 @@ class mediaController extends \BaseController {
 	 */
 	public function destroyAJAX($id)
 	{
+		// delete media
+		$media = Media::find($id);
+		if (file_exists(public_path() . '/uploads/' . $media->url)) {
+			unlink(public_path() . '/uploads/' . $media->url);
+		}
+		if (file_exists(public_path() . '/uploads/' . $media->image_sm)) {
+			unlink(public_path() . '/uploads/' . $media->image_sm);
+		}
 		Media::destroy($id);
 	}
 	

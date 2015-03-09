@@ -93,7 +93,7 @@ class PreRegisterController extends \BaseController {
         $role = Role::where('name','Rep')->first();
         //echo"<pre>"; print_r($role); echo"</pre>";
         $user->role()->associate($role);
-        $user->hasSignUp = true;
+        $user->hasSignUp = 0;
         $user->save();
 		
 		//User::create($data);
@@ -103,12 +103,12 @@ class PreRegisterController extends \BaseController {
 		Event::fire('rep.create', array('rep_id' => $user->id));
 		#$loginuser = Auth::loginUsingId($user->id);
         
-        
-        $userid = $user->id;
-        $sponsorid = $user->sponsor_id;
-        $dob = $user->dob;
-        $public_id = $user->public_id;
-        $email =  $user->email;
+		// Used to create verification link
+        $userid		= $user->id;
+        $sponsorid	= $user->sponsor_id;
+        $dob		= $user->dob;
+        $public_id	= $user->public_id;
+        $email		= $user->email;
         
         $sponsor = User::where('id',$sponsorid)->first();
         Session::put('sponsor',$sponsor);
@@ -134,9 +134,9 @@ class PreRegisterController extends \BaseController {
 
 		$status = 'success';
 		$message = 'Bank info created';
-        return Response::json(['status'=>$status,'message'=>$message]);
+        return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'shipping_address']);
     }
-	
+
 	public function shippingAddress() {
 		$user = User::find(Auth::user()->id);
 		$request = Request::instance();
@@ -162,15 +162,24 @@ class PreRegisterController extends \BaseController {
 				$message = 'One or more of your adddress fields is invalid.';
 			}
 			else {
-				$user->addresses()->save($address);
+				$add = new Address();
+				$add->address_1	= $address['address_1'];
+        		$add->address_2	= $address['address_2'];
+        		$add->city		= $address['city'];
+        		$add->state		= $address['state'];
+        		$add->zip		= $address['zip'];
+
+				$user->addresses()->save($add);
 				$status = 'success';
 				$message = 'Addresses Saved';
 			}
 		}
-        return Response::json(['status'=>$status,'message'=>$message]);
+		if (Session::get('pre-register.status') == 'existingRep')
+			return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'buystuff']);
+		else
+			return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'call_in']);
     }
 
-    
     public function pending(){
         $sponsor = Session::get('sponsor');
         if(empty($sponsor)){
@@ -179,7 +188,6 @@ class PreRegisterController extends \BaseController {
         return View::make('pre-register.pending',compact('sponsor'));
     }
 
-    
     public function verifyemail($hash){
         $keywords = preg_split("/-/", $hash);
         if(!empty($keywords) && count($keywords) == 2){
@@ -190,36 +198,45 @@ class PreRegisterController extends \BaseController {
             $user = User::where('id',$userid)->first();
             $status = '';
             
-            if(!empty($user)){
-                $userid = $user->id;
-                $sponsorid = $user->sponsor_id;
-                $dob = $user->dob;
-                $email = $user->email;
-                if(!$user->verified){
+
+            if(!empty($user)) {
+                $userid		= $user->id;
+                $sponsorid	= $user->sponsor_id;
+                $sponsor	= User::where('id',$user->sponsor_id)->first();
+                $dob		= $user->dob;
+                $email		= $user->email;
+
+				// If they are clicking the link from the email again 
+				// And have already verified and signed up
+				if ($user->verified && $user->hasSignUp == 2) {
+					Session::forget('pre-register');
+					Session::forget('previous_page_2');
+                   	return Redirect::to('/inventories');
+                }
+
+                if(!$user->verified || $user->hasSignUp != 2) {
                     $temp = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
                     
-                    if($hash == $userid.'-'.$temp){
+                    if($hash == $userid.'-'.$temp) {
                         $user->verified = true;
-                        $user->save();
                         
                         $loginuser = Auth::loginUsingId($user->id);
                         
-                        if($user->hasSignUp){
+                        if($user->hasSignUp == 0){
                             $status = 'hasSignUp';
                         }else{
                             $status = 'existingRep';
                         }
-                    }else{
+
+                        $user->save();
+                    } else {
                         return View::make('errors.missing');    
                     }
-                }else{
-                    $status = 'done';
-                    //Redirect::to('/dashboard');
-                }
+                } 
                 
                 Session::put('pre-register.status',$status);
                 
-                return View::make('pre-register.main',compact('status'));
+                return View::make('pre-register.main',compact('user','status','sponsor'));
             }
         }
         
@@ -227,28 +244,17 @@ class PreRegisterController extends \BaseController {
     }
     
     public function template($path='index'){
-        $userid = Auth::user()->id;
-        $user = User::where('id',$userid)->first();
-        $sponsor = User::where('id',$user->sponsor_id)->first();
-        switch($path){
-            case 'products':
-                return View::make('pre-register.products',compact('user','sponsor'));
-                break;
-            case 'bankinfo':    
-                return View::make('pre-register.bankinfo',compact('user'));
-				break;
-            case 'shipping_address':    
-                return View::make('pre-register.shipping_address',compact('user'));
-				break;
-            default:
-                $status = Session::get('pre-register.status');
-                #if($status == 'hasSignUp'){
-                #    return View::make('pre-register.purchase_agreement',compact('user','sponsor'));
-                #}elseif($status == 'existingRep'){
-                    return View::make('pre-register.change_password',compact('user','sponsor'));    
-                #}
-                break;
-        }
+        $userid		= Auth::user()->id;
+        $user		= User::where('id',$userid)->first();
+        $sponsor	= User::where('id',$user->sponsor_id)->first();
+
+		if ($user->hasSignUp == 2 && $path == 'call_in') $path = 'buystuff';
+
+		// These come from the query string
+		if (View::exists('pre-register.'.$path)) 
+        	return View::make('pre-register.'.$path,compact('user','sponsor'));
+		else
+			return View::make('pre-register.change_password',compact('user','sponsor'));    
     }
     
     public function changePassword(){
@@ -285,16 +291,16 @@ class PreRegisterController extends \BaseController {
             $status = 'failed';
         }
         
-        return Response::json(['status'=>$status,'message'=>$message]);
+        return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'bankinfo']);
     }
     
     public function addProduct(){
         $data = Input::all();
         
-        $rules['name'] = 'required';
-        $rules['quantity'] = 'required|numeric';
+        $rules['name']		= 'required';
+        $rules['quantity']	= 'required|numeric';
         $rules['rep_price'] = 'required|numeric';
-        $rules['size'] = 'required';
+        $rules['size']		= 'required';
         
         $validator = Validator::make($data = Input::all(), $rules);
 
@@ -316,7 +322,6 @@ class PreRegisterController extends \BaseController {
             
             $data = $product;    
         }
-        
         
         return Response::json(['status'=>$status,'message'=>$message,'data'=>$data]);
     }
