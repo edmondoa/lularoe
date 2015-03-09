@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => 'no-reply@llr.controlpad.com', 'name' => Config::get('site.company_name')),
+	'from' => array('address' => 'no-reply@mylularoe.com', 'name' => Config::get('site.company_name')),
 
 	/*
 	|--------------------------------------------------------------------------
