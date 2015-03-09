@@ -12,7 +12,7 @@
 		    {{ Form::open(array('url' => 'media', 'files' => true)) }}
 			    
                 <div class="form-group">
-                    <input type="file" name="media">
+                    <input type="file" name="media[]" multiple="true">
                     <!-- <small>Max Media Size: 1M</small> -->
                 </div>
                 

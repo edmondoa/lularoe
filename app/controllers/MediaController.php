@@ -88,16 +88,21 @@ class mediaController extends \BaseController {
 		// if role is Superadmin, Admin, or Editor, set owner id to 0
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $data['user_id'] = 0;
 		
-		// store in db and redirect
-		$media = Media::create($data);
+		// echo '<pre>'; print_r($processed_files); echo '</pre>';
+		// exit;
 		
-		// store tags
-		if (isset($data['tag_names'])) {
-			foreach($data['tag_names'] as $tag) {
-				$new_tag = Tag::create([
-					'name' => $tag
-				]);
-				$media->tags()->save($new_tag);
+		// store in db and redirect
+		foreach($processed_files as $processed_file) {
+			$media = Media::create($processed_file);
+			
+			// store tags
+			if (isset($data['tag_names'])) {
+				foreach($data['tag_names'] as $tag) {
+					$new_tag = Tag::create([
+						'name' => $tag
+					]);
+					$media->tags()->save($new_tag);
+				}
 			}
 		}
 		
@@ -109,7 +114,9 @@ class mediaController extends \BaseController {
 		else {
 			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
 			else $user_id = Auth::user()->id;
-			return Redirect::route('media/user', compact('user_id'))->with('message', 'Asset updated.');
+			if (count($processed_files > 1)) $word = "Assets";
+			else $word = "Asset";
+			return Redirect::route('media/user', compact('user_id'))->with('message', $word . ' saved.');
 		}
 
 	}
