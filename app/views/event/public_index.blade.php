@@ -1,4 +1,7 @@
 @extends('layouts.public')
+@section('banner')
+    <img src="/img/Audrey_Events_Image.jpg" style="width:100%; position:relative; z-index:1000;">
+@stop
 @section('content')
 <div ng-app="app" class="index">
     <div ng-controller="uventController" class="my-controller">
