@@ -61,7 +61,8 @@ class ExternalAuthController extends \BaseController {
 		$server_output = '';
 
 		// Generates the list of items from the product table per user
-		if (!empty($mbr) && $mbr->id > 0) {
+		//if (!empty($mbr) && $mbr->id > 0) {
+		if (!empty($mbr)) {
 			$p = Product::where('user_id','=',$mbr->id)->get(array('id','name','quantity','make','model','rep_price','size','sku','image'));
 			$itemlist	= [];
 			$count		= 0;
@@ -307,7 +308,16 @@ class ExternalAuthController extends \BaseController {
 		$res = $mysqli->query($Q);
 		while($txn = $res->fetch_assoc())
 		{
-			$txn['items'] = $stub_items;
+			$ordernum = $txn['order_number'];
+			if (!isset($stub_items["".$ordernum])) 
+			{
+				$l = Ledger::where('transactionid', '=', $ordernum)->get(array('data'))->first();
+				if ($l) {
+					$stub_items["".$ordernum] = json_decode(json_decode($l->data));
+				}
+				else $stub_items["".$ordernum] = array();
+			}
+			$txn['items'] = $stub_items["".$ordernum];
 			$txns[] = $txn;
 		}	
 		$mysqli->close();
