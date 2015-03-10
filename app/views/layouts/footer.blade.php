@@ -23,6 +23,7 @@
 		{{ HTML::script('js/functions.js') }}
         {{ HTML::script('js/services.js') }}
         {{ HTML::script('js/directives/validNumberDirective.js') }}
+        {{ HTML::script('js/directives/autoCompleteDirective.js') }}
         {{ HTML::script('/js/controllers/datepickerController.js') }}
         {{ HTML::script('js/controllers.js') }}
 		{{ HTML::script('js/app.js') }}
