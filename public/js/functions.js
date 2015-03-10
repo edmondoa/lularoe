@@ -64,7 +64,10 @@ $(document).ready(function() {
     });
     
     // initialize bootstrap popovers
-    $("[data-toggle='popover']").popover({html:true, trigger:'click'});
+    $("[data-toggle='popover']").popover({
+    	html:true,
+    	trigger:'click'
+    });
     
     // delete label
     $('.form-group .label .removeContact').click(function() {

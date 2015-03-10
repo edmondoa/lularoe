@@ -61,7 +61,6 @@ class mediaController extends \BaseController {
 	 */
 	 
 	public function store() {
-
 		// validation
 		$rules = [
 			'media' => 'required|max:5000',
@@ -127,6 +126,19 @@ class mediaController extends \BaseController {
 		$media = Media::findOrFail($id);
 		$tags = $media->tags;
 		return View::make('media.show', compact('media', 'tags'));
+	}
+
+	/**
+	 * Display the specified media via ajax.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function showAJAX($id)
+	{
+		$media = Media::findOrFail($id);
+		$tags = $media->tags;
+		return View::make('media.show-ajax', compact('media', 'tags'));
 	}
 
 	/**

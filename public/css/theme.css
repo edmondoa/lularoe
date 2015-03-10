@@ -112,6 +112,7 @@ i { width:16px; } /* standardizes font awesome icons */
 .tiles li .owner { z-index:1; position:absolute; bottom:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:left; }
 .tiles li .options a, .tiles li .options span, .tiles li .owner a, .tiles li .options .link { color:white !important; cursor:pointer; }
 .tiles li .options a i, .tiles li .options span i, .tiles li .options form button { width:21px; text-align:center; }
+.tiles li .options .link:hover { text-decoration:none !important; }
 .thumb { width:50px; cursor:pointer; }
 .thumb-md { width:100px; }
 .thumb-lg { width:150px; }

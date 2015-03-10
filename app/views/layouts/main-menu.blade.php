@@ -132,10 +132,10 @@
  							<a href='/media-shared-with-reps'><i class='fa fa-th-large'></i> All Tools/Assets</a>
  						@endif
   							<a href='/media-shared-with-reps?filter=Branding'><i class='fa fa-th-large'></i> Branding</a>
- 							<a href='/media-shared-with-reps?filter=Documents'><i class='fa fa-th-large'></i> Documents</a>
- 							<a href='/media-shared-with-reps?filter=Marketing-Tools'><i class='fa fa-th-large'></i> Marketing Tools</a>
- 							<a href='/media-shared-with-reps?filter=Photo-Gallery'><i class='fa fa-th-large'></i> Photo Gallery</a>
- 							<a href='/media-shared-with-reps?filter=Training'><i class='fa fa-th-large'></i> Training</a>
+ 							<a href='/media-shared-with-reps?filter=Documents'><i class='fa fa-file'></i> Documents</a>
+ 							<a href='/media-shared-with-reps?filter=Marketing-Tools'><i class='fa fa-wrench'></i> Marketing Tools</a>
+ 							<a href='/media-shared-with-reps?filter=Photo-Gallery'><i class='fa fa-photo'></i> Photo Gallery</a>
+ 							<a href='/media-shared-with-reps?filter=Training'><i class='fa fa-graduation-cap'></i> Training</a>
  						@if (Auth::user()->hasRole(['Superadmin','Admin','Editor']))
  							<a href='/media/create'><i class='fa fa-upload'></i> Upload Tool/Asset</a>
  						@endif
