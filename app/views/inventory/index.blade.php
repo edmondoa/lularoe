@@ -9,6 +9,12 @@
                     <div class="well">
                         <table class="table">
                             <tbody>
+								@if (Auth::user()->consignment > 0)
+                                <tr>
+                                    <td>Account Balance</td>
+                                    <td align="right">${{ Auth::user()->consignment }}</td>
+                                </tr>
+								@endif
                                 <tr>
                                     <td>Subtotal</td>
                                     <td align="right">$@{{subtotal()|number:2}}</td>
