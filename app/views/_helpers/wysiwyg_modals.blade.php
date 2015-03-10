@@ -11,7 +11,6 @@
 	            </div>
 	            <div class="modal-body">
                     <div class="form-group">
-                    	<input type="hidden" name="ajax" value="1">
                         <input id="media" type="file" name="media">
                         <br>
                         <small>Max File Size: 1M</small>
@@ -58,9 +57,9 @@
 	    	e.preventDefault();
 	    	file = ($('#media:file'))[0].files[0];
 	        var form_data = new FormData();
-	        form_data.append('media', file);
+	        form_data.append('media[]', file);
 	        form_data.append('ajax', 1);
-	        if (attachment_images_count == undefined) {
+	        if (typeof attachment_images_count === 'undefined') {
 	        	var destination = ".mce-combobox.mce-last.mce-abs-layout-item input.mce-textbox.mce-placeholder";
 	        }
 	        else {
@@ -71,8 +70,9 @@
 	            url: "/upload-media",
 	            data: form_data,
 	            success: function(response) {
+	            	console.log(response);
 	                $(destination).attr("value", response.url);
-	                if (attachment_images_count != undefined) {
+	                if (typeof attachment_images_count !== 'undefined') {
 	                	var parent = $(destination).parents('.list-group-item');
 	                	$('.swappable', parent).html('<img src="' + response.url + '" class="thumb-md">');
 	                }

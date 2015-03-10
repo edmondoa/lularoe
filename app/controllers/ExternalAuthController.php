@@ -61,7 +61,8 @@ class ExternalAuthController extends \BaseController {
 		$server_output = '';
 
 		// Generates the list of items from the product table per user
-		if (!empty($mbr) && $mbr->id > 0) {
+		//if (!empty($mbr) && $mbr->id > 0) {
+		if (!empty($mbr)) {
 			$p = Product::where('user_id','=',$mbr->id)->get(array('id','name','quantity','make','model','rep_price','size','sku','image'));
 			$itemlist	= [];
 			$count		= 0;
@@ -307,7 +308,16 @@ class ExternalAuthController extends \BaseController {
 		$res = $mysqli->query($Q);
 		while($txn = $res->fetch_assoc())
 		{
-			$txn['items'] = $stub_items;
+			$ordernum = $txn['order_number'];
+			if (!isset($stub_items["".$ordernum])) 
+			{
+				$l = Ledger::where('transactionid', '=', $ordernum)->get(array('data'))->first();
+				if ($l) {
+					$stub_items["".$ordernum] = json_decode(json_decode($l->data));
+				}
+				else $stub_items["".$ordernum] = array();
+			}
+			$txn['items'] = $stub_items["".$ordernum];
 			$txns[] = $txn;
 		}	
 		$mysqli->close();
@@ -379,6 +389,9 @@ class ExternalAuthController extends \BaseController {
 	{
 		$cartdata	= Input::get('cart', $cart);
 		$endpoint	= '';
+
+		// If this is a taxless purchase such as consignment
+		if (Session::has('notax')) Input::merge(array('tax'=>0));
 
 		if 		(Input::get('cash')) 	$txtype = 'CASH';
 		elseif	(Input::get('check'))	$txtype = 'ACH';
@@ -684,6 +697,7 @@ class ExternalAuthController extends \BaseController {
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $txdata);
 
+//die(print_r($txdata,true));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 		if ($verbose)
@@ -696,9 +710,6 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		$server_output = curl_exec ($ch);
-		if (preg_match('/Unknown failure transaction was not written to database/',$server_output)) {
-			$server_output = str_replace('"Refnum',',"Refnum', $server_output);
-		}
 		$response_obj = json_decode($server_output);
 
 		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS

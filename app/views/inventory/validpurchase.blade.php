@@ -10,6 +10,7 @@ $discounts	= $sessiondata['discounts'];
 
 if (!$sessiondata['repsale'])
 	$shipinfo	= Auth::user()->addresses()->where('label','=','Shipping')->first();
+
 ?>
 <div ng-app="app" class="index">
         <div ng-controller="InventoryController" class="my-controller">
@@ -26,6 +27,7 @@ if (!$sessiondata['repsale'])
 
 @else
 @section('manifest')
+					@if (!empty($shipinfo))
                     <h3>Shipping Information</h3>
                     <div class="well">
 						<div class="row">
@@ -49,13 +51,14 @@ if (!$sessiondata['repsale'])
 							</div>
 						</div>
                     </div>
+					@endif
 @endif
 							<h3>Purchase Receipt</h3>
 							  <div class="well">
 								<table class="table">
 									<tr>
 										<th style="Border-bottom:1px solid black;text-align:left"><h3>Amt</h3></th>
-										<th style="Border-bottom:1px solid black;text-align:left"><h3>Model</h3></th>
+										<th style="Border-bottom:1px solid black;text-align:left"><h3>Item</h3></th>
 										<th style="Border-bottom:1px solid black;text-align:left"><h3>Price EA</h3></th>
 										<th style="Border-bottom:1px solid black;text-align:left"><h3>Total</h3></th>
 									</tr>
@@ -63,7 +66,7 @@ if (!$sessiondata['repsale'])
 
 									<tr>
 										<td>{{ $order['numOrder'] }}</td>
-										<td>{{ $order['model'] }} <span class="label label-info">{{ $order['size'] }}</span></td>
+										<td>{{ $order['model'] }} @if (!empty($order['size'])) <span class="label label-info">{{ $order['size'] }}</span>@endif</td>
 										<td>${{ number_format($order['price'],2) }}</td>
 										<td>${{ number_format(floatval($order['price']) * intval($order['numOrder']),2) }}</td>
 									</tr>
@@ -80,6 +83,12 @@ if (!$sessiondata['repsale'])
 											<td>Total Discounts</td>
 											<td align="right">${{number_format($discounts['total'],2)}}</td>
 										</tr>
+									@endif
+
+									@if ($sessiondata['consignment_purchase'] > 0)
+									<tr>
+										<td colspan="4" align="right"><h3>Consignment Purchase</h3></td>
+									</tr>
 									@endif
 
 									@if ($sessiondata['repsale'] > 0)

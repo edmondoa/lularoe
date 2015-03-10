@@ -423,14 +423,16 @@ class InventoryController extends \BaseController {
 		}
 
 		$sessiondata = Session::all();
-		Session::forget('emailto');
-		Session::forget('repsale');
-		Session::forget('orderdata');
-		Session::forget('subtotal');
-		Session::forget('tax');
-		Session::forget('paidout');
-		Session::forget('payments');
-        Session::forget('paymentdata');
+		$csuser 	 = '';
+
+		// This is for consignment purchase only
+		if (!empty($sessiondata['consignment_purchase'])) {
+			$consuid 				= $sessiondata['consignment_purchase'];
+			$csuser					= User::find($consuid);
+			$csuser->consignment 	+= 	$sessiondata['subtotal'];
+			$sessiondata['emailto'] = 	$csuser->email;
+			$csuser->save();
+		}
 
 		$view = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
 		$view2 = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
@@ -440,11 +442,11 @@ class InventoryController extends \BaseController {
 		$data		= [];
 
 		// If the session has an emailto person
-		$data['email'] = Session::get('emailto');
+		$data['email'] = $sessiondata['emailto'];
 
 		// A new world order
 		$o = new Order();
-		$o->user_id			= Auth::user()->id;
+		$o->user_id			= (!empty($csuser->sponsor_id)) ?  $csuser->sponsor_id : Auth::user()->id;
 		$o->total_price		= Session::get('subtotal',0);
 		$o->total_points	= Session::get('subtotal',0);
 		$o->total_tax		= Session::get('tax',0);
@@ -457,6 +459,7 @@ class InventoryController extends \BaseController {
 		{
 			$body = preg_replace('/\s\s+/', ' ',$receipt);
 			$user = Auth::user();
+			$user = (!empty($csuser->sponsor_id)) ?  $csuser : Auth::user()->id;
 
 			$data['user']	= $user;
 			$data['body']	= $body;
@@ -471,6 +474,13 @@ class InventoryController extends \BaseController {
 			});
 		}
 
+		if ($sessiondata['consignment_purchase']) {
+			// Maybe send contgrat email to their upline?
+			// If the session has an emailto person
+			$data['email'] = $csuser->email;
+			$user = $csuser;
+		}
+
 		// This one goes to the final user
 		Mail::send('emails.standard', $data, function($body) use($user,$data) {
 			$body->to($data['email'], "{$user->first_name} {$user->last_name}")
@@ -478,7 +488,14 @@ class InventoryController extends \BaseController {
 			->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 		});
 
-		
+		Session::forget('emailto');
+		Session::forget('repsale');
+		Session::forget('orderdata');
+		Session::forget('subtotal');
+		Session::forget('tax');
+		Session::forget('paidout');
+		Session::forget('payments');
+        Session::forget('paymentdata');
 
 		return $view2;
 	}
