@@ -2,7 +2,6 @@
 @section('content')
 <?php 
 	$userkey = Auth::user()->key; 
-	print_r($userkey);
 	@list($key,$timeout) = explode('|',$userkey);
 ?>
 <div ng-app="app" class="index">

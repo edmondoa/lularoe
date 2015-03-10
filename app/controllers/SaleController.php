@@ -20,6 +20,18 @@ class SaleController extends \BaseController {
 		return View::make('sale.index');
 	}
 
+	public function consignmentsale($repid)
+	{
+		Session::put('repsale', 1);
+		$user = User::where('id','=',$repid)->first();
+		return View::make('sale.consignmentsale',compact('user'));
+	}
+
+	public function consignmentpurchase()
+	{
+		die('GOT HERE');
+	}
+
 	/**
 	 * Show the form for creating a new sale
 	 *
