@@ -147,7 +147,7 @@
 										    <span class="form-link pull-left"><i class="fa fa-trash" title="Delete" ng-click="deleteFile(media.id)"></i></span>
 										@endif
 			                        	<i class="link fa fa-eye" ng-click="viewFile(media.id)"></i>
-			                        	<a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a>
+			                        	<!-- <a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a> -->
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
 			                        		<a href="/media/@include('_helpers.media_id')/edit"><i class="fa fa-pencil"></i></a>
 			                        	@endif
@@ -194,6 +194,17 @@
 	        </div><!-- row -->
         {{ Form::close() }}
     </div><!-- app -->
+@stop
+@section('modals')
+	<div id="modal" style="text-align:center;" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg" style="width:90%; text-align:left;">
+	        <div class="modal-content">
+	        	<div class="modal-body overflow-hidden">
+					<div id="ajax-content" class="pull-left"></div>
+	        	</div>
+	        </div><!-- modal-content -->
+	    </div><!-- modal-dialog -->
+	</div>
 @stop
 @section('scripts')
 <script>
@@ -263,9 +274,9 @@
 			
 			// view file
 			$scope.viewFile = function(id) {
-				alert('view file');
-				$http.get('/media/' + id).success(function(data) {
-					$('body').html(data);
+				$http.get('/media/ajax/' + id).success(function(data) {
+					$('#modal #ajax-content').html(data);
+					$('#modal').modal('toggle');
 				});
 			}
 			
@@ -313,9 +324,12 @@
 			        }
 			    }
 			}
+			
 			var filter = getUrlParameter('filter');
-			filter = filter.replace('-', ' ');
-		    $scope.filter = filter;
+			if (typeof filter !== 'undefined') {
+				filter = filter.replace('-', ' ');
+			    $scope.filter = filter;
+			}
 
 			@include('_helpers.bulk_action_checkboxes')
 			

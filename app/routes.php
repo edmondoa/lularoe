@@ -231,6 +231,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('media/disable', 'MediaController@disable');
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
+		Route::get('media/ajax/{id}', 'MediaController@showAJAX');
 		
         //inventories
         #Route::resource('inventories', 'InventoryController');
