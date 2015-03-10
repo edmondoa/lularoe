@@ -31,7 +31,7 @@
 		'contact_first_name' => 'Support',
 		'contact_last_name'  => 'LuLaRoe',
 		'rep_title'			=> 'FC',
-		'company_name' => 'LulaRoe',
+		'company_name' => 'LuLaRoe',
 		//'subdomain' => Route::getCurrentRoute()->getParameter('subdomain'),
 		'locked_subdomains' => [
 			'my',

@@ -5,7 +5,7 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>LulaRoe</title>
+		<title>LuLaRoe</title>
 		{{ HTML::style('//fonts.googleapis.com/css?family=Oswald:300,700,400') }}
 		<!--{{ HTML::style('bootstrap/css/bootstrap.min.css') }}
 		{{ HTML::style('bootstrap/css/bootstrap-theme.min.css') }}-->
