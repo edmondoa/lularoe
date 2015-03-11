@@ -38,6 +38,7 @@
         <link rel='stylesheet' href='/css/public.css'>
         {{ HTML::style('//fonts.googleapis.com/css?family=Oswald:300,700,400') }}
         <style type="text/css">
+        @yield('style');
         </style>
         <style type="text/css">
             .recentcomments a {
