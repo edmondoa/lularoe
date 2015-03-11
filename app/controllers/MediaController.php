@@ -9,7 +9,9 @@ class mediaController extends \BaseController {
 	 */
 	public function index()
 	{
-		return View::make('media.index');
+		$filter = $_GET['filter'];
+		$filter = str_replace('-', ' ', $filter);
+		return View::make('media.index', compact('filter'));
 	}
 	
 	/**
@@ -42,7 +44,11 @@ class mediaController extends \BaseController {
 	public function sharedWithReps()
 	{
 		$shared_with_reps = true;
-		return View::make('media.index', compact('shared_with_reps'));
+		if (isset($_GET['filter'])) {
+			$filter = $_GET['filter'];
+			$filter = str_replace('-', ' ', $filter);
+		}
+		return View::make('media.index', compact('shared_with_reps', 'filter'));
 	}
 
 	/**
@@ -61,7 +67,6 @@ class mediaController extends \BaseController {
 	 */
 	 
 	public function store() {
-
 		// validation
 		$rules = [
 			'media' => 'required|max:5000',
@@ -127,6 +132,19 @@ class mediaController extends \BaseController {
 		$media = Media::findOrFail($id);
 		$tags = $media->tags;
 		return View::make('media.show', compact('media', 'tags'));
+	}
+
+	/**
+	 * Display the specified media via ajax.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function showAJAX($id)
+	{
+		$media = Media::findOrFail($id);
+		$tags = $media->tags;
+		return View::make('media.show-ajax', compact('media', 'tags'));
 	}
 
 	/**

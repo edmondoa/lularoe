@@ -22,7 +22,7 @@
 		'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
 
 		'customer_service'=>'951-737-7875',
-		'company_logo' => '/img/llr-logo-minimal.png',
+		'company_logo' => '/img/llr-logo.jpg',
 		'company_logo_minimal' => '/img/llr-logo-minimal.png',
 		'preregistration_fee' => 2000.00,
 
@@ -31,7 +31,7 @@
 		'contact_first_name' => 'Support',
 		'contact_last_name'  => 'LuLaRoe',
 		'rep_title'			=> 'FC',
-		'company_name' => 'LulaRoe',
+		'company_name' => 'LuLaRoe',
 		//'subdomain' => Route::getCurrentRoute()->getParameter('subdomain'),
 		'locked_subdomains' => [
 			'my',

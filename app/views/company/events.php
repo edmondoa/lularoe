@@ -13,7 +13,7 @@
 <!--Shortcut icon-->
 
 
-<title> Events |  LulaRoe</title>
+<title> Events |  LuLaRoe</title>
 
 <link rel="alternate" type="application/rss+xml" title="{{ Config::get('site.company_name') }} &raquo; Feed" href="/feed/" />
 <link rel="alternate" type="application/rss+xml" title="{{ Config::get('site.company_name') }} &raquo; Comments Feed" href="/comments/feed/" />
@@ -87,7 +87,7 @@
 					
 					<a id="logo" href="https://my.llr.controlpad.com" >
 						
-						<img class=" dark-version" alt="LulaRoe" src="image" /> 
+						<img class=" dark-version" alt="LuLaRoe" src="image" /> 
 					</a>
 
 				</div><!--/span_3-->
@@ -402,7 +402,7 @@ Tina Wilson &#8211; San Diego, CA</p>
 				
 				<div class="col span_5">
 					
-											<p>&copy; 2014 LulaRoe.  </p>
+											<p>&copy; 2014 LuLaRoe.  </p>
 										
 				</div><!--/span_5-->
 				

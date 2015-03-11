@@ -168,6 +168,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::get('store/{id}', 'ProductController@publicShow');
 	Route::get('api/all-products', 'DataOnlyController@getAllProducts');
 
+	Route::get('sales/consignment/{id}','SaleController@consignmentsale');
+	Route::post('sales/consignment', 'SaleController@consignmentpurchase');
+
 	// sales
 	Route::resource('sales', 'SaleController');
 	Route::get('sales/create', 'SaleController@create');
@@ -231,6 +234,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('media/disable', 'MediaController@disable');
 		Route::post('media/enable', 'MediaController@enable');
 		Route::post('media/delete', 'MediaController@delete');
+		Route::get('media/ajax/{id}', 'MediaController@showAJAX');
 		
         //inventories
         #Route::resource('inventories', 'InventoryController');
@@ -644,12 +648,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	return Config::get('site');
-	Auth::user()->clearUserCache();
-	exit;
-	foreach (User::all() as $user) {
-		$user->clearUserCache();
-	}
+	phpinfo();
 });
 
 Route::get('clear-all-cache/{function}', function($function) {

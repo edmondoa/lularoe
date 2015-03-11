@@ -1,21 +1,22 @@
 <?php
-
 	// process and store media
     if (Input::file('media') || Input::file('image')) {
 		
         // upload and link to image
         $filename = '';
         if (Input::hasFile('media') || Input::file('image')) {
+			
         	if (Input::hasFile('media')) {
         		$files = Input::file('media');
 				$file_type = 'media';
 			}
 			else {
-				$files = Input::file('media');
+				$files = Input::file('image');
 				$file_type = 'image';
 			}
 			$index = 0;
 			$processed_files = [];
+			
 			foreach($files as $file) {
 				
 				if (!file_exists(public_path() . '/uploads/' . date('Y') . '/' . date('m'))) {
@@ -24,7 +25,7 @@
 
 				$path = date('Y') . '/' . date('m') . '/';
                 $fullPath = public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/';
-                $extension = $file->getClientOriginalExtension();
+                $extension = strtolower($file->getClientOriginalExtension());
 
 				$filename = basename($_FILES[$file_type]["name"][$index]);
 				$filename = explode('.', $filename);

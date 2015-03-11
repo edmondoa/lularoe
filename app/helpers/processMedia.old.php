@@ -25,7 +25,7 @@
 				echo basename($_FILES[$file_type]["name"]);
 				exit;
 				
-                $extension = $file->getClientOriginalExtension();
+                $extension = strtolower($file->getClientOriginalExtension());
 
 				// generate media name and check for existing
 				$filename = basename($_FILES[$file_type]["name"]);

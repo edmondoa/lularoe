@@ -17,7 +17,9 @@
 		        <div class="row">
 		            <div class="col-md-12">
 		                <h1 class="no-top pull-left no-pull-xs">
-		                	@if (isset($user->id))
+		                	@if (isset($filter))
+		                		{{ $filter }}
+		                	@elseif (isset($user->id))
 		                		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && Auth::user()->id != $user->id || (Auth::user()->id == 0 && $user->id == 0))
 		                			{{ $user->full_name }}'s Tools/Assets
 		                		@else
@@ -45,83 +47,95 @@
 			    	</div>
 		        </div><!-- row -->
 		        <div class="row">
-		    		<div class="col-sm-8 col-xs-12 page-actions-left">
-		                <div class="pull-left">
-		                	@if ((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-upload"></i></a>
-			                    <div class="pull-left">
-			                    	<button type="button" ng-click="selectAll()" class="btn btn-default pull-left margin-right-1">Select All</button>
-			                        <div class="input-group pull-left margin-right-2">
-			                            <select class="form-control selectpicker actions">
-				                            <option value="/media/delete">Delete</option>
-			                            	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-				                                <option value="/media/disable" selected>Disable</option>
-			                                	<option value="/media/enable">Enable</option>
-				                            @endif
-			                            </select>
-			                            <div class="input-group-btn no-width">
-			                                <button class="btn btn-default">
-			                                    <i class="fa fa-check"></i>
-			                                </button>
-			                            </div>
-			                        </div>
-			                    </div>
-			                @endif
-	                        <?php /* select file types */ ?>
-	                        <div class="pull-left margin-right-1">
-	                            <select ng-model="search.$" id="categories" class="form-control">
-	                            	<option value="">All file types</option>
-	                            	<option value="@include('_helpers.media_count_type')" ng-if="count.count > 0" ng-repeat="count in media_counts">@include('_helpers.media_count_type')s (@include('_helpers.media_count_count'))</span></option>
-	                            </select>
-	                    	</div>
-	                        <?php /* select tags */ ?>
-	                        <div class="pull-left margin-right-1">
-	                            <select ng-model="search.$" id="tags" class="form-control">
-	                            	<option value="">All tags</option>
-	                            	<option value="{{'{'.'{tag.name}'.'}'}}" ng-if="tag.count > 0" ng-repeat="tag in tags">{{'{'.'{tag.name}'.'}'}} ({{'{'.'{tag.count}'.'}'}})</span></option>
-	                            </select>
-	                    	</div>
-	                        <?php /* filter and sort files */ ?>
-	                        <div class="pull-left">
-	                        	<div class="btn-group">
-				                	<button type="button" class="btn btn-default active" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date
-				                		<span>
+		    		<div class="col-md-9 col-sm-8 col-xs-12 page-actions-left">
+	                	<div class="panel panel-default pull-left margin-right-1">
+	                		<div class="panel-heading">
+	                			<h3 class="panel-title">Actions</h3>
+	                		</div>
+	                		<div class="panel-body">
+			                	@if ((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+				                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-upload"></i></a>
+				                    <div class="pull-left">
+				                    	<button type="button" ng-click="selectAll()" class="btn btn-default pull-left margin-right-1">Select All</button>
+				                        <div class="input-group pull-left margin-right-2">
+				                            <select class="form-control selectpicker actions">
+					                            <option value="/media/delete">Delete</option>
+				                            	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+					                                <option value="/media/disable" selected>Disable</option>
+				                                	<option value="/media/enable">Enable</option>
+					                            @endif
+				                            </select>
+				                            <div class="input-group-btn no-width">
+				                                <button class="btn btn-default">
+				                                    <i class="fa fa-check"></i>
+				                                </button>
+				                            </div>
+				                        </div>
+				                    </div>
+				                @endif
+	                		</div>
+	                	</div><!-- panel -->
+	                	<div class="panel panel-default pull-left">
+	                		<div class="panel-heading">
+	                			<h3 class="panel-title">Filters</h3>
+	                		</div>
+	                		<div class="panel-body">
+		                        <?php /* select file types */ ?>
+		                        <div class="pull-left margin-right-1">
+		                            <select ng-model="search.$" id="categories" class="form-control">
+		                            	<option value="">All file types</option>
+		                            	<option value="@include('_helpers.media_count_type')" ng-if="count.count > 0" ng-repeat="count in media_counts">@include('_helpers.media_count_type')s (@include('_helpers.media_count_count'))</span></option>
+		                            </select>
+		                    	</div>
+		                        <?php /* select tags */ ?>
+		                        <div class="pull-left margin-right-1">
+		                            <select ng-model="search.$" id="tags" class="form-control">
+		                            	<option value="">All tags</option>
+		                            	<option value="{{'{'.'{tag.name}'.'}'}}" ng-if="tag.count > 0" ng-repeat="tag in tags">{{'{'.'{tag.name}'.'}'}} ({{'{'.'{tag.count}'.'}'}})</span></option>
+		                            </select>
+		                    	</div>
+		                        <?php /* filter and sort files */ ?>
+		                        <div class="pull-left">
+		                        	<div class="btn-group">
+					                	<button type="button" class="btn btn-default active" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date
+					                		<span>
+					                			<span ng-show="orderByField == 'updated_at'">
+					                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+					                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+					                			</span>
+					                		</span>
+					            		</span>
+					                	<button type="button" class="btn btn-default" ng-click="orderByField='type'; reverseSort = !reverseSort">Type
+					                		<span>
+					                			<span ng-show="orderByField == 'type'">
+					                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+					                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+					                			</span>
+					                		</span>
+					            		</span>
+					                	<button type="button" class="btn btn-default" ng-click="orderByField='title'; reverseSort = !reverseSort">Name
+					                		<span>
+					                			<span ng-show="orderByField == 'title'">
+					                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+					                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+					                			</span>
+					                		</span>
+					            		</span>
+					            	</div>
+		                        	
+		                            <!-- <select ng-model="sort" class="form-control">
+										<option class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date Modified
 				                			<span ng-show="orderByField == 'updated_at'">
 				                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 				                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
 				                			</span>
-				                		</span>
-				            		</span>
-				                	<button type="button" class="btn btn-default" ng-click="orderByField='type'; reverseSort = !reverseSort">Type
-				                		<span>
-				                			<span ng-show="orderByField == 'type'">
-				                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-				                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-				                			</span>
-				                		</span>
-				            		</span>
-				                	<button type="button" class="btn btn-default" ng-click="orderByField='title'; reverseSort = !reverseSort">Name
-				                		<span>
-				                			<span ng-show="orderByField == 'title'">
-				                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-				                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-				                			</span>
-				                		</span>
-				            		</span>
-				            	</div>
-	                        	
-	                            <!-- <select ng-model="sort" class="form-control">
-									<option class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date Modified
-			                			<span ng-show="orderByField == 'updated_at'">
-			                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-			                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-			                			</span>
-					            	</option>
-	                            </select> -->
-	                    	</div>
-		                </div>
-		        	</div>
-		        	<div class="col-sm-4 col-xs-12">
+						            	</option>
+		                            </select> -->
+		                    	</div><!-- pull-left -->
+		                	</div><!-- panel-body -->
+		                </div><!-- panel -->
+		     	 	</div><!-- col -->
+		        	<div class="col-md-3 col-sm-4 col-xs-12">
 		                <div class="pull-right">
 		                    <div class="input-group">
 		                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
@@ -147,7 +161,7 @@
 										    <span class="form-link pull-left"><i class="fa fa-trash" title="Delete" ng-click="deleteFile(media.id)"></i></span>
 										@endif
 			                        	<i class="link fa fa-eye" ng-click="viewFile(media.id)"></i>
-			                        	<a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a>
+			                        	<!-- <a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a> -->
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
 			                        		<a href="/media/@include('_helpers.media_id')/edit"><i class="fa fa-pencil"></i></a>
 			                        	@endif
@@ -194,6 +208,17 @@
 	        </div><!-- row -->
         {{ Form::close() }}
     </div><!-- app -->
+@stop
+@section('modals')
+	<div id="modal" style="text-align:center;" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg" style="width:80%; text-align:left;">
+	        <div class="modal-content">
+	        	<div class="modal-body overflow-hidden">
+					<div id="ajax-content"></div>
+	        	</div>
+	        </div><!-- modal-content -->
+	    </div><!-- modal-dialog -->
+	</div>
 @stop
 @section('scripts')
 <script>
@@ -263,9 +288,9 @@
 			
 			// view file
 			$scope.viewFile = function(id) {
-				alert('view file');
-				$http.get('/media/' + id).success(function(data) {
-					$('body').html(data);
+				$http.get('/media/ajax/' + id).success(function(data) {
+					$('#modal #ajax-content').html(data);
+					$('#modal').modal('toggle');
 				});
 			}
 			
@@ -313,9 +338,12 @@
 			        }
 			    }
 			}
+			
 			var filter = getUrlParameter('filter');
-			filter = filter.replace('-', ' ');
-		    $scope.filter = filter;
+			if (typeof filter !== 'undefined') {
+				filter = filter.replace('-', ' ');
+			    $scope.filter = filter;
+			}
 
 			@include('_helpers.bulk_action_checkboxes')
 			

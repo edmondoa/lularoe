@@ -716,16 +716,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "1.1.3",
+            "version": "1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "a85fab9a98f1f9b8ebcdbe71733f0d910e5b9adf"
+                "reference": "dcce91553e2e056857f1ea844949e9a8a71b613d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/a85fab9a98f1f9b8ebcdbe71733f0d910e5b9adf",
-                "reference": "a85fab9a98f1f9b8ebcdbe71733f0d910e5b9adf",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/dcce91553e2e056857f1ea844949e9a8a71b613d",
+                "reference": "dcce91553e2e056857f1ea844949e9a8a71b613d",
                 "shasum": ""
             },
             "require": {
@@ -770,7 +770,7 @@
                 "whoops",
                 "zf2"
             ],
-            "time": "2014-10-26 09:05:09"
+            "time": "2015-02-17 15:50:31"
         },
         {
             "name": "guzzle/guzzle",
@@ -984,16 +984,16 @@
         },
         {
             "name": "intervention/image",
-            "version": "2.1.1",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Intervention/image.git",
-                "reference": "949d4909d24f9656877ac38f8c90aecbf0a65091"
+                "reference": "572806fd083b622dd430d76c34564459596fef2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Intervention/image/zipball/949d4909d24f9656877ac38f8c90aecbf0a65091",
-                "reference": "949d4909d24f9656877ac38f8c90aecbf0a65091",
+                "url": "https://api.github.com/repos/Intervention/image/zipball/572806fd083b622dd430d76c34564459596fef2a",
+                "reference": "572806fd083b622dd430d76c34564459596fef2a",
                 "shasum": ""
             },
             "require": {
@@ -1036,7 +1036,7 @@
                 "thumbnail",
                 "watermark"
             ],
-            "time": "2015-01-29 08:44:26"
+            "time": "2015-03-09 13:03:15"
         },
         {
             "name": "ircmaxell/password-compat",

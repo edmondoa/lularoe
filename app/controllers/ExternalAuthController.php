@@ -390,6 +390,9 @@ class ExternalAuthController extends \BaseController {
 		$cartdata	= Input::get('cart', $cart);
 		$endpoint	= '';
 
+		// If this is a taxless purchase such as consignment
+		if (Session::has('notax')) Input::merge(array('tax'=>0));
+
 		if 		(Input::get('cash')) 	$txtype = 'CASH';
 		elseif	(Input::get('check'))	$txtype = 'ACH';
 		else 							$txtype = 'CARD';
@@ -694,6 +697,7 @@ class ExternalAuthController extends \BaseController {
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $txdata);
 
+//die(print_r($txdata,true));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 		if ($verbose)
@@ -706,9 +710,6 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		$server_output = curl_exec ($ch);
-		if (preg_match('/Unknown failure transaction was not written to database/',$server_output)) {
-			$server_output = str_replace('"Refnum',',"Refnum', $server_output);
-		}
 		$response_obj = json_decode($server_output);
 
 		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
