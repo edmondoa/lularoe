@@ -168,6 +168,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::get('store/{id}', 'ProductController@publicShow');
 	Route::get('api/all-products', 'DataOnlyController@getAllProducts');
 
+	Route::get('sales/consignment/{id}','SaleController@consignmentsale');
+	Route::post('sales/consignment', 'SaleController@consignmentpurchase');
+
 	// sales
 	Route::resource('sales', 'SaleController');
 	Route::get('sales/create', 'SaleController@create');
