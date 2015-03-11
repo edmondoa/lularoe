@@ -6,6 +6,7 @@
 $tax		= $sessiondata['tax'];
 $orderlist	= $sessiondata['orderdata'];
 $inittotal	= $sessiondata['subtotal'];
+$discounts	= [];
 $discounts	= $sessiondata['discounts'];
 
 if (!$sessiondata['repsale'])
@@ -85,7 +86,7 @@ if (!$sessiondata['repsale'])
 										</tr>
 									@endif
 
-									@if ($sessiondata['consignment_purchase'] > 0)
+									@if (isset($sessiondata['consignment_purchase']) && $sessiondata['consignment_purchase'] > 0)
 									<tr>
 										<td colspan="4" align="right"><h3>Consignment Purchase</h3></td>
 									</tr>

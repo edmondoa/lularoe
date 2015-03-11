@@ -9,7 +9,9 @@ class mediaController extends \BaseController {
 	 */
 	public function index()
 	{
-		return View::make('media.index');
+		$filter = $_GET['filter'];
+		$filter = str_replace('-', ' ', $filter);
+		return View::make('media.index', compact('filter'));
 	}
 	
 	/**
@@ -42,7 +44,11 @@ class mediaController extends \BaseController {
 	public function sharedWithReps()
 	{
 		$shared_with_reps = true;
-		return View::make('media.index', compact('shared_with_reps'));
+		if (isset($_GET['filter'])) {
+			$filter = $_GET['filter'];
+			$filter = str_replace('-', ' ', $filter);
+		}
+		return View::make('media.index', compact('shared_with_reps', 'filter'));
 	}
 
 	/**
