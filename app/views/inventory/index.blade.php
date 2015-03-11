@@ -86,7 +86,7 @@
                                                 </div>
                                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                                                     <div class="pull-right">
-                                                        <b>$@{{(order.numOrder * order.price) | number}}</b>
+                                                        <b>$<span ng-bind="(order.numOrder * order.price) | number:2"></span></b>
                                                     </div>
                                                 </div>
                                             </div>
@@ -114,14 +114,14 @@
                     <ul class="media-list" id="currentinventory">
                         <li class="media" dir-paginate-start="inventory in inventories | filter:search | itemsPerPage: pageSize " current-page="currentPage" total-items="countItems">
                             <a class="pull-left" href="#">
-                                <img class="media-object" src="/img/media/@{{inventory.model}}.jpg" width="100">
+                                <img class="media-object" ng-src="/img/media/@{{inventory.model}}.jpg" width="100">
                             </a>
                             <div class="media-body clearfix">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h4 class="media-heading pull-left">@{{inventory.model}}</h4>
+                                        <h4 class="media-heading pull-left"><span ng-bind="inventory.model"></span></h4>
                                         <div class="pull-right">
-                                            <span><b>$@{{inventory.price}}</b></span>
+                                            <span><b>$<span ng-bind="inventory.price"></span></b></span>
                                         </div>
                                         <div style="display:none;">
                                             <br class="clearfix"/><br/>
@@ -144,7 +144,7 @@
                                                         <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
                                                             <input ng-class="{disabled:!size.value}" style="display:none" class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
                                                         </a>
-                                                        <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}}</span><span> - </span>
+                                                        <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span ng-bind="size.key"></span><span> - </span>
                                                             <span ng-if="size.value > 1000" class="label label-info">ADD</span>
                                                             <span ng-if="size.value < 1000 && size >= 500" class="label label-warning">LIMITED STOCK</span>
                                                             <span ng-if="size.value < 500 && size.value != 0" class="label label-danger">HURRY</span>
