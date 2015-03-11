@@ -13,7 +13,7 @@
 			    
                 <div class="form-group">
                     <input type="file" name="media[]" multiple="true">
-                    <!-- <small>Max Media Size: 1M</small> -->
+                    <small>Max Total Upload Size: 200M</small>
                 </div>
                 
                 <div class="form-group">

@@ -25,7 +25,7 @@
 
 				$path = date('Y') . '/' . date('m') . '/';
                 $fullPath = public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/';
-                $extension = $file->getClientOriginalExtension();
+                $extension = strtolower($file->getClientOriginalExtension());
 
 				$filename = basename($_FILES[$file_type]["name"][$index]);
 				$filename = explode('.', $filename);

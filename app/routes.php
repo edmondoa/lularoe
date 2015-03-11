@@ -645,12 +645,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 ##############################################################################################
 
 Route::get('test-steve', function() {
-	return Config::get('site');
-	Auth::user()->clearUserCache();
-	exit;
-	foreach (User::all() as $user) {
-		$user->clearUserCache();
-	}
+	phpinfo();
 });
 
 Route::get('clear-all-cache/{function}', function($function) {
