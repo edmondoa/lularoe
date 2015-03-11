@@ -34,17 +34,12 @@
 			</div><!-- page-actions -->
 		</div><!-- col -->
 	</div><!-- row -->
-	<br>
 	<div class="row">
-		@if ($media->type == 'Image')
-			<div class="col col-xl-9 col-lg-8 col-md-6">
-				<img src="/uploads/{{ $media->url }}" class="full-image">
-				<br>
-				<br>
-			</div>
-		@endif
-		<div class="col col-xl-3 col-lg-4 col-md-6">
-		    <table class="table">
+		<div class="col col-md-12">
+			@if ($media->type == 'Image')
+				<img src="/uploads/{{ $media->url }}" class="full-image pull-left">
+			@endif
+		    <table class="table margin-left-2 margin-right-2 pull-left">
 
 		        <tr>
 		            <th>Title:</th>
