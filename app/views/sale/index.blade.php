@@ -15,16 +15,16 @@
                             <tbody>
                                 <tr>
                                     <td>Subtotal</td>
-                                    <td align="right">$@{{subtotal()|number:2}}</td>
+                                    <td align="right">$<span ng-bind="subtotal()|number:2">0.00</span></td>
                                 </tr>
 
 								<tr ng-repeat="(idx,discount) in discounts">
-									<td ng-if="discount.amount">@{{discount.title}}</td>
-									<td ng-if="discount.amount" align="right">$@{{discount.amount|number:2}}</td>
+                                    <td ng-if="discount.amount"><span ng-bind="discount.title"></span></td>
+                                    <td ng-if="discount.amount" align="right">$<span ng-bind="discount.amount|number:2">0.00</span></td>
 								</tr>   
 								<tr ng-if="discounts.total">
 									<td>Total Discounts</td>
-									<td align="right">$@{{discounts.total|number:2}}</td>
+                                    <td align="right">$<span ng-bind="discounts.total|number:2">0.00</span></td>
 								</tr>
 
 
@@ -43,11 +43,11 @@
 
                                 <tr>
                                     <td>Tax</td>
-                                    <td align="right">$@{{tax|number:2}}</td>
+                                    <td align="right">$<span ng-bind="tax|number:2">0.00</span></td>
                                 </tr>
                                 <tr>
                                     <td><label>Total</label></td>
-                                    <td align="right">$@{{total|number:2}}</td>
+                                    <td align="right">$<span ng-bind="total|number:2">0.00</span></td>
                                 </tr>
 								<tr>
 									<td align="right">Send Receipt Email</td>
@@ -70,7 +70,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <h3>Selected Items<span ng-if="countSelect()"> : @{{orders.length}}</span></h3>
+                    <h3>Selected Items<span ng-if="countSelect()"> : <span ng-bind="orders.length">0</span></span></h3>
                     <div ng-if="isEmpty()">
                         <ul class="media-list">
                             <li class="media">
@@ -88,15 +88,15 @@
                                 <div class="well clearfix" ng-repeat="(idx,order) in orders | orderBy: 'model'">
                                     <div class="row">
                                         <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
-                                            <div class="label label-info">$@{{order.price}} / @{{order.size}}</div>
-                                            <br/><img src="/img/media/@{{order.model}}.jpg" width="50" />
+                                            <div class="label label-info">$<span ng-bind="order.price"></span> / <span ng-bind="order.size"></span></div>
+                                            <br/><img ng-src="/img/media/@{{order.model}}.jpg" width="50" />
                                             <div style="width:80px">
                                                 <span class="btn btn-xs btn-success" style="display:none;" ng-click="plus(order)">+</span>
                                                 <span class="btn btn-xs btn-danger" style="display:none;" ng-click="minus(order)">-</span>
                                             </div>
                                         </div>
                                         <div class="col-lg-8 col-md-8 col-sm-9 col-xs-9">
-                                            <h4 class="media-heading"> @{{order.model}} - @{{order.size}}</h4>
+                                            <h4 class="media-heading"> <span ng-bind="order.model"></span> - <span ng-bind="order.size"></span></h4>
                                             <div class="row">
                                                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                                     <div class="input-group">
@@ -106,7 +106,7 @@
                                                 </div>
                                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                                                     <div class="pull-right">
-                                                        <b>$@{{(order.numOrder * order.price) | number}}</b>
+                                                        <b>$<span ng-bind="(order.numOrder * order.price) | number:2"></span></b>
                                                     </div>
                                                 </div>
                                             </div>
@@ -134,14 +134,14 @@
                     <ul class="media-list" id="currentinventory">
                         <li class="media" dir-paginate-start="inventory in inventories | filter:search | itemsPerPage: pageSize " current-page="currentPage" total-items="countItems">
                             <a class="pull-left" href="#">
-                                <img class="media-object" src="/img/media/@{{inventory.model}}.jpg" width="100">
+                                <img class="media-object" ng-src="/img/media/@{{inventory.model}}.jpg" width="100">
                             </a>
                             <div class="media-body clearfix">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h4 class="media-heading pull-left">@{{inventory.model}}</h4>
+                                        <h4 class="media-heading pull-left"><span ng-bind="inventory.model"></span></h4>
                                         <div class="pull-right">
-                                            <span><b>$@{{inventory.price}}</b></span>
+                                            <span><b>$<span ng-bind="inventory.price"></span></b></span>
                                         </div>
                                         <div style="display:none;">
                                             <br class="clearfix"/><br/>
@@ -163,7 +163,7 @@
                                                     <li ng-repeat="(key,size) in inventory.sizes">
                                                         <a class="pull-left" style="padding-right: 0;padding-left: 0;" href="#">
                                                         </a>
-                                                        <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span>@{{size.key}}</span><span> - </span>
+                                                        <a ng-click="toggleCheck(inventory,size)" class="pull-left" href="#"><span ng-bind="size.key"></span><span> - </span>
                                                             <input ng-class="{disabled:!size.value}" class="bulk-check" type="checkbox" style="display:none" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
                                                             <span ng-if="size.value >= 1" class="label label-info">ADD</span>
                                                         </a>
