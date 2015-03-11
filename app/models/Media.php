@@ -14,7 +14,8 @@ class Media extends \Eloquent
 	}
  
 	public function getOwnerAttribute() {
-		return User::find($this->user_id)->full_name;
+		$user = User::find($this->user_id);
+		return $user->full_name;
 	}
 
 	public function getNewRecordAttribute() {
