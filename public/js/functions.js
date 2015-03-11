@@ -1,5 +1,13 @@
 $(document).ready(function() {
     
+    // // resize image-full class
+    // function resizeFullImage() {
+		// width = $('.full-image').width();
+		// height = $('.full-image').height();
+    // $('.full-image').
+//     	
+    // };
+    
     // initialize bootstrap-select plugin
     $('.selectpicker').selectpicker();
    

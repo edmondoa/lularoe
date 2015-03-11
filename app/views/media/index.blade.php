@@ -48,33 +48,33 @@
 		        </div><!-- row -->
 		        <div class="row">
 		    		<div class="col-md-9 col-sm-8 col-xs-12 page-actions-left">
-	                	<div class="panel panel-default pull-left margin-right-1">
-	                		<div class="panel-heading">
-	                			<h3 class="panel-title">Actions</h3>
-	                		</div>
-	                		<div class="panel-body">
-			                	@if ((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-				                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-upload"></i></a>
-				                    <div class="pull-left">
-				                    	<button type="button" ng-click="selectAll()" class="btn btn-default pull-left margin-right-1">Select All</button>
-				                        <div class="input-group pull-left margin-right-2">
-				                            <select class="form-control selectpicker actions">
-					                            <option value="/media/delete">Delete</option>
-				                            	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-					                                <option value="/media/disable" selected>Disable</option>
-				                                	<option value="/media/enable">Enable</option>
-					                            @endif
-				                            </select>
-				                            <div class="input-group-btn no-width">
-				                                <button class="btn btn-default">
-				                                    <i class="fa fa-check"></i>
-				                                </button>
-				                            </div>
-				                        </div>
-				                    </div>
-				                @endif
-	                		</div>
-	                	</div><!-- panel -->
+		    			@if ((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+		                	<div class="panel panel-default pull-left margin-right-1">
+		                		<div class="panel-heading">
+		                			<h3 class="panel-title">Actions</h3>
+		                		</div>
+		                		<div class="panel-body">
+					                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-upload"></i></a>
+					                    <div class="pull-left">
+					                    	<button type="button" ng-click="selectAll()" class="btn btn-default pull-left margin-right-1">Select All</button>
+					                        <div class="input-group pull-left margin-right-2">
+					                            <select class="form-control selectpicker actions">
+						                            <option value="/media/delete">Delete</option>
+					                            	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+						                                <option value="/media/disable" selected>Disable</option>
+					                                	<option value="/media/enable">Enable</option>
+						                            @endif
+					                            </select>
+					                            <div class="input-group-btn no-width">
+					                                <button class="btn btn-default">
+					                                    <i class="fa fa-check"></i>
+					                                </button>
+					                            </div>
+					                        </div>
+					                    </div>
+		                		</div>
+		                	</div><!-- panel -->
+	                	@endif
 	                	<div class="panel panel-default pull-left">
 	                		<div class="panel-heading">
 	                			<h3 class="panel-title">Filters</h3>
@@ -156,7 +156,7 @@
 	            		<ul class="tiles">
 		                    <li ng-click="media.selected=!media.selected; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | filter:filter | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 		                        <div ng-click="checkbox()">
-		                        	<div class="options" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
+		                        	<div class="options" ng-click="$event.stopPropagation();" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
 										    <span class="form-link pull-left"><i class="fa fa-trash" title="Delete" ng-click="deleteFile(media.id)"></i></span>
 										@endif
@@ -210,8 +210,8 @@
     </div><!-- app -->
 @stop
 @section('modals')
-	<div id="modal" style="text-align:center;" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	    <div class="modal-dialog modal-lg" style="width:80%; text-align:left;">
+	<div id="modal" class="modal fade align-center" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg align-left inline-block" style="width:auto !important; max-width:90%;">
 	        <div class="modal-content">
 	        	<div class="modal-body overflow-hidden">
 					<div id="ajax-content"></div>
@@ -247,6 +247,7 @@
 		?>
 		
 		$http.get('{{ $media_url }}').success(function(media) {
+			
 			$scope.media = media;
 			// hide if object empty
 			$scope.val = "";
