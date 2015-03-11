@@ -106,8 +106,20 @@ try {
         
         $http.get(path).success(function(v) {
             shared.updateLocalCart();
+            var b = new RegExp('Sloan');
             for(var i in v){
-                $scope.inventories.push(v[i]);    
+                var isInsideInventory = [];
+                isInsideInventory = $scope.inventories.filter(function(inventory){
+                    return b.test(inventory.model);
+                });
+
+                if(isInsideInventory.length == 0){
+                    $scope.inventories.push(v[i]);        
+                }
+                if(isInsideInventory.length == 1){
+                    $scope.inventories.splice(i-1,0,v[i]);
+                }
+                
             }
             $scope.countItems = $scope.inventories.length;
             $scope.pageSize = $scope.inventories.length;
@@ -115,10 +127,22 @@ try {
             angular.forEach($scope.inventories, function(inventory){
                  inventory.sizes = [];   
                  inventory.doNag = false;   
-                 inventory.numOrder = 1;   
-                 angular.forEach(inventory.quantities, function(v, i){
-                       inventory.sizes.push({checked:false,key:i,value:v});                       
-                 });   
+                 inventory.numOrder = 1; 
+                 var b = new RegExp("Kid's Leggings");
+                 var tst = b.test(inventory.model);
+                 if(!tst){  
+                     angular.forEach(inventory.quantities, function(v, i){
+                           inventory.sizes.push({checked:false,key:i,value:v});                       
+                     });   
+                 }else{
+                     angular.forEach(inventory.quantities, function(v, i){
+                         if(!inventory.sizes.length){
+                             inventory.sizes.push({checked:false,key:i,value:v});    
+                         }else{
+                             inventory.sizes.unshift({checked:false,key:i,value:v});
+                         }
+                     });
+                 }
             });
         });
         
