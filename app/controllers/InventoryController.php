@@ -325,8 +325,6 @@ class InventoryController extends \BaseController {
 		$absamount	= abs(Input::get('amount'));
 		$absamount = $this->totalCheck($absamount);
 
-print "GOT HERE";
-die($cons);
 		if ($cons <= 0) {
 			$cardauth = new stdClass();
 			$cardauth->status = 'No consignment is currently available to you.';
