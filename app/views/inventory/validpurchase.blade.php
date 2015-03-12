@@ -6,8 +6,7 @@
 $tax		= $sessiondata['tax'];
 $orderlist	= $sessiondata['orderdata'];
 $inittotal	= $sessiondata['subtotal'];
-$discounts	= [];
-$discounts	= $sessiondata['discounts'];
+$discounts  = isset($sessiondata['discounts']) ? $sessiondata['discounts'] : [];
 
 if (!$sessiondata['repsale'])
 	$shipinfo	= Auth::user()->addresses()->where('label','=','Shipping')->first();
