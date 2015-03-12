@@ -325,6 +325,8 @@ class InventoryController extends \BaseController {
 		$absamount	= abs(Input::get('amount'));
 		$absamount = $this->totalCheck($absamount);
 
+print "GOT HERE";
+die($cons);
 		if ($cons <= 0) {
 			$cardauth = new stdClass();
 			$cardauth->status = 'No consignment is currently available to you.';
@@ -442,7 +444,7 @@ class InventoryController extends \BaseController {
 		$data		= [];
 
 		// If the session has an emailto person
-		$data['email'] = $sessiondata['emailto'];
+		$data['email'] = isset($sessiondata['emailto']) ? $sessiondata['emailto'] : Auth::user()->email;
 
 		// A new world order
 		$o = new Order();
@@ -474,7 +476,7 @@ class InventoryController extends \BaseController {
 			});
 		}
 
-		if ($sessiondata['consignment_purchase']) {
+		if (isset($sessiondata['consignment_purchase'])) {
 			// Maybe send contgrat email to their upline?
 			// If the session has an emailto person
 			$data['email'] = $csuser->email;

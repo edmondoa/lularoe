@@ -88,15 +88,15 @@
 		    
 			    <div class="form-group dropdown" ng-class="check_sponsor()">
 			        {{ Form::label('sponsor_id', 'Sponsor Id') }}
-                    {{ Form::text('sponsor_id', null, array('ng-model'=>'sponsor','option'=>'users','item'=>'sponsor','class' => 'form-control autoComplete dropdown-toggle','url'=>'/api/search-user/','id'=>'dropdownMenu1','data-toggle'=>'dropdown','aria-expanded'=>'true')) }}
+                    {{ Form::text('sponsor_id', null, array('ng-init'=>'sponsor="'.$user->sponsor_id.'"','ng-model'=>'sponsor','option'=>'users','item'=>'sponsor','class' => 'form-control autoComplete dropdown-toggle','url'=>'/api/search-user/','id'=>'dropdownMenu1','data-toggle'=>'dropdown','aria-expanded'=>'true')) }}
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" >
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="update_sponsor(user)"  ng-repeat="user in users">@{{user.name}}</a></li>
                     </ul>
 			    </div>
 			    
-                <div class="form-group" ng-show="showName()">
+                <div class="form-group" ng-show="showSponsorName">
                     {{ Form::label('sponsor_name', 'Sponsor Name') }}
-                    <div>@{{sponsor_name}}</div>
+                    <div><span ng-init="sponsor_name='{{$sponsor_name}}'" ng-bind="sponsor_name"></span></div>
                 </div>
 			    
 			    <!-- <div class="form-group">
