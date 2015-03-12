@@ -117,8 +117,7 @@
                             			</span>
                             		</span>
                         		</th>
-                        		
-                        		@if (Auth::user()->hasRole(['Superadmin','Admin']))
+                        		@if (Auth::check() && Auth::user()->hasRole(['Superadmin','Admin']))
 	                            	<th class="link hidable-sm" ng-click="orderByField='sponsor_name'; reverseSort = !reverseSort">Sponsor
 	                            		<span>
 	                            			<span ng-show="orderByField == 'sponsor_name'">
@@ -174,7 +173,7 @@
 					                <span ng-bind="lead.dob"></span>
 					            </td>
 					            
-					            @if (Auth::user()->hasRole(['Superadmin','Admin']))
+					            @if (Auth::check() && Auth::user()->hasRole(['Superadmin','Admin']))
 						            <td class="hidable-sm">
 						                <span ng-bind="lead.sponsor_name"></span>
 						            </td>
@@ -216,17 +215,19 @@
 	
 	function LeadController($scope, $http) {
 	
-		<?php
-			if (Auth::user()->hasRole(['Superadmin', 'Admin'])) $object = 'all-leads';
+		@if (Auth::check())
+            if(Auth::user()->hasRole(['Superadmin', 'Admin'])) $object = 'all-leads';
 			else $object = 'all-leads-by-rep/' . Auth::user()->id;
-		?>
+            
+            $http.get('/api/{{ $object }}').success(function(leads) {
+                $scope.leads = leads;
+                console.log($scope.leads);
+                @include('_helpers.bulk_action_checkboxes')
+                
+            });
+        @endif;
 	
-		$http.get('/api/{{ $object }}').success(function(leads) {
-			$scope.leads = leads;
-			console.log($scope.leads);
-			@include('_helpers.bulk_action_checkboxes')
-			
-		});
+		
 		
 		$scope.currentPage = 1;
 		$scope.pageSize = 10;
