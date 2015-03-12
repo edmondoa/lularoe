@@ -753,16 +753,18 @@ if(is_file(app_path().'/controllers/Server.php')){
 Route::get('sendonboardmail/{id}', function($id) {
 	print "<pre>";
 	$user  = User::find($id);
-	$user->remember_token = null;
+	$user->remember_token	= null;
+	$user->hasSignup		= 1;
+	$user->verified			= 1;
 	$user->save();
 
-	$userid = $user->id;
-	$sponsorid = $user->sponsor_id;
-	$dob = $user->dob;
+	$userid		= $user->id;
+	$sponsorid	= $user->sponsor_id;
+	$dob		= $user->dob;
 
 	// needs to be regular user id
-	$public_id = $user->id;
-	$email =  $user->email;
+	$public_id	= $user->id;
+	$email		=  $user->email;
 
 	$sponsor = User::where('id',$sponsorid)->first();
 	Session::put('sponsor',$sponsor);

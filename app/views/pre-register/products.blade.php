@@ -2,15 +2,15 @@
     <div class="col-12">
         <center>
             <h2>Hello there, {{$user->first_name}}!</h2>
-            <p class="onboarding">It's now time to add the products you have with you.<br/>
+            <p class="onboarding">It's now time to add the inventory you have with you.<br/>
             </p>
         </center>
         <div class="row">
             <div class="col-md-8 col-lg-offset-2">
                     <div class="clearfix">
-                        <h3 class="pull-left no-pull-xs">Added Products</h3>
+                        <h3 class="pull-left no-pull-xs">Added Inventory</h3>
                         <div class="pull-right">
-                            <a ng-click="addProduct()" class="btn btn-primary pull-left margin-right-1" title="Add Products" href="javascript:void(0);"><i class="fa fa-plus"></i> ADD PRODUCT</a>
+                            <a ng-click="addProduct()" class="btn btn-primary pull-left margin-right-1" title="Add Inventory" href="javascript:void(0);"><i class="fa fa-plus"></i> ADD INVENTORY</a>
                         </div>
                         <div class="input-group pull-right no-pull-xs width-xs">
                         </div>
@@ -53,9 +53,8 @@
 											    </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <span class="pull-right">&nbsp;</span>
-                                            <span class="pull-right" ng-show="editableForm.$visible">
+                                        <div class="row" ng-show="editableForm.$visible">
+                                            <span class="pull-right">
                                                 <button type="submit" class="btn btn-info" ng-disabled="editableForm.$waiting">
                                                     <i class="fa fa-save"></i> Save
                                                 </button>
@@ -98,11 +97,11 @@
         <div class="col col-xl-3 col-lg-6 col-lg-offset-3 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-12">
             
             <div class="clearfix pull-left">
-                <span ng-if="checkProductMsg() && !productForm.status" class="well alert alert-success">@{{productForm.message}}</span>
-                <span ng-if="checkProductMsg()  && productForm.status" class="well alert alert-danger">@{{productForm.message}}</span>
+                <blockquote ng-if="checkProductMsg() && !productForm.status" class="well alert alert-success">@{{productForm.message}}</blockquote>
+                <blockquote ng-if="checkProductMsg()  && productForm.status" class="well alert alert-danger">@{{productForm.message}}</blockquote>
             </div>
-			<a ng-if="!checkProductMsg()" ng-click="addProduct()" class="btn btn-primary pull-left margin-left-1" title="Add Products" href="javascript:void(0);"><i class="fa fa-plus"></i> ADD MORE</a>
-			<button type="button" class="pull-right btn btn-sm btn-success" ng-click="goto('/bankinfo')">Next</button>
+			<a ng-if="!checkProductMsg()" ng-click="addProduct()" class="btn btn-primary pull-left margin-left-1" title="Add Inventory" href="javascript:void(0);"><i class="fa fa-plus"></i> ADD MORE</a>
+			<button type="button" class="pull-right btn btn-sm btn-success" ng-click="goto('/buystuff')">Done</button>
         </div>
     </div>
 </div>

@@ -175,7 +175,7 @@ class PreRegisterController extends \BaseController {
 			}
 		}
 		if (Session::get('pre-register.status') == 'existingRep')
-			return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'buystuff']);
+			return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'products']);
 		else
 			return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'call_in']);
     }
