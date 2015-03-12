@@ -60,12 +60,12 @@
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Rep'])))
  					<a href="javascript:void(0)" data-href="/parties" class='list-group-item' data-toggle="popover" data-content="
- 						<a target='_blank' href='/public-parties'><i class='fa fa-globe'></i> Public Popup-Boutiques Page</a>
- 						<a href='/parties'><i class='fa fa-users'></i> Upcoming Popup-Boutiques</a>
- 						<a href='/past-parties'><i class='fa fa-reply'></i> Past Popup-Boutiques</a>
- 						<a href='/parties/create'><i class='fa fa-plus'></i> New Popup-Boutique</a>
+ 						<a target='_blank' href='/public-parties'><i class='fa fa-globe'></i> Public Pop-Up Boutiques Page</a>
+ 						<a href='/parties'><i class='fa fa-users'></i> Upcoming Pop-Up Boutiques</a>
+ 						<a href='/past-parties'><i class='fa fa-reply'></i> Past Pop-Up Boutiques</a>
+ 						<a href='/parties/create'><i class='fa fa-plus'></i> New Pop-Up Boutique</a>
  					">
- 						<i class="fa fa-users"></i> <span class="text">Popup-Boutiques</span>
+ 						<i class="fa fa-users"></i> <span class="text">Pop-Up Boutiques</span>
  					</a>
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor','Rep'])))
