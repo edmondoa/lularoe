@@ -42,7 +42,7 @@
 	    <div class="form-group">
 	        {{ Form::label('public_id', 'Public ID') }}
 	        {{ Form::text('public_id', Input::old('public_id'), array('class' => 'form-control')) }}
-	        <small>This will be used in the URL of your public website. Example for John Doe: "jdoe"</small>
+	        <small>This will be a personalized domain name where you can display announcements, parties and more.</small>
 	    </div>
 	    
 		<!-- <div class="form-group">
@@ -125,9 +125,9 @@
 	        changeMonth: true,
 	        changeYear: true,
 	        yearRange: '1900:' + firstYear,
-	        dateFormat: 'yy-mm-dd',
+	        dateFormat: 'yyyy-mm-dd',
 	        //timeFormat: 'hh:mm tt'
-	    });
+	    })yy;
 	    jQuery.extend(jQuery.datepicker,{_checkOffset:function(inst,offset,isFixed){return offset}});
 	</script>
 @stop
