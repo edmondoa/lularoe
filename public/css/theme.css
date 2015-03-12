@@ -44,6 +44,7 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
 }
 
 /* global classes */
+.break-word { word-wrap:break-word; }
 .font-size-2 { font-size:1.25em; }
 .font-size-3 { font-size:1.5em; }
 .font-size-4 { font-size:1.75em; }
@@ -59,7 +60,7 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
 .align-center { text-align:center; }
 .auto { width:auto; }
 .full { width:100%; }
-.full-image { width:auto; max-width:800px !important; height:auto; max-height:600px !important; display:block; margin:0 auto; }
+.full-image { width:auto; max-width:1000px; height:auto; max-height:600px; }
 .inline-block { display:inline-block !important; }
 .width-auto { width:auto; }
 .width-full { width:100% !important; }
@@ -113,7 +114,7 @@ i { width:16px; } /* standardizes font awesome icons */
 .tiles li .options { z-index:1; position:absolute; top:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:right; }
 .tiles li .owner { z-index:1; position:absolute; bottom:0; right:0; left:0; background:rgba(0,0,0,.5); padding:10px 15px; text-align:left; }
 .tiles li .options a, .tiles li .options span, .tiles li .owner a, .tiles li .options .link { color:white !important; cursor:pointer; }
-.tiles li .options a i, .tiles li .options span i, .tiles li .options form button { width:21px; text-align:center; }
+.tiles li .options a i, .tiles li .options span i, .tiles li .options form button, .tiles li .options i { width:21px; text-align:center; }
 .tiles li .options .link:hover { text-decoration:none !important; }
 .thumb { width:50px; cursor:pointer; }
 .thumb-md { width:100px; }
@@ -157,7 +158,7 @@ i { width:16px; } /* standardizes font awesome icons */
 .label { color:gray !important; }
 .label .fa-times { cursor:pointer; }
 .table tbody th { text-align:right; }
-
+.table tbody tr:first-child th, .table tbody tr:first-child td { border-top:0; }
 .btn { font-family:Arial, Helvetica, sans-serif !important; font-weight:bold !important; }
 
 
@@ -197,6 +198,7 @@ i { width:16px; } /* standardizes font awesome icons */
     .layout-gray #container { padding:40px 20px 20px 20px !important; }
     .no-pull-xs { float:none !important; }
     .page-actions-left { margin-bottom:1em !important; }
+    .full-image { width:100% !important; height:auto !important; max-height:none !important; }
 }
 @media(max-width:991px) {
     .hidable-sm { display:none; }

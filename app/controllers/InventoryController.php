@@ -325,8 +325,6 @@ class InventoryController extends \BaseController {
 		$absamount	= abs(Input::get('amount'));
 		$absamount = $this->totalCheck($absamount);
 
-print "GOT HERE";
-die($cons);
 		if ($cons <= 0) {
 			$cardauth = new stdClass();
 			$cardauth->status = 'No consignment is currently available to you.';
@@ -461,7 +459,7 @@ die($cons);
 		{
 			$body = preg_replace('/\s\s+/', ' ',$receipt);
 			$user = Auth::user();
-			$user = (!empty($csuser->sponsor_id)) ?  $csuser : Auth::user()->id;
+			$user = (!empty($csuser->sponsor_id)) ?  $csuser : Auth::user();
 
 			$data['user']	= $user;
 			$data['body']	= $body;
@@ -498,6 +496,8 @@ die($cons);
 		Session::forget('paidout');
 		Session::forget('payments');
         Session::forget('paymentdata');
+		Session::forget('previous_page_2');
+		Session::put('previous_page_2','/dashboard');
 
 		return $view2;
 	}

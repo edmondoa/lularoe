@@ -30,6 +30,10 @@
 				<button class="btn btn-default">
 					<a href="/uploads/{{ $media->url }}" download="/uploads/{{ $media->url }}"><i class="fa fa-download"></i> Download</a>
 				</button>
+				<div class="btn-group">
+					<button type="button" class="changeFile btn btn-default btn-group" data-direction="backward"><i class="fa fa-arrow-left"></i></button>
+					<button type="button" class="changeFile btn btn-default btn-group" data-direction="forward"><i class="fa fa-arrow-right"></i></button>
+				</div>
 	            <button type="button" class="btn btn-default pull-right" data-dismiss="modal"><i class="fa fa-times"></i></button>
 			</div><!-- page-actions -->
 		</div><!-- col -->
@@ -43,13 +47,13 @@
 
 		        <tr>
 		            <th>Title:</th>
-		            <td>{{ $media->title }}</td>
+		            <td class="break-word">{{ $media->title }}</td>
 		        </tr>
 		        
 		        @if ($media->description !== '')
 			        <tr>
 			            <th>Description:</th>
-			            <td>{{ $media->description }}</td>
+			            <td class="break-word">{{ $media->description }}</td>
 			        </tr>
 		        @endif
 		        
@@ -60,18 +64,18 @@
 		        
 		        <tr>
 		            <th>URL:</th>
-		            <td><a href="/uploads/{{ $media->url }}" title="{{ $media->url }}">{{ url() }}/uploads/{{ substr($media->url, 0, 20) . '...' }}</a></td>
+		            <td class="break-word"><a class="break-word" href="/uploads/{{ $media->url }}" title="{{ $media->url }}">{{ url() }}/uploads/{{ substr($media->url, 0, 20) . '...' }}</a></td>
 		        </tr>
 		        
 		        <tr>
 		            <th>Owner:</th>
-		            <td><a href='/users/{{ $media->user_id }}'>{{ $media->owner }}</a></td>
+		            <td class="break-word"><a href='/users/{{ $media->user_id }}'>{{ $media->owner }}</a></td>
 		        </tr>
 
 		        @if (count($tags) > 0)
 			        <tr>
 			        	<th>Tags:</th>
-			            <td class="tag-list">
+			            <td class="tag-list break-word">
 			            	@foreach($tags as $tag)
 				                <span class="label label-default">
 				                	{{ $tag->name }}
@@ -83,8 +87,8 @@
 		        
 		        @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && $media->reps)
 			        <tr>
-			            <th>Shared with FC's:</th>
-			            <td><i class="fa fa-check"></i></td>
+			            <th>Shared:</th>
+			            <td class="break-word"><i class="fa fa-check"></i></td>
 			        </tr>
 		        @endif
 		        

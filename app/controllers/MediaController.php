@@ -9,8 +9,10 @@ class mediaController extends \BaseController {
 	 */
 	public function index()
 	{
-		$filter = $_GET['filter'];
-		$filter = str_replace('-', ' ', $filter);
+		if (isset($_GET['filter'])) {
+			$filter = $_GET['filter'];
+			$filter = str_replace('-', ' ', $filter);
+		}
 		return View::make('media.index', compact('filter'));
 	}
 	
@@ -226,7 +228,7 @@ class mediaController extends \BaseController {
 	public function destroy($id)
 	{
 		Media::destroy($id);
-		return Redirect::route('media.index')->with('message', 'Asset deleted.');
+		return Redirect::back()->with('message', 'Asset deleted.');
 	}
 
 	/**
@@ -266,9 +268,8 @@ class mediaController extends \BaseController {
 				}
 				Media::destroy($id);
 			}
-			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'Assets deleted.');
+				return Redirect::back()->with('message', 'Assets deleted.');
 			}
 			else {
 				return Redirect::back()->with('message', 'Asset deleted.');
@@ -287,9 +288,8 @@ class mediaController extends \BaseController {
 			foreach (Input::get('ids') as $id) {
 				Media::find($id)->update(['disabled' => 1]);	
 			}
-			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'Asset disabled.');
+				return Redirect::back()->with('message', 'Asset disabled.');
 			}
 			else {
 				return Redirect::back()->with('message', 'Asset disabled.');
@@ -308,9 +308,8 @@ class mediaController extends \BaseController {
 			foreach (Input::get('ids') as $id) {
 				Media::find($id)->update(['disabled' => 0]);	
 			}
-			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'Asset enabled.');
+				return Redirect::back()->with('message', 'Asset enabled.');
 			}
 			else {
 				return Redirect::back()->with('message', 'Asset enabled.');

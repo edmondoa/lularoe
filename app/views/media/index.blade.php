@@ -158,9 +158,9 @@
 		                        <div ng-click="checkbox()">
 		                        	<div class="options" ng-click="$event.stopPropagation();" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
-										    <span class="form-link pull-left"><i class="fa fa-trash" title="Delete" ng-click="deleteFile(media.id)"></i></span>
+										    <!-- <span class="form-link pull-left"><i class="fa fa-trash" title="Delete" ng-click="$event.stopPropagation(); deleteFile(media.id)"></i></span> -->
 										@endif
-			                        	<i class="link fa fa-eye" ng-click="viewFile(media.id)"></i>
+			                        	<i class="link fa fa-eye" ng-click="viewFile(media.id, $index)"></i>
 			                        	<!-- <a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a> -->
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
 			                        		<a href="/media/@include('_helpers.media_id')/edit"><i class="fa fa-pencil"></i></a>
@@ -207,18 +207,16 @@
 	            </div><!-- col -->
 	        </div><!-- row -->
         {{ Form::close() }}
+		<div id="modal" class="modal fade align-center" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		    <div class="modal-dialog modal-lg align-left inline-block" style="width:auto !important; max-width:90%;">
+		        <div class="modal-content">
+		        	<div class="modal-body overflow-hidden">
+						<div id="ajax-content"></div>
+		        	</div>
+		        </div><!-- modal-content -->
+		    </div><!-- modal-dialog -->
+		</div>
     </div><!-- app -->
-@stop
-@section('modals')
-	<div id="modal" class="modal fade align-center" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	    <div class="modal-dialog modal-lg align-left inline-block" style="width:auto !important; max-width:90%;">
-	        <div class="modal-content">
-	        	<div class="modal-body overflow-hidden">
-					<div id="ajax-content"></div>
-	        	</div>
-	        </div><!-- modal-content -->
-	    </div><!-- modal-dialog -->
-	</div>
 @stop
 @section('scripts')
 <script>
@@ -288,10 +286,12 @@
 			}
 			
 			// view file
-			$scope.viewFile = function(id) {
+			var showing_index;
+			$scope.viewFile = function(id, $index) {
 				$http.get('/media/ajax/' + id).success(function(data) {
 					$('#modal #ajax-content').html(data);
 					$('#modal').modal('toggle');
+					showing_index = $index;
 				});
 			}
 			
@@ -302,14 +302,37 @@
 			
 			// delete file
 			$scope.deleteFile = function(id) {
-				confirm = confirm('Are you sure you want to delete this file?');
-				if (confirm == true) {
-					$http.get('/media/destroy/' + id).success(function() {
-						$scope.media.splice($scope.media[id], 1);
-						$scope.media_counts --;
-					});
-				}
+				setTimeout(function() {
+					// throw new Error("my error message");
+					confirm = confirm('Are you sure you want to delete this file?');
+					if (confirm == true) {
+						$http.get('/media/destroy/' + id).success(function() {
+							$scope.media.splice($scope.media[id], 1);
+							$scope.media_counts --;
+						});
+					}
+				}, 1);
 			}
+
+			// change file
+			$('body').on('click', '.changeFile', function() {
+				var direction = $(this).attr('data-direction');
+				if (direction == 'forward') {
+					console.log(showing_index);
+					if (showing_index + 1 <= $scope.media.length) showing_index ++;
+					else showing_index = 0;
+				}
+				else {
+					console.log(showing_index);
+					if (showing_index - 1 >= 0) showing_index --;
+					else showing_index = $scope.media.length;
+				}
+				id = $scope.media[showing_index].id;
+				$http.get('/media/ajax/' + id).success(function(data) {
+					$('#modal #ajax-content').html(data);
+					// $('#modal').modal('toggle');
+				});
+			});
 			
 			// count tags
 			$http.get('/api/media-tags').success(function(media_tags) {
