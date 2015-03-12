@@ -150,7 +150,7 @@ try {
                 $scope.next = false;
             }else{
                 $scope.productForm.status = false;
-                $scope.productForm.message = "Please edit and submit the last form before adding another product";
+                $scope.productForm.message = "Please edit and submit the last form before adding another item";
             }     
         };
 
