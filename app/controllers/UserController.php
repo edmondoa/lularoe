@@ -135,8 +135,9 @@ class userController extends \BaseController {
 		}
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
 			$user = User::find($id);
-			
-			return View::make('user.edit', compact('user'));
+			$sponsor = User::find($user->sponsor_id);
+            $sponsor_name = !empty($sponsor) ? $sponsor->first_name.' '.$sponsor->last_name : '';
+			return View::make('user.edit', compact('user','sponsor_name'));
 		}
 	}
 

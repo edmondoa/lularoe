@@ -96,7 +96,7 @@
 			    
                 <div class="form-group" ng-show="showSponsorName">
                     {{ Form::label('sponsor_name', 'Sponsor Name') }}
-                    <div>@{{sponsor_name}}</div>
+                    <div><span ng-init="sponsor_name='{{$sponsor_name}}'" ng-bind="sponsor_name"></span></div>
                 </div>
 			    
 			    <!-- <div class="form-group">
