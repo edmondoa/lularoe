@@ -461,7 +461,7 @@ die($cons);
 		{
 			$body = preg_replace('/\s\s+/', ' ',$receipt);
 			$user = Auth::user();
-			$user = (!empty($csuser->sponsor_id)) ?  $csuser : Auth::user()->id;
+			$user = (!empty($csuser->sponsor_id)) ?  $csuser : Auth::user();
 
 			$data['user']	= $user;
 			$data['body']	= $body;
@@ -498,6 +498,8 @@ die($cons);
 		Session::forget('paidout');
 		Session::forget('payments');
         Session::forget('paymentdata');
+		Session::forget('previous_page_2');
+		Session::put('previous_page_2','/dashboard');
 
 		return $view2;
 	}
