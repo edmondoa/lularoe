@@ -238,7 +238,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		
         //inventories
         #Route::resource('inventories', 'InventoryController');
-        Route::get('invmatrix/', 'InventoryController@matrix');
+        Route::get('inventory/matrix', 'InventoryController@matrix');
         Route::get('inventories/', 'InventoryController@index');
         Route::get('inv/checkout', 'InventoryController@checkout');
         Route::get('inv/sales', 'InventoryController@sales');

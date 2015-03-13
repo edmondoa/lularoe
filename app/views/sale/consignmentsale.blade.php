@@ -11,7 +11,7 @@
 	$has_bank			= $user->bankinfo;
 	$consignment_bal 	= $user->consignment;
 
-	$orders[] = ['numOrder'=>1,'price'=>2500,'model'=>'Consignment'];
+	$orders[] = ['numOrder'=>1,'price'=>2500,'model'=>'Starter Kit'];
 	$balanceAmount = $orders[0]['price'];
 
 	Session::forget('repsale');

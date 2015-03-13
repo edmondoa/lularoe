@@ -91,7 +91,7 @@
 			            	Consignment:
 			            </th>
 			            <td>
-			            	{{ $user->consignment }} <a href="/sales/consignment/{{ $user->id }}">Add Consignment</a>
+			            	{{ $user->consignment }} <a href="/sales/consignment/{{ $user->id }}">Purchase Starter</a>
 			            </td>
 			        </tr>
 			        <tr>
