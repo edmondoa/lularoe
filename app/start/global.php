@@ -53,6 +53,7 @@ App::error(function(Exception $exception, $code)
         Log::error('NotFoundHttpException Route: ' . Request::url() );
     }
     Log::error($exception);
+    return Response::view('errors.missing', compact("exception"), 404);
 });
 
 App::missing(function($exception)

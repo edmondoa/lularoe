@@ -21,6 +21,13 @@ class InventoryController extends \BaseController {
     /**
      * Data only
      */
+    public function matrix() {
+		return View::make('inventory.matrix');
+    }
+
+    /**
+     * Data only
+     */
     public function getAllInventories(){
         
         return [
