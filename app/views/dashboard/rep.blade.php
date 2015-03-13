@@ -20,7 +20,7 @@
 		</div><!-- col -->
 		<div class="col col-xl-3 col-lg-4 col-md-6 col-sm-6">
 			<div class="panel panel-default">
-				<div class="panel-heading">
+				<div class="panel-heading" style="background:#9595D2 !important;">
 					<h2 class="panel-title">Overview</h2>
 				</div>
 				<table class="table table-striped">
@@ -84,7 +84,7 @@
 		@endif
 		<div class="col col-xl-3 col-lg-4 col-md-6 col-sm-6">
 			<div class="panel panel-default">
-				<div class="panel-heading">
+				<div class="panel-heading" style="background:#DD7FD3 !important;">
 					<h2 class="panel-title">Quick Links</h2>
 				</div>
 				<div class="list-group">
