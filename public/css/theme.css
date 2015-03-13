@@ -14,6 +14,15 @@
 /*body a { color:#f67599; }
 body a:hover { color:#9595d2; }
 */
+@font-face {
+    font-family: steelfish;
+    src: url('steelfish.woff');
+}
+@font-face {
+    font-family: maven;
+    src: url('maven.woff');
+}
+
 h1, h2, h3, h4, h5, h6 { color:#64ccc9; font-family:oswald; font-weight:300; }
 
 /* main-header */
