@@ -1,5 +1,5 @@
 		<div class="panel panel-default">
-			<div class="panel-heading">
+			<div class="panel-heading" style="background:#8bb8e8 !important;">
 				<h2 class="panel-title">New Team Members<!-- <span class="badge">{{ $new_downline_count_30 }}</span>--></h2>
 			</div>
 			<table class="table table-striped">

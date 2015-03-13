@@ -52,6 +52,16 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
   border:0px solid #999;
 }
 
+/* branding colors */
+.yellow { background:#fed141 !important; }
+.orange { background:#ff9d6e !important; }
+.pink { background:#f67599 !important; }
+.purple { background:#dd7fd3 !important; }
+.violet { background:#9595d2 !important; }
+.blue { background:#8bb8e8 !important; }
+.bluegreen { background:#64ccc9 !important; }
+.gray { background:#63666a !important; }
+
 /* global classes */
 .break-word { word-wrap:break-word; }
 .font-size-2 { font-size:1.25em; }
