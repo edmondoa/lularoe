@@ -49,6 +49,10 @@ class BankinfoController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+        $bankinfo = Input::all();
+
+        App::make('ExternalAuthController')->setbankinfo(Auth::user()->id, $bankinfo);
+
 		// Do I really have to do this?
 		$data['user_id'] = Auth::user()->id;
 
@@ -102,8 +106,8 @@ class BankinfoController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+        App::make('ExternalAuthController')->setbankinfo(Auth::user()->id, Input::all());
 		$bankinfo->update($data);
-
 		
 		if (preg_match('/achpurchase/',Session::get('previous_page_2'))){
 			$redirect = '/inv/checkout';	

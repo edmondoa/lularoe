@@ -128,7 +128,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('leads/enable', 'LeadController@enable');
 	Route::post('leads/delete', 'LeadController@delete');
 
+	// I hate my understaneding of how routes work
 	Route::resource('bankinfo', 'BankinfoController');
+	Route::post('bankinfo/store', 'BankinfoController@store');
 
 	// opportunities (public view)
 	Route::get('opportunity/{id}', function($id) {
@@ -572,11 +574,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('u/{key}', 'PreRegisterController@verifyemail');
         Route::get('template/preregister/', 'PreRegisterController@template');
         Route::get('template/preregister/{key}', 'PreRegisterController@template');
-        Route::get('bankinfo', 'PreRegisterController@bankinfo');
+        Route::get('bank-info', 'PreRegisterController@bankinfo');
+        Route::post('bank-info', 'PreRegisterController@updatebankinfo');
+
         Route::get('shipping_address', 'PreRegisterController@shippingAddressForm');
         Route::post('shipping_address', 'PreRegisterController@shippingAddress');
         Route::get('call-in', 'PreRegisterController@CallInForm');
-        Route::post('bankinfo', 'PreRegisterController@updatebankinfo');
 		Route::post('find-sponsor', 'PreRegisterController@redirect');
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
 	});
