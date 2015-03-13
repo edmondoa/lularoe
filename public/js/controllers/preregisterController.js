@@ -167,7 +167,7 @@ try {
         };
 
         $scope.saveBankinfo = function(){
-            $http.post('/bankinfo',jQuery('form').serializeArray()).success(function(data){
+            $http.post('/bank-info',jQuery('form').serializeArray()).success(function(data){
                 if(data.status == 'success'){
 					$scope.next = true;
                     $scope.isBankError = false;

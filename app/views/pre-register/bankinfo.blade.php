@@ -9,7 +9,7 @@
 	<form editable-form name="editableForm" onaftersave="saveBankinfo($data)">
 	    <div class="row">
 	        <div class="col col-xl-3 col-lg-4 col-sm-6 col-sm-6">
-	            <!-- {{ Form::open(array('url' => '/bankinfo')) }} -->
+	            <!-- {{ Form::open(array('url' => '/bank-info')) }} -->
 	
 				<input type="hidden" name="onboard_process" value="true">
 	

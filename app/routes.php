@@ -59,18 +59,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	
 	// company
 	Route::get('/', ['as' => 'home', function() {
-		// if (Auth::check()) {
-			// return Redirect::to('dashboard');
-		// }
-		// else {
-			$title = 'Home';
-			return View::make('company.home', compact('title'));
-		//}
+		$title = 'Home';
+		return View::make('company.home', compact('title'));
 	}]);
-	// Route::get('company-events', function() {
-		// $title = 'Company Events';
-		// return View::make('company.events', compact('title'));
-	// });
 	Route::get('contact-us', function() {
 		$title = 'Contact Us';
 		return View::make('company.contact-us', compact('title'));
@@ -91,6 +82,29 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		$title = 'Presentation';
 		return View::make('company.presentation', compact('title'));
 	});
+	
+	// company website
+	Route::get('company', function() {
+		$title = 'Home';
+		return View::make('site.home', compact('title'));
+	});
+	Route::get('terms-conditions', function() {
+		$title = 'Terms and Conditions';
+		return View::make('company.terms', compact('title'));
+	});
+	Route::get('privacy-policy', function() {
+		$title = 'Privacy Policy';
+		return View::make('company.privacy', compact('title'));
+	});
+	Route::get('leadership', function() {
+		$title = 'Leadership';
+		return View::make('company.leadership', compact('title'));
+	});
+	Route::get('presentation', function() {
+		$title = 'Presentation';
+		return View::make('company.presentation', compact('title'));
+	});
+	
 
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');
@@ -128,7 +142,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('leads/enable', 'LeadController@enable');
 	Route::post('leads/delete', 'LeadController@delete');
 
+	// I hate my understaneding of how routes work
 	Route::resource('bankinfo', 'BankinfoController');
+	Route::post('bankinfo/store', 'BankinfoController@store');
 
 	// opportunities (public view)
 	Route::get('opportunity/{id}', function($id) {
@@ -572,11 +588,12 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('u/{key}', 'PreRegisterController@verifyemail');
         Route::get('template/preregister/', 'PreRegisterController@template');
         Route::get('template/preregister/{key}', 'PreRegisterController@template');
-        Route::get('bankinfo', 'PreRegisterController@bankinfo');
+        Route::get('bank-info', 'PreRegisterController@bankinfo');
+        Route::post('bank-info', 'PreRegisterController@updatebankinfo');
+
         Route::get('shipping_address', 'PreRegisterController@shippingAddressForm');
         Route::post('shipping_address', 'PreRegisterController@shippingAddress');
         Route::get('call-in', 'PreRegisterController@CallInForm');
-        Route::post('bankinfo', 'PreRegisterController@updatebankinfo');
 		Route::post('find-sponsor', 'PreRegisterController@redirect');
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
 	});

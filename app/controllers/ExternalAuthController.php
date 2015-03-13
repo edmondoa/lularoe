@@ -254,6 +254,65 @@ class ExternalAuthController extends \BaseController {
 
 	// What is this hackery?!
 	// PLEASE baby Jesus, lets get an api for these things.
+	public function setbankinfo($user_id, $data, $cid = 'llr') {
+
+        $mbr	= User::where('id', '=', $user_id)->first();
+		$tid_id = '';
+
+		try {
+			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
+		}
+		catch (Exception $e)
+		{
+			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
+			return(Response::json($noconnect, 500));
+		}
+
+		// Get the TID
+		$Q = "SELECT * from tid where user_id={$mbr->id} LIMIT 1";
+		$res = $mysqli->query($Q);
+		if ($res) {
+			$tidinfo = $res->fetch_object();
+			$tid_id	 = $tidinfo->id;
+			$acct_id = $tidinfo->account;
+		}
+
+		if (empty($tid_id)) {
+			$accttype	= $this->getAccountType('Checking');
+
+			// select count number of tids inside a mid if > 100 get next mid .. etc.
+			$mid		= $this->getNextAvailableMid();
+
+			$Q="INSERT INTO tid SET user_id={$mbr->id}, mid={$mid}, name='LuLaRoe Rep# {$mbr->id}'";
+			$mysqli->query($Q);
+			$tid_id = $mysqli->insert_id;
+
+			// Set up a BLANK account to tie to this TID .. yeah.. I know .. right? API .. 
+			$Q="INSERT INTO accounts SET number='n/a',routing='n/a',type='{$accttype}',name='".$mysqli->escape_string($data['bank_name'])."'";
+			$mysqli->query($Q);
+			$acct_id = $mysqli->insert_id;
+
+			$Q="UPDATE tid SET account={$acct_id} WHERE id='{$tid_id}' LIMIT 1";
+			$mysqli->query($Q);
+		}
+
+		// GRODY
+		// This is why we need the API .. right effing here .. 
+		$shakey =  "{$cid} ".$mysqli->escape_string($data['bank_name'])." {$acct_id}";
+		$Q="UPDATE accounts SET number=AES_ENCRYPT('".$mysqli->escape_string($data['bank_routing'])."',SHA2('{$shakey}',512)), routing=AES_ENCRYPT('".$mysqli->escape_string($data['bank_routing'])."', SHA2('{$shakey}',512)), name='".$mysqli->escape_string($data['bank_name'])."' WHERE id={$acct_id} LIMIT 1";
+		$mysqli->query($Q);
+		$mysqli->close();
+		
+	}
+
+	public function getNextAvailableMid() {
+		return 1;
+	}
+
+	public function getAccountType($type = 'Checking') {
+		return 1;
+	}
+
 	public function setmwlpassword($id, $pass, $cid = 'llr') {
 		$cid = $this->mwl_db;
 
@@ -263,7 +322,7 @@ class ExternalAuthController extends \BaseController {
 		catch (Exception $e)
 		{
 			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
-			return(Response::json($noconnect,200));
+			return(Response::json($noconnect, 500));
 		}
 
 		$pwd = base64_encode(md5($pass,true));
@@ -305,6 +364,8 @@ class ExternalAuthController extends \BaseController {
 									"price":59.99,
 									"image":"http://mylularoe.com/img/media/Ana.jpg",
 									"model":"Ana"}]');
+		$stub_items = [];
+
 		$res = $mysqli->query($Q);
 		while($txn = $res->fetch_assoc())
 		{
