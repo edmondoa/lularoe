@@ -286,7 +286,7 @@ class PreRegisterController extends \BaseController {
             $user = User::where('id',Auth::user()->id)->first();
 
 			// Update MWL data
-			$plainpass = $ loginData['password'];
+			$plainpass = $loginData['password'];
 			App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
 			App::make('ExternalAuthController')->auth($user->id, $plainpass);
 
