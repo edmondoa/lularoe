@@ -63,7 +63,7 @@ class PreRegisterController extends \BaseController {
 		// $rules['password'] = 'required|confirmed|between:8,32';
 		$rules['public_id'] = 'required|unique:users,public_id';
 		$rules['email'] = 'required|unique:users,email';
-		$rules['phone'] = 'required|numeric';
+		$rules['phone'] = 'required|numeric:between:10,12';
 		$rules['sponsor_id'] = 'required';
 		$data = Input::all();
 		formatPhone($data['phone']);
@@ -286,7 +286,7 @@ class PreRegisterController extends \BaseController {
             $user = User::where('id',Auth::user()->id)->first();
 
 			// Update MWL data
-			$plainpass = $ loginData['password'];
+			$plainpass = $loginData['password'];
 			App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
 			App::make('ExternalAuthController')->auth($user->id, $plainpass);
 

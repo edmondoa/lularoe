@@ -87,7 +87,7 @@ if (!$sessiondata['repsale'])
 
 									@if (isset($sessiondata['consignment_purchase']) && $sessiondata['consignment_purchase'] > 0)
 									<tr>
-										<td colspan="4" align="right"><h3>Consignment Purchase</h3></td>
+										<td colspan="4" align="right"><h3>Starter Kit Purchase</h3></td>
 									</tr>
 									@endif
 
