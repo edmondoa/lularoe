@@ -5,7 +5,7 @@
 		<div class="row">
 			<div class="col col-md-12">
 				@include('_helpers.breadcrumbs')
-			    <h1>Edit product</h1>
+			    <h1>Edit inventory</h1>
 				</div>
 			</div>
 			<div class="row">
@@ -126,7 +126,7 @@
 				    	], null, ['class' => 'form-control']) }}
 				    </div>
 	
-			    	{{ Form::submit('Update Product', array('class' => 'btn btn-primary')) }}
+			    	{{ Form::submit('Update Inventory', array('class' => 'btn btn-primary')) }}
 			
 			</div>
 		</div>

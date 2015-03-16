@@ -109,10 +109,8 @@ class userController extends \BaseController {
 			
 			// make array of addresses set as visible by target user or viewable by current user
 			$addresses = [];
-			if (Address::where('addressable_id', $id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Billing')->first();
-			if (Address::where('addressable_id', $id)->where('label', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Shipping')->first();
-			// echo '<pre>'; print_r($user); echo '</pre>';
-			// exit;
+			if (Address::where('addressable_id', $id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Billing')->first();
+			if (Address::where('addressable_id', $id)->where('label', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Shipping')->first();
 			return View::make('user.show', compact('user', 'addresses'));
 		}
 		else {

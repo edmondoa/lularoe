@@ -92,7 +92,7 @@ class productController extends \BaseController {
 		
 		// clear cache
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
-		return Redirect::route('products.index')->with('message', 'Product created.');
+		return Redirect::route('products.index')->with('message', 'Inventory created.');
 	}
 
 	/**
@@ -248,7 +248,7 @@ class productController extends \BaseController {
 		$product->update($data);
 		// clear cache
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
-		return Redirect::route('products.index', $id)->with('message', 'Product updated.');
+		return Redirect::route('products.index', $id)->with('message', 'Inventory updated.');
 	}
 
 	/**
@@ -268,7 +268,7 @@ class productController extends \BaseController {
 		Product::destroy($id);
 		// clear cache
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
-		return Redirect::route('products.index')->with('message', 'Product deleted.');
+		return Redirect::route('products.index')->with('message', 'Inventory deleted.');
 	}
 	
 	/**
@@ -286,10 +286,10 @@ class productController extends \BaseController {
 		}
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('products.index')->with('message', 'Products deleted.');
+			return Redirect::route('products.index')->with('message', 'Inventory deleted.');
 		}
 		else {
-			return Redirect::back()->with('message', 'Product deleted.');
+			return Redirect::back()->with('message', 'Inventory deleted.');
 		}
 	}
 	
@@ -303,10 +303,10 @@ class productController extends \BaseController {
 		}
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('products.index')->with('message', 'Products disabled.');
+			return Redirect::route('products.index')->with('message', 'Inventory disabled.');
 		}
 		else {
-			return Redirect::back()->with('message', 'Product disabled.');
+			return Redirect::back()->with('message', 'Inventory disabled.');
 		}
 	}
 	
@@ -320,10 +320,10 @@ class productController extends \BaseController {
 		}
 		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllProducts')));
 		if (count(Input::get('ids')) > 1) {
-			return Redirect::route('products.index')->with('message', 'Products enabled.');
+			return Redirect::route('products.index')->with('message', 'Inventory enabled.');
 		}
 		else {
-			return Redirect::back()->with('message', 'Product enabled.');
+			return Redirect::back()->with('message', 'Inventory enabled.');
 		}
 	}
 
