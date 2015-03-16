@@ -2,11 +2,13 @@
 @section('content')
 	<div class="row">
 		<div class="col-md-12">
-			<h1>Welcome, {{ $user->first_name }}</h1>
-			<div class="alert alert-success inline-block">
-				Copy and paste the following link and send it to anyone whom you'd like to join your team:<br>
+			<h1 class="pull-left">Welcome, {{ $user->first_name }}</h1>
+			<a class="btn btn-primary pull-right margin-bottom-2" href="/sales/create"><i class='fa fa-plus'></i> New Sale</a>
+			<div class="clear"></div>
+			<p>
+				Send the following link to anyone whom you'd like to join your team:<br>
 				<a href="{{ url() }}/join/{{ $user->public_id }}">{{ url() }}/join/{{ $user->public_id }}</a>
-			</div>
+			</p>
 		</div>
 	</div><!-- row -->
 	<div class="row masonry">

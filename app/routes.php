@@ -631,14 +631,19 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 		$userSite->save();
 		//return dd($userSite);
 		if ((!isset($userSite -> banner)) || ($userSite -> banner == ''))
-			$userSite -> banner = '/img/users/default-banner.png';
+			$userSite -> banner = '/img/users/default-banner.jpg';
 		else
 			$userSite -> banner = '/img/users/banners/' . $userSite -> banner;
 		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(5)->get();
 		$opportunities = Opportunity::where('public', 1)->where('deadline', '>', time())->orWhere('deadline', '')->take(5)->orderBy('updated_at', 'DESC')->get();
 		// echo '<pre>'; print_r($opportunities->toArray()); echo '</pre>';
 		// exit;
-		return View::make('userSite.show', compact('user', 'userSite', 'opportunities', 'events'));
+		
+		$addresses = [];
+		if (Address::where('addressable_id', $user->id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $user->id)->where('label', 'Billing')->first();
+		if (Address::where('addressable_id', $user->id)->where('label', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $user->id)->where('label', 'Shipping')->first();
+		
+		return View::make('userSite.show', compact('user', 'userSite', 'opportunities', 'events', 'addresses'));
 	});
 
 	// opportunities (public view)

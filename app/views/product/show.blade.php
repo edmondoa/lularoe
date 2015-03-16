@@ -24,7 +24,7 @@
 						    	</button>
 						    {{ Form::close() }}
 						@endif
-					    {{ Form::open(array('url' => 'products/' . $product->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this product? This cannot be undone.");')) }}
+					    {{ Form::open(array('url' => 'inventorys/' . $inventory->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this inventory? This cannot be undone.");')) }}
 					    	<button class="btn btn-default" title="Delete">
 					    		<i class="fa fa-trash" title="Delete"></i>
 					    	</button>

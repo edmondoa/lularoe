@@ -13,8 +13,11 @@
 				</div>
 				<div class="pull-right align-right">
 					<!-- <a class="btn btn-primary" onclick="scrollTo('#contact-form')">Contact {{ $user->first_name }}</a> -->
-					@if ($userSite->display_phone == 1)
-						<div class="big margin-top-1"><i class="fa fa-mobile-phone"></i> {{ $user->formatted_phone }}</div>
+					@if (!$user->hide_phone)
+						<div class="margin-top-1"><i class="fa fa-mobile-phone"></i> {{ $user->formatted_phone }}</div>
+					@endif
+					@if (!$user->hide_email)
+						<div><i class="fa fa-envelope"></i> {{ $user->email }}</div>
 					@endif
 				</div>
 			</div>
@@ -31,7 +34,6 @@
             @if (isset($userSite->body))
 	            {{ $userSite->body }}
 	        @endif
-	        <br>
 	        <br>
         	<div class="col col-md-6 no-padding" id="contact-form">
 	            <h2>Contact {{ $user->first_name }}</h2>
@@ -67,7 +69,28 @@
 	        </div>
 		</div>
 		<div class="col col-md-3">
-			<div class="panel panel-default">
+			@foreach ($addresses as $address)
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h2 div class="panel-title">{{ $address->label }} Address</h2>
+					</div>
+				    <table class="table table-striped">
+				        <tr>
+				            <td>{{ $address->address_1 }}</td>
+				        </tr>
+				        
+				        @if (!empty($address->address_2))
+					        <tr>
+					            <td>{{ $address->address_2 }}</td>
+					        </tr>
+				        @endif
+				        <tr>
+				            <td>{{ $address->city }}, {{ $address->state }} {{ $address->zip }}</td>
+				        </tr>
+				    </table>
+				</div><!-- panel -->
+			@endforeach
+			<!-- <div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">Current Opportunities</h3>
 				</div>
@@ -78,8 +101,8 @@
 						</a>
 					@endforeach
 				</div>
-			</div>
-			<div class="panel panel-default">
+			</div> -->
+			<!-- <div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">Upcoming Events</h3>
 				</div>
@@ -90,7 +113,7 @@
 						</a>
 					@endforeach
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 @stop
