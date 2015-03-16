@@ -269,9 +269,10 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		// Get the TID
-		$Q = "SELECT * from tid where user_id={$mbr->id} LIMIT 1";
+		$Q = "SELECT * from tid where id={$mbr->id} LIMIT 1";
+
 		$res = $mysqli->query($Q);
-		if ($res) {
+		if ($res->num_rows) {
 			$tidinfo = $res->fetch_object();
 			$tid_id	 = $tidinfo->id;
 			$acct_id = $tidinfo->account;
@@ -283,7 +284,7 @@ class ExternalAuthController extends \BaseController {
 			// select count number of tids inside a mid if > 100 get next mid .. etc.
 			$mid		= $this->getNextAvailableMid();
 
-			$Q="INSERT INTO tid SET user_id={$mbr->id}, mid={$mid}, name='LuLaRoe Rep# {$mbr->id}'";
+			$Q="INSERT INTO tid SET id={$mbr->id}, mid={$mid}, name='LuLaRoe Rep# {$mbr->id}'";
 			$mysqli->query($Q);
 			$tid_id = $mysqli->insert_id;
 
@@ -299,10 +300,9 @@ class ExternalAuthController extends \BaseController {
 		// GRODY
 		// This is why we need the API .. right effing here .. 
 		$shakey =  "{$cid} ".$mysqli->escape_string($data['bank_name'])." {$acct_id}";
-		$Q="UPDATE accounts SET number=AES_ENCRYPT('".$mysqli->escape_string($data['bank_routing'])."',SHA2('{$shakey}',512)), routing=AES_ENCRYPT('".$mysqli->escape_string($data['bank_routing'])."', SHA2('{$shakey}',512)), name='".$mysqli->escape_string($data['bank_name'])."' WHERE id={$acct_id} LIMIT 1";
+		$Q="UPDATE accounts SET number=AES_ENCRYPT('".$mysqli->escape_string($data['bank_account'])."',SHA2('{$shakey}',512)), routing=AES_ENCRYPT('".$mysqli->escape_string($data['bank_routing'])."', SHA2('{$shakey}',512)), name='".$mysqli->escape_string($data['bank_name'])."' WHERE id={$acct_id} LIMIT 1";
 		$mysqli->query($Q);
 		$mysqli->close();
-		
 	}
 
 	public function getNextAvailableMid() {
@@ -327,7 +327,7 @@ class ExternalAuthController extends \BaseController {
 
 		$pwd = base64_encode(md5($pass,true));
 		$pwdf = base64_encode(md5($cid.$pwd,true));
-		$Q = "REPLACE INTO users SET username='{$id}', password='{$pwdf}'";
+		$Q = "INSERT INTO users SET username='{$id}', password='{$pwdf}' ON DUPLICATE KEY UPDATE password='{$pwdf}'";
 		$res = $mysqli->query($Q);
 
 		$mysqli->close();
@@ -905,7 +905,7 @@ class ExternalAuthController extends \BaseController {
         return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),200);
 
 	}
-   
+	
     public function reorder(){
         $data = Input::all();
         if(empty($data)){
