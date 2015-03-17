@@ -55,18 +55,6 @@
                     </div>
 
                     <h3>Selected Items<span ng-if="countSelect()"> : <span ng-bind="orders.length">0</span></span></h3>
-                    <div ng-if="isEmpty()">
-                        <ul class="media-list">
-                            <li class="media">
-                                <div class="well">
-                                    <div class="row">
-                                        <div class="col-lg-12">empty</div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
 				</div>
 			</div>
                 <div class="col-md-12 col-sm-12 col-lg-12">
@@ -84,7 +72,7 @@
 					<table class="table table-bordered table-striped" id="currentinventory" width="100%">
                         <tr class="media" dir-paginate-start="inventory in inventories | filter:search | itemsPerPage: pageSize " current-page="currentPage" total-items="countItems">
 							<td style="background:url(/img/media/@{{inventory.model}}.jpg);background-size:contain;background-repeat:no-repeat;width:2.5em">
-								<input  class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">
+								<input  class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}"> 
 							</td>
 							<td>
 								<div><span ng-bind="inventory.model"></span></div>
@@ -96,8 +84,10 @@
 								<table id="@{{inventory.model|nospace}}">
 									<tr valign="middle">
 									<td ng-repeat="(key,size) in inventory.sizes">
-										<span ng-bind="size.key"></span><span> - </span>
-											<input ng-change="toggleCheck(inventory,size)" id="funk" type="text" name="@{{inventory.model|nospace}}[@{{size.key|nospace}}]" style="width:3em" size="3" value="">
+										<small ng-bind="size.key"></small><Br />
+											<!-- <input ng-change="fixInvalidNumber(order)" type="number" min="1" ng-model="order.numOrder" ng-init="order.numOrder=0" class="form-control" placeholder="0" aria-describedby="basic-addon1" style="width:3em" size="3"> -->
+											<input ng-model="size.numOrder" ng-init="size.numOrder=0" ng-change="massAdd(inventory,size)" type="number" style="width:3em" size="3" value="0"> 
+<div class="col-lg-8 col-md-8 col-sm-9 col-xs-9">
 									</td>
 									</tr>
 								</table>
@@ -110,6 +100,7 @@
     </div><!-- app -->
 @stop
 @section('scripts')
+{{ HTML::script('js/controllers/inventoryController.js') }}
 <script>
 	var groupMatrix = {
 					'A':{
@@ -149,8 +140,6 @@
 			item = item.replace(/\W/g, '_');
 
 			$('#'+item).parent().toggleClass('toggleBg');
-			console.log($('#'+item).parent().parent().find('.itemprice').html());
-
 
 			$('#'+item).find('input[type=text]').each(function(i,itm) {
 				if ($(this).val().length > 0) {
@@ -171,5 +160,4 @@
                 };
             }()));    
 </script>
-{{ HTML::script('js/controllers/inventoryController.js') }}
 @stop
