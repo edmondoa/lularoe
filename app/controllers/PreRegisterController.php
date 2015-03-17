@@ -116,7 +116,7 @@ class PreRegisterController extends \BaseController {
         $hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
         $verification_link = 'http://'.Config::get('site.domain').'/u/'.$userid.'-'.$hash; 
         
-        Mail::send('emails.verification', compact('verification_link','user'), function($message) use(&$user)
+        Mail::send('emails.verification', compact('verification_link', 'user'), function($message) use(&$user)
         {
             $message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Verify Your Email Address');
         });

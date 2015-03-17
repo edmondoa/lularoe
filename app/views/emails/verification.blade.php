@@ -1,5 +1,5 @@
 <div style="max-width:600px; margin:0 auto; font-family:helvetica, arial; font-weight:300; color:#7d7d7d; text-align:center; font-size:12pt; line-height:1.5em;">
-	<img src="{{ url() }}/img/email/audrey-header.png" style="width:100%;">
+	<img src="<?php echo $message->embed('img/email/audrey-header.png'); ?>" style="width:100%;">
 	<p>Dear {{ $user->first_name }},</p>
 	<p>
 		We are thrilled to introduce the next steps in our transition to Audrey. This is an exciting time for LuLaRoe and we believe Audrey will help you maximize your time to more efficiently run your business. At this point you should have received an email instructing you to track your current inventory as the first step in your transition to Audrey. If you have not done so already, please take the time to catalogue your current inventory before following these next steps.
@@ -20,5 +20,5 @@
 		Sincerely,<br>
 		{{ Config::get('site.company_name') }}
 	</p>
-	<img src="{{ url() }}/img/email/audrey-footer.jpg" style="width:100%;">
+	<img src="<?php echo $message->embed('img/email/audrey-footer.jpg'); ?>" style="width:100%;">
 </div>
