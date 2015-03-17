@@ -136,7 +136,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::get('public-events/{id}', 'UventController@publicShow');
 
 	// leads
-	Route::get('leads', ['as' => 'leads', 'uses' => 'LeadController@index']);
+	// Route::get('leads', ['as' => 'leads', 'uses' => 'LeadController@index']);
 	Route::resource('leads', 'LeadController');
 	Route::post('leads/disable', 'LeadController@disable');
 	Route::post('leads/enable', 'LeadController@enable');
@@ -624,14 +624,14 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	Route::get('/', function($subdomain) {
 		$user = User::where('public_id', $subdomain)->first();
 		if ($user -> image == '')
-			$user -> image = '/img/users/default-avatar.png';
+			$user -> image = '/img/default-avatar.png';
 		else
 			$user -> image = '/img/users/avatars/' . $user -> image;
 		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
 		$userSite->save();
 		//return dd($userSite);
 		if ((!isset($userSite -> banner)) || ($userSite -> banner == ''))
-			$userSite -> banner = '/img/users/default-banner.jpg';
+			$userSite -> banner = '/img/default-banner.jpg';
 		else
 			$userSite -> banner = '/img/users/banners/' . $userSite -> banner;
 		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(5)->get();

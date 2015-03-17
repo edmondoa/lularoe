@@ -180,7 +180,7 @@ try {
             
             angular.forEach(n.sizes, function(size){
                 if(!$scope.isInOrder($scope.orders, n, size)) {
-                    if(size.checked || size.value){
+                    if(size.checked && size.value){
                         var quantity = n.numOrder;
                         if(size.value >= quantity){
                             size.numOrder = quantity;
@@ -202,6 +202,12 @@ try {
                     }    
                 }
             });   
+        };
+        
+        $scope.setGroup = function(groupid) {
+
+        	$scope.size[0].numOrder = 22;
+        	
         };
         
         $scope.plus = function(n){

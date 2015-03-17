@@ -61,7 +61,7 @@
                     <div class="clearfix">
                         <h3 class="pull-left no-pull-xs">Available Inventory</h3>
 						<div class="pull-right">
-							<div class="btn btn-info" onclick="setGroup('A')">Group A</div>
+							<div class="btn btn-info" ng-click="setGroup('A')">Group A</div>
 							<div class="btn btn-info" onclick="setGroup('B')">Group B</div>
 							<div class="btn btn-info" onclick="setGroup('C')">Group C</div>
 							<div class="btn btn-info" onclick="setGroup('L')">Leggings</div>
@@ -136,20 +136,21 @@
 	
 	// Sets the group value information
 	function setGroup(groupid) {
-		$.each(groupMatrix[groupid],function(item,vals) {
-			item = item.replace(/\W/g, '_');
-
-			$('#'+item).parent().toggleClass('toggleBg');
-
-			$('#'+item).find('input[type=text]').each(function(i,itm) {
-				if ($(this).val().length > 0) {
-					$(this).val('');
-				}
-				else ($(this).val(vals[i]));
-
-				//:if (typeof this != 'undefined' ) this.val(vals[i]);
-			})
-		});
+		
+		// $.each(groupMatrix[groupid],function(item,vals) {
+			// item = item.replace(/\W/g, '_');
+// 
+			// $('#'+item).parent().toggleClass('toggleBg');
+// 
+			// $('#'+item).find('input[type=text]').each(function(i,itm) {
+				// if ($(this).val().length > 0) {
+					// $(this).val('');
+				// }
+				// else ($(this).val(vals[i]));
+// 
+				// //:if (typeof this != 'undefined' ) this.val(vals[i]);
+			// })
+		// });
 	}
 
     angular.extend(ControlPad, (function(){                

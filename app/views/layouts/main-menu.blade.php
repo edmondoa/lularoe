@@ -60,12 +60,12 @@
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Rep'])))
  					<a href="javascript:void(0)" data-href="/parties" class='list-group-item' data-toggle="popover" data-content="
- 						<a target='_blank' href='/public-parties'><i class='fa fa-globe'></i> Public Popup-Boutiques Page</a>
- 						<a href='/parties'><i class='fa fa-users'></i> Upcoming Popup-Boutiques</a>
- 						<a href='/past-parties'><i class='fa fa-reply'></i> Past Popup-Boutiques</a>
- 						<a href='/parties/create'><i class='fa fa-plus'></i> New Popup-Boutique</a>
+ 						<a target='_blank' href='/public-parties'><i class='fa fa-globe'></i> Public Pop-Up Boutiques Page</a>
+ 						<a href='/parties'><i class='fa fa-users'></i> Upcoming Pop-Up Boutiques</a>
+ 						<a href='/past-parties'><i class='fa fa-reply'></i> Past Pop-Up Boutiques</a>
+ 						<a href='/parties/create'><i class='fa fa-plus'></i> New Pop-Up Boutique</a>
  					">
- 						<i class="fa fa-users"></i> <span class="text">Popup-Boutiques</span>
+ 						<i class="fa fa-users"></i> <span class="text">Pop-Up Boutiques</span>
  					</a>
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor','Rep'])))
@@ -127,6 +127,7 @@
  							<a href='/media-shared-with-reps?filter=Documents'><i class='fa fa-file'></i> Documents</a>
  							<a href='/media-shared-with-reps?filter=Marketing-Tools'><i class='fa fa-wrench'></i> Marketing Tools</a>
  							<a href='/media-shared-with-reps?filter=Photo-Gallery'><i class='fa fa-photo'></i> Photo Gallery</a>
+ 							<a href='/media'><i class='fa fa-file-audio-o'></i> Recorded Calls</a>
  							<a href='/media-shared-with-reps?filter=Training'><i class='fa fa-graduation-cap'></i> Training</a>
  						@if (Auth::user()->hasRole(['Superadmin','Admin','Editor']))
  							<a href='/media/create'><i class='fa fa-upload'></i> Upload Tool/Asset</a>
