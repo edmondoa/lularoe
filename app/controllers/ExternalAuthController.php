@@ -835,7 +835,7 @@ class ExternalAuthController extends \BaseController {
         return ($returndata);
 	}
 
-	public function auth($id, $pass = '') {
+	public function auth($login, $pass = '') {
 		$pass	= trim(Input::get('pass', $pass));
         $status = 'ERR';
         $error  = true;
@@ -845,17 +845,21 @@ class ExternalAuthController extends \BaseController {
 		$tstamp		= 0;
 		$sessionkey = '';
 
-		 // Find them here
-        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
+
+		 // Find them here 5.2.0 feature filter_var
+		if (filter_var($login,FILTER_VALIDATE_EMAIL))
+        $mbr = User::where('email', '=', $login)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
+		else
+        $mbr = User::where('id', '=', $login)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
 
         // Can't find them?
         if (!isset($mbr)) {
             $mbr	= null;
-            $status = 'User '.strip_tags($id).' not found';
+            $status = 'User '.strip_tags($login).' not found';
         }
 		else if (Hash::check($pass, $mbr['attributes']['password'])) {
         	$error  = false;
-			$status = 'User '.strip_tags($id).' found ok';
+			$status = 'User '.strip_tags($login).' found ok';
 			$data = array(
 				'id'			=> $mbr['attributes']['id'],
 				'public_id'		=> $mbr['attributes']['public_id'],
