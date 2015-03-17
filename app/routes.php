@@ -25,7 +25,7 @@
 Route::pattern('id', '[0-9]+');
 
 		// API for IOS App
-		Route::get('llrapi/v1/auth/{id}', 						'ExternalAuthController@auth');
+		Route::get('llrapi/v1/auth/{login}', 						'ExternalAuthController@auth');
 		Route::get('llrapi/v1/remove-inventory/{key}',			'ExternalAuthController@rmInventory');
 		Route::get('llrapi/v1/remove-inventory/{key}/{id}/{quantity}',			'ExternalAuthController@rmInventory');
 

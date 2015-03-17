@@ -16,7 +16,7 @@
 	}
 
 	$bi =  Auth::user()->bankinfo;
-	$has_bank = false; // (!empty($bi->first())) ? $bi->first()->bank_name : false;
+	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
 	$consignment_bal = Auth::user()->consignment;
 
  	$balanceAmount = $inittotal + $tax - Session::get('paidout');
