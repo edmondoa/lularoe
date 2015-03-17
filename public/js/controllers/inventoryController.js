@@ -152,6 +152,62 @@ try {
                  }
             });
         });
+
+    $scope.groupMatrix = {
+		'A':{
+			'Maxi':     [5,9,14,14,14,9,5,5],
+			'Cassie':   [0,10,15,15,15,10,5,5],
+			'Azure':    [0,10,15,15,15,10,10,0],
+			'Lucy':     [5,10,15,15,15,10,5,0],
+			'Lola':     [5,10,15,15,15,10,5,0],
+			'Madison':  [0,15,15,15,15,15,0,0]
+			},
+		'B':{
+			'Amelia':   [0,7,10,10,10,7,0,0],
+			'Nicole':   [0,10,10,10,10,10,0,0],
+			'Julia':    [5,10,10,10,10,10,0,0],
+			'Ana':      [0,6,8,8,8,6,6,6]
+			},
+		'C':{
+			'Irma':     [10,15,15,15,10,10,0,0],
+			'Randy':    [5,10,15,15,15,10,5,0],
+			'Monroe':   [0,0,25,0,25,0,0,0]
+			},
+		'L':{
+			'Adult Leggings (2 Pack)':      [35]
+			},
+		'K':{
+			'Sloan (2-8)':              [4,4,4,4],
+			'Sloan (10-14)':            [4,4,4],
+			'Dotdotsmile Lucy Sleeve':  [6,6,6,6],
+			'Dotdotsmile Lucy Tank':    [6,6,6,6],
+			'Kid\'s Leggings (2 Pack)': [23]
+			}
+		};
+    
+		// Sets the group value information
+		$scope.setGroup = function(groupid) {
+            angular.forEach($scope.inventories, function(inventory) {
+				angular.forEach($scope.groupMatrix[groupid], function(group_quantities,group_model) {
+					if(inventory.model == group_model){
+						console.log('Set group' ,group_model);
+						angular.forEach(inventory.sizes, function(size,sidx){
+							size.numOrder = group_quantities[sidx];
+							size.checked	= true;
+							/*
+							$scope.orders = {
+										'model' 	: group_model,
+										'numOrder'	: group_quantities[sidx],
+										'price'		: inventory.price,
+										'sizes'		: size,
+										};
+                            shared.updateCart($scope.orders);
+							*/
+						});
+					}
+                });
+            });
+		};
         
         $scope.pageChangeHandler = function(num) {
             
@@ -180,7 +236,7 @@ try {
             
             angular.forEach(n.sizes, function(size){
                 if(!$scope.isInOrder($scope.orders, n, size)) {
-                    if(size.checked || size.value){
+                    if(size.checked || (size.value && size.checked)){
                         var quantity = n.numOrder;
                         if(size.value >= quantity){
                             size.numOrder = quantity;
