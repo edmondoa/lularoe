@@ -138,8 +138,8 @@ class ExternalAuthController extends \BaseController {
 			$server_output = curl_exec ($ch);
 
 			if ($errno = curl_errno($ch)) {
-				$result = array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
-				return(Response::json($result,500));
+				$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
+				return(Response::json($result,401));
 			}
 			curl_close ($ch);
 			file_put_contents($mwlcachefile, $server_output);
@@ -286,7 +286,7 @@ class ExternalAuthController extends \BaseController {
 
 			$Q="INSERT INTO tid SET id={$mbr->id}, mid={$mid}, name='LuLaRoe Rep# {$mbr->id}'";
 			$mysqli->query($Q);
-			$tid_id = $mysqli->insert_id;
+			$tid_id = $mbr->id;//$mysqli->insert_id;
 
 			// Set up a BLANK account to tie to this TID .. yeah.. I know .. right? API .. 
 			$Q="INSERT INTO accounts SET number='n/a',routing='n/a',type='{$accttype}',name='".$mysqli->escape_string($data['bank_name'])."'";
@@ -564,8 +564,8 @@ class ExternalAuthController extends \BaseController {
 		$server_output = curl_exec ($ch);
 
 		if ($errno = curl_errno($ch)) {
-			die('Something went wrong connecting to inventory system: '.$errno);
-			return(false);
+			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
+			return(Response::json($result,401));
 		}
 		curl_close ($ch);
 
