@@ -13,6 +13,7 @@ Event::listen('rep.create' , function($rep_id)
 	{
 		$rep->clearUserCache();
 	}
+	$user = User::find($rep_id);
 });
 
 Event::listen('rep.update' , function($rep_id)
