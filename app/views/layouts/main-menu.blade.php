@@ -127,6 +127,7 @@
  							<a href='/media-shared-with-reps?filter=Documents'><i class='fa fa-file'></i> Documents</a>
  							<a href='/media-shared-with-reps?filter=Marketing-Tools'><i class='fa fa-wrench'></i> Marketing Tools</a>
  							<a href='/media-shared-with-reps?filter=Photo-Gallery'><i class='fa fa-photo'></i> Photo Gallery</a>
+ 							<a href='/media'><i class='fa fa-file-audio-o'></i> Recorded Calls</a>
  							<a href='/media-shared-with-reps?filter=Training'><i class='fa fa-graduation-cap'></i> Training</a>
  						@if (Auth::user()->hasRole(['Superadmin','Admin','Editor']))
  							<a href='/media/create'><i class='fa fa-upload'></i> Upload Tool/Asset</a>

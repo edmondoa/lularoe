@@ -61,18 +61,18 @@
                     <div class="clearfix">
                         <h3 class="pull-left no-pull-xs">Available Inventory</h3>
 						<div class="pull-right">
-							<div class="btn btn-info" onclick="setGroup('A')">Group A</div>
-							<div class="btn btn-info" onclick="setGroup('B')">Group B</div>
-							<div class="btn btn-info" onclick="setGroup('C')">Group C</div>
-							<div class="btn btn-info" onclick="setGroup('L')">Leggings</div>
-							<div class="btn btn-info" onclick="setGroup('K')">Kids Package</div>
+							<div class="btn btn-info" ng-click="setGroup('A')">Group A</div>
+							<div class="btn btn-info" ng-click="setGroup('B')">Group B</div>
+							<div class="btn btn-info" ng-click="setGroup('C')">Group C</div>
+							<div class="btn btn-info" ng-click="setGroup('L')">Leggings</div>
+							<div class="btn btn-info" ng-click="setGroup('K')">Kids Package</div>
 						</div>
                     </div>
                     @include('_helpers.loading')
 					<table class="table table-bordered table-striped" id="currentinventory" width="100%">
                         <tr class="media" dir-paginate-start="inventory in inventories | filter:search | itemsPerPage: pageSize " current-page="currentPage" total-items="countItems">
 							<td style="background:url(/img/media/@{{inventory.model}}.jpg);background-size:contain;background-repeat:no-repeat;width:2.5em">
-								<input  class="bulk-check" type="checkbox" name="size_@{{k}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}"> 
+								<!-- <input  class="bulk-check" type="checkbox" name="size_@{{key}}_@{{$index}}" ng-model="size.checked" ng-checked="size.checked" value="@{{key}}">  -->
 							</td>
 							<td>
 								<div><span ng-bind="inventory.model"></span></div>
@@ -102,6 +102,7 @@
 @section('scripts')
 {{ HTML::script('js/controllers/inventoryController.js') }}
 <script>
+/*
 	var groupMatrix = {
 					'A':{
 						'Maxi':		[5,9,14,14,14,9,5,5],
@@ -136,21 +137,23 @@
 	
 	// Sets the group value information
 	function setGroup(groupid) {
-		$.each(groupMatrix[groupid],function(item,vals) {
-			item = item.replace(/\W/g, '_');
-
-			$('#'+item).parent().toggleClass('toggleBg');
-
-			$('#'+item).find('input[type=text]').each(function(i,itm) {
-				if ($(this).val().length > 0) {
-					$(this).val('');
-				}
-				else ($(this).val(vals[i]));
-
-				//:if (typeof this != 'undefined' ) this.val(vals[i]);
-			})
-		});
+		
+		// $.each(groupMatrix[groupid],function(item,vals) {
+			// item = item.replace(/\W/g, '_');
+// 
+			// $('#'+item).parent().toggleClass('toggleBg');
+// 
+			// $('#'+item).find('input[type=text]').each(function(i,itm) {
+				// if ($(this).val().length > 0) {
+					// $(this).val('');
+				// }
+				// else ($(this).val(vals[i]));
+// 
+				// //:if (typeof this != 'undefined' ) this.val(vals[i]);
+			// })
+		// });
 	}
+*/
 
     angular.extend(ControlPad, (function(){                
                 return {

@@ -4,7 +4,7 @@
 	<div class="row">
 		<div class="col col-lg-4 col-md-6">
 			@include('_helpers.breadcrumbs')
-		    <h1>Edit Popup-Boutique</h1>
+		    <h1>Edit Pop-Up Boutique</h1>
 		    {{ Form::model($party, array('route' => array('parties.update', $party->id), 'method' => 'PUT')) }}
 		
 			    <div class="form-group">
@@ -33,7 +33,7 @@
 			    </div>
 			    
 			    <div class="form-group">
-			        {{ Form::label('public', 'Popup-Boutique Visibility') }}
+			        {{ Form::label('public', 'Pop-Up Boutique Visibility') }}
 		   			{{ Form::select('public', [
 		   				'0' => 'Limit to people I or my guests invite',
 		   				'1' => 'Display publicly',
@@ -62,7 +62,7 @@
 					<button type="button" class="btn btn-default margin-top-2" id="add-image"><i class="fa fa-plus"></i> Add Image</button>
 				</div>
 		
-		    {{ Form::submit('Update Popup-Boutique', array('class' => 'btn btn-primary')) }}
+		    {{ Form::submit('Update Pop-Up Boutique', array('class' => 'btn btn-primary')) }}
 		
 		    {{Form::close()}}
 		</div>
