@@ -44,7 +44,7 @@ class InventoryController extends \BaseController {
 		// Do the MATHS
 		foreach ($this->discounts as $discount) {
 			// I <3 Eval .. NOT!
-			if ($discount['repsale'] == Session::get('repsale')) {
+			if (($discount['repsale']) == (Session::get('repsale'))) {
 				if ($discount['math']['op'] == '=') 
 					$dcamt = $discount['math']['n'];
 				else
@@ -421,13 +421,6 @@ class InventoryController extends \BaseController {
 
 	public function finalizePurchase($auth, $invitems) {
 
-		if (Session::get('repsale')) {
-			// Deduct item quantity from inventory
-			foreach ($invitems as $item) {
-				$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-				$deduction	= json_decode(Route::dispatch($request)->getContent());
-			}
-		}
 
 		$sessiondata = Session::all();
 		$csuser 	 = '';
@@ -451,15 +444,6 @@ class InventoryController extends \BaseController {
 		// If the session has an emailto person
 		$data['email'] = isset($sessiondata['emailto']) ? $sessiondata['emailto'] : Auth::user()->email;
 
-		// A new world order
-		$o = new Order();
-		$o->user_id			= (!empty($csuser->sponsor_id)) ?  $csuser->sponsor_id : Auth::user()->id;
-		$o->total_price		= Session::get('subtotal',0);
-		$o->total_points	= Session::get('subtotal',0);
-		$o->total_tax		= Session::get('tax',0);
-		$o->total_shipping	= Session::get('shipcost',0);
-		$o->details			= json_encode(array('orders'=>Session::get('orderdata'),'payments'=>Session::get('paymentdata')));
-		$o->save();
 
 		// If ordering NEW inventory
 		if (!Session::get('repsale'))
@@ -479,6 +463,28 @@ class InventoryController extends \BaseController {
 				->replyTo($data['email'])
 				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 			});
+		}
+		// If a REP sold this
+		else {
+			$authkey = Auth::user()->key;
+			@list($key,$exp) = explode('|',$authkey);
+			$authinfo->mwl = $key;
+
+			// A new world order
+			$o = new Order();
+			$o->user_id			= (!empty($csuser->sponsor_id)) ?  $csuser->sponsor_id : Auth::user()->id;
+			$o->total_price		= Session::get('subtotal',0);
+			$o->total_points	= Session::get('subtotal',0);
+			$o->total_tax		= Session::get('tax',0);
+			$o->total_shipping	= Session::get('shipcost',0);
+			$o->details			= json_encode(array('orders'=>Session::get('orderdata'),'payments'=>Session::get('paymentdata')));
+			$o->save();
+
+			// Deduct item quantity from inventory
+			foreach ($invitems as $item) {
+				$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
+				$deduction	= json_decode(Route::dispatch($request)->getContent());
+			}
 		}
 
 		if (isset($sessiondata['consignment_purchase'])) {

@@ -36,6 +36,13 @@ try {
         }    
     });
 */
+
+	app.filter('nospace', function () {
+		return function (value) {
+			return (!value) ? '' : value.replace(/\W/g, '_');
+		};
+	});
+
 	app.controller('BalanceController', ['$scope', 
         function($scope) {
 			$scope.balance = ctrlpad.balanceCtrl.balance;
@@ -240,6 +247,24 @@ try {
             $scope.orders.splice(0);
         };
         
+		$scope.massAdd = function(array, n) {
+            angular.forEach($scope.inventories, function(inventory){
+                if(inventory.itemnumber == array.itemnumber && inventory.model == array.model){
+                    angular.forEach(inventory.sizes, function(size){
+                        if(size.key == n.key){
+                            size.checked = !n.checked;
+                            if(!size.value) size.checked = false;
+                            if(size.checked){
+                                $scope.addOrder(array);     
+                            }else{
+                                $scope.removeOrder(array, size.key);
+                            }
+                        }
+                    }) 
+                }    
+            });
+        };
+
         $scope.toggleCheck = function(array,n){
             angular.forEach($scope.inventories, function(inventory){
                 if(inventory.itemnumber == array.itemnumber && inventory.model == array.model){
