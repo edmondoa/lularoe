@@ -43,10 +43,27 @@ class Product extends \Eloquent
 		else return '';
 	}
 	
+	public function getBarCodeAttribute() {
+		if (isset($this->barcode_image)) {
+			if(empty($this->barcode_image))
+			{
+				$this->barcode_image = \DNS1D::getBarcodePNGPath($this->sku, "C128",3,75);
+				$this->save();
+			}
+			elseif(!is_file(public_path().$this->barcode_image))
+			{
+				$this->barcode_image = \DNS1D::getBarcodePNGPath($this->sku, "C128",3,75);
+				$this->save();
+			}
+			return $this->barcode_image;
+		}
+		else return '';
+	}
+	
     public function items() {
 		return $this->belongsToMany('Item', 'product_item', 'product_id', 'item_id');
     }
 	
-	protected $appends = array('new_record', 'category_name', 'image_sm');
+	protected $appends = array('new_record', 'category_name', 'image_sm','bar_code');
 
 }

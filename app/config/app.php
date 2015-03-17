@@ -125,8 +125,8 @@ return array(
 		'LLR\Twilio\TwilioServiceProvider',
 		'LLR\Commission\CommissionServiceProvider',
     	'Intervention\Image\ImageServiceProvider',
-    	'Camroncade\Timezone\TimezoneServiceProvider'
-
+    	'Camroncade\Timezone\TimezoneServiceProvider',
+    	'Dinesh\Barcode\BarcodeServiceProvider'
 
 	),
 
@@ -197,7 +197,10 @@ return array(
 		'Twilio'		  => 'LLR\Facades\Twilio',
 		'CMSPayment'	  => 'LLR\Facades\Payment',
 		'Commission'	  => 'LLR\Facades\Commission',
-		'Image'	  => 'Intervention\Image\Facades\Image'
+		'Image'				=> 'Intervention\Image\Facades\Image',
+		'DNS1D'				=> 'Dinesh\Barcode\Facades\DNS1DFacade',
+		'DNS2D'				=> 'Dinesh\Barcode\Facades\DNS2DFacade',
+
 
 	),
 

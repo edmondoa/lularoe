@@ -157,9 +157,6 @@ try {
             
         };
 
-
-
-        
         $scope.isEmpty = function(){
             return !($scope.orders.length);
         }
@@ -182,8 +179,8 @@ try {
             }else n.doNag = false;
             
             angular.forEach(n.sizes, function(size){
-                if(!$scope.isInOrder($scope.orders, n, size)){
-                    if(size.checked){
+                if(!$scope.isInOrder($scope.orders, n, size)) {
+                    if(size.checked || size.value){
                         var quantity = n.numOrder;
                         if(size.value >= quantity){
                             size.numOrder = quantity;
@@ -247,16 +244,24 @@ try {
             $scope.orders.splice(0);
         };
         
+		// array = inventory
+		// n = size chart
 		$scope.massAdd = function(array, n) {
             angular.forEach($scope.inventories, function(inventory){
+				// If we've selected the appropriate scope level inventory with the passed array inventory
                 if(inventory.itemnumber == array.itemnumber && inventory.model == array.model){
-                    angular.forEach(inventory.sizes, function(size){
-                        if(size.key == n.key){
-                            size.checked = !n.checked;
-                            if(!size.value) size.checked = false;
-                            if(size.checked){
+					// Go through each size if the scope level inventory until we find the passed in size chart key
+                    angular.forEach(inventory.sizes, function(size,sidx){
+                        if(size.key == n.key) {
+									
+                            if(size.numOrder > 0){
+								for(var i=0; i< $scope.orders.length; i++){
+									if ($scope.orders[i].size == n.key) $scope.orders[i].numOrder = n.numOrder;
+								}
+								size.checked = true;
                                 $scope.addOrder(array);     
                             }else{
+								size.checked = false;
                                 $scope.removeOrder(array, size.key);
                             }
                         }
@@ -390,7 +395,7 @@ try {
                         if(shared.requestPromise && shared.getIsLoading()){
                             shared.requestPromise.abort();    
                         }
-                        shared.requestPromise = shared.requestData('discounts/'+n);
+                        shared.requestPromise = shared.requestData('/discounts/'+n);
                         shared.requestPromise.then(function(data){
                             $scope.discounts = data; 
                             n = n - data.total;
@@ -398,7 +403,7 @@ try {
                             if(shared.requestPromise && shared.getIsLoading()){
                                 shared.requestPromise.abort();    
                             }
-                            shared.requestPromise = shared.requestData('tax/'+n);
+                            shared.requestPromise = shared.requestData('/tax/'+n);
                             shared.requestPromise.then(function(data){
                                 $scope.tax = data.Tax; 
                                 $scope.total = data.Tax + n;

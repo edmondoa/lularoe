@@ -793,10 +793,10 @@ Route::get('sendonboardmail/{id}', function($id) {
 	Session::put('sponsor',$sponsor);
 
 	$hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
-	$verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash;
+	$verification_link = 'https://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash;
 
 	print "Sending ..";
-	Mail::send('emails.verification', compact('verification_link'), function($message) use (&$user) {
+	Mail::send('emails.verification', compact('verification_link', 'user'), function($message) use (&$user) {
 		$message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Please complete your '.Config::Get('site.company_name').' registration');
 	});
 
