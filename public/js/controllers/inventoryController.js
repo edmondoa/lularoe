@@ -260,6 +260,12 @@ try {
             });   
         };
         
+        $scope.setGroup = function(groupid) {
+
+        	$scope.size[0].numOrder = 22;
+        	
+        };
+        
         $scope.plus = function(n){
             angular.forEach($scope.inventories, function(inventory){
                 if(inventory.itemnumber == n.itemnumber && inventory.model == n.model){

@@ -5,7 +5,7 @@
 			<h1 class="pull-left">Welcome, {{ $user->first_name }}</h1>
 			<a class="btn btn-primary pull-right margin-bottom-2" href="/sales/create"><i class='fa fa-plus'></i> New Sale</a>
 			<div class="clear"></div>
-			<p>
+			<p class="well inline-block">
 				Send the following link to anyone whom you'd like to join your team:<br>
 				<a href="{{ url() }}/join/{{ $user->public_id }}">{{ url() }}/join/{{ $user->public_id }}</a>
 			</p>

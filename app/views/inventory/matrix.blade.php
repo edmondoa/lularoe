@@ -137,20 +137,21 @@
 	
 	// Sets the group value information
 	function setGroup(groupid) {
-		$.each(groupMatrix[groupid],function(item,vals) {
-			item = item.replace(/\W/g, '_');
-
-			$('#'+item).parent().toggleClass('toggleBg');
-
-			$('#'+item).find('input[type=text]').each(function(i,itm) {
-				if ($(this).val().length > 0) {
-					$(this).val('');
-				}
-				else ($(this).val(vals[i]));
-
-				//:if (typeof this != 'undefined' ) this.val(vals[i]);
-			})
-		});
+		
+		// $.each(groupMatrix[groupid],function(item,vals) {
+			// item = item.replace(/\W/g, '_');
+// 
+			// $('#'+item).parent().toggleClass('toggleBg');
+// 
+			// $('#'+item).find('input[type=text]').each(function(i,itm) {
+				// if ($(this).val().length > 0) {
+					// $(this).val('');
+				// }
+				// else ($(this).val(vals[i]));
+// 
+				// //:if (typeof this != 'undefined' ) this.val(vals[i]);
+			// })
+		// });
 	}
 */
 
