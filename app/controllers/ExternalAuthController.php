@@ -902,7 +902,7 @@ class ExternalAuthController extends \BaseController {
 		// Set session key to null 
 		if (empty($sessionkey)) $sessionkey = null;
 		
-        return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),200);
+        return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),($error) ? 401 : 200);
 
 	}
 	
