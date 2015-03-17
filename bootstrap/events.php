@@ -1,7 +1,7 @@
 <?php
 
 Event::listen('illuminate.query', function($query){
-	\Log::info($query);
+	// \Log::info($query);
 	// /echo""; print_r($query); echo"\r\n";
 });
 
@@ -13,6 +13,7 @@ Event::listen('rep.create' , function($rep_id)
 	{
 		$rep->clearUserCache();
 	}
+	$user = User::find($rep_id);
 });
 
 Event::listen('rep.update' , function($rep_id)

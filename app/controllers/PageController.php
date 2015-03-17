@@ -9,10 +9,12 @@ class PageController extends \BaseController {
 	 */
 	public function index()
 	{
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+		if (Auth::check() && Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
 			$pages = Page::all();
 			return View::make('page.index', compact('pages'));
-		}
+		}else{
+            return View::make('errors.missing');
+        }
 	}
 
 	/**

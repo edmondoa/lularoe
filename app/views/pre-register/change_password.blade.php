@@ -10,7 +10,6 @@
 	<form name='loginForm'>
 	    <div class="row">
 	        <div class="col col-xl-3 col-lg-4 col-md-6 col-sm-6">
-	                {{ Form::hidden('sponsor_id', $sponsor->id) }}
 	                
 	                <div class="form-group">
 	                    {{ Form::label('password', 'Password') }}

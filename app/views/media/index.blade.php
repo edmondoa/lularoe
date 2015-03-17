@@ -17,7 +17,9 @@
 		        <div class="row">
 		            <div class="col-md-12">
 		                <h1 class="no-top pull-left no-pull-xs">
-		                	@if (isset($user->id))
+		                	@if (isset($filter))
+		                		{{ $filter }}
+		                	@elseif (isset($user->id))
 		                		@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && Auth::user()->id != $user->id || (Auth::user()->id == 0 && $user->id == 0))
 		                			{{ $user->full_name }}'s Tools/Assets
 		                		@else
@@ -45,82 +47,95 @@
 			    	</div>
 		        </div><!-- row -->
 		        <div class="row">
-		    		<div class="col-sm-8 col-xs-12 page-actions-left">
-		                <div class="pull-left">
-		                	@if ((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-			                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-upload"></i></a>
-			                    <div class="pull-left">
-			                        <div class="input-group pull-left margin-right-2">
-			                            <select class="form-control selectpicker actions">
-				                            <option value="/media/delete">Delete</option>
-			                            	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
-				                                <option value="/media/disable" selected>Disable</option>
-			                                	<option value="/media/enable">Enable</option>
-				                            @endif
-			                            </select>
-			                            <div class="input-group-btn no-width">
-			                                <button class="btn btn-default">
-			                                    <i class="fa fa-check"></i>
-			                                </button>
-			                            </div>
-			                        </div>
-			                    </div>
-			                @endif
-	                        <?php /* select file types */ ?>
-	                        <div class="pull-left margin-right-1">
-	                            <select ng-model="search.$" id="categories" class="form-control">
-	                            	<option value="">All file types</option>
-	                            	<option value="@include('_helpers.media_count_type')" ng-if="count.count > 0" ng-repeat="count in media_counts">@include('_helpers.media_count_type')s (@include('_helpers.media_count_count'))</span></option>
-	                            </select>
-	                    	</div>
-	                        <?php /* select tags */ ?>
-	                        <div class="pull-left margin-right-1">
-	                            <select ng-model="search.$" id="tags" class="form-control">
-	                            	<option value="">All tags</option>
-	                            	<option value="{{'{'.'{tag.name}'.'}'}}" ng-if="tag.count > 0" ng-repeat="tag in tags">{{'{'.'{tag.name}'.'}'}} ({{'{'.'{tag.count}'.'}'}})</span></option>
-	                            </select>
-	                    	</div>
-	                        <?php /* filter and sort files */ ?>
-	                        <div class="pull-left">
-	                        	<div class="btn-group">
-				                	<button type="button" class="btn btn-default active" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date
-				                		<span>
+		    		<div class="col-md-9 col-sm-8 col-xs-12 page-actions-left">
+		    			@if ((isset($user->id) && Auth::user()->id == $user->id) || Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+		                	<div class="panel panel-default pull-left margin-right-1">
+		                		<div class="panel-heading">
+		                			<h3 class="panel-title">Actions</h3>
+		                		</div>
+		                		<div class="panel-body">
+					                    <a class="btn btn-primary pull-left margin-right-1" title="New" href="{{ url('media/create') }}"><i class="fa fa-upload"></i></a>
+					                    <div class="pull-left">
+					                    	<button type="button" ng-click="selectAll()" class="btn btn-default pull-left margin-right-1">Select All</button>
+					                        <div class="input-group pull-left margin-right-2">
+					                            <select class="form-control selectpicker actions">
+						                            <option value="/media/delete">Delete</option>
+					                            	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
+						                                <option value="/media/disable" selected>Disable</option>
+					                                	<option value="/media/enable">Enable</option>
+						                            @endif
+					                            </select>
+					                            <div class="input-group-btn no-width">
+					                                <button class="btn btn-default">
+					                                    <i class="fa fa-check"></i>
+					                                </button>
+					                            </div>
+					                        </div>
+					                    </div>
+		                		</div>
+		                	</div><!-- panel -->
+	                	@endif
+	                	<div class="panel panel-default pull-left">
+	                		<div class="panel-heading">
+	                			<h3 class="panel-title">Filters</h3>
+	                		</div>
+	                		<div class="panel-body">
+		                        <?php /* select file types */ ?>
+		                        <div class="pull-left margin-right-1">
+		                            <select ng-model="search.$" id="categories" class="form-control">
+		                            	<option value="">All file types</option>
+		                            	<option value="@include('_helpers.media_count_type')" ng-if="count.count > 0" ng-repeat="count in media_counts">@include('_helpers.media_count_type')s (@include('_helpers.media_count_count'))</span></option>
+		                            </select>
+		                    	</div>
+		                        <?php /* select tags */ ?>
+		                        <div class="pull-left margin-right-1">
+		                            <select ng-model="search.$" id="tags" class="form-control">
+		                            	<option value="">All tags</option>
+		                            	<option value="{{'{'.'{tag.name}'.'}'}}" ng-if="tag.count > 0" ng-repeat="tag in tags">{{'{'.'{tag.name}'.'}'}} ({{'{'.'{tag.count}'.'}'}})</span></option>
+		                            </select>
+		                    	</div>
+		                        <?php /* filter and sort files */ ?>
+		                        <div class="pull-left">
+		                        	<div class="btn-group">
+					                	<button type="button" class="btn btn-default active" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date
+					                		<span>
+					                			<span ng-show="orderByField == 'updated_at'">
+					                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+					                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+					                			</span>
+					                		</span>
+					            		</span>
+					                	<button type="button" class="btn btn-default" ng-click="orderByField='type'; reverseSort = !reverseSort">Type
+					                		<span>
+					                			<span ng-show="orderByField == 'type'">
+					                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+					                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+					                			</span>
+					                		</span>
+					            		</span>
+					                	<button type="button" class="btn btn-default" ng-click="orderByField='title'; reverseSort = !reverseSort">Name
+					                		<span>
+					                			<span ng-show="orderByField == 'title'">
+					                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
+					                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
+					                			</span>
+					                		</span>
+					            		</span>
+					            	</div>
+		                        	
+		                            <!-- <select ng-model="sort" class="form-control">
+										<option class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date Modified
 				                			<span ng-show="orderByField == 'updated_at'">
 				                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
 				                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
 				                			</span>
-				                		</span>
-				            		</span>
-				                	<button type="button" class="btn btn-default" ng-click="orderByField='type'; reverseSort = !reverseSort">Type
-				                		<span>
-				                			<span ng-show="orderByField == 'type'">
-				                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-				                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-				                			</span>
-				                		</span>
-				            		</span>
-				                	<button type="button" class="btn btn-default" ng-click="orderByField='title'; reverseSort = !reverseSort">Name
-				                		<span>
-				                			<span ng-show="orderByField == 'title'">
-				                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-				                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-				                			</span>
-				                		</span>
-				            		</span>
-				            	</div>
-	                        	
-	                            <!-- <select ng-model="sort" class="form-control">
-									<option class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Date Modified
-			                			<span ng-show="orderByField == 'updated_at'">
-			                    			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-			                    			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-			                			</span>
-					            	</option>
-	                            </select> -->
-	                    	</div>
-		                </div>
-		        	</div>
-		        	<div class="col-sm-4 col-xs-12">
+						            	</option>
+		                            </select> -->
+		                    	</div><!-- pull-left -->
+		                	</div><!-- panel-body -->
+		                </div><!-- panel -->
+		     	 	</div><!-- col -->
+		        	<div class="col-md-3 col-sm-4 col-xs-12">
 		                <div class="pull-right">
 		                    <div class="input-group">
 		                        <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
@@ -139,14 +154,14 @@
 	            <div class="col col-md-12">
             		<div ng-hide="val">
 	            		<ul class="tiles">
-		                    <li ng-click="show=!show; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | filter:filter | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+		                    <li ng-click="media.selected=!media.selected; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | filter:filter | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
 		                        <div ng-click="checkbox()">
-		                        	<div class="options" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
+		                        	<div class="options" ng-click="$event.stopPropagation();" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
-										    <span class="form-link pull-left"><i class="fa fa-trash" title="Delete" ng-click="deleteFile(media.id)"></i></span>
+										    <!-- <span class="form-link pull-left"><i class="fa fa-trash" title="Delete" ng-click="$event.stopPropagation(); deleteFile(media.id)"></i></span> -->
 										@endif
-			                        	<a target="_blank" href="/uploads/@include('_helpers.media_url')"><i class="fa fa-eye"></i></a>
-			                        	<a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a>
+			                        	<i class="link fa fa-eye" ng-click="viewFile(media.id, $index)"></i>
+			                        	<!-- <a href="/media/@include('_helpers.media_id')"><i class="fa fa-info"></i></a> -->
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
 			                        		<a href="/media/@include('_helpers.media_id')/edit"><i class="fa fa-pencil"></i></a>
 			                        	@endif
@@ -157,7 +172,7 @@
 				                        	<a href="/media/user/@include('_helpers.media_user_id')"><i class="fa fa-user"></i> <span ng-bind="media.owner"></span></a>
 			                        	</div>
 			                        @endif
-		                        	<div ng-if="show" class="selected" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)">
+		                        	<div ng-if="media.selected == true" class="selected" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)">
 		                        		<input class="bulk-check" type="hidden" name="ids[]" value="@include('_helpers.media_id')">
 		                        	</div>
 		                        	<?php // image ?>
@@ -192,6 +207,15 @@
 	            </div><!-- col -->
 	        </div><!-- row -->
         {{ Form::close() }}
+		<div id="modal" class="modal fade align-center" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		    <div class="modal-dialog modal-lg align-left inline-block" style="width:auto !important; max-width:90%;">
+		        <div class="modal-content">
+		        	<div class="modal-body overflow-hidden">
+						<div id="ajax-content"></div>
+		        	</div>
+		        </div><!-- modal-content -->
+		    </div><!-- modal-dialog -->
+		</div>
     </div><!-- app -->
 @stop
 @section('scripts')
@@ -221,6 +245,7 @@
 		?>
 		
 		$http.get('{{ $media_url }}').success(function(media) {
+			
 			$scope.media = media;
 			// hide if object empty
 			$scope.val = "";
@@ -233,6 +258,43 @@
 				return media.showOptions = false;
 			};
 			
+			// select all
+			$scope.selectAll = function() {
+				
+				// determine whether to select all or unselect all
+				angular.forEach($scope.media, function(media) {
+					if (media.selected == undefined || media.selected == false) {
+						select_all = true;
+					}
+					else select_all = false;
+				});
+				
+				// select all
+				if (select_all == true) {
+					angular.forEach($scope.media, function(media) {
+						media.selected = true;
+					});
+				}
+				
+				// unselect all
+				else {
+					angular.forEach($scope.media, function(media) {
+						media.selected = false;
+					});
+				}
+
+			}
+			
+			// view file
+			var showing_index;
+			$scope.viewFile = function(id, $index) {
+				$http.get('/media/ajax/' + id).success(function(data) {
+					$('#modal #ajax-content').html(data);
+					$('#modal').modal('toggle');
+					showing_index = $index;
+				});
+			}
+			
 			// download file
 			$scope.download = function(url) {
 				window.location.href = '/uploads/' + url;
@@ -240,14 +302,37 @@
 			
 			// delete file
 			$scope.deleteFile = function(id) {
-				confirm = confirm('Are you sure you want to delete this file?');
-				if (confirm == true) {
-					$http.get('/media/destroy/' + id).success(function() {
-						$scope.media.splice($scope.media[id], 1);
-						$scope.media_counts --;
-					});
-				}
+				setTimeout(function() {
+					// throw new Error("my error message");
+					confirm = confirm('Are you sure you want to delete this file?');
+					if (confirm == true) {
+						$http.get('/media/destroy/' + id).success(function() {
+							$scope.media.splice($scope.media[id], 1);
+							$scope.media_counts --;
+						});
+					}
+				}, 1);
 			}
+
+			// change file
+			$('body').on('click', '.changeFile', function() {
+				var direction = $(this).attr('data-direction');
+				if (direction == 'forward') {
+					console.log(showing_index);
+					if (showing_index + 1 <= $scope.media.length) showing_index ++;
+					else showing_index = 0;
+				}
+				else {
+					console.log(showing_index);
+					if (showing_index - 1 >= 0) showing_index --;
+					else showing_index = $scope.media.length;
+				}
+				id = $scope.media[showing_index].id;
+				$http.get('/media/ajax/' + id).success(function(data) {
+					$('#modal #ajax-content').html(data);
+					// $('#modal').modal('toggle');
+				});
+			});
 			
 			// count tags
 			$http.get('/api/media-tags').success(function(media_tags) {
@@ -277,9 +362,12 @@
 			        }
 			    }
 			}
+			
 			var filter = getUrlParameter('filter');
-			filter = filter.replace('-', ' ');
-		    $scope.filter = filter;
+			if (typeof filter !== 'undefined') {
+				filter = filter.replace('-', ' ');
+			    $scope.filter = filter;
+			}
 
 			@include('_helpers.bulk_action_checkboxes')
 			

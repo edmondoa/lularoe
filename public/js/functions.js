@@ -1,5 +1,13 @@
 $(document).ready(function() {
     
+    // // resize image-full class
+    // function resizeFullImage() {
+		// width = $('.full-image').width();
+		// height = $('.full-image').height();
+    // $('.full-image').
+//     	
+    // };
+    
     // initialize bootstrap-select plugin
     $('.selectpicker').selectpicker();
    
@@ -64,7 +72,10 @@ $(document).ready(function() {
     });
     
     // initialize bootstrap popovers
-    $("[data-toggle='popover']").popover({html:true, trigger:'click'});
+    $("[data-toggle='popover']").popover({
+    	html:true,
+    	trigger:'click'
+    });
     
     // delete label
     $('.form-group .label .removeContact').click(function() {

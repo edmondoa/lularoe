@@ -6,7 +6,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		                <h1 class="no-top pull-left no-pull-xs">All Products</h1>
+		                <h1 class="no-top pull-left no-pull-xs">All Inventory</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
@@ -55,7 +55,7 @@
 	                    <thead>
 	                        <tr>
                             	
-                            	<th colspan="2" class="link" ng-click="orderByField='name'; reverseSort = !reverseSort">Product Description
+                            	<th colspan="2" class="link" ng-click="orderByField='name'; reverseSort = !reverseSort">Inventory Description
                             		<span>
                             			<span ng-show="orderByField == 'name'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -141,7 +141,7 @@
 					            </td>
 					            
 					            <!-- <td>
-					            	<a class="btn btn-primary pull-right" href="/store/@include('_helpers.product_id')">View Product</a>
+					            	<a class="btn btn-primary pull-right" href="/store/@include('_helpers.product_id')">View Inventory</a>
 					            </td> -->
 	                        </tr>
 	                        <tr dir-paginate-end></tr>

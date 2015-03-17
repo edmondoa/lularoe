@@ -109,10 +109,8 @@ class userController extends \BaseController {
 			
 			// make array of addresses set as visible by target user or viewable by current user
 			$addresses = [];
-			if (Address::where('addressable_id', $id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Billing')->first();
-			if (Address::where('addressable_id', $id)->where('label', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->rank_id >= 9)) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Shipping')->first();
-			// echo '<pre>'; print_r($user); echo '</pre>';
-			// exit;
+			if (Address::where('addressable_id', $id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Billing')->first();
+			if (Address::where('addressable_id', $id)->where('label', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Shipping')->first();
 			return View::make('user.show', compact('user', 'addresses'));
 		}
 		else {
@@ -135,8 +133,9 @@ class userController extends \BaseController {
 		}
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
 			$user = User::find($id);
-			
-			return View::make('user.edit', compact('user'));
+			$sponsor = User::find($user->sponsor_id);
+            $sponsor_name = !empty($sponsor) ? $sponsor->first_name.' '.$sponsor->last_name : '';
+			return View::make('user.edit', compact('user','sponsor_name'));
 		}
 	}
 
@@ -228,6 +227,7 @@ class userController extends \BaseController {
 			if (isset($data['phone'])) $data['phone'] = formatPhone($data['phone']);
 			$validator = Validator::make($data, $rules);
 
+
 			// We cannot allow a circular reference in hierarchy
 			if (isset($data['sponsor_id']) && $old_user_data->sponsor_id != $data['sponsor_id'])
 			{
@@ -261,6 +261,17 @@ class userController extends \BaseController {
 				$data['password'] = Hash::make($data['password']);
 			}
 			$data['email'] = strtolower($data['email']);
+
+			// Double checks on signup and consignment
+			if (!Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+				unset($data['consignment']);
+			}
+			else {
+				// This means it's been edited by an 
+				// admin user and or they are existing
+				$data['hasSignUp'] = 2; 
+			}
+
 			$user->update($data);
 			if($old_user_data->sponsor_id != $user->sponsor_id)
 			{

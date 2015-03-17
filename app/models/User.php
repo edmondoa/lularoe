@@ -40,12 +40,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'dob',
 		'public_id',
 		'consignment',
+		'hasSignUp',
 		'role_id',
 		'key',
 		'image',
 		'disabled',
 		'created_at',
-		'updated_at'
+		'updated_at',
+		'hide_email',
+		'hide_phone',
+		'hide_billing_address',
+		'hide_shipping_address',
 	];
 
 	use UserTrait, RemindableTrait;

@@ -61,7 +61,8 @@ class ExternalAuthController extends \BaseController {
 		$server_output = '';
 
 		// Generates the list of items from the product table per user
-		if (!empty($mbr) && $mbr->id > 0) {
+		//if (!empty($mbr) && $mbr->id > 0) {
+		if (!empty($mbr)) {
 			$p = Product::where('user_id','=',$mbr->id)->get(array('id','name','quantity','make','model','rep_price','size','sku','image'));
 			$itemlist	= [];
 			$count		= 0;
@@ -95,10 +96,13 @@ class ExternalAuthController extends \BaseController {
 			}
 
 			// Reorder this with numerical indeces
-			foreach($items as $k=>$v)
-			{
-				$itemlist[$count++] = $v;
+			if (isset($items)) {
+				foreach($items as $k=>$v)
+				{
+					$itemlist[$count++] = $v;
+				}
 			}
+			else $itemlist = null;
 
 			return(Response::json($itemlist, 200, [], JSON_PRETTY_PRINT));
 		}
@@ -134,8 +138,8 @@ class ExternalAuthController extends \BaseController {
 			$server_output = curl_exec ($ch);
 
 			if ($errno = curl_errno($ch)) {
-				$result = array('errors'=>true,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
-				return(Response::json($result,500));
+				$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
+				return(Response::json($result,401));
 			}
 			curl_close ($ch);
 			file_put_contents($mwlcachefile, $server_output);
@@ -250,6 +254,65 @@ class ExternalAuthController extends \BaseController {
 
 	// What is this hackery?!
 	// PLEASE baby Jesus, lets get an api for these things.
+	public function setbankinfo($user_id, $data, $cid = 'llr') {
+
+        $mbr	= User::where('id', '=', $user_id)->first();
+		$tid_id = '';
+
+		try {
+			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
+		}
+		catch (Exception $e)
+		{
+			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
+			return(Response::json($noconnect, 500));
+		}
+
+		// Get the TID
+		$Q = "SELECT * from tid where id={$mbr->id} LIMIT 1";
+
+		$res = $mysqli->query($Q);
+		if ($res->num_rows) {
+			$tidinfo = $res->fetch_object();
+			$tid_id	 = $tidinfo->id;
+			$acct_id = $tidinfo->account;
+		}
+
+		if (empty($tid_id)) {
+			$accttype	= $this->getAccountType('Checking');
+
+			// select count number of tids inside a mid if > 100 get next mid .. etc.
+			$mid		= $this->getNextAvailableMid();
+
+			$Q="INSERT INTO tid SET id={$mbr->id}, mid={$mid}, name='LuLaRoe Rep# {$mbr->id}'";
+			$mysqli->query($Q);
+			$tid_id = $mbr->id;//$mysqli->insert_id;
+
+			// Set up a BLANK account to tie to this TID .. yeah.. I know .. right? API .. 
+			$Q="INSERT INTO accounts SET number='n/a',routing='n/a',type='{$accttype}',name='".$mysqli->escape_string($data['bank_name'])."'";
+			$mysqli->query($Q);
+			$acct_id = $mysqli->insert_id;
+
+			$Q="UPDATE tid SET account={$acct_id} WHERE id='{$tid_id}' LIMIT 1";
+			$mysqli->query($Q);
+		}
+
+		// GRODY
+		// This is why we need the API .. right effing here .. 
+		$shakey =  "{$cid} ".$mysqli->escape_string($data['bank_name'])." {$acct_id}";
+		$Q="UPDATE accounts SET number=AES_ENCRYPT('".$mysqli->escape_string($data['bank_account'])."',SHA2('{$shakey}',512)), routing=AES_ENCRYPT('".$mysqli->escape_string($data['bank_routing'])."', SHA2('{$shakey}',512)), name='".$mysqli->escape_string($data['bank_name'])."' WHERE id={$acct_id} LIMIT 1";
+		$mysqli->query($Q);
+		$mysqli->close();
+	}
+
+	public function getNextAvailableMid() {
+		return 1;
+	}
+
+	public function getAccountType($type = 'Checking') {
+		return 1;
+	}
+
 	public function setmwlpassword($id, $pass, $cid = 'llr') {
 		$cid = $this->mwl_db;
 
@@ -259,12 +322,12 @@ class ExternalAuthController extends \BaseController {
 		catch (Exception $e)
 		{
 			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
-			return(Response::json($noconnect,200));
+			return(Response::json($noconnect, 500));
 		}
 
 		$pwd = base64_encode(md5($pass,true));
 		$pwdf = base64_encode(md5($cid.$pwd,true));
-		$Q = "REPLACE INTO users SET username='{$id}', password='{$pwdf}'";
+		$Q = "INSERT INTO users SET username='{$id}', password='{$pwdf}' ON DUPLICATE KEY UPDATE password='{$pwdf}'";
 		$res = $mysqli->query($Q);
 
 		$mysqli->close();
@@ -301,10 +364,21 @@ class ExternalAuthController extends \BaseController {
 									"price":59.99,
 									"image":"http://mylularoe.com/img/media/Ana.jpg",
 									"model":"Ana"}]');
+		$stub_items = [];
+
 		$res = $mysqli->query($Q);
 		while($txn = $res->fetch_assoc())
 		{
-			$txn['items'] = $stub_items;
+			$ordernum = $txn['order_number'];
+			if (!isset($stub_items["".$ordernum])) 
+			{
+				$l = Ledger::where('transactionid', '=', $ordernum)->get(array('data'))->first();
+				if ($l) {
+					$stub_items["".$ordernum] = json_decode(json_decode($l->data));
+				}
+				else $stub_items["".$ordernum] = array();
+			}
+			$txn['items'] = $stub_items["".$ordernum];
 			$txns[] = $txn;
 		}	
 		$mysqli->close();
@@ -376,6 +450,9 @@ class ExternalAuthController extends \BaseController {
 	{
 		$cartdata	= Input::get('cart', $cart);
 		$endpoint	= '';
+
+		// If this is a taxless purchase such as consignment
+		if (Session::has('notax')) Input::merge(array('tax'=>0));
 
 		if 		(Input::get('cash')) 	$txtype = 'CASH';
 		elseif	(Input::get('check'))	$txtype = 'ACH';
@@ -487,8 +564,8 @@ class ExternalAuthController extends \BaseController {
 		$server_output = curl_exec ($ch);
 
 		if ($errno = curl_errno($ch)) {
-			die('Something went wrong connecting to inventory system: '.$errno);
-			return(false);
+			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
+			return(Response::json($result,401));
 		}
 		curl_close ($ch);
 
@@ -681,6 +758,7 @@ class ExternalAuthController extends \BaseController {
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $txdata);
 
+//die(print_r($txdata,true));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 		if ($verbose)
@@ -693,9 +771,6 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		$server_output = curl_exec ($ch);
-		if (preg_match('/Unknown failure transaction was not written to database/',$server_output)) {
-			$server_output = str_replace('"Refnum',',"Refnum', $server_output);
-		}
 		$response_obj = json_decode($server_output);
 
 		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
@@ -760,7 +835,7 @@ class ExternalAuthController extends \BaseController {
         return ($returndata);
 	}
 
-	public function auth($id, $pass = '') {
+	public function auth($login, $pass = '') {
 		$pass	= trim(Input::get('pass', $pass));
         $status = 'ERR';
         $error  = true;
@@ -770,17 +845,21 @@ class ExternalAuthController extends \BaseController {
 		$tstamp		= 0;
 		$sessionkey = '';
 
-		 // Find them here
-        $mbr = User::where('id', '=', $id)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
+
+		 // Find them here 5.2.0 feature filter_var
+		if (filter_var($login,FILTER_VALIDATE_EMAIL))
+        $mbr = User::where('email', '=', $login)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
+		else
+        $mbr = User::where('id', '=', $login)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
 
         // Can't find them?
         if (!isset($mbr)) {
             $mbr	= null;
-            $status = 'User '.strip_tags($id).' not found';
+            $status = 'User '.strip_tags($login).' not found';
         }
 		else if (Hash::check($pass, $mbr['attributes']['password'])) {
         	$error  = false;
-			$status = 'User '.strip_tags($id).' found ok';
+			$status = 'User '.strip_tags($login).' found ok';
 			$data = array(
 				'id'			=> $mbr['attributes']['id'],
 				'public_id'		=> $mbr['attributes']['public_id'],
@@ -827,10 +906,10 @@ class ExternalAuthController extends \BaseController {
 		// Set session key to null 
 		if (empty($sessionkey)) $sessionkey = null;
 		
-        return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),200);
+        return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),($error) ? 401 : 200);
 
 	}
-   
+	
     public function reorder(){
         $data = Input::all();
         if(empty($data)){

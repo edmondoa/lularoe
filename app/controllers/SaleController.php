@@ -3,7 +3,7 @@
 class SaleController extends \BaseController {
 
 
-	public function chekcout() {
+	public function checkout() {
 		return View::make('inventory.checkout');
 	}
 
@@ -14,9 +14,22 @@ class SaleController extends \BaseController {
 	 */
 	public function index()
 	{
+		Session::put('repsale',1);
 		//$sales = Sale::all();
 
 		return View::make('sale.index');
+	}
+
+	public function consignmentsale($repid)
+	{
+		Session::put('repsale', 1);
+		$user = User::where('id','=',$repid)->first();
+		return View::make('sale.consignmentsale',compact('user'));
+	}
+
+	public function consignmentpurchase()
+	{
+		die('GOT HERE');
 	}
 
 	/**

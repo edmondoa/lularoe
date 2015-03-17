@@ -173,7 +173,10 @@ class partyController extends \BaseController {
 	 */
 	public function publicShow($id)
 	{
-		$party = Party::findOrFail($id);
+		$party = Party::find($id);
+        if(empty($party)){
+            return Redirect::to('/public-parties');
+        }
 		$address = Party::find($id)->address;
 		$organizer = User::find($party->organizer_id);
 		

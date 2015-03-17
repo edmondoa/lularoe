@@ -50,6 +50,7 @@
 							<li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
 						@endforeach
 					@endif
+					@if (Auth::user()->hasSignUp)
 	                <li class="dropdown">
 	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 	                        <i class="fa fa-user"></i> {{ Auth::user()->first_name }}
@@ -61,6 +62,7 @@
 	                        <li><a href="//{{ Config::get('site.domain') }}/logout"><span class="fa fa-sign-out"></span> &nbsp;Log Out</a></li>
 	                    </ul>
 	                </li>
+					@endif
 	            </ul>
 			@endif
 		</div><!-- /.nav-collapse -->

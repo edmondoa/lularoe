@@ -98,8 +98,11 @@ class DataOnlyController extends \BaseController
 	
 	// all media by user
 	public function getMediaByUser($id) {
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->hasRole(['Rep']) && Auth::user()->id == $id) {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
 			return Media::where('user_id', $id)->with('tags')->get();
+		}
+		elseif (Auth::user()->id == $id) {
+			return Media::where('user_id', $id)->where('disabled', 0)->with('tags')->get();
 		}
 	}
 	
@@ -124,21 +127,33 @@ class DataOnlyController extends \BaseController
 	
 	// all media share with reps
 	public function getMediaSharedWithReps() {
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor', 'Rep'])) {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
 			return Media::where('reps', 1)->with('tags')->get();
+		}
+		elseif (Auth::user()->hasRole(['Rep'])) {
+			return Media::where('reps', 1)->where('disabled', 0)->with('tags')->get();
 		}
 	}
 	
 	// all images by user
 	public function getImagesSharedWithReps() {
-		return Media::where('reps', 1)->where('type', 'Image')->with('tags')->get();
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
+			return Media::where('reps', 1)->where('type', 'Image')->with('tags')->get();
+		}
+		elseif (Auth::user()->hasRole(['Rep'])) {
+			return Media::where('reps', 1)->where('type', 'Image')->where('disabled', 0)->with('tags')->get();
+		}
 	}
 	
 	// all images by user
 	public function getImagesByUser($id) {
-		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || Auth::user()->id == $id) {
+		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
 			return Media::where('user_id', $id)->where('type', 'Image')->with('tags')->get();
 		}
+		elseif (Auth::user()->id == $id) {
+			return Media::where('user_id', $id)->where('type', 'Image')->where('disabled', 0)->with('tags')->get();
+		}
+
 	}
 
 	// media tags

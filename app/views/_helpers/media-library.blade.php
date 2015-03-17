@@ -142,14 +142,14 @@
 
 			// insert image
 			$scope.chooseImage = function() {
-		        if (image_id == undefined) {
+		        if (typeof image_id === 'undefined') {
 		        	var destination = ".mce-combobox.mce-last.mce-abs-layout-item input.mce-textbox.mce-placeholder";
 		        }
 		        else {
 		        	var destination = $('input[name="images[' + image_id + '][path]"]');
 		        }
 				$(destination).attr('value', '/uploads/' + shownMedia.url);
-                if (image_id != undefined) {
+                if (typeof image_id !== 'undefined') {
                 	var parent = $(destination).parents('.list-group-item');
                 	$('.swappable', parent).html('<img src="/uploads/' + shownMedia.url + '" class="thumb-md">');
                 }

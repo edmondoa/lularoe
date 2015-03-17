@@ -9,7 +9,11 @@ class mediaController extends \BaseController {
 	 */
 	public function index()
 	{
-		return View::make('media.index');
+		if (isset($_GET['filter'])) {
+			$filter = $_GET['filter'];
+			$filter = str_replace('-', ' ', $filter);
+		}
+		return View::make('media.index', compact('filter'));
 	}
 	
 	/**
@@ -42,7 +46,11 @@ class mediaController extends \BaseController {
 	public function sharedWithReps()
 	{
 		$shared_with_reps = true;
-		return View::make('media.index', compact('shared_with_reps'));
+		if (isset($_GET['filter'])) {
+			$filter = $_GET['filter'];
+			$filter = str_replace('-', ' ', $filter);
+		}
+		return View::make('media.index', compact('shared_with_reps', 'filter'));
 	}
 
 	/**
@@ -61,7 +69,6 @@ class mediaController extends \BaseController {
 	 */
 	 
 	public function store() {
-
 		// validation
 		$rules = [
 			'media' => 'required|max:5000',
@@ -80,24 +87,26 @@ class mediaController extends \BaseController {
 			}
 		}
 		
-		include app_path() . '/helpers/processMedia.php';
-				
 		// format checkboxes for db
 		$data['reps'] = isset($data['reps']) ? 1 : 0;
+		
+		include app_path() . '/helpers/processMedia.php';
 
 		// if role is Superadmin, Admin, or Editor, set owner id to 0
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $data['user_id'] = 0;
 		
 		// store in db and redirect
-		$media = Media::create($data);
-		
-		// store tags
-		if (isset($data['tag_names'])) {
-			foreach($data['tag_names'] as $tag) {
-				$new_tag = Tag::create([
-					'name' => $tag
-				]);
-				$media->tags()->save($new_tag);
+		foreach($processed_files as $processed_file) {
+			$media = Media::create($processed_file);
+			
+			// store tags
+			if (isset($data['tag_names'])) {
+				foreach($data['tag_names'] as $tag) {
+					$new_tag = Tag::create([
+						'name' => $tag
+					]);
+					$media->tags()->save($new_tag);
+				}
 			}
 		}
 		
@@ -107,9 +116,9 @@ class mediaController extends \BaseController {
 			return $response;
 		}
 		else {
-			if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
-			else $user_id = Auth::user()->id;
-			return Redirect::route('media/user', compact('user_id'))->with('message', 'Asset updated.');
+			if (count($processed_files > 1)) $word = "Assets";
+			else $word = "Asset";
+			return Redirect::route('media/user', compact('user_id'))->with('message', $word . ' saved.');
 		}
 
 	}
@@ -125,6 +134,19 @@ class mediaController extends \BaseController {
 		$media = Media::findOrFail($id);
 		$tags = $media->tags;
 		return View::make('media.show', compact('media', 'tags'));
+	}
+
+	/**
+	 * Display the specified media via ajax.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function showAJAX($id)
+	{
+		$media = Media::findOrFail($id);
+		$tags = $media->tags;
+		return View::make('media.show-ajax', compact('media', 'tags'));
 	}
 
 	/**
@@ -206,8 +228,7 @@ class mediaController extends \BaseController {
 	public function destroy($id)
 	{
 		Media::destroy($id);
-		Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
-		return Redirect::route('media.index')->with('message', 'Asset deleted.');
+		return Redirect::back()->with('message', 'Asset deleted.');
 	}
 
 	/**
@@ -218,6 +239,14 @@ class mediaController extends \BaseController {
 	 */
 	public function destroyAJAX($id)
 	{
+		// delete media
+		$media = Media::find($id);
+		if (file_exists(public_path() . '/uploads/' . $media->url)) {
+			unlink(public_path() . '/uploads/' . $media->url);
+		}
+		if (file_exists(public_path() . '/uploads/' . $media->image_sm)) {
+			unlink(public_path() . '/uploads/' . $media->image_sm);
+		}
 		Media::destroy($id);
 	}
 	
@@ -239,9 +268,8 @@ class mediaController extends \BaseController {
 				}
 				Media::destroy($id);
 			}
-			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'Assets deleted.');
+				return Redirect::back()->with('message', 'Assets deleted.');
 			}
 			else {
 				return Redirect::back()->with('message', 'Asset deleted.');
@@ -260,9 +288,8 @@ class mediaController extends \BaseController {
 			foreach (Input::get('ids') as $id) {
 				Media::find($id)->update(['disabled' => 1]);	
 			}
-			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'Asset disabled.');
+				return Redirect::back()->with('message', 'Asset disabled.');
 			}
 			else {
 				return Redirect::back()->with('message', 'Asset disabled.');
@@ -281,9 +308,8 @@ class mediaController extends \BaseController {
 			foreach (Input::get('ids') as $id) {
 				Media::find($id)->update(['disabled' => 0]);	
 			}
-			Cache::forget('route_'.Str::slug(action('DataOnlyController@getAllMedia')));
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('media.index')->with('message', 'Asset enabled.');
+				return Redirect::back()->with('message', 'Asset enabled.');
 			}
 			else {
 				return Redirect::back()->with('message', 'Asset enabled.');

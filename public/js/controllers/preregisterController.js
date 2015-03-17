@@ -35,7 +35,7 @@ try {
         .otherwise({
             templateUrl: '/template/preregister',
             controller: 'PreRegisterController',
-            redirectTo: '/'
+            redirectTo: '/change_password'
         });
         if(window.history && window.history.pushState){
             //$locationProvider.html5Mode(true).hashPrefix('!');
@@ -150,19 +150,14 @@ try {
                 $scope.next = false;
             }else{
                 $scope.productForm.status = false;
-                $scope.productForm.message = "Please edit and submit the last form before adding another product";
+                $scope.productForm.message = "Please edit and submit the last form before adding another item";
             }     
         };
 
         $scope.saveShippingAddress = function(){
-			// Randy, 
-			// Don't use serializeArray it comes in extremely messy json
-			// We don't know the magic voodoo to parse it out correctly
-
-            //$http.post('/shipping_address',jQuery('form').serializeArray()).success(function(data){
             $http.post('/shipping_address',jQuery('form').serialize()).success(function(data){
                 if(data.status == 'success'){
-					$scope.goto('add-product')
+					$scope.goto(data.next_page);
                     $scope.next = true;
                     $scope.isBankError = false;
                 }else{
@@ -172,11 +167,11 @@ try {
         };
 
         $scope.saveBankinfo = function(){
-            $http.post('/bankinfo',jQuery('form').serializeArray()).success(function(data){
+            $http.post('/bank-info',jQuery('form').serializeArray()).success(function(data){
                 if(data.status == 'success'){
 					$scope.next = true;
                     $scope.isBankError = false;
-                	$scope.goto('shipping_address');
+					$scope.goto(data.next_page);
                 }else{
                     $scope.isBankError = true;
                 }
@@ -197,8 +192,8 @@ try {
             });
             d.save = true;
             console.log(d);
-            console.log("saveproduct");
-            document.location.href = '/inventories'; // Final destination
+            console.log("Final Destination?");
+            //document.location.href = '/inventories'; // Final destination
         };
         
         $scope.next = false;
@@ -229,7 +224,7 @@ try {
                 if(data.status == 'success'){
                     $scope.next = true;
                     $scope.isPassError = false;
-                    $scope.goto('bankinfo')
+					$scope.goto(data.next_page);
                     
                 }else{
                     $scope.isPassError = true;
@@ -241,6 +236,7 @@ try {
         $scope.goto = function(p){
             if(p == '/purchase-agreement'){
                 $http.post('/register',$scope.user).success(function(data){
+					$scope.goto(data.next_page);
                     console.log(data)
                 });    
             }else{

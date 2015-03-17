@@ -2,6 +2,29 @@
 
 class InventoryController extends \BaseController {
 
+	// HARDCODED for now, definitely pullable from a DB though
+	// Discounts are SUBTRACTIVE, meaning the total is combined together
+	// then SUBTRACTED from the total
+    public $discounts = array(
+			[		'title'		=>'Incentive Discount',
+					'repsale'	=>false,
+					'math'		=>array('op'=>'*','n'=>.05)],
+/*
+			[		'title'		=>'Super 15% Discount',
+					'repsale'	=>true,
+					'math'		=>array('op'=>'*','n'=>.15)],
+*/
+			//* Just as an example	
+			//['title'=>'$5 Bump','math'=>array('op'=>'=','n'=>5.00)]
+		);
+
+    /**
+     * Data only
+     */
+    public function matrix() {
+		return View::make('inventory.matrix');
+    }
+
     /**
      * Data only
      */
@@ -13,10 +36,52 @@ class InventoryController extends \BaseController {
         ];
     }
 
+	public function getDiscounts($subt, $viaRequest=true,$doTemplate=false){
+		// Init my vars
+		$discounted	= array();
+		$dctotal	= 0;
+
+		// Do the MATHS
+		foreach ($this->discounts as $discount) {
+			// I <3 Eval .. NOT!
+			if (($discount['repsale']) == (Session::get('repsale'))) {
+				if ($discount['math']['op'] == '=') 
+					$dcamt = $discount['math']['n'];
+				else
+					$dcamt = eval('return (floatVal($subt)'.$discount['math']['op'].$discount['math']['n'].');');
+
+				if ($dcamt){
+					$discounted[] = array(	'title'		=> $discount['title'],
+											'amount'	=> $dcamt);
+					$dctotal += $dcamt;
+				}
+			}
+		}
+		$discounted['total'] = $dctotal;
+
+		// Return my requestors appropriately
+        if(Request::wantsJson()){
+            return Response::json($discounted);
+        }else{
+            if($viaRequest){
+                return $dctotal;
+            }else{
+                return $discounted;
+            }
+        }
+	}
+
     public function getTax($value,$viaRequest=true,$doTemplate=false){
-        // Corona California tax
-        $data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$value);
-        $tax = json_decode($data);
+		if (Session::get('repsale'))  { 
+			// Corona California tax
+			$data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$value);
+			$tax = json_decode($data);
+		}
+		else { // No tax calculated (or flat tax!)
+			$tax = new stdClass();
+			$tax->Tax = 0;
+		}
+
         if($doTemplate) return $tax;
         if(Request::wantsJson()){
             return Response::json($tax);
@@ -43,10 +108,17 @@ class InventoryController extends \BaseController {
         array_map(function($order) use (&$inittotal){
             $inittotal += floatval($order['price']) * intval($order['numOrder']);    
         },$orders);
-        $tax = $this->getTax($inittotal);
+
+		$discounts	= $this->getDiscounts($inittotal,false,true);
+		if ($discounts['total'] > 0) $inittotal = $inittotal - $discounts['total'];
+
+		$tax = $this->getTax($inittotal);
+
+        Session::put('discounts',$discounts);
         Session::put('subtotal',$inittotal);
         Session::put('tax',$tax);
-        return View::make('inventory.checkout',compact('orders','inittotal','tax','subtotal'));    
+
+        return View::make('inventory.checkout',compact('discounts', 'orders','inittotal','tax','subtotal'));    
     }
 
     
@@ -57,6 +129,7 @@ class InventoryController extends \BaseController {
 	 */
 	public function index()
 	{
+		Session::put('repsale', 0);
 		$inventories = Inventory::all();
 
 		return View::make('inventory.index', compact('inventories'));
@@ -210,6 +283,7 @@ class InventoryController extends \BaseController {
      */
     public function sales()
     {
+			Session::put('repsale',1);
             return View::make('inventory.repsales');
     }
 	
@@ -217,6 +291,8 @@ class InventoryController extends \BaseController {
 		// Get the full order amount currently pending purchase
 		$tax = Session::get('tax');
 		$sub = Session::get('subtotal');
+
+		// Discounts are previously calculated and store in subtotal
 		$grandTotal = floatVal($tax) + floatVal($sub);
 
 		if ($absamount > ($grandTotal - Session::get('paidout'))) 
@@ -233,17 +309,19 @@ class InventoryController extends \BaseController {
 
 		$grandTotal = floatVal($tax) + floatVal($sub);
 
+		$po = Session::get('paidout', 0);
+		Session::put('paidout',floatval($po) + floatval($saleAmount));
+
 		// If the sale amount is still less than the grand total
 		if (Session::get('paidout') < $grandTotal) {
 			$diffAmount = floatVal($grandTotal) - floatVal($saleAmount);
 
-			$po = Session::get('paidout', 0);
-			Session::put('paidout',floatval($po) + floatval($saleAmount));
-
 			return false; // Not done paying YET!
 		}
 		// else we are done paying
-		else return true; 
+		else  {
+			return true; 
+		}
 	}
 
 
@@ -255,31 +333,32 @@ class InventoryController extends \BaseController {
 		$absamount = $this->totalCheck($absamount);
 
 		if ($cons <= 0) {
+			$cardauth = new stdClass();
 			$cardauth->status = 'No consignment is currently available to you.';
 			return View::make('inventory.invalidpurchase',compact('cardauth'));
 		}
 		
+		// If we try to pay with more cons than we have
 		if ($cons < $absamount) { 
 			// Set it to maximum $cons
 			Input::replace(array('amount'=>$cons));
 		}
 
+		if (!Session::has('orderdata')) {
+			return Redirect::route('dashboard');
+		}
 
-		// If it IS a rep sale, 
-		// Deduct inventory, if not, ADD inventory
-		$repsale	= Input::get('repsale', 0);  // This is almost always a rep PURCHASE
-
+		// Tax only on repsales not on inventory purchases
 		$tax		= $this->getTax($absamount);
 
 		// If consignment not funds available set to max amount
-
 		$invitems	= Session::get('orderdata');
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
 
 		// MATT HACKERY - Watch for changes in password on ZERO account!!
-		if (!$repsale) {
+		if (!Session::get('repsale')) {
 			// For MWL user loginstuff
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
@@ -302,31 +381,138 @@ class InventoryController extends \BaseController {
 				);
 
 		
-		$ia = Input::all();
-		Input::replace($purchaseInfo);
+		//$ia = Input::all();
+		//Input::replace($purchaseInfo);
 		//$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
 		//$cardauth	= json_decode(Route::dispatch($request)->getContent());
+		//Input::replace($ia);
+
+		// Always no error on consignment with positive balance
 		$cardauth	= json_decode('{ "error":false }');
-		Input::replace($ia);
 
 		if (!$cardauth->error) {
 			$user = Auth::user();
 			$user->consignment = $user->consignment - floatval($absamount);
 			$user->save();
 
+			$cardauth	= array('error'=>false,
+								'result'=>'Approved',
+								'status'=>'Consignment',
+								'balance'=>$user->consignment,
+								'amount'=>$absamount);
+
+			$this->addPayment($cardauth);
+
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
-			if ($repsale) {
-				// Deduct item quantity from inventory
-				foreach ($invitems as $item) {
-					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-					$deduction	= json_decode(Route::dispatch($request)->getContent());
-				}
-			}
-			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+			return $this->finalizePurchase($cardauth, $invitems);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
+	}
+
+	public function addPayment($order, $key = 'paymentdata') {
+		$c = Session::get($key);
+		$c[] = $order;
+		Session::put($key, $c);
+		// return Session::save();
+	}
+
+
+	public function finalizePurchase($auth, $invitems) {
+
+
+		$sessiondata = Session::all();
+		$csuser 	 = '';
+
+		// This is for consignment purchase only
+		if (!empty($sessiondata['consignment_purchase'])) {
+			$consuid 				= $sessiondata['consignment_purchase'];
+			$csuser					= User::find($consuid);
+			$csuser->consignment 	+= 	$sessiondata['subtotal'];
+			$sessiondata['emailto'] = 	$csuser->email;
+			$csuser->save();
+		}
+
+		$view = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
+		$view2 = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
+
+		$receipt	= $view->renderSections();
+		$receipt	= $receipt['manifest'];
+		$data		= [];
+
+		// If the session has an emailto person
+		$data['email'] = isset($sessiondata['emailto']) ? $sessiondata['emailto'] : Auth::user()->email;
+
+
+		// If ordering NEW inventory
+		if (!Session::get('repsale'))
+		{
+			$body = preg_replace('/\s\s+/', ' ',$receipt);
+			$user = Auth::user();
+			$user = (!empty($csuser->sponsor_id)) ?  $csuser : Auth::user();
+
+			$data['user']	= $user;
+			$data['body']	= $body;
+			$data['email']	= $user->email;
+			
+			// This one goes to the main warehouse
+			Mail::send('emails.invoice', $data, function($body) use($user,$data) {
+				$body->to(Config::get('site.contact_email'), "Order Warehousing")
+				->subject('Invoice From: '."{$user->first_name} {$user->last_name}")
+				->replyTo($data['email'])
+				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+			});
+		}
+		// If a REP sold this
+		else {
+			$authkey = Auth::user()->key;
+			@list($key,$exp) = explode('|',$authkey);
+			$authinfo->mwl = $key;
+
+			// A new world order
+			$o = new Order();
+			$o->user_id			= (!empty($csuser->sponsor_id)) ?  $csuser->sponsor_id : Auth::user()->id;
+			$o->total_price		= Session::get('subtotal',0);
+			$o->total_points	= Session::get('subtotal',0);
+			$o->total_tax		= Session::get('tax',0);
+			$o->total_shipping	= Session::get('shipcost',0);
+			$o->details			= json_encode(array('orders'=>Session::get('orderdata'),'payments'=>Session::get('paymentdata')));
+			$o->save();
+
+			// Deduct item quantity from inventory
+			foreach ($invitems as $item) {
+				$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
+				$deduction	= json_decode(Route::dispatch($request)->getContent());
+			}
+		}
+
+		if (isset($sessiondata['consignment_purchase'])) {
+			// Maybe send contgrat email to their upline?
+			// If the session has an emailto person
+			$data['email'] = $csuser->email;
+			$user = $csuser;
+		}
+
+		// This one goes to the final user
+		Mail::send('emails.standard', $data, function($body) use($user,$data) {
+			$body->to($data['email'], "{$user->first_name} {$user->last_name}")
+			->subject('Order receipt from '.Config::get('site.company_name'))
+			->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+		});
+
+		Session::forget('emailto');
+		Session::forget('repsale');
+		Session::forget('orderdata');
+		Session::forget('subtotal');
+		Session::forget('tax');
+		Session::forget('paidout');
+		Session::forget('payments');
+        Session::forget('paymentdata');
+		Session::forget('previous_page_2');
+		Session::put('previous_page_2','/dashboard');
+
+		return $view2;
 	}
 
 	public function cashpurchase() {
@@ -336,15 +522,17 @@ class InventoryController extends \BaseController {
 		$tax		= $this->getTax($absamount);
 		$absamount = $this->totalCheck($absamount);
 
-		$repsale	= Input::get('repsale', 1);  // This is almost always a rep sale
-
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
 
 		$invitems	= Session::get('orderdata');
 
+		if (!Session::has('orderdata')) {
+			return Redirect::route('dashboard');
+		}
+
 		// MATT HACKERY - Watch for changes in password on ZERO account!!
-		if (!$repsale) {
+		if (!Session::get('repsale')) {
 			// For MWL user loginstuff
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
@@ -373,17 +561,13 @@ class InventoryController extends \BaseController {
 		Input::replace($ia);
 
 		if (!$cardauth->error) {
+
+			$this->addPayment($cardauth);
+
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
-			if ($repsale) {
-				// Deduct item quantity from inventory
-				foreach ($invitems as $item) {
-					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-					$deduction	= json_decode(Route::dispatch($request)->getContent());
-				}
-			}
-			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+			return $this->finalizePurchase($cardauth, $invitems);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
 	}
@@ -397,15 +581,17 @@ class InventoryController extends \BaseController {
 
 		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
-		$repsale	= Input::get('repsale', 1);  // This is almost always a rep sale
 		$invitems	= Session::get('orderdata');
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
 
+		if (!Session::has('orderdata')) {
+			return Redirect::route('dashboard');
+		}
 
 		// MATT HACKERY - Watch for changes in password on ZERO account!!
-		if (!$repsale) {
+		if (!Session::get('repsale')) {
 			// For MWL user loginstuff
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
@@ -439,17 +625,13 @@ class InventoryController extends \BaseController {
 		Input::replace($ia);
 
 		if (!$cardauth->error) {
+
+			$this->addPayment($cardauth);
+
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
-			if ($repsale) {
-				// Deduct item quantity from inventory
-				foreach ($invitems as $item) {
-					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-					$deduction	= json_decode(Route::dispatch($request)->getContent());
-				}
-			}
-			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+			return $this->finalizePurchase($cardauth, $invitems);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth','checking'));
 	}
@@ -457,21 +639,23 @@ class InventoryController extends \BaseController {
 	public function purchase(){
 		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
-		$repsale	= Input::get('repsale', 0); 
-
 		$absamount	= abs(Input::get('amount'));
 		$tax		= $this->getTax($absamount);
-		$absamount = $this->totalCheck($absamount);
+		$absamount	= $this->totalCheck($absamount);
 
 		$invitems	= Session::get('orderdata');
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
 
+		if (!Session::has('orderdata')) {
+			return Redirect::route('dashboard');
+		}
+
 		// MATT HACKERY - 
 		// Watch for changes in mwl_password
 		// It is no longer encoded in the site.php file. 
-		if (!$repsale) {
+		if (!Session::get('repsale')) {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
@@ -503,17 +687,14 @@ class InventoryController extends \BaseController {
 		Input::replace($ia);
 
 		if (!$cardauth->error) {
+
+			$this->addPayment($cardauth);
+
 			if (!$this->checkFinalSaleAmount($absamount)) {
 				return Redirect::to('/inv/checkout');
 			}
-			if ($repsale) {
-				// Deduct item quantity from inventory
-				foreach ($invitems as $item) {
-					$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-					$deduction	= json_decode(Route::dispatch($request)->getContent());
-				}
-			}
-			return View::make('inventory.validpurchase',compact('cardauth','invitems'));
+
+			return $this->finalizePurchase($cardauth, $invitems);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
 	}

@@ -36,6 +36,13 @@ try {
         }    
     });
 */
+
+	app.filter('nospace', function () {
+		return function (value) {
+			return (!value) ? '' : value.replace(/\W/g, '_');
+		};
+	});
+
 	app.controller('BalanceController', ['$scope', 
         function($scope) {
 			$scope.balance = ctrlpad.balanceCtrl.balance;
@@ -90,12 +97,14 @@ try {
         $scope.cart = [];
         $scope.countItems = 0;
         $scope.tax = 0;
+        $scope.discounts = [];
         $scope.total = 0;
         $scope.subtotalnum = 0;
         $scope.orders = [];
         $scope.inventories = [];
         $scope.currentPage = 1;
         $scope.pageSize = 10;
+        $scope.showCheckoutButton = true;
         
         $scope.isComplete = false;
         $scope.isLoading = function(){
@@ -104,8 +113,20 @@ try {
         
         $http.get(path).success(function(v) {
             shared.updateLocalCart();
+            var b = new RegExp('Sloan');
             for(var i in v){
-                $scope.inventories.push(v[i]);    
+                var isInsideInventory = [];
+                isInsideInventory = $scope.inventories.filter(function(inventory){
+                    return b.test(inventory.model);
+                });
+
+                if(isInsideInventory.length == 0){
+                    $scope.inventories.push(v[i]);        
+                }
+                if(isInsideInventory.length == 1){
+                    $scope.inventories.splice(i-1,0,v[i]);
+                }
+                
             }
             $scope.countItems = $scope.inventories.length;
             $scope.pageSize = $scope.inventories.length;
@@ -113,10 +134,22 @@ try {
             angular.forEach($scope.inventories, function(inventory){
                  inventory.sizes = [];   
                  inventory.doNag = false;   
-                 inventory.numOrder = 1;   
-                 angular.forEach(inventory.quantities, function(v, i){
-                       inventory.sizes.push({checked:false,key:i,value:v});                       
-                 });   
+                 inventory.numOrder = 1; 
+                 var b = new RegExp("Kid's Leggings");
+                 var tst = b.test(inventory.model);
+                 if(!tst){  
+                     angular.forEach(inventory.quantities, function(v, i){
+                           inventory.sizes.push({checked:false,key:i,value:v});                       
+                     });   
+                 }else{
+                     angular.forEach(inventory.quantities, function(v, i){
+                         if(!inventory.sizes.length){
+                             inventory.sizes.push({checked:false,key:i,value:v});    
+                         }else{
+                             inventory.sizes.unshift({checked:false,key:i,value:v});
+                         }
+                     });
+                 }
             });
         });
         
@@ -137,7 +170,7 @@ try {
                    $scope.orders.splice(i,1);
                 }
             }
-        };                                                 
+        };
         
         $scope.addOrder = function(n){
             var checkedItems = n.sizes.filter(function(s){
@@ -214,6 +247,24 @@ try {
             $scope.orders.splice(0);
         };
         
+		$scope.massAdd = function(array, n) {
+            angular.forEach($scope.inventories, function(inventory){
+                if(inventory.itemnumber == array.itemnumber && inventory.model == array.model){
+                    angular.forEach(inventory.sizes, function(size){
+                        if(size.key == n.key){
+                            size.checked = !n.checked;
+                            if(!size.value) size.checked = false;
+                            if(size.checked){
+                                $scope.addOrder(array);     
+                            }else{
+                                $scope.removeOrder(array, size.key);
+                            }
+                        }
+                    }) 
+                }    
+            });
+        };
+
         $scope.toggleCheck = function(array,n){
             angular.forEach($scope.inventories, function(inventory){
                 if(inventory.itemnumber == array.itemnumber && inventory.model == array.model){
@@ -268,28 +319,39 @@ try {
         
         $scope.subtotal = function(){
             var total = 0;
+            var totalQuantity = 0;
             angular.forEach($scope.orders, function (order){
-                total += order.numOrder * order.price;    
+                total += order.numOrder * order.price; 
+                totalQuantity += order.numOrder;   
             });
+            
+            //need to detect if its only reorder
+            if(totalQuantity < 33){
+                $scope.showCheckoutButton = false;
+            }else{
+                $scope.showCheckoutButton = true;
+            }
             //$scope.tax = total * 0.0825; // Get this from avalara?
             //$scope.total = $scope.tax + total;
 			$scope.subtotalnum = total;
             return total;
         };
 
+/*
         $scope.doSale = function(){
 			if ($scope.orders.length > 0) 
 			{
 				$http.post('/llrapi/v1/reorder/',$scope.orders)
 					.success(function(data, status,headers,config){
 						console.log(data.message);
-						$window.location.href = "/inv/sales";
+						$window.location.href = "/inv/checkout";
 					})
 					.error(function(data, status, headers, config){
 						console.log(data.message);
 					});
 			}
         };
+*/
         
         $scope.checkout = function(){
 			if ($scope.orders.length > 0) 
@@ -324,13 +386,28 @@ try {
         $scope.$watch('subtotalnum', function(n,o){
             if(n){
                     $scope.isComplete = false;
-                    $http.get('tax/'+n).success(function(data){
-                        $scope.tax = data.Tax; 
-                        $scope.total = data.Tax + n;
-                        $scope.isComplete = true;
-                    });
+						// Pre-tax discounts
+                        if(shared.requestPromise && shared.getIsLoading()){
+                            shared.requestPromise.abort();    
+                        }
+                        shared.requestPromise = shared.requestData('discounts/'+n);
+                        shared.requestPromise.then(function(data){
+                            $scope.discounts = data; 
+                            n = n - data.total;
+                            
+                            if(shared.requestPromise && shared.getIsLoading()){
+                                shared.requestPromise.abort();    
+                            }
+                            shared.requestPromise = shared.requestData('tax/'+n);
+                            shared.requestPromise.then(function(data){
+                                $scope.tax = data.Tax; 
+                                $scope.total = data.Tax + n;
+                                $scope.isComplete = true;
+                            });    
+                        });
             }
             else{
+                $scope.discounts = [];
                 $scope.tax = 0;
                 $scope.total = 0;    
             } 

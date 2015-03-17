@@ -1,19 +1,23 @@
 <?php
-
-		// process and store media
-        if (Input::file('media') || Input::file('image')) {
-
-            // upload and link to image
-            $filename = '';
-            if (Input::hasFile('media') || Input::file('image')) {
-                if (Input::hasFile('media')) {
-                	$file_type = 'media';
-                	$file = Input::file('media');
-				}
-                if (Input::hasFile('image')) {
-                	$file_type = 'image';
-                	$file = Input::file('image');
-				}
+	// process and store media
+    if (Input::file('media') || Input::file('image')) {
+		
+        // upload and link to image
+        $filename = '';
+        if (Input::hasFile('media') || Input::file('image')) {
+			
+        	if (Input::hasFile('media')) {
+        		$files = Input::file('media');
+				$file_type = 'media';
+			}
+			else {
+				$files = Input::file('image');
+				$file_type = 'image';
+			}
+			$index = 0;
+			$processed_files = [];
+			
+			foreach($files as $file) {
 				
 				if (!file_exists(public_path() . '/uploads/' . date('Y') . '/' . date('m'))) {
 				    mkdir(public_path() . '/uploads/' . date('Y') . '/' . date('m'), 0755, true);
@@ -21,10 +25,9 @@
 
 				$path = date('Y') . '/' . date('m') . '/';
                 $fullPath = public_path() . '/uploads/' . date('Y') . '/' . date('m') . '/';
-                $extension = $file->getClientOriginalExtension();
+                $extension = strtolower($file->getClientOriginalExtension());
 
-				// generate media name and check for existing
-				$filename = basename($_FILES[$file_type]["name"]);
+				$filename = basename($_FILES[$file_type]["name"][$index]);
 				$filename = explode('.', $filename);
 				$filename = $filename[0];
 				
@@ -81,11 +84,37 @@
 				else $data['type'] = 'File';
 
 				// assign values to data array
-                $data['url'] = $url;
-				$data['user_id'] = Auth::user()->id;
-				if (isset($data['title'])) {
-					if ($data['title'] == '') $data['title'] = $filename . '.' . $extension;
+				if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) $user_id = 0;
+				else $user_id = Auth::user()->id;
+								
+				// for single file
+				if (count($files) < 1) {
+	                $data['url'] = $url;
+					$data['user_id'] = $user_id;
+					if (isset($data['title'])) {
+						if ($data['title'] == '') $data['title'] = $filename . '.' . $extension;
+					}
 				}
+				
+				// for multiple files
+				else {
+					$file_number = $index + 1;
+					if ($index < 10) $file_number = '00' . $file_number;
+					elseif ($index < 100) $file_number = '0' . $file_number;
+	                $processed_files[$index]['url'] = $url;
+					$processed_files[$index]['user_id'] = $user_id;
+					$processed_files[$index]['type'] = $data['type'];
+					if (isset($data['title'])) {
+						if ($data['title'] == '') {
+							$processed_files[$index]['title'] = $filename . '.' . $extension;
+						}
+						else $processed_files[$index]['title'] = $data['title'] . ' ' . $file_number;
+					}
+					if (isset($data['description'])) $processed_files[$index]['description'] = $data['description'];
+					$processed_files[$index]['reps'] = $data['reps'];
+					$index ++;
+				}
+			}
 
-            }
         }
+    }
