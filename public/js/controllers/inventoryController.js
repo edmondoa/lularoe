@@ -36,6 +36,11 @@ try {
         }    
     });
 */
+	app.filter('urlencode', function () {
+		return function (value) {
+			return (!value) ? '' : escape(value);
+		};
+	});
 
 	app.filter('nospace', function () {
 		return function (value) {
@@ -181,7 +186,7 @@ try {
 			'Sloan (10-14)':            [4,4,4],
 			'Dotdotsmile Lucy Sleeve':  [6,6,6,6],
 			'Dotdotsmile Lucy Tank':    [6,6,6,6],
-			'Kid\'s Leggings (2 Pack)': [23]
+			'Kid\'s Leggings (2 Pack)': [23,0]
 			}
 		};
     
@@ -374,7 +379,12 @@ try {
         };
         
         $scope.countSelect = function(){
-            return !(!$scope.orders.length);
+			var totalQuantity = 0;
+            angular.forEach($scope.orders, function (order){
+                totalQuantity += order.numOrder;   
+            });
+            //return !(!$scope.orders.length);
+            return !(!totalQuantity);
         };
         
         $scope.subtotal = function(){
