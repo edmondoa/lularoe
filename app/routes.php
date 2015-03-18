@@ -591,6 +591,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('bank-info', 'PreRegisterController@bankinfo');
         Route::post('bank-info', 'PreRegisterController@updatebankinfo');
 
+        Route::get('accept-terms', 'PreRegisterController@getAcceptTerms');
+        Route::post('accept-terms', 'PreRegisterController@acceptTerms');
+
         Route::get('shipping_address', 'PreRegisterController@shippingAddressForm');
         Route::post('shipping_address', 'PreRegisterController@shippingAddress');
         Route::get('call-in', 'PreRegisterController@CallInForm');
@@ -793,7 +796,7 @@ Route::get('sendonboardmail/{id}', function($id) {
 	Session::put('sponsor',$sponsor);
 
 	$hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
-	$verification_link = 'https://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash;
+	$verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash;
 
 	print "Sending ..";
 	Mail::send('emails.verification', compact('verification_link', 'user'), function($message) use (&$user) {
