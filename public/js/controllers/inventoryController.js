@@ -36,6 +36,11 @@ try {
         }    
     });
 */
+	app.filter('urlencode', function () {
+		return function (value) {
+			return (!value) ? '' : escape(value);
+		};
+	});
 
 	app.filter('nospace', function () {
 		return function (value) {
@@ -181,7 +186,7 @@ try {
 			'Sloan (10-14)':            [4,4,4],
 			'Dotdotsmile Lucy Sleeve':  [6,6,6,6],
 			'Dotdotsmile Lucy Tank':    [6,6,6,6],
-			'Kid\'s Leggings (2 Pack)': [23]
+			'Kid\'s Leggings (2 Pack)': [23,0]
 			}
 		};
     
@@ -190,23 +195,19 @@ try {
             angular.forEach($scope.inventories, function(inventory) {
 				angular.forEach($scope.groupMatrix[groupid], function(group_quantities,group_model) {
 					if(inventory.model == group_model){
-						console.log('Set group' ,group_model);
+						//console.log('Set group' ,group_model);
 						angular.forEach(inventory.sizes, function(size,sidx){
-							size.numOrder = group_quantities[sidx];
+
 							size.checked	= true;
-							/*
-							$scope.orders = {
-										'model' 	: group_model,
-										'numOrder'	: group_quantities[sidx],
-										'price'		: inventory.price,
-										'sizes'		: size,
-										};
-                            shared.updateCart($scope.orders);
-							*/
+							size.numOrder = group_quantities[sidx];
+							inventory.numOrder = group_quantities[sidx];
+							inventory.sizes[sidx].numOrder = group_quantities[sidx];
+							$scope.addOrder(inventory);
 						});
 					}
                 });
             });
+			shared.updateCart($scope.orders);
 		};
         
         $scope.pageChangeHandler = function(num) {
@@ -224,8 +225,10 @@ try {
                 }
             }
         };
+
         
         $scope.addOrder = function(n){
+			console.log('ORDER ',n);
             var checkedItems = n.sizes.filter(function(s){
                 return s.checked;
             });
@@ -237,7 +240,8 @@ try {
             angular.forEach(n.sizes, function(size){
                 if(!$scope.isInOrder($scope.orders, n, size)) {
                     if(size.checked || (size.value && size.checked)){
-                        var quantity = n.numOrder;
+                        var quantity = (size.numOrder > 0) ? size.numOrder : n.numOrder;
+
                         if(size.value >= quantity){
                             size.numOrder = quantity;
                             size.value -= quantity;
@@ -258,12 +262,6 @@ try {
                     }    
                 }
             });   
-        };
-        
-        $scope.setGroup = function(groupid) {
-
-        	$scope.size[0].numOrder = 22;
-        	
         };
         
         $scope.plus = function(n){
@@ -355,8 +353,8 @@ try {
                 var res = array.filter(function(o){
                     if(o.itemnumber == n.itemnumber && o.model == n.model && o.size == size.key){
                         angular.forEach(n.sizes, function(size){
-                            if(size.checked && o.size ==size.key && size.value){
-                                if(size.value >= n.numOrder){
+                            if(size.checked && o.size == size.key && size.value) {
+                                if(size.value >= n.numOrder) {
                                     if(o.numOrder){
                                         /*
                                         if((size.value - n.numOrder) >= 0)
@@ -381,7 +379,12 @@ try {
         };
         
         $scope.countSelect = function(){
-            return !(!$scope.orders.length);
+			var totalQuantity = 0;
+            angular.forEach($scope.orders, function (order){
+                totalQuantity += order.numOrder;   
+            });
+            //return !(!$scope.orders.length);
+            return !(!totalQuantity);
         };
         
         $scope.subtotal = function(){
