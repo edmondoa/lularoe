@@ -3,7 +3,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<h1 class="pull-left">Welcome, {{ $user->first_name }}</h1>
-			<a class="btn btn-primary pull-right margin-bottom-2" href="/sales/create"><i class='fa fa-plus'></i> New Sale</a>
+			<a class="btn btn-primary pull-right margin-bottom-2" href="/sales"><i class='fa fa-plus'></i> New Sale</a>
 			<div class="clear"></div>
 			<p class="well inline-block">
 				Send the following link to anyone whom you'd like to join your team:<br>
