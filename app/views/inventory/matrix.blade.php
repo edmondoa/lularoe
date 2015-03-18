@@ -86,7 +86,7 @@
 									<td ng-repeat="(key,size) in inventory.sizes">
 										<small ng-bind="size.key"></small><Br />
 											<!-- <input ng-change="fixInvalidNumber(order)" type="number" min="1" ng-model="order.numOrder" ng-init="order.numOrder=0" class="form-control" placeholder="0" aria-describedby="basic-addon1" style="width:3em" size="3"> -->
-											<input ng-model="size.numOrder" ng-init="size.numOrder=0" ng-change="massAdd(inventory,size)" type="number" style="width:3em" size="3" value="0"> 
+											<input ng-model="size.numOrder" ng-init="size.numOrder=0" ng-blur="massAdd(inventory,size)" type="number" style="width:3em" size="3" value="0"> 
 <div class="col-lg-8 col-md-8 col-sm-9 col-xs-9">
 									</td>
 									</tr>
