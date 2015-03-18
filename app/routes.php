@@ -793,7 +793,7 @@ Route::get('sendonboardmail/{id}', function($id) {
 	Session::put('sponsor',$sponsor);
 
 	$hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
-	$verification_link = 'https://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash;
+	$verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash;
 
 	print "Sending ..";
 	Mail::send('emails.verification', compact('verification_link', 'user'), function($message) use (&$user) {

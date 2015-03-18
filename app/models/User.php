@@ -366,6 +366,7 @@ public function getAccountBalanceAttribute()
 	
 	public function hasRole($key) {
 		if(!is_array($key)) return false;
+		if(!isset($this->role->name)) return false;
 		foreach($key as $role){
 			if($this->role->name === $role){
 				return true;

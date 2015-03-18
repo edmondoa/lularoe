@@ -22,7 +22,7 @@
 				@endif
 					inventory now!</blockquote>
 				<span class="btn btn-large btn-success pull-right">
-					<a href="/inventories" style="color:white">Click here to continue</a>
+					<a href="/dashboard" style="color:white">Click here to continue</a>
 				</span><!-- col -->
 			</div>
 		</div>

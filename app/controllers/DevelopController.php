@@ -26,12 +26,14 @@ class DevelopController extends \BaseController {
 	public function getJake()
 	{
 		
+		return "<a href='http://llr.local/sendonboardemail/9851'>Here</a>";
 		//echo "<img src='".DNS1D::getBarcodePNGPath("123456789", "EAN13",3,150)."' >";
 		//exit;
 		$start = microtime (true);
+		$response['result'] = Hash::make('password2');
 		//$response['result'] = User::find(9921)->descendants()->orderBy('pivot_level')->get();
 		//return Product::all();
-		foreach(Product::all() as $product)
+/*		foreach(Product::all() as $product)
 		{
 			echo"<p><strong>".$product->name." - ".$product->sku."</strong><br />";
 			//$path = DNS1D::getBarcodePNGPath($product->sku, "C128",3,75);
@@ -39,7 +41,7 @@ class DevelopController extends \BaseController {
 			//$product->barcode_image=$path;
 			//$product->save();
 		}
-		//$response['result'] = User::find(9921)->ranks()->first();
+*/		//$response['result'] = User::find(9921)->ranks()->first();
 		$response['lapsed'] = round((microtime (true) - $start),5);
 		return $response;
 		//return Rank::all();
