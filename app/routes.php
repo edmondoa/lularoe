@@ -591,6 +591,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('bank-info', 'PreRegisterController@bankinfo');
         Route::post('bank-info', 'PreRegisterController@updatebankinfo');
 
+        Route::get('accept-terms', 'PreRegisterController@getAcceptTerms');
+        Route::post('accept-terms', 'PreRegisterController@acceptTerms');
+
         Route::get('shipping_address', 'PreRegisterController@shippingAddressForm');
         Route::post('shipping_address', 'PreRegisterController@shippingAddress');
         Route::get('call-in', 'PreRegisterController@CallInForm');
