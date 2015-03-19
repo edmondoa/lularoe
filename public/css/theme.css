@@ -63,6 +63,7 @@ body.layout-default #main-menu > a:first-child { border-top-left-radius:0; borde
 .gray { background:#63666a !important; }
 
 /* global classes */
+.align-top { vertical-align:top !important; }
 .break-word { word-wrap:break-word; }
 .font-size-2 { font-size:1.25em; }
 .font-size-3 { font-size:1.5em; }
