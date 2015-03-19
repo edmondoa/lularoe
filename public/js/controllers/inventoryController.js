@@ -596,8 +596,8 @@ try {
                         }
                         shared.requestPromise = shared.requestData('/discounts/'+n);
                         shared.requestPromise.then(function(data){
-                        	if (discounts_disabled != true) $scope.discounts = data;
-                        	else $scope.discounts = 0;
+                        	if (discounts_disabled == true) $scope.discounts = 0;
+                        	else $scope.discounts = data;
                             n = n - data.total;
                             
                             if(shared.requestPromise && shared.getIsLoading()){
