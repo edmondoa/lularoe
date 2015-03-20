@@ -14,6 +14,12 @@ class ExternalAuthController extends \BaseController {
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
 	public 	$logdata = false;
 
+	// Thanks Ampersand, just thank you for screwing things up.
+	public function escapemodelname($modelname) {
+		$modelname = str_replace('&','and',$modelname);
+		return(htmlspecialchars($modelname));
+	}
+
 	// STUB for removing inventory
 	public function rmInventory($key,$id,$quan) {
 		// Magic database voodoo
@@ -70,8 +76,8 @@ class ExternalAuthController extends \BaseController {
 			foreach($p as $item) 
 			{
 				$quantity	= $item->quantity;
-				$image 		= (!empty($item->image)) ? $item->image : 'https://mylularoe.com/img/media/'.$model.'.jpg';
-				$model		= htmlspecialchars($item->name);
+				$image 		= (!empty($item->image)) ? $item->image : 'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg';
+				$model		= $this->escapemodelname($item->name);
 				$size		= $item->size;
 
 				// Initialize this set of item data
@@ -188,7 +194,7 @@ class ExternalAuthController extends \BaseController {
 			}
 			else list($model, $size) = explode(' -',$itemnumber);
 
-			$model		= htmlspecialchars($model);
+			$model		= $this->escapemodelname($model);
 			// Initialize this set of item data
 			if (!isset($items[$model]))
 			{
