@@ -114,8 +114,8 @@ class ExternalAuthController extends \BaseController {
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','File: '.$mwlcachefile."\n",FILE_APPEND);
 		if (file_exists($mwlcachefile)) {
 			$fs = stat($mwlcachefile);
-			if (time() - $fs['ctime'] > $this->mwl_cachetime) {
-				unlink($mwlcachefile);
+			if (time() - $fs['ctime'] > $this->mwl_cachetime || filesize($mwlcachefile) < 500) {
+				@unlink($mwlcachefile);
 			}
 			else {
 				$server_output = file_get_contents($mwlcachefile);
@@ -132,7 +132,6 @@ class ExternalAuthController extends \BaseController {
 			// Set this to HTTPS TLS / SSL
 			$curlstring = Config::get('site.mwl_api').'/llr/'.htmlentities($location,ENT_QUOTES,'UTF-8').'/inventorylist?sessionkey='.$key;
 			curl_setopt($ch, CURLOPT_URL, $curlstring);
-
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 			$server_output = curl_exec ($ch);
