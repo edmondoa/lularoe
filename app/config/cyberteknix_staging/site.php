@@ -2,9 +2,11 @@
     return [
             'domain' => 'my.llr.controlpad.com',
             'contact_email' => 'mfrederico@gmail.com',
+			'admin_uid'     => 0,
 			'mwl_api'       => 'http://mwl.controlpad.com:8080/cms/',
 			'mwl_db'        => 'llr',
-			'admin_uid'     => 0,
+			'mwl_username'  => '0',
+			'mwl_password'  => 'controlpad1',
             'contact_first_name' => 'Matt',
             'contact_last_name'  => 'Frederico',
             'base_domain' => 'my.llr.controlpad.com',

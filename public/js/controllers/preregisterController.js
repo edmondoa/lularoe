@@ -190,7 +190,6 @@ try {
 					console.log(data);
 					if(data.status == 'success'){
 						$scope.next = true;
-						// alert('yeehaw');
 						//$scope.isBankError = false;
 						$scope.goto(data.next_page);
 					}else{

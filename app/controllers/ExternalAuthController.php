@@ -14,6 +14,12 @@ class ExternalAuthController extends \BaseController {
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
 	public 	$logdata = false;
 
+	// Thanks Ampersand, just thank you for screwing things up.
+	public function escapemodelname($modelname) {
+		$modelname = str_replace('&','and',$modelname);
+		return(htmlspecialchars($modelname));
+	}
+
 	// STUB for removing inventory
 	public function rmInventory($key,$id,$quan) {
 		// Magic database voodoo
@@ -70,9 +76,17 @@ class ExternalAuthController extends \BaseController {
 			foreach($p as $item) 
 			{
 				$quantity	= $item->quantity;
-				$model		= $item->name;
-				$image 		= (!empty($item->image)) ? $item->image : 'https://mylularoe.com/img/media/notfound.jpg';
-				$size		= $item->size;
+                // get product images
+                $dbImage            = '';
+                $attachment_images  = [];
+                $attachments = Attachment::where('attachable_type', 'Product')->where('attachable_id', $item->id)->get();
+                foreach ($attachments as $attachment) {
+                    $dbImage = Media::find($attachment->media_id);
+                }
+
+                $model      = $this->escapemodelname($item->name);
+                $size       = $item->size;
+                $image      = (!empty($dbImage) && isset($dbImage->url)) ? $dbImage->url : 'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg';
 
 				// Initialize this set of item data
 				if (!isset($items[$model]))
@@ -114,8 +128,8 @@ class ExternalAuthController extends \BaseController {
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','File: '.$mwlcachefile."\n",FILE_APPEND);
 		if (file_exists($mwlcachefile)) {
 			$fs = stat($mwlcachefile);
-			if (time() - $fs['ctime'] > $this->mwl_cachetime) {
-				unlink($mwlcachefile);
+			if (time() - $fs['ctime'] > $this->mwl_cachetime || filesize($mwlcachefile) < 500) {
+				@unlink($mwlcachefile);
 			}
 			else {
 				$server_output = file_get_contents($mwlcachefile);
@@ -132,13 +146,12 @@ class ExternalAuthController extends \BaseController {
 			// Set this to HTTPS TLS / SSL
 			$curlstring = Config::get('site.mwl_api').'/llr/'.htmlentities($location,ENT_QUOTES,'UTF-8').'/inventorylist?sessionkey='.$key;
 			curl_setopt($ch, CURLOPT_URL, $curlstring);
-
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 			$server_output = curl_exec ($ch);
 
 			if ($errno = curl_errno($ch)) {
-				$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
+				$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 				return(Response::json($result,401));
 			}
 			curl_close ($ch);
@@ -189,6 +202,7 @@ class ExternalAuthController extends \BaseController {
 			}
 			else list($model, $size) = explode(' -',$itemnumber);
 
+			$model		= $this->escapemodelname($model);
 			// Initialize this set of item data
 			if (!isset($items[$model]))
 			{
@@ -254,12 +268,12 @@ class ExternalAuthController extends \BaseController {
 
 	// What is this hackery?!
 	// PLEASE baby Jesus, lets get an api for these things.
-	public function setbankinfo($user_id, $data, $cid = 'llr') {
+	// USE THE UPDATE USER FUNCTION FOR THIS FUNCTIONALITY
+	public function setbankinfo($user_id, $data/*, $cid = 'llr'*/) {
+		return false;
 
-        $mbr	= User::where('id', '=', $user_id)->first();
-		$tid_id = '';
 
-		try {
+/*		try {
 			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
 		}
 		catch (Exception $e)
@@ -303,6 +317,177 @@ class ExternalAuthController extends \BaseController {
 		$Q="UPDATE accounts SET number=AES_ENCRYPT('".$mysqli->escape_string($data['bank_account'])."',SHA2('{$shakey}',512)), routing=AES_ENCRYPT('".$mysqli->escape_string($data['bank_routing'])."', SHA2('{$shakey}',512)), name='".$mysqli->escape_string($data['bank_name'])."' WHERE id={$acct_id} LIMIT 1";
 		$mysqli->query($Q);
 		$mysqli->close();
+*/	}
+
+	public function getMwlUserInfo($user_id) {
+
+        $mbr	= User::find($user_id);
+
+		$key = Self::midauth();
+		//return $key;
+		$ch = curl_init();
+
+		// Set to general auth for pulling inventory		// Set this to HTTPS TLS / SSL
+		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account?sessionkey=".$key."&username=".$mbr->id;
+
+		curl_setopt($ch, CURLOPT_URL, $curlstring);
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$server_output = curl_exec ($ch);
+
+		if ($errno = curl_errno($ch)) {
+			\Log::info('error in curl call');
+			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
+			return(Response::json($result,401));
+		}
+		curl_close ($ch);
+
+		if (!$server_output)
+		{
+			\Log::info('no output from server');
+			return null;
+		}
+		else 
+		{
+			$so = json_decode($server_output);
+			if (isset($so->Code) && $so->Code == '401')
+			{
+				\Log::info('server out put is 401');
+				return null;
+			}
+			\Log::info('server output exists');
+			return $so;
+		}
+	}
+
+	public function createMwlUser($user_id,$password = null) {
+
+        $mbr = User::find($user_id);
+
+		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
+		//return $bank_info;
+		$address = Address::where('addressable_id',$mbr->id)->first();
+
+		// create a session key
+		$key = Self::midauth();
+
+		$ch = curl_init();
+
+		// Set to general auth for creating records		// Set this to HTTPS TLS / SSL
+		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account?sessionkey=".$key;
+
+		curl_setopt($ch, CURLOPT_URL, $curlstring);
+
+		$headers = [];
+		$headers[] = "Reseller-ID: 1";//.Self::getNextAvailableMid(); //for now
+		$headers[] = "Merchant-Name: ".$mbr->first_name." ".$mbr->last_name;
+		if(!empty($address->id))
+		{
+			//Hacky, I know
+			$address_1 = (!empty($address->address_1))?$address->address_1:'';
+			$city = (!empty($address->city))?$address->city:'';
+			$state = (!empty($address->state))?$address->state:'';
+			$zip = (!empty($address->zip))?$address->zip:'';
+			$headers[] = "Merchant-Address: ".$address_1;
+			$headers[] = "Merchant-City: ".$city;
+			$headers[] = "Merchant-State: ".$state;
+			$headers[] = "Merchant-Zip: ".$zip;
+		}
+		$headers[] = "Account-Type: checking"; // reqd (checking or saving)
+		$headers[] = "Account-Name: ".$mbr->first_name." ".$mbr->last_name;
+		$headers[] = "Account-Number:".$bank_info->bank_account;
+		$headers[] = "Account-Route: ".$bank_info->bank_routing; //
+		$headers[] = "Username: ".$mbr->id; //use the user->id for this
+		$headers[] = "Password: ".base64_encode($password); //base 64 encoded password
+		//return $headers;
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$server_output = curl_exec ($ch);
+
+		if ($errno = curl_errno($ch)) {
+			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
+			return(Response::json($result,401));
+		}
+		curl_close ($ch);
+
+		if (!$server_output) return(false);
+		else {
+			$so = json_decode($server_output);
+			if (isset($so->Code) && $so->Code == '401') return null;
+			return($server_output);
+		}
+	}
+
+	public function updateMwlUser($user_id,$password = null) {
+
+        $mbr = User::find($user_id);
+
+		$mwl_user = Self::getMwlUserInfo($mbr->id);
+		$merchant_id = $mwl_user->Merchant->ID;
+		$address = Address::where('addressable_id',$mbr->id)->first();
+		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
+		if(!isset($bank_info->id)) return false;
+
+		$key = Self::midauth();
+
+		$ch = curl_init();
+
+		// Set to general auth for creating records		// Set this to HTTPS TLS / SSL
+		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account?sessionkey=".$key;
+
+		curl_setopt($ch, CURLOPT_URL, $curlstring);
+
+		$headers = [];
+		$headers[] = "Merchant-ID: ".$merchant_id; 
+		$headers[] = "Merchant-Name: ".$mbr->first_name." Gooberville";
+		if(!empty($address->id))
+		{
+			//Hacky, I know
+			$address_1 = (!empty($address->address_1))?$address->address_1:'';
+			$city = (!empty($address->city))?$address->city:'';
+			$state = (!empty($address->state))?$address->state:'';
+			$zip = (!empty($address->zip))?$address->zip:'';
+			$headers[] = "Merchant-Address: ".$address_1;
+			$headers[] = "Merchant-City: ".$city;
+			$headers[] = "Merchant-State: ".$state;
+			$headers[] = "Merchant-Zip: ".$zip;
+		}
+		if(!empty($bank_info->id))
+		{
+			$headers[] = "Account-Type: checking"; // reqd (checking or saving)
+			$headers[] = "Account-Name: ".$mbr->first_name." ".$mbr->last_name;
+			$headers[] = "Account-Number:".$bank_info->bank_account;
+			$headers[] = "Account-Route: ".$bank_info->bank_routing; //
+		}
+		$headers[] = "Username: ".$mbr->id; //use the user->id for this
+		if(!is_null($password))
+		{
+			$headers[] = "Password: ".base64_encode($password); //base 64 encoded password
+		}
+
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+		//curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$server_output = curl_exec ($ch);
+		//echo"<pre>"; print_r($server_output); echo"</pre>";
+		//exit;
+		if ($errno = curl_errno($ch)) {
+			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
+			return(Response::json($result,401));
+		}
+		curl_close ($ch);
+
+		if (!$server_output) return(false);
+		else {
+			$so = json_decode($server_output);
+			if (isset($so->Code) && $so->Code == '401') return null;
+			return($server_output);
+		}
 	}
 
 	public function getNextAvailableMid() {
@@ -327,7 +512,7 @@ class ExternalAuthController extends \BaseController {
 
 		$pwd = base64_encode(md5($pass,true));
 		$pwdf = base64_encode(md5($cid.$pwd,true));
-		$Q = "INSERT INTO users SET username='{$id}', password='{$pwdf}' ON DUPLICATE KEY UPDATE password='{$pwdf}'";
+		$Q = "INSERT INTO users SET id='{$id}', username='{$id}', password='{$pwdf}' ON DUPLICATE KEY UPDATE password='{$pwdf}'";
 		$res = $mysqli->query($Q);
 
 		$mysqli->close();
@@ -535,7 +720,10 @@ class ExternalAuthController extends \BaseController {
 	{
 		return base64_encode(md5($pass,true));
 	}
-
+	/*##############################################################################################
+	MiddleWare Authentication
+	##############################################################################################*/
+	
 	private function midauth($username = '', $password = '')
 	{
 		// Pull this out into an actual class for MWL php api
@@ -551,7 +739,7 @@ class ExternalAuthController extends \BaseController {
 		$password = Self::midcrypt($password);
 
 		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').'/'.Config::get('site.mwl_db')."/login/?username={$username}&password={$password}";
+		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/login/?username={$username}&password={$password}";
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		/* If we ever decide to 'POST'
@@ -564,7 +752,7 @@ class ExternalAuthController extends \BaseController {
 		$server_output = curl_exec ($ch);
 
 		if ($errno = curl_errno($ch)) {
-			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to inventory system.','errno'=>$errno);
+			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 			return(Response::json($result,401));
 		}
 		curl_close ($ch);
@@ -852,12 +1040,15 @@ class ExternalAuthController extends \BaseController {
 		else
         $mbr = User::where('id', '=', $login)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
 
+		//$mbr->password_entered = $pass;
+		//return $mbr;
         // Can't find them?
         if (!isset($mbr)) {
             $mbr	= null;
             $status = 'User '.strip_tags($login).' not found';
         }
-		else if (Hash::check($pass, $mbr['attributes']['password'])) {
+		elseif($attempt = \Auth::attempt(['email' => $mbr->email,'password' => $pass], false))
+		{
         	$error  = false;
 			$status = 'User '.strip_tags($login).' found ok';
 			$data = array(
@@ -875,11 +1066,14 @@ class ExternalAuthController extends \BaseController {
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
 			if (empty($sessionkey) || $tstamp < (time() - 10))
 			{
+				\Log::info('Return the user is able to log in, but shut out of MWL');
 				// Return the user is able to log in, but shut out of MWL
 
 				// If we use the 'key' parameter, we could feasibly have 
 				// Multiple acconts using 1 TID .. Feature?
-				$sessionkey = Self::midauth($data['id'], $pass);
+				//$sessionkey = Self::midauth($data['id'], $pass);
+				$sessionkey = Self::midauth(0, 'controlpad1');
+				//return $sessionkey;
 				$tstamp		= time();
 
 				if ($this->logdata) file_put_contents('/tmp/logData.txt','TSTP: '.$tstamp." ".$sessionkey."\n",FILE_APPEND);
