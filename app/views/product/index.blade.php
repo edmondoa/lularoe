@@ -142,7 +142,8 @@
 	                            
 					            <td>
 					                <a href="/products/@include('_helpers.product_id')">
-					                	<img class="thumb" src="@include('_helpers.attachment_image_sm')">
+					                	<img ng-show="product.featured_image" class="thumb" src="@include('_helpers.attachment_image_sm')">
+					                	<img ng-show="!product.featured_image" class="thumb" src="/img/media/{{'{'.'{product.name}'.'}'}}.jpg">
 					                </a>
 					            </td>
 								

@@ -288,12 +288,7 @@ try {
 		$scope.extra = '';
 		$scope.old_extra;
 		$scope.selectRow = function(model, extra) {
-			if (typeof extra !== 'undefined') {
-				$scope.old_extra = $scope.extra;
-				$scope.extra = model;// console.log('Extra == true');
-				console.log('extra', $scope.extra);
-				console.log('old_extra', $scope.old_extra);
-			}
+
            	var quantities = $scope.groupMatrix[model]['quantities'];
            	// var group = $scope.groupMatrix[model]['group'];
            	var group = $scope.activeGroup;
@@ -329,6 +324,17 @@ try {
 				}
 				// console.log($scope.selectedRows[group] + ' : ' + inventory.model);
 
+				
+				// else if(inventory.model == $scope.old_extra){
+					// angular.forEach(inventory.sizes, function(size,sidx){
+						// size.checked = false;
+						// size.numOrder = '';
+						// inventory.numOrder = '';
+						// inventory.sizes[sidx].numOrder = '';
+						// $scope.removeOrder(inventory, size.key);
+					// });
+				// }
+
 				else if (inventory.model != model && jQuery.inArray(inventory.model, $scope.groups[group]) != -1 && $scope.selectedRows[group] !== inventory.model && $scope.extra !== inventory.model) {
 					angular.forEach(inventory.sizes, function(size,sidx){
 						size.checked = false;
@@ -337,19 +343,18 @@ try {
 						inventory.sizes[sidx].numOrder = '';
 						$scope.removeOrder(inventory, size.key);
 					});
-		            // angular.forEach($scope.inventories, function(inventory) {
-						if(inventory.model == $scope.old_extra){
-							angular.forEach(inventory.sizes, function(size,sidx){
-								size.checked = false;
-								size.numOrder = '';
-								inventory.numOrder = '';
-								inventory.sizes[sidx].numOrder = '';
-								$scope.removeOrder(inventory, size.key);
-							});
-						}
-		            // });
 				}
+
+				
 			});
+			
+			if (typeof extra !== 'undefined') {
+				$scope.old_extra = $scope.extra;
+				$scope.extra = model;// console.log('Extra == true');
+				console.log('extra', $scope.extra);
+				console.log('old_extra', $scope.old_extra);
+			}
+			
 						$scope.selectedRows[group] = model;
 
 			// add to array of selected rows
