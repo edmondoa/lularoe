@@ -18,7 +18,7 @@
                                     <td align="right">$<span ng-bind="subtotal()|number:2">0.00</span></td>
                                 </tr>
 
-								<tr ng-repeat="(idx,discount) in discounts">
+								<!-- <tr ng-repeat="(idx,discount) in discounts">
                                     <td ng-if="discount.amount"><span ng-bind="discount.title"></span></td>
                                     <td ng-if="discount.amount" align="right">$<span ng-bind="discount.amount|number:2">0.00</span></td>
 								</tr>   
@@ -39,7 +39,7 @@
                                     <td>Total Discounts</td>
                                     <td align="right">${{number_format($discount['total'],2)}}</td>
                                 </tr>
-							@endif
+							@endif -->
 
                                 <tr>
                                     <td>Tax</td>
@@ -185,6 +185,7 @@
 @stop
 @section('scripts')
 <script>
+	var discounts_disabled = true;
     angular.extend(ControlPad, (function(){                
                 return {
                     inventoryCtrl : {

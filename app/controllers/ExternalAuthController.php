@@ -14,6 +14,12 @@ class ExternalAuthController extends \BaseController {
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
 	public 	$logdata = false;
 
+	// Thanks Ampersand, just thank you for screwing things up.
+	public function escapemodelname($modelname) {
+		$modelname = str_replace('&','and',$modelname);
+		return(htmlspecialchars($modelname));
+	}
+
 	// STUB for removing inventory
 	public function rmInventory($key,$id,$quan) {
 		// Magic database voodoo
@@ -70,9 +76,17 @@ class ExternalAuthController extends \BaseController {
 			foreach($p as $item) 
 			{
 				$quantity	= $item->quantity;
-				$model		= $item->name;
-				$image 		= (!empty($item->image)) ? $item->image : 'https://mylularoe.com/img/media/notfound.jpg';
-				$size		= $item->size;
+                // get product images
+                $dbImage            = '';
+                $attachment_images  = [];
+                $attachments = Attachment::where('attachable_type', 'Product')->where('attachable_id', $item->id)->get();
+                foreach ($attachments as $attachment) {
+                    $dbImage = Media::find($attachment->media_id);
+                }
+
+                $model      = $this->escapemodelname($item->name);
+                $size       = $item->size;
+                $image      = (!empty($dbImage) && isset($dbImage->url)) ? $dbImage->url : 'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg';
 
 				// Initialize this set of item data
 				if (!isset($items[$model]))
@@ -114,8 +128,8 @@ class ExternalAuthController extends \BaseController {
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','File: '.$mwlcachefile."\n",FILE_APPEND);
 		if (file_exists($mwlcachefile)) {
 			$fs = stat($mwlcachefile);
-			if (time() - $fs['ctime'] > $this->mwl_cachetime) {
-				unlink($mwlcachefile);
+			if (time() - $fs['ctime'] > $this->mwl_cachetime || filesize($mwlcachefile) < 500) {
+				@unlink($mwlcachefile);
 			}
 			else {
 				$server_output = file_get_contents($mwlcachefile);
@@ -132,7 +146,6 @@ class ExternalAuthController extends \BaseController {
 			// Set this to HTTPS TLS / SSL
 			$curlstring = Config::get('site.mwl_api').'/llr/'.htmlentities($location,ENT_QUOTES,'UTF-8').'/inventorylist?sessionkey='.$key;
 			curl_setopt($ch, CURLOPT_URL, $curlstring);
-
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 			$server_output = curl_exec ($ch);
@@ -189,6 +202,7 @@ class ExternalAuthController extends \BaseController {
 			}
 			else list($model, $size) = explode(' -',$itemnumber);
 
+			$model		= $this->escapemodelname($model);
 			// Initialize this set of item data
 			if (!isset($items[$model]))
 			{
@@ -498,7 +512,7 @@ class ExternalAuthController extends \BaseController {
 
 		$pwd = base64_encode(md5($pass,true));
 		$pwdf = base64_encode(md5($cid.$pwd,true));
-		$Q = "INSERT INTO users SET username='{$id}', password='{$pwdf}' ON DUPLICATE KEY UPDATE password='{$pwdf}'";
+		$Q = "INSERT INTO users SET id='{$id}', username='{$id}', password='{$pwdf}' ON DUPLICATE KEY UPDATE password='{$pwdf}'";
 		$res = $mysqli->query($Q);
 
 		$mysqli->close();

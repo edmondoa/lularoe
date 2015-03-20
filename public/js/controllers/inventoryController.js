@@ -156,59 +156,193 @@ try {
                      });
                  }
             });
+            // console.log($scope.inventories);
+
         });
 
-    $scope.groupMatrix = {
-		'A':{
-			'Maxi':     [5,9,14,14,14,9,5,5],
-			'Cassie':   [0,10,15,15,15,10,5,5],
-			'Azure':    [0,10,15,15,15,10,10,0],
-			'Lucy':     [5,10,15,15,15,10,5,0],
-			'Lola':     [5,10,15,15,15,10,5,0],
-			'Madison':  [0,15,15,15,15,15,0,0]
-			},
-		'B':{
-			'Amelia':   [0,7,10,10,10,7,0,0],
-			'Nicole':   [0,10,10,10,10,10,0,0],
-			'Julia':    [5,10,10,10,10,10,0,0],
-			'Ana':      [0,6,8,8,8,6,6,6]
-			},
-		'C':{
-			'Irma':     [10,15,15,15,10,10,0,0],
-			'Randy':    [5,10,15,15,15,10,5,0],
-			'Monroe':   [0,0,25,0,25,0,0,0]
-			},
-		'L':{
-			'Adult Leggings (2 Pack)':      [35]
-			},
-		'K':{
-			'Sloan (2-8)':              [4,4,4,4],
-			'Sloan (10-14)':            [4,4,4],
-			'Dotdotsmile Lucy Sleeve':  [6,6,6,6],
-			'Dotdotsmile Lucy Tank':    [6,6,6,6],
-			'Kid\'s Leggings (2 Pack)': [23,0]
-			}
-		};
-    
-		// Sets the group value information
-		$scope.setGroup = function(groupid) {
-            angular.forEach($scope.inventories, function(inventory) {
-				angular.forEach($scope.groupMatrix[groupid], function(group_quantities,group_model) {
-					if(inventory.model == group_model){
-						//console.log('Set group' ,group_model);
-						angular.forEach(inventory.sizes, function(size,sidx){
+    $scope.groups = {
+		'A' : [
+			'Maxi',
+			'Cassie',
+			'Azure',
+			'Lucy',
+			'Lola',
+			'Madison'
+			],
+		'B' : [
+			'Amelia',
+			'Nicole',
+			'Julia',
+			'Ana'
+			],
+		'C' : [
+			'Irma',
+			'Randy',
+			'Monroe'
+			],
+		'L' : [
+			'Adult Leggings (2 Pack)'
+			],
+		'K' : [
+			'Sloan (2-8)',
+			'Sloan (10-14)',
+			'Dotdotsmile Lucy Sleeve',
+			'Dotdotsmile Lucy Tank',
+			'Kid\'s Leggings (2 Pack)'
+		]
+	};
 
-							size.checked	= true;
-							size.numOrder = group_quantities[sidx];
-							inventory.numOrder = group_quantities[sidx];
-							inventory.sizes[sidx].numOrder = group_quantities[sidx];
-							$scope.addOrder(inventory);
-						});
-					}
-                });
+    $scope.groupMatrix = {
+		'Maxi':{
+			'quantities': [5,9,14,14,14,9,5,5],
+			'group': 'A'
+		},
+		'Cassie':{
+			'quantities': [0,10,15,15,15,10,5,5],
+			'group': 'A'
+		},
+		'Azure':{
+			'quantities': [0,10,15,15,15,10,10,0],
+			'group': 'A'
+		},
+		'Lucy':{
+			'quantities': [5,10,15,15,15,10,5,0],
+			'group': 'A'
+		},
+		'Lola':{
+			'quantities': [5,10,15,15,15,10,5,0],
+			'group': 'A'
+		},    
+		'Madison':{
+			'quantities': [0,15,15,15,15,15,0,0],
+			'group': 'A'
+		},
+		'Amelia':{
+			'quantities': [0,7,10,10,10,7,0,0],
+			'group': 'B'
+		},
+		'Nicole':{
+			'quantities': [0,10,10,10,10,10,0,0],
+			'group': 'B'
+		},
+		'Julia':{
+			'quantities': [5,10,10,10,10,10,0,0],
+			'group': 'B'
+		} ,   
+		'Ana':{
+			'quantities': [0,6,8,8,8,6,6,6],
+			'group': 'B'
+		},
+		'Irma':{
+			'quantities': [10,15,15,15,10,10,0,0],
+			'group': 'C'
+		},
+		'Randy':{
+			'quantities': [5,10,15,15,15,10,5,0],
+			'group': 'C'
+		},
+		'Monroe':{
+			'quantities': [0,0,25,0,25,0,0,0],
+			'group': 'C'
+		},
+		'Adult Leggings (2 Pack)':{
+			'quantities': [35],
+			'group': 'L'
+		},
+		'Sloan (2-8)':{
+			'quantities': [4,4,4,4],
+			'group': 'K'
+		},
+		'Sloan (10-14)': {
+			'quantities': [4,4,4],
+			'group': 'K'
+		},
+		'Dotdotsmile Lucy Sleeve':{
+			'quantities': [6,6,6,6],
+			'group': 'K'
+		},
+		'Dotdotsmile Lucy Tank':{
+			'quantities': [6,6,6,6],
+			'group': 'K'
+		},   
+		'Kid\'s Leggings (2 Pack)':{
+			'quantities': [23,0],
+			'group': 'K'
+		} 
+	};
+    
+    	// filter rows by group
+	    $scope.selectedRows = ['Maxi', 'Cassie', 'Azure', 'Lucy', 'Lola', 'Madison'];
+	    $scope.activeGroup = 'A';
+	    $scope.filterRows = function(inventory) {
+	        return ($scope.selectedRows.indexOf(inventory.model) !== -1);
+	        // console.log($scope.activeGroup);
+	    };
+
+		// Sets the group value information
+		$scope.setGroup = function(model) {
+           	var quantities = $scope.groupMatrix[model]['quantities'];
+           	// var group = $scope.groupMatrix[model]['group'];
+           	var group = $scope.activeGroup;
+           	// console.log(group);
+			$scope.selected_lines = $scope.groupMatrix[model]['group'];
+            angular.forEach($scope.inventories, function(inventory) {
+				if(inventory.model == model){
+					angular.forEach(inventory.sizes, function(size,sidx){
+						size.checked = true;
+						size.numOrder = quantities[sidx];
+						inventory.numOrder = quantities[sidx];
+						inventory.sizes[sidx].numOrder = quantities[sidx];
+						$scope.addOrder(inventory);
+					});
+				}
             });
+            // remove quantities of other rows in group
+            // angular.forEach($scope.groupMatrix, function(groupitem2) {
+            	// console.log(groupitem);
+            	// if (groupitem2.group == group) {
+            		// console.log(groupitem2.group + ' : ' + group);
+	        		angular.forEach($scope.inventories, function(inventory) {
+	        			// console.log(group);
+	        			// console.log($scope.groups[group]);
+	        			// console.log(jQuery.inArray(inventory.model, $scope.groups[group]));
+	        			if(inventory.model != model && jQuery.inArray(inventory.model, $scope.groups[group]) != -1) {
+	        				// console.log(inventory);
+	        				// console.log(inventory.model + ' : ' + model);
+	        				// console.log(groupitem2);
+	        				// alert('groupitem["group"] = ' + groupitem['group'] + ', group = ' + group);
+							angular.forEach(inventory.sizes, function(size,sidx){
+								size.checked = false;
+								size.numOrder = 0;
+								inventory.numOrder = 0;
+								inventory.sizes[sidx].numOrder = 0;
+								$scope.removeOrder(inventory, size.key);
+							});
+						};
+					});
+				// };
+        	// });
 			shared.updateCart($scope.orders);
 		};
+		
+		// $scope.setGroup = function(groupid) {
+            // angular.forEach($scope.inventories, function(inventory) {
+				// angular.forEach($scope.groupMatrix[groupid], function(group_quantities,group_model) {
+					// if(inventory.model == group_model){
+						// //console.log('Set group' ,group_model);
+						// angular.forEach(inventory.sizes, function(size,sidx){
+// 
+							// size.checked = true;
+							// size.numOrder = group_quantities[sidx];
+							// inventory.numOrder = group_quantities[sidx];
+							// inventory.sizes[sidx].numOrder = group_quantities[sidx];
+							// $scope.addOrder(inventory);
+						// });
+					// }
+                // });
+            // });
+			// shared.updateCart($scope.orders);
+		// };
         
         $scope.pageChangeHandler = function(num) {
             
@@ -228,7 +362,7 @@ try {
 
         
         $scope.addOrder = function(n){
-			console.log('ORDER ',n);
+			// console.log('ORDER ',n);
             var checkedItems = n.sizes.filter(function(s){
                 return s.checked;
             });
@@ -323,10 +457,10 @@ try {
                             }else{
 								size.checked = false;
                                 $scope.removeOrder(array, size.key);
-                            }
-                        }
-                    }) 
-                }    
+                            };
+                        };
+                    });
+                };
             });
         };
 
@@ -341,10 +475,10 @@ try {
                                 $scope.addOrder(array);     
                             }else{
                                 $scope.removeOrder(array, size.key);
-                            }
-                        }
-                    }) 
-                }    
+                            };
+                        };
+                    });
+                } ;   
             });
         };
         
@@ -462,7 +596,8 @@ try {
                         }
                         shared.requestPromise = shared.requestData('/discounts/'+n);
                         shared.requestPromise.then(function(data){
-                            $scope.discounts = data; 
+                        	if (typeof discounts_disabled !== 'undefined' && discounts_disabled == true) $scope.discounts = 0;
+                        	else $scope.discounts = data;
                             n = n - data.total;
                             
                             if(shared.requestPromise && shared.getIsLoading()){

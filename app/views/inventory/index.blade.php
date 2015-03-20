@@ -4,101 +4,107 @@
 	.toggleBg { background : #efefef }
 </style>
 <div ng-app="app" class="index">
-    {{ Form::open(array('url' => 'inv/checkout', 'method' => 'POST','name'=>'inven')) }}
-        <div ng-controller="InventoryController" class="my-controller">
-            <div class="row">
-                <div class="col-md-4">
-                    <h3>Order Total</h3>
-                    <div class="well">
-                        <table class="table">
-                            <tbody>
-								@if (Auth::user()->consignment > 0)
-                                <tr>
-                                    <td>Account Balance</td>
-                                    <td align="right">${{ Auth::user()->consignment }}</td>
-                                </tr>
-								@endif
-                                <tr>
-                                    <td>Subtotal</td>
-                                    <td align="right">$<span ng-bind="subtotal()|number:2">0.00</span></td>
-                                </tr>
-                                <tr ng-repeat="(idx,discount) in discounts">
-                                    <td ng-if="discount.amount"><span ng-bind="discount.title"></span></td>
-                                    <td ng-if="discount.amount" align="right">$<span ng-bind="discount.amount|number:2">0.00</span></td>
-                                </tr>
-                                <tr ng-if="discounts.total">
-                                    <td>Total Discounts</td>
-                                    <td align="right">$<span ng-bind="discounts.total|number:2">0.00</span></td>
-                                </tr>
-                                <tr ng-if="tax">
-                                    <td>Tax</td>
-                                    <td align="right">$<span ng-bind="tax|number:2">0.00</span></td>
-                                </tr>
-                                <tr>
-                                    <td><label>Total</label></td>
-                                    <td align="right">$<span ng-bind="total|number:2">0.00</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-										<span class="label label-info">Please allow 3 days for shipping</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-										<h4 ng-show="!showCheckoutButton" class="pull-right">You must add 33 items to checkout</h4>
-                                        <button type="button" ng-show="showCheckoutButton" class="pull-right btn btn-sm btn-success" ng-click="checkout()">Checkout</button>
-                                        <button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <h3>Selected Items<span ng-if="countSelect()"> : <span ng-bind="orders.length">0</span></span></h3>
-				</div>
-			</div>
-                <div class="col-md-12 col-sm-12 col-lg-12">
-                    <div class="clearfix">
-                        <h3 class="pull-left no-pull-xs">Available Inventory</h3>
-						<div class="pull-right">
-							<div class="btn btn-info" ng-click="setGroup('A')">Group A</div>
-							<div class="btn btn-info" ng-click="setGroup('B')">Group B</div>
-							<div class="btn btn-info" ng-click="setGroup('C')">Group C</div>
-							<div class="btn btn-info" ng-click="setGroup('L')">Leggings</div>
-							<div class="btn btn-info" ng-click="setGroup('K')">Kids Package</div>
-						</div>
-                    </div>
-                    @include('_helpers.loading')
-					<table class="table table-bordered table-striped" id="currentinventory" width="100%">
-                        <tr class="media" dir-paginate-start="inventory in inventories | filter:search | itemsPerPage: pageSize " current-page="currentPage" total-items="countItems">
-							<td style="background:url('/img/media/@{{inventory.model|urlencode}}.jpg');background-size:contain;background-repeat:no-repeat;width:3.5em"></td>
-							<td>
-								<span ng-bind="inventory.model"></span>
+	<h1>Order Inventory</h1>
+	{{ Form::open(array('url' => 'inv/checkout', 'method' => 'POST','name'=>'inven')) }}
+		<div ng-controller="InventoryController" class="my-controller">
+			<div class="row">
+				<div class="col col-md-8">
+					<div class="pull-right" style="position:relative;">
+						@include('_helpers.loading')
+					</div>
+					<ul class="nav nav-tabs">
+						<!-- <li class="active" ng-click="filterRows('')"><a href="#">All</a></li> -->
+						<li class="active" ng-click="selectedRows = ['Maxi', 'Cassie', 'Azure', 'Lucy', 'Lola', 'Madison']; activeGroup = 'A'">
+							<a href="#">Group A</a>
+						</li>
+						<li ng-click="selectedRows = ['Amelia', 'Nicole', 'Julia', 'Ana']; activeGroup = 'B'">
+							<a href="#">Group B</a>
+						</li>
+						<li ng-click="selectedRows = ['Irma', 'Randy', 'Monroe']; activeGroup = 'C'">
+							<a href="#">Group C</a>
+						</li>
+						<li ng-click="selectedRows = ['Adult Leggings (2 Pack)']; activeGroup = 'L'">
+							<a href="#">Leggings</a>
+						</li>
+						<li ng-click="selectedRows = ['Kid\'s Cassie (2 Pack)', 'Kid\'s Leggings (2 Pack)', 'Kid\'s Maxi']; activeGroup = 'K'">
+							<a href="#">Kids Package</a>
+						</li>
+					</ul>
+					<table class="table table-bordered table-striped" id="currentinventory">
+						<tr class="media" ng-repeat="inventory in inventories | filter:filterRows">
+							<td style="width:1px;">
+							<input id="{{'{'.'{$index}'.'}'}}" type="radio" name="selected" ng-click="setGroup(inventory.model)">
 							</td>
-							<td>
-								$<span ng-bind="inventory.price" class="itemprice"></span>
-							</td>
-							<td>
-								<table id="@{{inventory.model|nospace}}">
-									<tr valign="middle">
-										<td ng-repeat="(key,size) in inventory.sizes">
-											<small ng-bind="size.key"></small><Br />
-											<input ng-model="size.numOrder" ng-init="size.numOrder=0" ng-blur="massAdd(inventory,size)" type="number" style="width:3em" size="3" value="0"> 
-	<div class="col-lg-8 col-md-8 col-sm-9 col-xs-9">
-										</td>
-									</tr>
-								</table>
-							</td>
-                    	<tr dir-paginate-end></tr>
+							<td class="align-top"><label for="{{'{'.'{$index}'.'}'}}" class="pull-left margin-right-2"> <img width="150" src="/img/media/@{{inventory.model|urlencode}}.jpg" class="image-full"> </label><h4 style="color:black;" class="no-top no-bottom"><span ng-bind="inventory.model"></span></h4> $<span ng-bind="inventory.price" class="itemprice"></span>
+							<div id="@{{inventory.model|nospace}}">
+								<div ng-repeat="(key,size) in inventory.sizes" class="pull-left margin-right-1">
+									<small ng-bind="size.key"></small>
+									<Br />
+									<input ng-model="size.numOrder" ng-blur="massAdd(inventory,size)" type="number" style="width:3em" size="3" value="0">
+								</div>
+							</div></td>
+						</tr>
 					</table>
-                </div>
-            </div>
-        {{ Form::close() }}
-    </div><!-- app -->
+				</div><!-- col -->
+				<div class="col col-md-4">
+					<h3>Order Total</h3>
+					<div class="well">
+						<table class="table">
+							<tbody>
+								@if (Auth::user()->consignment > 0)
+								<tr>
+									<td>Account Balance</td>
+									<td align="right">${{ Auth::user()->consignment }}</td>
+								</tr>
+								@endif
+								<tr>
+									<td>Subtotal</td>
+									<td align="right">$<span ng-bind="subtotal()|number:2">0.00</span></td>
+								</tr>
+								<tr ng-repeat="(idx,discount) in discounts">
+									<td ng-if="discount.amount"><span ng-bind="discount.title"></span></td>
+									<td ng-if="discount.amount" align="right">$<span ng-bind="discount.amount|number:2">0.00</span></td>
+								</tr>
+								<tr ng-if="discounts.total">
+									<td>Total Discounts</td>
+									<td align="right">$<span ng-bind="discounts.total|number:2">0.00</span></td>
+								</tr>
+								<tr ng-if="tax">
+									<td>Tax</td>
+									<td align="right">$<span ng-bind="tax|number:2">0.00</span></td>
+								</tr>
+								<tr>
+									<td><label>Total</label></td>
+									<td align="right">$<span ng-bind="total|number:2">0.00</span></td>
+								</tr>
+								<tr>
+									<td colspan="2"><span class="label label-info">Please allow 3 days for shipping</span></td>
+								</tr>
+								<tr>
+									<td colspan="2"><h4 ng-show="!showCheckoutButton" class="pull-right">You must add 33 items to checkout</h4>
+									<button type="button" ng-show="showCheckoutButton" class="pull-right btn btn-sm btn-success" ng-click="checkout()">
+										Checkout
+									</button>
+									<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">
+										Cancel
+									</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</div><!-- well -->
+				</div><!-- col -->
+			</div><!-- row -->
+		</div><!-- controller -->
+	{{ Form::close() }}
+</div><!-- app -->
 @stop
 @section('scripts')
 {{ HTML::script('js/controllers/inventoryController.js') }}
 <script>
+$('.nav-tabs li').click(function() {
+	$('.nav-tabs li.active').removeClass('active');
+	$(this).addClass('active');
+});
 /*
 	var groupMatrix = {
 					'A':{
