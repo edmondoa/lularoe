@@ -156,7 +156,7 @@ try {
                      });
                  }
             });
-            console.log($scope.inventories);
+            // console.log($scope.inventories);
 
         });
 
@@ -285,10 +285,14 @@ try {
 		// Sets the group value information
 		$scope.extra;
 		$scope.selectedRows = [];
-		$scope.extra;
+		$scope.extra = '';
+		$scope.old_extra;
 		$scope.selectRow = function(model, extra) {
 			if (typeof extra !== 'undefined') {
+				$scope.old_extra = $scope.extra;
 				$scope.extra = model;// console.log('Extra == true');
+				console.log('extra', $scope.extra);
+				console.log('old_extra', $scope.old_extra);
 			}
            	var quantities = $scope.groupMatrix[model]['quantities'];
            	// var group = $scope.groupMatrix[model]['group'];
@@ -309,6 +313,7 @@ try {
 			// $scope.selectedRows[group] = model;
 
             // remove other selected rows in group
+            // console.log($scope.extra);
     		angular.forEach($scope.inventories, function(inventory) {
     			if(typeof extra === 'undefined' && inventory.model != model && jQuery.inArray(inventory.model, $scope.groups[group]) != -1) {
 					angular.forEach(inventory.sizes, function(size,sidx){
@@ -332,6 +337,17 @@ try {
 						inventory.sizes[sidx].numOrder = '';
 						$scope.removeOrder(inventory, size.key);
 					});
+		            // angular.forEach($scope.inventories, function(inventory) {
+						if(inventory.model == $scope.old_extra){
+							angular.forEach(inventory.sizes, function(size,sidx){
+								size.checked = false;
+								size.numOrder = '';
+								inventory.numOrder = '';
+								inventory.sizes[sidx].numOrder = '';
+								$scope.removeOrder(inventory, size.key);
+							});
+						}
+		            // });
 				}
 			});
 						$scope.selectedRows[group] = model;

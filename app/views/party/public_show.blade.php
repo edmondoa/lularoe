@@ -122,7 +122,7 @@
 	<div class="row">
 		<div class="col-md-12 align-center">
 			<hr>
-			<a class="btn btn-primary" href="//{{ $organizer->public_id }}.{{ Config::get('site.base_domain') }}#contact-form"><i class="fa fa-user"></i> Contact {{ $party->organizer_name }}</a> <a href="/store" class="btn btn-primary"><i class="fa fa-shopping-cart"></i> Browse Store</a>
+			<a class="btn btn-primary" href="//{{ $organizer->public_id }}.{{ Config::get('site.base_domain') }}#contact-form"><i class="fa fa-user"></i> Contact {{ $party->organizer_name }}</a> <!-- <a href="/store" class="btn btn-primary"><i class="fa fa-shopping-cart"></i> Browse Store</a> -->
 		</div>
 	</div>
 </div>
