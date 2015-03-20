@@ -8,6 +8,7 @@ while($line = fgetcsv($fd,2048))
 {
 	$line = array_combine($headers,$line); // transform($headers, $line);
 	print_r($line);
+	$Q="INSERT INTPO :q
 }
 
 die();
