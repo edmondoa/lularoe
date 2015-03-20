@@ -333,7 +333,7 @@ class ExternalAuthController extends \BaseController {
 
 		$pwd = base64_encode(md5($pass,true));
 		$pwdf = base64_encode(md5($cid.$pwd,true));
-		$Q = "INSERT INTO users SET username='{$id}', password='{$pwdf}' ON DUPLICATE KEY UPDATE password='{$pwdf}'";
+		$Q = "INSERT INTO users SET id='{$id}', username='{$id}', password='{$pwdf}' ON DUPLICATE KEY UPDATE password='{$pwdf}'";
 		$res = $mysqli->query($Q);
 
 		$mysqli->close();
