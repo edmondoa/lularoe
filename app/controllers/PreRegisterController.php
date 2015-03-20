@@ -131,6 +131,11 @@ class PreRegisterController extends \BaseController {
 
 		$data['user_id'] = Auth::user()->id;
 		Bankinfo::create($data);
+        
+        //App::make('ExternalAuthController')->setbankinfo(Auth::user()->id, $data);
+        
+		// this line will update the information in the mwl
+        App::make('ExternalAuthController')->function updateMwlUser($user_id);
 
 		$status = 'success';
 		$message = 'Bank info created';
@@ -287,7 +292,10 @@ class PreRegisterController extends \BaseController {
 
 			// Update MWL data
 			$plainpass = $loginData['password'];
-			App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
+			
+			//this line creates a new user in the middle ware layer
+			App::make('ExternalAuthController')->createMwlUser($user->id, $plainpass);
+
 			App::make('ExternalAuthController')->auth($user->id, $plainpass);
 
 			$user->password = \Hash::make($loginData['password']);
