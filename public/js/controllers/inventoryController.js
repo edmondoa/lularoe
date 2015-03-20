@@ -156,7 +156,7 @@ try {
                      });
                  }
             });
-            // console.log($scope.inventories);
+            console.log($scope.inventories);
 
         });
 
@@ -181,13 +181,14 @@ try {
 			'Monroe'
 			],
 		'L' : [
-			'Adult Leggings (2 Pack)'
+			'Adult Leggings (2 Pack)',
+			'Tall and Curvy Leggings (2 Pack)'
 			],
 		'K' : [
-			'Sloan (2-8)',
-			'Sloan (10-14)',
+			// 'Sloan (2-8)',
+			// 'Sloan (10-14)',
 			'Dotdotsmile Lucy Sleeve',
-			'Dotdotsmile Lucy Tank',
+			// 'Dotdotsmile Lucy Tank',
 			'Kid\'s Leggings (2 Pack)'
 		]
 	};
@@ -272,15 +273,23 @@ try {
 	};
     
     	// filter rows by group
-	    $scope.selectedRows = ['Maxi', 'Cassie', 'Azure', 'Lucy', 'Lola', 'Madison'];
+	    $scope.filteredRows = $scope.groups['A'];
 	    $scope.activeGroup = 'A';
 	    $scope.filterRows = function(inventory) {
-	        return ($scope.selectedRows.indexOf(inventory.model) !== -1);
+	        return ($scope.filteredRows.indexOf(inventory.model) !== -1);
 	        // console.log($scope.activeGroup);
 	    };
 
+		// $scope.selectedRows = [];
+
 		// Sets the group value information
-		$scope.setGroup = function(model) {
+		$scope.extra;
+		$scope.selectedRows = [];
+		$scope.extra;
+		$scope.selectRow = function(model, extra) {
+			if (typeof extra !== 'undefined') {
+				$scope.extra = model;// console.log('Extra == true');
+			}
            	var quantities = $scope.groupMatrix[model]['quantities'];
            	// var group = $scope.groupMatrix[model]['group'];
            	var group = $scope.activeGroup;
@@ -297,31 +306,39 @@ try {
 					});
 				}
             });
-            // remove quantities of other rows in group
-            // angular.forEach($scope.groupMatrix, function(groupitem2) {
-            	// console.log(groupitem);
-            	// if (groupitem2.group == group) {
-            		// console.log(groupitem2.group + ' : ' + group);
-	        		angular.forEach($scope.inventories, function(inventory) {
-	        			// console.log(group);
-	        			// console.log($scope.groups[group]);
-	        			// console.log(jQuery.inArray(inventory.model, $scope.groups[group]));
-	        			if(inventory.model != model && jQuery.inArray(inventory.model, $scope.groups[group]) != -1) {
-	        				// console.log(inventory);
-	        				// console.log(inventory.model + ' : ' + model);
-	        				// console.log(groupitem2);
-	        				// alert('groupitem["group"] = ' + groupitem['group'] + ', group = ' + group);
-							angular.forEach(inventory.sizes, function(size,sidx){
-								size.checked = false;
-								size.numOrder = 0;
-								inventory.numOrder = 0;
-								inventory.sizes[sidx].numOrder = 0;
-								$scope.removeOrder(inventory, size.key);
-							});
-						};
+			// $scope.selectedRows[group] = model;
+
+            // remove other selected rows in group
+    		angular.forEach($scope.inventories, function(inventory) {
+    			if(typeof extra === 'undefined' && inventory.model != model && jQuery.inArray(inventory.model, $scope.groups[group]) != -1) {
+					angular.forEach(inventory.sizes, function(size,sidx){
+						size.checked = false;
+						size.numOrder = '';
+						inventory.numOrder = '';
+						inventory.sizes[sidx].numOrder = '';
+						$scope.removeOrder(inventory, size.key);
 					});
-				// };
-        	// });
+					// remove from array of selected rows
+					// console.log($scope.groups[group]);
+					// if (typeof extra === 'undefined') $scope.selectedRows[group] = model;
+				}
+				// console.log($scope.selectedRows[group] + ' : ' + inventory.model);
+
+				else if (inventory.model != model && jQuery.inArray(inventory.model, $scope.groups[group]) != -1 && $scope.selectedRows[group] !== inventory.model && $scope.extra !== inventory.model) {
+					angular.forEach(inventory.sizes, function(size,sidx){
+						size.checked = false;
+						size.numOrder = '';
+						inventory.numOrder = '';
+						inventory.sizes[sidx].numOrder = '';
+						$scope.removeOrder(inventory, size.key);
+					});
+				}
+			});
+						$scope.selectedRows[group] = model;
+
+			// add to array of selected rows
+			// if (typeof extra === 'undefined') $scope.selectedRows[group] = model;
+			// console.log($scope.selectedRows);
 			shared.updateCart($scope.orders);
 		};
 		

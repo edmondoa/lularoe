@@ -14,35 +14,52 @@
 					</div>
 					<ul class="nav nav-tabs">
 						<!-- <li class="active" ng-click="filterRows('')"><a href="#">All</a></li> -->
-						<li class="active" ng-click="selectedRows = ['Maxi', 'Cassie', 'Azure', 'Lucy', 'Lola', 'Madison']; activeGroup = 'A'">
+						<li class="active" ng-click="filteredRows = groups['A']; activeGroup = 'A'">
 							<a href="#">Group A</a>
 						</li>
-						<li ng-click="selectedRows = ['Amelia', 'Nicole', 'Julia', 'Ana']; activeGroup = 'B'">
+						<li ng-click="filteredRows = groups['B']; activeGroup = 'B'">
 							<a href="#">Group B</a>
 						</li>
-						<li ng-click="selectedRows = ['Irma', 'Randy', 'Monroe']; activeGroup = 'C'">
+						<li ng-click="filteredRows = groups['C']; activeGroup = 'C'">
 							<a href="#">Group C</a>
 						</li>
-						<li ng-click="selectedRows = ['Adult Leggings (2 Pack)']; activeGroup = 'L'">
+						<li ng-click="filteredRows = groups['L']; activeGroup = 'L'">
 							<a href="#">Leggings</a>
 						</li>
-						<li ng-click="selectedRows = ['Kid\'s Cassie (2 Pack)', 'Kid\'s Leggings (2 Pack)', 'Kid\'s Maxi']; activeGroup = 'K'">
+						<li ng-click="filteredRows = groups['K']; activeGroup = 'K'">
 							<a href="#">Kids Package</a>
 						</li>
 					</ul>
 					<table class="table table-bordered table-striped" id="currentinventory">
 						<tr class="media" ng-repeat="inventory in inventories | filter:filterRows">
 							<td style="width:1px;">
-							<input id="{{'{'.'{$index}'.'}'}}" type="radio" name="selected" ng-click="setGroup(inventory.model)">
+								<input id="{{'{'.'{$index}'.'}'}}" ng-show="!buttonActive" type="radio" name="group[{{'{'.'{groupMatrix[inventory.model].group}'.'}'}}]" value="inventory.model" ng-click="selectRow(inventory.model)">
+								<input id="{{'{'.'{$index + \'b\'}'.'}'}}" ng-show="buttonActive" type="radio" name="{ selected }" ng-click="selectRow(inventory.model, 'true')">
 							</td>
-							<td class="align-top"><label for="{{'{'.'{$index}'.'}'}}" class="pull-left margin-right-2"> <img width="150" src="/img/media/@{{inventory.model|urlencode}}.jpg" class="image-full"> </label><h4 style="color:black;" class="no-top no-bottom"><span ng-bind="inventory.model"></span></h4> $<span ng-bind="inventory.price" class="itemprice"></span>
-							<div id="@{{inventory.model|nospace}}">
-								<div ng-repeat="(key,size) in inventory.sizes" class="pull-left margin-right-1">
-									<small ng-bind="size.key"></small>
-									<Br />
-									<input ng-model="size.numOrder" ng-blur="massAdd(inventory,size)" type="number" style="width:3em" size="3" value="0">
+							<td class="align-top">
+								<label ng-show="!buttonActive" for="{{'{'.'{$index}'.'}'}}" class="pull-left margin-right-2">
+									<img width="150" src="/img/media/@{{inventory.model|urlencode}}.jpg" class="image-full">
+								</label>
+								<label ng-show="buttonActive" for="{{'{'.'{$index + \'b\'}'.'}'}}" class="pull-left margin-right-2">
+									<img width="150" src="/img/media/@{{inventory.model|urlencode}}.jpg" class="image-full">
+								</label>
+								<h4 style="color:black;" class="no-top no-bottom"><span ng-bind="inventory.model"></span></h4>
+								$<span ng-bind="inventory.price" class="itemprice"></span>
+								<div id="@{{inventory.model|nospace}}">
+									<div ng-repeat="(key,size) in inventory.sizes" class="pull-left margin-right-1">
+										<small ng-bind="size.key"></small>
+										<Br />
+										<input ng-model="size.numOrder" ng-blur="massAdd(inventory,size)" type="number" style="width:3em" size="3" value="0">
+									</div>
 								</div>
-							</div></td>
+							</td>
+						</tr>
+						<tr ng-show="activeGroup == 'K'">
+							<td style="width:1px;"></td>
+							<td class="align-top">
+								<button type="button" class="btn btn-default" ng-click="buttonActive=!buttonActive" ng-class="{ active : buttonActive }">Choose Adult Package Instead</button>
+								<p ng-show="buttonActive" class="alert alert-warning">Select one additional row from groups A, B, or C.</p>
+							</td>
 						</tr>
 					</table>
 				</div><!-- col -->

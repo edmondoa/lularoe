@@ -25,7 +25,7 @@ margin-top: -0.4em;
 }
 @stop
 @section('scripts')
-	<script>
+	<!-- <script>
 	
 		// strip spaces from username
 		function stripSpaces() {
@@ -43,5 +43,5 @@ margin-top: -0.4em;
 			}, 100);
 		});
 		
-	</script>
+	</script> -->
 @stop
