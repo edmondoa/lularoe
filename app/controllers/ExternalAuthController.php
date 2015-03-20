@@ -352,6 +352,7 @@ class ExternalAuthController extends \BaseController {
         $mbr = User::find($user_id);
 
 		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
+		//return $bank_info;
 		$address = Address::where('addressable_id',$mbr->id)->first();
 
 		// create a session key
@@ -365,7 +366,7 @@ class ExternalAuthController extends \BaseController {
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		$headers = [];
-		$headers[] = "Reseller-ID: ".Self::getNextAvailableMid(); //for now
+		$headers[] = "Reseller-ID: 1";//.Self::getNextAvailableMid(); //for now
 		$headers[] = "Merchant-Name: ".$mbr->first_name." ".$mbr->last_name;
 		if(!empty($address->id))
 		{
@@ -375,23 +376,17 @@ class ExternalAuthController extends \BaseController {
 			$state = (!empty($address->state))?$address->state:'';
 			$zip = (!empty($address->zip))?$address->zip:'';
 			$headers[] = "Merchant-Address: ".$address_1;
-			$headers[] = "Merchant-City: "..$city;
-			$headers[] = "Merchant-State: "..$state;
-			$headers[] = "Merchant-Zip: "..$zip;
+			$headers[] = "Merchant-City: ".$city;
+			$headers[] = "Merchant-State: ".$state;
+			$headers[] = "Merchant-Zip: ".$zip;
 		}
-		if(isset($bank_info->id))
-		{
-			$headers[] = "Account-Type: checking"; // reqd (checking or saving)
-			$headers[] = "Account-Name: ".$mbr->first_name." ".$mbr->last_name;
-			$headers[] = "Account-Number:".$bank_info->bank_account;
-			$headers[] = "Account-Route: ".$bank_info->bank_routing; //
-		}
+		$headers[] = "Account-Type: checking"; // reqd (checking or saving)
+		$headers[] = "Account-Name: ".$mbr->first_name." ".$mbr->last_name;
+		$headers[] = "Account-Number:".$bank_info->bank_account;
+		$headers[] = "Account-Route: ".$bank_info->bank_routing; //
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
-		if(!is_null($password))
-		{
-			$headers[] = "Password: ".base64_encode($password); //base 64 encoded password
-		}
-
+		$headers[] = "Password: ".base64_encode($password); //base 64 encoded password
+		//return $headers;
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -442,9 +437,9 @@ class ExternalAuthController extends \BaseController {
 			$state = (!empty($address->state))?$address->state:'';
 			$zip = (!empty($address->zip))?$address->zip:'';
 			$headers[] = "Merchant-Address: ".$address_1;
-			$headers[] = "Merchant-City: "..$city;
-			$headers[] = "Merchant-State: "..$state;
-			$headers[] = "Merchant-Zip: "..$zip;
+			$headers[] = "Merchant-City: ".$city;
+			$headers[] = "Merchant-State: ".$state;
+			$headers[] = "Merchant-Zip: ".$zip;
 		}
 		if(!empty($bank_info->id))
 		{

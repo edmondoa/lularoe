@@ -25,7 +25,8 @@ class DevelopController extends \BaseController {
 	 */
 	public function getAnother()
 	{
-		$mwl_user = App::make('ExternalAuthController')->getMwlUserInfo(1234);
+		//return Session::get('salt');
+		$mwl_user = App::make('ExternalAuthController')->getMwlUserInfo(9851);
 		return Response::json($mwl_user);
 		exit;
 	}

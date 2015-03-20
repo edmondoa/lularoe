@@ -21,7 +21,7 @@
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
-
+Route::controller('dev','DevelopController');
 Route::pattern('id', '[0-9]+');
 
 		// API for IOS App
@@ -403,7 +403,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		# Superadmin, Admin, Editor routes
 		##############################################################################################
 		Route::group(array('before' => ['superadmin','admin','editor']), function() {
-			Route::controller('dev','DevelopController');
+			//Route::controller('dev','DevelopController');
 		});
 
 		##############################################################################################
@@ -804,20 +804,4 @@ Route::get('sendonboardmail/{id}', function($id) {
 	});
 
 	die('Sent!');
-});
-
-Route::get('routes', function() {
-$routeCollection = Route::getRoutes();
-
-echo "<table style='width:100%'>";
-	foreach ($routeCollection as $value) {
-		echo "<tr>";
-			echo "<td>" . implode(",",$value->getMethods()) . "</td>";
-			echo "<td>" . $value->getPath() . "</td>";
-			echo "<td>" . $value->getActionName() . "</td>";
-			echo "<td>" . $value->getUri() . "</td>";
-			echo "<td>" . $value->getName() . "</td>";
-		echo "</tr>";
-	}
-echo "</table>";
 });

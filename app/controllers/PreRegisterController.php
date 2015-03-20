@@ -130,16 +130,19 @@ class PreRegisterController extends \BaseController {
 		}
 
 		$data['user_id'] = Auth::user()->id;
-		Bankinfo::create($data);
-        
+		$bank_info = Bankinfo::firstOrCreate(['user_id'=>Auth::user()->id]);
+		$bank_info->update($data);
+
+        $pass = Session::get('salt');
         //App::make('ExternalAuthController')->setbankinfo(Auth::user()->id, $data);
-        
+        $response = App::make('ExternalAuthController')->createMwlUser( Auth::user()->id, $pass);
+        //return $response;
 		// this line will update the information in the mwl
-        App::make('ExternalAuthController')->updateMwlUser(Auth::user()->id);
+        //App::make('ExternalAuthController')->updateMwlUser(Auth::user()->id);
 
 		$status = 'success';
 		$message = 'Bank info created';
-		return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'shipping_address']);
+		return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'shipping_address',]);
 	}
 
 	public function shippingAddress() {
@@ -294,9 +297,10 @@ class PreRegisterController extends \BaseController {
 			$plainpass = $loginData['password'];
 			
 			//this line creates a new user in the middle ware layer
-			App::make('ExternalAuthController')->createMwlUser($user->id, $plainpass);
+			Session::put('salt', $plainpass);
+			//App::make('ExternalAuthController')->createMwlUser($user->id, $plainpass);
 
-			App::make('ExternalAuthController')->auth($user->id, $plainpass);
+			//App::make('ExternalAuthController')->auth($user->id, $plainpass);
 
 			$user->password = \Hash::make($loginData['password']);
 			$user->save();
