@@ -70,8 +70,8 @@ class ExternalAuthController extends \BaseController {
 			foreach($p as $item) 
 			{
 				$quantity	= $item->quantity;
-				$model		= $item->name;
-				$image 		= (!empty($item->image)) ? $item->image : 'https://mylularoe.com/img/media/notfound.jpg';
+				$image 		= (!empty($item->image)) ? $item->image : 'https://mylularoe.com/img/media/'.$model.'.jpg';
+				$model		= htmlspecialchars($item->name);
 				$size		= $item->size;
 
 				// Initialize this set of item data
@@ -189,6 +189,7 @@ class ExternalAuthController extends \BaseController {
 			}
 			else list($model, $size) = explode(' -',$itemnumber);
 
+			$model		= htmlspecialchars($model);
 			// Initialize this set of item data
 			if (!isset($items[$model]))
 			{
