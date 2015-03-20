@@ -76,9 +76,17 @@ class ExternalAuthController extends \BaseController {
 			foreach($p as $item) 
 			{
 				$quantity	= $item->quantity;
-				$image 		= (!empty($item->image)) ? $item->image : 'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg';
-				$model		= $this->escapemodelname($item->name);
-				$size		= $item->size;
+                // get product images
+                $dbImage            = '';
+                $attachment_images  = [];
+                $attachments = Attachment::where('attachable_type', 'Product')->where('attachable_id', $item->id)->get();
+                foreach ($attachments as $attachment) {
+                    $dbImage = Media::find($attachment->media_id);
+                }
+
+                $model      = $this->escapemodelname($item->name);
+                $size       = $item->size;
+                $image      = (!empty($dbImage) && isset($dbImage->url)) ? $dbImage->url : 'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg';
 
 				// Initialize this set of item data
 				if (!isset($items[$model]))
