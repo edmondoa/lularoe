@@ -135,7 +135,7 @@ class PreRegisterController extends \BaseController {
         //App::make('ExternalAuthController')->setbankinfo(Auth::user()->id, $data);
         
 		// this line will update the information in the mwl
-        App::make('ExternalAuthController')->function updateMwlUser($user_id);
+        App::make('ExternalAuthController')->updateMwlUser(Auth::user()->id);
 
 		$status = 'success';
 		$message = 'Bank info created';

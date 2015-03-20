@@ -51,7 +51,7 @@ class BankinfoController extends \BaseController {
 
         $bankinfo = Input::all();
 
-        App::make('ExternalAuthController')->setbankinfo(Auth::user()->id, $bankinfo);
+        App::make('ExternalAuthController')->updateMwlUser(Auth::user()->id);
 
 		// Do I really have to do this?
 		$data['user_id'] = Auth::user()->id;

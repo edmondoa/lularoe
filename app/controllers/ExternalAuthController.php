@@ -254,45 +254,9 @@ class ExternalAuthController extends \BaseController {
 
 	// What is this hackery?!
 	// PLEASE baby Jesus, lets get an api for these things.
+	// USE THE UPDATE USER FUNCTION FOR THIS FUNCTIONALITY
 	public function setbankinfo($user_id, $data/*, $cid = 'llr'*/) {
-
-        $mbr	= User::find($user_id);
-		$tid_id = '';
-		$key = Self::midauth();
-
-		$ch = curl_init();
-
-		// Set to general auth for pulling inventory		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account?sessionkey=".$key;
-		curl_setopt($ch, CURLOPT_URL, $curlstring);
-
-		// If we ever decide to 'POST'
-		$params = [
-			'Merchant_ID' => '',
-			'Account-Type' => '',
-			'Account-Name' => '',
-			'Account-Number' => '',
-			'Account-Route' => '',
-		];
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-		
-
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-		$server_output = curl_exec ($ch);
-		if ($errno = curl_errno($ch)) {
-			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
-			return(Response::json($result,401));
-		}
-		curl_close ($ch);
-
-		if (!$server_output) return('dang');
-		else {
-			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') return null;
-			return($server_output);
-		}
+		return false;
 
 
 /*		try {
@@ -388,6 +352,7 @@ class ExternalAuthController extends \BaseController {
         $mbr = User::find($user_id);
 
 		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
+		$address = Address::where('addressable_id',$mbr->id)->first();
 
 		// create a session key
 		$key = Self::midauth();
@@ -400,12 +365,20 @@ class ExternalAuthController extends \BaseController {
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		$headers = [];
-		$headers[] = "Reseller-ID: 1"; //for now
+		$headers[] = "Reseller-ID: ".Self::getNextAvailableMid(); //for now
 		$headers[] = "Merchant-Name: ".$mbr->first_name." ".$mbr->last_name;
-		//$headers[] = "Merchant-Address: ";
-		//$headers[] = "Merchant-City: ";
-		//$headers[] = "Merchant-State: ";
-		//$headers[] = "Merchant-Zip: ";
+		if(!empty($address->id))
+		{
+			//Hacky, I know
+			$address_1 = (!empty($address->address_1))?$address->address_1:'';
+			$city = (!empty($address->city))?$address->city:'';
+			$state = (!empty($address->state))?$address->state:'';
+			$zip = (!empty($address->zip))?$address->zip:'';
+			$headers[] = "Merchant-Address: ".$address_1;
+			$headers[] = "Merchant-City: "..$city;
+			$headers[] = "Merchant-State: "..$state;
+			$headers[] = "Merchant-Zip: "..$zip;
+		}
 		if(isset($bank_info->id))
 		{
 			$headers[] = "Account-Type: checking"; // reqd (checking or saving)
