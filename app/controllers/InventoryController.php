@@ -44,7 +44,7 @@ class InventoryController extends \BaseController {
 		// Do the MATHS
 		foreach ($this->discounts as $discount) {
 			// I <3 Eval .. NOT!
-			if (($discount['repsale']) == (Session::get('repsale'))) {
+			if (($discount['repsale'] == true) && (Session::get('repsale'))) {
 				if ($discount['math']['op'] == '=') 
 					$dcamt = $discount['math']['n'];
 				else
@@ -58,6 +58,7 @@ class InventoryController extends \BaseController {
 			}
 		}
 		$discounted['total'] = $dctotal;
+		$discounted['repsale'] = Session::get('repsale');
 
 		// Return my requestors appropriately
         if(Request::wantsJson()){
@@ -72,14 +73,30 @@ class InventoryController extends \BaseController {
 	}
 
     public function getTax($value,$viaRequest=true,$doTemplate=false){
-		if (Session::get('repsale'))  { 
+
+		if (!Session::get('repsale'))  { 
 			// Corona California tax
 			$data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$value);
 			$tax = json_decode($data);
 		}
-		else { // No tax calculated (or flat tax!)
-			$tax = new stdClass();
-			$tax->Tax = 0;
+		else { 
+			// <sarc>Thanks Avalara for not having an API based on address.</sarc>
+			$a = Auth::user()->addresses;
+			$zipcode = $a[0]->zip;
+			if (Cache::has('tax-'.$zipcode)) {
+				$googhelp = Cache::get('tax-'.$zipcode);
+			}
+			else {
+				$googhelp = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address=84047');
+				Cache::put('tax-'.$zipcode, $googhelp, 86400);
+			}
+
+			$googdata = json_decode($googhelp);
+			$latlon = $googdata->results[0]->geometry->location;
+
+            $data = file_get_contents("https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/{$latlon->lat},{$latlon->lng}/get?saleamount=".$value);
+
+			$tax = json_decode($data);
 		}
 
         if($doTemplate) return $tax;
