@@ -136,7 +136,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::get('public-events/{id}', 'UventController@publicShow');
 
 	// leads
-	// Route::get('leads', ['as' => 'leads', 'uses' => 'LeadController@index']);
+	Route::get('leads', ['as' => 'leads', 'uses' => 'LeadController@index']);
 	Route::resource('leads', 'LeadController');
 	Route::post('leads/disable', 'LeadController@disable');
 	Route::post('leads/enable', 'LeadController@enable');
@@ -258,6 +258,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('inventories/', 'InventoryController@index');
         Route::get('inv/checkout', 'InventoryController@checkout');
         Route::get('inv/sales', 'InventoryController@sales');
+		Route::get('inventory/full', 'InventoryController@matrixFull');
 
         Route::post('inv/purchase', 'InventoryController@purchase');
 		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
@@ -643,7 +644,7 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 		// exit;
 		
 		$addresses = [];
-		if (Address::where('addressable_id', $user->id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $user->id)->where('label', 'Billing')->first();
+		// if (Address::where('addressable_id', $user->id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $user->id)->where('label', 'Billing')->first();
 		if (Address::where('addressable_id', $user->id)->where('label', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $user->id)->where('label', 'Shipping')->first();
 		
 		return View::make('userSite.show', compact('user', 'userSite', 'opportunities', 'events', 'addresses'));

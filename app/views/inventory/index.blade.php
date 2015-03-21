@@ -12,30 +12,38 @@
 					<div class="pull-right" style="position:relative;">
 						@include('_helpers.loading')
 					</div>
-					<ul class="nav nav-tabs">
-						<!-- <li class="active" ng-click="filterRows('')"><a href="#">All</a></li> -->
-						<li class="active" ng-click="filteredRows = groups['A']; activeGroup = 'A'">
-							<a href="#">Group A</a>
-						</li>
-						<li ng-click="filteredRows = groups['B']; activeGroup = 'B'">
-							<a href="#">Group B</a>
-						</li>
-						<li ng-click="filteredRows = groups['C']; activeGroup = 'C'">
-							<a href="#">Group C</a>
-						</li>
-						<li ng-click="filteredRows = groups['L']; activeGroup = 'L'">
-							<a href="#">Leggings</a>
-						</li>
-						<li ng-click="filteredRows = groups['K']; activeGroup = 'K'">
-							<a href="#">Kids Package</a>
-						</li>
-					</ul>
+					@if (!isset($full))
+						<ul class="nav nav-tabs">
+							<!-- <li class="active" ng-click="filterRows('')"><a href="#">All</a></li> -->
+							<li class="active" ng-click="filteredRows = groups['A']; activeGroup = 'A'">
+								<a href="#">Group A</a>
+							</li>
+							<li ng-click="filteredRows = groups['B']; activeGroup = 'B'">
+								<a href="#">Group B</a>
+							</li>
+							<li ng-click="filteredRows = groups['C']; activeGroup = 'C'">
+								<a href="#">Group C</a>
+							</li>
+							<li ng-click="filteredRows = groups['L']; activeGroup = 'L'">
+								<a href="#">Leggings</a>
+							</li>
+							<li ng-click="filteredRows = groups['K']; activeGroup = 'K'">
+								<a href="#">Kids Package</a>
+							</li>
+						</ul>
+					@endif
 					<table class="table table-bordered table-striped" id="currentinventory">
-						<tr class="media" ng-repeat="inventory in inventories | filter:filterRows">
-							<td style="width:1px;">
-								<input id="{{'{'.'{$index}'.'}'}}" ng-show="!buttonActive" type="radio" name="group[{{'{'.'{groupMatrix[inventory.model].group}'.'}'}}]" value="inventory.model" ng-click="selectRow(inventory.model)">
-								<input id="{{'{'.'{$index + \'b\'}'.'}'}}" ng-show="buttonActive" type="radio" name="{ selected }" ng-click="selectRow(inventory.model, 'true')">
-							</td>
+						@if (!isset($full))
+							<tr class="media" ng-repeat="inventory in inventories | filter:filterRows">
+						@else
+							<tr class="media" ng-repeat="inventory in inventories">
+						@endif
+							@if (!isset($full))
+								<td style="width:1px;">
+									<input id="{{'{'.'{$index}'.'}'}}" ng-show="!buttonActive" type="radio" name="group[{{'{'.'{groupMatrix[inventory.model].group}'.'}'}}]" value="inventory.model" ng-click="selectRow(inventory.model)">
+									<input id="{{'{'.'{$index + \'b\'}'.'}'}}" ng-show="buttonActive" type="radio" name="{ selected }" ng-click="selectRow(inventory.model, 'true')">
+								</td>
+							@endif
 							<td class="align-top">
 								<label ng-show="!buttonActive" for="{{'{'.'{$index}'.'}'}}" class="pull-left margin-right-2">
 									<img width="150" src="/img/media/@{{inventory.model|urlencode}}.jpg" class="image-full">

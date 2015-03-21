@@ -24,6 +24,7 @@ class InventoryController extends \BaseController {
     public function matrix() {
 		return View::make('inventory.matrix');
     }
+	
 
     /**
      * Data only
@@ -151,6 +152,18 @@ class InventoryController extends \BaseController {
 
 		return View::make('inventory.index', compact('inventories'));
 	}
+	
+	/**
+	 * Display a listing of inventories (after initial onboarding)
+	 *
+	 * @return Response
+	 */
+    public function matrixFull() {
+		Session::put('repsale', 0);
+		$inventories = Inventory::all();
+    	$full = true;
+		return View::make('inventory.index', compact('inventories', 'full'));
+    }
 
 	/**
 	 * Show the form for creating a new inventory

@@ -45,7 +45,7 @@
  				    <a href="javascript:void(0)" data-href="/inventories" class='list-group-item' data-toggle="popover" data-content="
 						 <a href='/products'><i class='fa fa-female'></i> My Inventory</a>
  						 <!-- <a href='/products/create'><i class='fa fa-plus'></i> Add Inventory</a> -->
-                         <a href='/inventories'><i class='fa fa-plus'></i> Purchase Inventory</a>
+                         <a href='/inventory/full'><i class='fa fa-plus'></i> Purchase Inventory</a>
                      ">
                          <i class="fa fa-female"></i> <span class="text">Inventory</span>
                      </a>
