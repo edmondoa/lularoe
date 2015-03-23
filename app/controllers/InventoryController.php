@@ -147,7 +147,7 @@ class InventoryController extends \BaseController {
 	 */
 	public function index()
 	{
-		Session::put('repsale', 0);
+		Session::put('repsale', false);
 		$inventories = Inventory::all();
 
 		return View::make('inventory.index', compact('inventories'));
@@ -159,7 +159,7 @@ class InventoryController extends \BaseController {
 	 * @return Response
 	 */
     public function matrixFull() {
-		Session::put('repsale', 0);
+		Session::put('repsale', false);
 		$inventories = Inventory::all();
     	$full = true;
 		return View::make('inventory.index', compact('inventories', 'full'));
@@ -313,7 +313,7 @@ class InventoryController extends \BaseController {
      */
     public function sales()
     {
-			Session::put('repsale',1);
+			Session::put('repsale',true);
             return View::make('inventory.repsales');
     }
 	
