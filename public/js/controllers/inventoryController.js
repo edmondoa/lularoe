@@ -156,7 +156,7 @@ try {
                      });
                  }
             });
-            // console.log($scope.inventories);
+            console.log($scope.inventories);
 
         });
 
@@ -424,7 +424,8 @@ try {
                                 'itemnumber':n.itemnumber,
                                 'size':size.key,
                                 'numOrder':quantity,
-                                'price':n.price
+                                'price':n.price,
+                                'image':n.image
                             });
                             shared.updateCart($scope.orders);
                         }else{

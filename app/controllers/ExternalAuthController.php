@@ -79,9 +79,11 @@ class ExternalAuthController extends \BaseController {
                 // get product images
                 $dbImage            = '';
                 $attachment_images  = [];
-                $attachments = Attachment::where('attachable_type', 'Product')->where('attachable_id', $item->id)->get();
+                $attachments = Attachment::where('attachable_type', 'Product')->where('attachable_id', $item->id)->where('featured', 1)->get();
                 foreach ($attachments as $attachment) {
                     $dbImage = Media::find($attachment->media_id);
+					$dbImage->url = explode('.', $dbImage->url);
+					if (isset($dbImage->url[1])) $dbImage->url = '/uploads/' . $dbImage->url[0] . '-sm.' . $dbImage->url[1];
                 }
 
                 $model      = $this->escapemodelname($item->name);
@@ -203,6 +205,9 @@ class ExternalAuthController extends \BaseController {
 			else list($model, $size) = explode(' -',$itemnumber);
 
 			$model		= $this->escapemodelname($model);
+			
+			
+			
 			// Initialize this set of item data
 			if (!isset($items[$model]))
 			{
