@@ -236,7 +236,7 @@
 								</ul>
 							@endif
 							<br>
-                            <div id="copyright-text">&copy; {{ date('Y') }} {{ Config::get('site.company_name') }} an LLR INC company
+                            <div id="copyright-text">&copy; {{ date('Y') }} LLR INC
 							</div><!--/span_7-->
 
                         </div><!--/span_5-->

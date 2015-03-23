@@ -285,6 +285,7 @@ try {
 		// Sets the group value information
 		$scope.extra;
 		$scope.selectedRows = [];
+		$scope.extraRow = [];
 		$scope.extra = '';
 		$scope.old_extra;
 		$scope.selectRow = function(model, extra) {
@@ -349,10 +350,8 @@ try {
 			});
 			
 			if (typeof extra !== 'undefined') {
-				$scope.old_extra = $scope.extra;
-				$scope.extra = model;// console.log('Extra == true');
+				$scope.extraRow = extra;
 				console.log('extra', $scope.extra);
-				console.log('old_extra', $scope.old_extra);
 			}
 			
 						$scope.selectedRows[group] = model;
