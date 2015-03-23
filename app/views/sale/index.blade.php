@@ -41,6 +41,11 @@
                                     <td align="right">${{number_format($discount['total'],2)}}</td>
                                 </tr>
 							@endif
+                                <tr>
+                                    <td colspan="2"><button id="disco" class="btn btn-sm">D</button>
+                                    <input type="text" placeholder="discount" name="customdiscount" id="customdiscount" style="display:none">
+									</td>
+                                </tr>
 
                                 <tr>
                                     <td>Tax</td>
@@ -51,14 +56,9 @@
                                     <td align="right">$<span ng-bind="total|number:2">0.00</span></td>
                                 </tr>
 								<tr>
-									<td align="right">Send Receipt Email</td>
-                                    <td>
-										<input type="text" name="emailto" placeholder="enter email address">
-									</td>
-								</tr>
-								<tr>	
-									<td align="right">{{ Form::label('botique','I would like more information about LuLaRoe') }}</td>
-									<td>{{ Form::checkbox('botique') }}</td>
+									<td colspan="2">Send Receipt Email<br/>
+										<input type="text" name="emailto" placeholder="enter email address"><Br />
+									<small>{{ Form::checkbox('botique') }} {{ Form::label('botique','I would like more information about LuLaRoe') }}</small></td>
 								</tr>
 									
 	
@@ -186,6 +186,16 @@
 @stop
 @section('scripts')
 <script>
+	$('#disco').on('click',function(e) {
+		e.preventDefault();
+		$(this).toggle();
+		$('#customdiscount').toggle().focus();
+	});
+
+	$('#customdiscount').on('change',function(e) {
+		$.get('/discounts/0?discount='+$('#customdiscount').val())
+	});
+
     angular.extend(ControlPad, (function(){                
                 return {
                     inventoryCtrl : {

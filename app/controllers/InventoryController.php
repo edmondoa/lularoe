@@ -42,6 +42,16 @@ class InventoryController extends \BaseController {
 		$discounted	= array();
 		$dctotal	= 0;
 
+		if (Input::get('discount')) {
+			Session::put('customdiscount', Input::get('discount'));
+		}
+
+		if (Session::get('customdiscount')) {
+			$discounted[] = array('title'	=> 'Special Discount',
+								  'amount'	=> floatval(Session::get('customdiscount')));
+			$dctotal = floatval(Session::get('customdiscount'));
+		}
+
 		// Do the MATHS
 		foreach ($this->discounts as $discount) {
 			// I <3 Eval .. NOT!
@@ -58,8 +68,10 @@ class InventoryController extends \BaseController {
 				}
 			}
 		}
+
 		$discounted['total'] = $dctotal;
 		$discounted['repsale'] = Session::get('repsale');
+
 
 		// Return my requestors appropriately
         if(Request::wantsJson()){
@@ -532,6 +544,7 @@ class InventoryController extends \BaseController {
 			->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 		});
 
+		Session::forget('customdiscount');
 		Session::forget('emailto');
 		Session::forget('repsale');
 		Session::forget('orderdata');
