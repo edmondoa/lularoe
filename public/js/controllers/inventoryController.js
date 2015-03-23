@@ -310,23 +310,8 @@ try {
 
             // remove other selected rows in group
             // console.log($scope.extra);
-    		angular.forEach($scope.inventories, function(inventory) {
-    			if(typeof extra === 'undefined' && inventory.model != model && jQuery.inArray(inventory.model, $scope.groups[group]) != -1) {
-					angular.forEach(inventory.sizes, function(size,sidx){
-						size.checked = false;
-						size.numOrder = '';
-						inventory.numOrder = '';
-						inventory.sizes[sidx].numOrder = '';
-						$scope.removeOrder(inventory, size.key);
-					});
-					// remove from array of selected rows
-					// console.log($scope.groups[group]);
-					// if (typeof extra === 'undefined') $scope.selectedRows[group] = model;
-				}
-				// console.log($scope.selectedRows[group] + ' : ' + inventory.model);
-
-				
-				// else if(inventory.model == $scope.old_extra){
+    		// angular.forEach($scope.inventories, function(inventory) {
+    			// if(typeof extra === 'undefined' && inventory.model != model && jQuery.inArray(inventory.model, $scope.groups[group]) != -1) {
 					// angular.forEach(inventory.sizes, function(size,sidx){
 						// size.checked = false;
 						// size.numOrder = '';
@@ -334,25 +319,40 @@ try {
 						// inventory.sizes[sidx].numOrder = '';
 						// $scope.removeOrder(inventory, size.key);
 					// });
+					// // remove from array of selected rows
+					// // console.log($scope.groups[group]);
+					// // if (typeof extra === 'undefined') $scope.selectedRows[group] = model;
 				// }
-
-				else if (inventory.model != model && jQuery.inArray(inventory.model, $scope.groups[group]) != -1 && $scope.selectedRows[group] !== inventory.model && $scope.extra !== inventory.model) {
-					angular.forEach(inventory.sizes, function(size,sidx){
-						size.checked = false;
-						size.numOrder = '';
-						inventory.numOrder = '';
-						inventory.sizes[sidx].numOrder = '';
-						$scope.removeOrder(inventory, size.key);
-					});
-				}
-
-				
-			});
+				// // console.log($scope.selectedRows[group] + ' : ' + inventory.model);
+// 
+// 				
+				// // else if(inventory.model == $scope.old_extra){
+					// // angular.forEach(inventory.sizes, function(size,sidx){
+						// // size.checked = false;
+						// // size.numOrder = '';
+						// // inventory.numOrder = '';
+						// // inventory.sizes[sidx].numOrder = '';
+						// // $scope.removeOrder(inventory, size.key);
+					// // });
+				// // }
+// 
+				// // else if (inventory.model != model && jQuery.inArray(inventory.model, $scope.groups[group]) != -1 && $scope.selectedRows[group] !== inventory.model && $scope.extra !== inventory.model) {
+					// // angular.forEach(inventory.sizes, function(size,sidx){
+						// // size.checked = false;
+						// // size.numOrder = '';
+						// // inventory.numOrder = '';
+						// // inventory.sizes[sidx].numOrder = '';
+						// // $scope.removeOrder(inventory, size.key);
+					// // });
+				// // }
+// 
+// 				
+			// });
 			
-			if (typeof extra !== 'undefined') {
-				$scope.extraRow = extra;
-				console.log('extra', $scope.extra);
-			}
+			// if (typeof extra !== 'undefined') {
+				// $scope.extraRow = extra;
+				// console.log('extra', $scope.extra);
+			// }
 			
 						$scope.selectedRows[group] = model;
 
@@ -360,6 +360,24 @@ try {
 			// if (typeof extra === 'undefined') $scope.selectedRows[group] = model;
 			// console.log($scope.selectedRows);
 			shared.updateCart($scope.orders);
+		};
+		
+		// choose size
+		$scope.addAllInRepSize = function() {
+            angular.forEach($scope.inventories, function(inventory) {
+				angular.forEach(inventory.sizes, function(size,sidx){
+					// console.log(size.key);
+					if (size.key == $scope.repSize) {
+						
+						// increment up
+						size.checked = true;
+						size.numOrder = size.numOrder + 1;
+						// inventory.numOrder ++;
+						// inventory.sizes[sidx].numOrder ++;
+						$scope.addOrder(inventory);
+					}
+				});
+            });
 		};
 		
 		// $scope.setGroup = function(groupid) {

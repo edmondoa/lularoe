@@ -2,6 +2,10 @@
 @section('content')
 <div ng-app="app" class="index">
 <?php    
+	if (Input::get('discount')) {
+		Session::put('customdiscount',floatval(Input::get('discount')));
+	}
+
 	// Bank info
 	if (Input::get('nuke')) {
 		Session::forget('paidout');
@@ -9,6 +13,7 @@
         Session::forget('repsale');
         //Session::forget('orderdata');
         Session::forget('subtotal');
+        Session::forget('customdiscount');
         Session::forget('tax');
         Session::forget('paidout');
         Session::forget('payments');
@@ -45,6 +50,15 @@
 							</tr>
 							@endforeach
 
+							@if (Session::get('repsale'))
+<!--
+							<tr>
+								<td colspan="2">Set Discount</td>
+								<td colspan="2"><form method="GET" action="#disc"><input type="text" name="discount" placeholder="0.00"><input type="submit" value="Apply"></form>
+							</tr>
+-->
+							@endif
+
 							@if (!empty($discounts) && $discounts['total'] > 0)
 								@foreach ($discounts as $discount) @if (!empty($discount['amount']))
 								<tr>
@@ -60,7 +74,7 @@
 								</tr>
 							@endif
 
-							@if (Session::get('repsale') > 0)
+							@if (Session::get('repsale'))
 							<tr>
 								<td colspan="3" align="right"><b>Tax</b></td>
 								<td align="right">${{ number_format($tax,2) }}</td>
