@@ -76,7 +76,8 @@ class InventoryController extends \BaseController {
     public function getTax($value,$viaRequest=true,$doTemplate=false){
 
 		if (!Session::get('repsale'))  { 
-			// Corona California tax
+			// TURN OFF TAX ON NON-REP SALE FOR NOW
+			$value = 0;
 			$data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$value);
 			$tax = json_decode($data);
 		}
