@@ -76,7 +76,8 @@ class InventoryController extends \BaseController {
     public function getTax($value,$viaRequest=true,$doTemplate=false){
 
 		if (!Session::get('repsale'))  { 
-			// Corona California tax
+			// TURN OFF TAX ON NON-REP SALE FOR NOW
+			$value = 0;
 			$data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$value);
 			$tax = json_decode($data);
 		}
@@ -147,7 +148,7 @@ class InventoryController extends \BaseController {
 	 */
 	public function index()
 	{
-		Session::put('repsale', 0);
+		Session::put('repsale', false);
 		$inventories = Inventory::all();
 
 		return View::make('inventory.index', compact('inventories'));
@@ -159,7 +160,7 @@ class InventoryController extends \BaseController {
 	 * @return Response
 	 */
     public function matrixFull() {
-		Session::put('repsale', 0);
+		Session::put('repsale', false);
 		$inventories = Inventory::all();
     	$full = true;
 		return View::make('inventory.index', compact('inventories', 'full'));
@@ -313,7 +314,7 @@ class InventoryController extends \BaseController {
      */
     public function sales()
     {
-			Session::put('repsale',1);
+			Session::put('repsale',true);
             return View::make('inventory.repsales');
     }
 	

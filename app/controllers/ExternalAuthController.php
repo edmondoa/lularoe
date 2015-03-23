@@ -88,6 +88,8 @@ class ExternalAuthController extends \BaseController {
 
                 $model      = $this->escapemodelname($item->name);
                 $size       = $item->size;
+
+				// Please keep the full https path in here it is for IOS
                 $image      = (!empty($dbImage) && isset($dbImage->url)) ? $dbImage->url : 'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg';
 
 				// Initialize this set of item data
@@ -493,6 +495,11 @@ class ExternalAuthController extends \BaseController {
 			if (isset($so->Code) && $so->Code == '401') return null;
 			return($server_output);
 		}
+	}
+
+	public function sendReceipt($key = '') {
+		$result = array('error'=>true,'message'=>'This is a stub error.');
+		return Response::json($result, 500);
 	}
 
 	public function getNextAvailableMid() {
