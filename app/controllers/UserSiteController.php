@@ -68,7 +68,7 @@ class UserSiteController extends \BaseController {
 		else $user->image = '/img/users/avatars/' . $user->image;
 		
 		$userSite = UserSite::where('user_id', $user->id)->first();
-		if ($userSite->banner == '') $userSite->banner = '/img/users/default-banner.png';
+		if ($userSite->banner == '') $userSite->banner = '/img/users/default-banner.jpg';
 		else $userSite->banner = '/img/users/banners/' . $userSite->banner;
 
 		$opportunities = Opportunity::where('public', 1)->where('deadline', '>', time())->orWhere('deadline', '')->take(10)->orderBy('updated_at', DESC)->get();
@@ -86,7 +86,17 @@ class UserSiteController extends \BaseController {
 		if (Auth::user()->id == $id || Auth::user()->hasRole(['Admin', 'Superadmin'])) {
 			$userSite = UserSite::firstOrNew(['user_id'=> $id]);
 			$userSite->save();
-			return View::make('userSite.edit', compact('userSite'));
+			
+			// get user privacy preferences
+			$user = User::find($id);
+			$checked = [];
+			// format checkbox values for database
+			$checked['hide_email'] = $user->hide_email == 1 ? 0 : 1;
+			$checked['hide_phone'] = $user->hide_phone == 1 ? 0 : 1;
+			$checked['hide_billing_address'] = $user->hide_billing_address == 1 ? 0 : 1;
+			$checked['hide_shipping_address'] = $user->hide_shipping_address == 1 ? 0 : 1;
+			
+			return View::make('userSite.edit', compact('userSite', 'checked'));
 		}
 	}
 
@@ -106,9 +116,6 @@ class UserSiteController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
-
-		// format checkbox values for database
-		$data['display_phone'] = isset($data['display_phone']) ? 1 : 0;
 
 		// user avatar
         if (Input::file('image')) {
@@ -185,6 +192,17 @@ class UserSiteController extends \BaseController {
         }
 		
 		$userSite->update($data);
+		// format checkbox values for database
+		$data['hide_email'] = isset($data['hide_email']) ? 0 : 1;
+		$data['hide_phone'] = isset($data['hide_phone']) ? 0 : 1;
+		$data['hide_billing_address'] = isset($data['hide_billing_address']) ? 0 : 1;
+		$data['hide_shipping_address'] = isset($data['hide_shipping_address']) ? 0 : 1;
+		$user->update([
+			'hide_email' => $data['hide_email'],
+			'hide_phone' => $data['hide_phone'],
+			'hide_billing_address' => $data['hide_billing_address'],
+			'hide_shipping_address' => $data['hide_shipping_address'],
+		]);
 
 		return Redirect::back()->with('message', 'Site updated. <a target="_blank" href="//' . $user->public_id . '.' . Config::get('site.base_domain') . '">View site</a>.');
 	}

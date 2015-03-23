@@ -3,14 +3,62 @@
 
 $fd = fopen('Consultants.csv','r');
 $headers = fgetcsv($fd, 2048);
+$pubids = array();
 
 while($line = fgetcsv($fd,2048))
 {
-	$line = array_combine($headers,$line); // transform($headers, $line);
-	print_r($line);
+	$line = array_combine($headers,$line);
+
+	// hacky way to create unique ids
+	$id = strtolower($line['FirstName'].$line['Surname']);
+	while(in_array($id, $pubids)) $id .= date('s');
+	$pibids[] = $id;
+
+	$Q="INSERT INTO users set id='{$line['ID']}', first_name='".addslashes($line['FirstName'])."', last_name='".addslashes($line['Surname'])."', public_id='".addslashes($id)."', email='".addslashes($line['Email'])."', sponsor_id='{$line['SponsorID']}' ON DUPLICATE KEY UPDATE first_name='".addslashes($line['FirstName'])."', last_name='".addslashes($line['Surname'])."', public_id='".addslashes($id)."', email='".addslashes($line['Email'])."'";
+
+	print $Q.";\n";
 }
 
+
+
 die();
+/*
+ id                    | int(10) unsigned | NO   | PRI | NULL                | auto_increment |
+| sponsor_id            | int(11)          | YES  |     | NULL                |                |
+| original_sponsor_id   | int(11)          | YES  | MUL | NULL                |                |
+| public_id             | varchar(25)      | NO   |     | NULL                |                |
+| first_name            | varchar(50)      | NO   |     | NULL                |                |
+| last_name             | varchar(50)      | NO   |     | NULL                |                |
+| email                 | varchar(255)     | NO   |     | NULL                |                |
+| password              | varchar(255)     | NO   |     | NULL                |                |
+| gender                | varchar(2)       | NO   |     | NULL                |                |
+| key                   | varchar(255)     | NO   |     | NULL                |                |
+| dob                   | date             | NO   |     | NULL                |                |
+| phone                 | varchar(15)      | NO   |     | NULL                |                |
+| role_id               | int(11)          | NO   |     | NULL                |                |
+| mobile_plan_id        | int(11)          | YES  |     | NULL                |                |
+| min_commission        | decimal(6,2)     | NO   |     | NULL                |                |
+| disabled              | tinyint(1)       | NO   |     | NULL                |                |
+| created_at            | timestamp        | NO   |     | 0000-00-00 00:00:00 |                |
+| updated_at            | timestamp        | NO   |     | 0000-00-00 00:00:00 |                |
+| remember_token        | varchar(100)     | YES  |     | NULL                |                |
+| phone_sms             | tinyint(1)       | NO   |     | NULL                |                |
+| rank_id               | int(11)          | NO   |     | NULL                |                |
+| image                 | varchar(255)     | NO   |     | NULL                |                |
+| hide_gender           | tinyint(1)       | NO   |     | NULL                |                |
+| hide_dob              | tinyint(1)       | NO   |     | NULL                |                |
+| hide_billing_address  | tinyint(1)       | NO   |     | NULL                |                |
+| hide_shipping_address | tinyint(1)       | NO   |     | NULL                |                |
+| hide_phone            | tinyint(1)       | NO   |     | NULL                |                |
+| hide_email            | tinyint(1)       | NO   |     | NULL                |                |
+| block_email           | tinyint(1)       | NO   |     | NULL                |                |
+| block_sms             | tinyint(1)       | NO   |     | NULL                |                |
+| subscription_notice   | date             | NO   |     | NULL                |                |
+| subscribed            | date             | NO   |     | NULL                |                |
+| verified              | int(11)          | NO   |     | NULL                |                |
+| hasSignUp             | int(11)          | NO   |     | NULL                |                |
+| consignment
+*/
 // Old LLR db importer into new system
 
 $lnk	= mysql_connect('localhost','root','build4n0w');

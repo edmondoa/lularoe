@@ -4,7 +4,7 @@
 	<div class="row page-actions">
 		<h1 class="no-top">
 			@if ($status == 'attend')
-				Thank You for Choosing to Host this Popup-Boutique
+				Thank You for Choosing to Host this Pop-Up Boutique
 			@else
 				Thank You for Your Response
 			@endif

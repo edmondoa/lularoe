@@ -28,8 +28,11 @@
 		    </div>
 		    
 		    <div class="form-group">
-		        {{ Form::label('gender', 'Gender') }}
-		        {{ Form::text('gender', null, array('class' => 'form-control')) }}
+	    		{{ Form::label('gender', 'Gender') }}<br>
+	    		{{ Form::select('gender', array(
+			    	'F' => 'Female',
+			    	'M' => 'Male',
+			    ), null, array('class' => 'selectpicker form-control')) }}
 		    </div>
 		    
 		    <div class="form-group">

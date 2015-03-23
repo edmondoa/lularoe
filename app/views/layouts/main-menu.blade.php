@@ -43,11 +43,11 @@
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor','Rep'])))
  				    <a href="javascript:void(0)" data-href="/inventories" class='list-group-item' data-toggle="popover" data-content="
- 						 <a href='/products/create'><i class='fa fa-plus'></i> Add Inventory</a>
-                         <a href='/inventories'><i class='fa fa-check'></i> Purchase Inventory</a>
-						 <a href='/products'><i class='fa fa-book'></i> My Inventory</a>
+						 <a href='/products'><i class='fa fa-female'></i> My Inventory</a>
+ 						 <!-- <a href='/products/create'><i class='fa fa-plus'></i> Add Inventory</a> -->
+                         <a href='/inventory/full'><i class='fa fa-plus'></i> Purchase Inventory</a>
                      ">
-                         <i class="fa fa-list-ol"></i> <span class="text">Inventory</span>
+                         <i class="fa fa-female"></i> <span class="text">Inventory</span>
                      </a>
                 @endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
@@ -60,23 +60,15 @@
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Rep'])))
  					<a href="javascript:void(0)" data-href="/parties" class='list-group-item' data-toggle="popover" data-content="
- 						<a target='_blank' href='/public-parties'><i class='fa fa-globe'></i> Public Popup-Boutiques Page</a>
- 						<a href='/parties'><i class='fa fa-users'></i> Upcoming Popup-Boutiques</a>
- 						<a href='/past-parties'><i class='fa fa-reply'></i> Past Popup-Boutiques</a>
- 						<a href='/parties/create'><i class='fa fa-plus'></i> New Popup-Boutique</a>
+ 						<a target='_blank' href='/public-parties'><i class='fa fa-globe'></i> Public Pop-Up Boutiques Page</a>
+ 						<a href='/parties'><i class='fa fa-users'></i> Upcoming Pop-Up Boutiques</a>
+ 						<a href='/past-parties'><i class='fa fa-reply'></i> Past Pop-Up Boutiques</a>
+ 						<a href='/parties/create'><i class='fa fa-plus'></i> New Pop-Up Boutique</a>
  					">
- 						<i class="fa fa-users"></i> <span class="text">Popup-Boutiques</span>
+ 						<i class="fa fa-users"></i> <span class="text">Pop-Up Boutiques</span>
  					</a>
  				@endif
  				@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor','Rep'])))
- 					<a href="javascript:void(0)" data-href="/products" class='list-group-item' data-toggle="popover" data-content="
- 						<a href='/products'><i class='fa fa-female'></i> All Products</a>
- 						<a href='/productCategories'><i class='fa fa-female'></i> All Product Categories</a>
- 						<a href='/products/create'><i class='fa fa-plus'></i> New Product</a>
- 						<a href='/productCategories/create'><i class='fa fa-plus'></i> New Product Category</a>
- 					">
-						<i class="fa fa-female"></i> <span class="text">Products</span>
-					</a>
  					<a href="javascript:void(0)" data-href="/opportunities" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/opportunities'><i class='fa fa-check'></i> All Promotions</a>
  						@if ((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin','Editor'])))
@@ -86,8 +78,8 @@
  						<i class="fa fa-check"></i> <span class="text">Promotions</span>
  					</a>
  				    <a href="javascript:void(0)" data-href="/sales" class='list-group-item' data-toggle="popover" data-content="
-                         <a href='/sales'><i class='fa fa-check'></i> New Sale</a>
                          <a href='/pricing'><i class='fa fa-dollar'></i> Transaction Rates</a>
+                         <a href='/sales'><i class='fa fa-plus'></i> New Sale</a>
 <!--                         <a href='/sales/ledger'><i class='fa fa-plus'></i> Previous Sales</a> -->
                      ">
                          <i class="fa fa-bank"></i> <span class="text">Sales</span>
@@ -135,6 +127,7 @@
  							<a href='/media-shared-with-reps?filter=Documents'><i class='fa fa-file'></i> Documents</a>
  							<a href='/media-shared-with-reps?filter=Marketing-Tools'><i class='fa fa-wrench'></i> Marketing Tools</a>
  							<a href='/media-shared-with-reps?filter=Photo-Gallery'><i class='fa fa-photo'></i> Photo Gallery</a>
+ 							<a href='/pages/media'><i class='fa fa-file-audio-o'></i> Recorded Calls</a>
  							<a href='/media-shared-with-reps?filter=Training'><i class='fa fa-graduation-cap'></i> Training</a>
  						@if (Auth::user()->hasRole(['Superadmin','Admin','Editor']))
  							<a href='/media/create'><i class='fa fa-upload'></i> Upload Tool/Asset</a>

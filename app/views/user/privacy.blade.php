@@ -22,7 +22,7 @@
 								<h2 class="panel-title"><i class="fa fa-lock"></i> Privacy Settings</h2>
 							</div>
 							<div class="panel-body">
-								<p>Which information you would like to to share with {{ Config::get('site.site.rep_title') }} who have you in their downline?*</p>
+								<p>Which information you would like to share with {{ Config::get('site.rep_title') }}'s and customers?*</p>
 						        <label>{{ Form::checkbox('hide_gender', null, $checked['hide_gender']) }} Gender</label><br>
 						        <label>{{ Form::checkbox('hide_dob', null, $checked['hide_dob']) }} Date of Birth</label><br>
 						        <label>{{ Form::checkbox('hide_email', null, $checked['hide_email']) }} Email</label><br>
@@ -38,7 +38,7 @@
 								<h2 class="panel-title"><i class="fa fa-mobile-phone"></i> Communication Preferences</h2>
 							</div>
 							<div class="panel-body">
-								<p>Whick kinds of communication would you like to receive from {{ Config::get('site.rep_title') }} who have you in their downline?</p>
+								<p>Which kinds of communication would you like to receive from {{ Config::get('site.rep_title') }}'s who have you in their downline?</p>
 						        <label>{{ Form::checkbox('block_email', null, $checked['block_email']) }} Email</label><br>
 						        <label>{{ Form::checkbox('block_sms', null, $checked['block_sms']) }} Text Messages (SMS)</label>
 							</div>
@@ -48,7 +48,7 @@
 			    {{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
 				<br>
 				<br>
-				<p><small>* These preferences only apply to {{ Config::get('site.rep_title') }} below the rank of Diamond. {{ Config::get('site.rep_title') }} of the Diamond rank or higher will be able to view all of the above information regardless. For more information about how {{ Config::get('site.company_name') }} collects and displays your information, see the <a target="_blank" href="/privacy-policy">Privacy Policy.</a></small></p>
+				<p><small>* For more information about how {{ Config::get('site.company_name') }} collects and displays your information, see the <a target="_blank" href="/privacy-policy">Privacy Policy.</a></small></p>
 		    {{Form::close()}}
 		</div>
 	</div>

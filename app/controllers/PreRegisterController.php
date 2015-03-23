@@ -73,28 +73,28 @@ class PreRegisterController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
-        
-        $data['dob'] = date('Y-m-d',strtotime($data['dob']));
-        // $data['password'] = \Hash::make($data['password']);
-        $user = User::create($data);
-        
-        //now the address
-        // $address = [
-            // 'address_1'=>$data['address_1'],
-            // 'address_2'=>$data['address_2'],
-            // 'city'=>$data['city'],
-            // 'state'=>$data['state'],
-            // 'zip'=>$data['zip'],
-            // 'label'=>'Billing',
-        // ];
-        // $address = Address::create($address);
-        // $user->addresses()->save($address);
-        
-        $role = Role::where('name','Rep')->first();
-        //echo"<pre>"; print_r($role); echo"</pre>";
-        $user->role()->associate($role);
-        $user->hasSignUp = 0;
-        $user->save();
+		
+		$data['dob'] = date('Y-m-d',strtotime($data['dob']));
+		// $data['password'] = \Hash::make($data['password']);
+		$user = User::create($data);
+		
+		//now the address
+		// $address = [
+			// 'address_1'=>$data['address_1'],
+			// 'address_2'=>$data['address_2'],
+			// 'city'=>$data['city'],
+			// 'state'=>$data['state'],
+			// 'zip'=>$data['zip'],
+			// 'label'=>'Billing',
+		// ];
+		// $address = Address::create($address);
+		// $user->addresses()->save($address);
+		
+		$role = Role::where('name','Rep')->first();
+		//echo"<pre>"; print_r($role); echo"</pre>";
+		$user->role()->associate($role);
+		$user->hasSignUp = 0;
+		$user->save();
 		
 		//User::create($data);
 		//exit;
@@ -102,25 +102,25 @@ class PreRegisterController extends \BaseController {
 		$user->userSite()->associate($userSite);
 		Event::fire('rep.create', array('rep_id' => $user->id));
 		#$loginuser = Auth::loginUsingId($user->id);
-        
+		
 		// Used to create verification link
-        $userid		= $user->id;
-        $sponsorid	= $user->sponsor_id;
-        $dob		= $user->dob;
-        $public_id	= $user->public_id;
-        $email		= $user->email;
-        
-        $sponsor = User::where('id',$sponsorid)->first();
-        Session::put('sponsor',$sponsor);
-        
-        $hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
-        $verification_link = 'http://'.Config::get('site.domain').'/u/'.$userid.'-'.$hash; 
-        
-        Mail::send('emails.verification', compact('verification_link'), function($message) use(&$user)
-        {
-            $message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Verify Your Email Address');
-        });
-        
+		$userid		= $user->id;
+		$sponsorid	= $user->sponsor_id;
+		$dob		= $user->dob;
+		$public_id	= $user->public_id;
+		$email		= $user->email;
+		
+		$sponsor = User::where('id',$sponsorid)->first();
+		Session::put('sponsor',$sponsor);
+		
+		$hash = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
+		$verification_link = 'http://'.Config::get('site.domain').'/u/'.$userid.'-'.$hash; 
+		
+		Mail::send('emails.verification', compact('verification_link', 'user'), function($message) use(&$user)
+		{
+			$message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Verify Your Email Address');
+		});
+		
 		return Redirect::to('/pending-registration');
 	}
 
@@ -129,13 +129,21 @@ class PreRegisterController extends \BaseController {
 			$data[$kvp['name']] = $kvp['value'];
 		}
 
-        $data['user_id'] = Auth::user()->id;
-		Bankinfo::create($data);
+		$data['user_id'] = Auth::user()->id;
+		$bank_info = Bankinfo::firstOrCreate(['user_id'=>Auth::user()->id]);
+		$bank_info->update($data);
+
+        $pass = Session::get('salt');
+        //App::make('ExternalAuthController')->setbankinfo(Auth::user()->id, $data);
+        $response = App::make('ExternalAuthController')->createMwlUser( Auth::user()->id, $pass);
+        //return $response;
+		// this line will update the information in the mwl
+        //App::make('ExternalAuthController')->updateMwlUser(Auth::user()->id);
 
 		$status = 'success';
 		$message = 'Bank info created';
-        return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'shipping_address']);
-    }
+		return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'shipping_address',]);
+	}
 
 	public function shippingAddress() {
 		$user = User::find(Auth::user()->id);
@@ -164,10 +172,10 @@ class PreRegisterController extends \BaseController {
 			else {
 				$add = new Address();
 				$add->address_1	= $address['address_1'];
-        		$add->address_2	= $address['address_2'];
-        		$add->city		= $address['city'];
-        		$add->state		= $address['state'];
-        		$add->zip		= $address['zip'];
+				$add->address_2	= $address['address_2'];
+				$add->city		= $address['city'];
+				$add->state		= $address['state'];
+				$add->zip		= $address['zip'];
 
 				$user->addresses()->save($add);
 				$status = 'success';
@@ -178,160 +186,179 @@ class PreRegisterController extends \BaseController {
 			return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'products']);
 		else
 			return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'call_in']);
-    }
+	}
 
-    public function pending(){
-        $sponsor = Session::get('sponsor');
-        if(empty($sponsor)){
-            return Redirect::to('/join');    
-        }
-        return View::make('pre-register.pending',compact('sponsor'));
-    }
+	public function pending(){
+		$sponsor = Session::get('sponsor');
+		if(empty($sponsor)){
+			return Redirect::to('/join');    
+		}
+		return View::make('pre-register.pending',compact('sponsor'));
+	}
 
-    public function verifyemail($hash){
-        $keywords = preg_split("/-/", $hash);
-        if(!empty($keywords) && count($keywords) == 2){
-            $userid = $keywords[0];
-            $shahash = $keywords[1];
-            
+	public function verifyemail($hash){
+		$keywords = preg_split("/-/", $hash);
+		if(!empty($keywords) && count($keywords) == 2){
+			$userid = $keywords[0];
+			$shahash = $keywords[1];
+			
 			// Most users won't have a public ID at this point
-            $user = User::where('id',$userid)->first();
-            $status = '';
-            
+			$user = User::where('id',$userid)->first();
+			$status = '';
+			
 
-            if(!empty($user)) {
-                $userid		= $user->id;
-                $sponsorid	= $user->sponsor_id;
-                $sponsor	= User::where('id',$user->sponsor_id)->first();
-                $dob		= $user->dob;
-                $email		= $user->email;
+			if(!empty($user)) {
+				$userid		= $user->id;
+				$sponsorid	= $user->sponsor_id;
+				$sponsor	= User::where('id',$user->sponsor_id)->first();
+				$dob		= $user->dob;
+				$email		= $user->email;
 
 				// If they are clicking the link from the email again 
 				// And have already verified and signed up
 				if ($user->verified && $user->hasSignUp == 2) {
 					Session::forget('pre-register');
 					Session::forget('previous_page_2');
-                   	return Redirect::to('/inventories');
-                }
+					return Redirect::to('/inventories');
+				}
 
-                if(!$user->verified || $user->hasSignUp != 2) {
-                    $temp = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
-                    
-                    if($hash == $userid.'-'.$temp) {
-                        $user->verified = true;
-                        
-                        $loginuser = Auth::loginUsingId($user->id);
-                        
-                        if($user->hasSignUp == 0){
-                            $status = 'hasSignUp';
-                        }else{
-                            $status = 'existingRep';
-                        }
+				if(!$user->verified || $user->hasSignUp != 2) {
+					$temp = sha1(sha1($userid).sha1($dob).sha1($sponsorid));
+					
+					if($hash == $userid.'-'.$temp) {
+						$user->verified = true;
+						
+						$loginuser = Auth::loginUsingId($user->id);
+						
+						if($user->hasSignUp == 0){
+							$status = 'hasSignUp';
+						}else{
+							$status = 'existingRep';
+						}
 
-                        $user->save();
-                    } else {
-                        return View::make('errors.missing');    
-                    }
-                } 
-                
-                Session::put('pre-register.status',$status);
-                
-                return View::make('pre-register.main',compact('user','status','sponsor'));
-            }
-        }
-        
-        return View::make('errors.missing');
-    }
-    
-    public function template($path='index'){
-        $userid		= Auth::user()->id;
-        $user		= User::where('id',$userid)->first();
-        $sponsor	= User::where('id',$user->sponsor_id)->first();
+						$user->save();
+					} else {
+						return View::make('errors.missing');    
+					}
+				} 
+				
+				Session::put('pre-register.status',$status);
+				
+				return View::make('pre-register.main',compact('user','status','sponsor'));
+			}
+		}
+		
+		return View::make('errors.missing');
+	}
+	
+	public function template($path='index'){
+		$userid		= Auth::user()->id;
+		$user		= User::where('id',$userid)->first();
+		$sponsor	= User::where('id',$user->sponsor_id)->first();
 
 		if ($user->hasSignUp == 2 && $path == 'call_in') $path = 'buystuff';
 
 		// These come from the query string
 		if (View::exists('pre-register.'.$path)) 
-        	return View::make('pre-register.'.$path,compact('user','sponsor'));
+			return View::make('pre-register.'.$path,compact('user','sponsor'));
 		else
 			return View::make('pre-register.change_password',compact('user','sponsor'));    
-    }
-    
-    public function changePassword(){
-        $data = Input::all();
-        $loginData = array();
-        
-        array_map(function($field) use(&$loginData){
-            switch($field['name']){
-                case 'password':
-                    $loginData['password'] = $field['value'];
-                    break;
-                case 'password_confirmation':
-                    $loginData['password_confirmation'] = $field['value'];
-                    break;
-            }
-        },$data);
-        
-        $hasPass = true;
-        if($loginData['password'] != $loginData['password_confirmation']){
-            $hasPass = false;    
-            $message = 'Password and Confirmation Password must be the same';    
-        }elseif(strlen($loginData['password']) < 8 || strlen($loginData['password_confirmation']) < 8){
-            $hasPass = false;    
-            $message = 'Password must be at least 8 characters';  
-        }
-        
-        if($hasPass){
+	}
+	
+	public function changePassword(){
+		$data = Input::all();
+		$loginData = array();
+		
+		array_map(function($field) use(&$loginData){
+			switch($field['name']){
+				case 'password':
+					$loginData['password'] = $field['value'];
+					break;
+				case 'password_confirmation':
+					$loginData['password_confirmation'] = $field['value'];
+					break;
+			}
+		},$data);
+		
+		$hasPass = true;
+		if($loginData['password'] != $loginData['password_confirmation']){
+			$hasPass = false;    
+			$message = 'Password and Confirmation Password must be the same';    
+		}elseif(strlen($loginData['password']) < 8 || strlen($loginData['password_confirmation']) < 8){
+			$hasPass = false;    
+			$message = 'Password must be at least 8 characters';  
+		}
+		
+		if($hasPass){
 
-            $user = User::where('id',Auth::user()->id)->first();
+			$user = User::where('id',Auth::user()->id)->first();
 
 			// Update MWL data
 			$plainpass = $loginData['password'];
-			App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
-			App::make('ExternalAuthController')->auth($user->id, $plainpass);
+			
+			//this line creates a new user in the middle ware layer
+			Session::put('salt', $plainpass);
+			//App::make('ExternalAuthController')->createMwlUser($user->id, $plainpass);
 
-            $user->password = \Hash::make($loginData['password']);
-            $user->save();
-            $status = 'success';
-            $message = 'Password successfully changed.';
-        }else{
-            $status = 'failed';
-        }
-        
-        return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'bankinfo']);
-    }
-    
-    public function addProduct(){
-        $data = Input::all();
-        
-        $rules['name']		= 'required';
-        $rules['quantity']	= 'required|numeric';
-        $rules['rep_price'] = 'required|numeric';
-        $rules['size']		= 'required';
-        
-        $validator = Validator::make($data = Input::all(), $rules);
+			//App::make('ExternalAuthController')->auth($user->id, $plainpass);
 
-        if ($validator->fails())
-        {
-            $status = 'failed';
-            $message = $validator->errors();
-        }else{
-            $data['user_id'] = Auth::user()->id;
-            if(array_key_exists('id',$data)){
-                $product = Product::where('id',$data['id'])->first();   
-                $message = "Successfully updated product details";
-            }else{
-                $product = Product::create($data); 
-                $message = "Successfully added product";
-            }
-            $product->save();
-            $status = 'success';
-            
-            $data = $product;    
-        }
-        
-        return Response::json(['status'=>$status,'message'=>$message,'data'=>$data]);
-    }
+			$user->password = \Hash::make($loginData['password']);
+			$user->save();
+			$status = 'success';
+			$message = 'Password successfully changed.';
+		}else{
+			$status = 'failed';
+		}
+		
+		return Response::json(['status'=>$status,'message'=>$message,'next_page'=>'terms']);
+	}
+	
+	public function addProduct(){
+		$data = Input::all();
+		
+		$rules['name']		= 'required';
+		$rules['quantity']	= 'required|numeric';
+		$rules['rep_price'] = 'required|numeric';
+		$rules['size']		= 'required';
+		
+		$validator = Validator::make($data = Input::all(), $rules);
+
+		if ($validator->fails())
+		{
+			$status = 'failed';
+			$message = $validator->errors();
+		}else{
+			$data['user_id'] = Auth::user()->id;
+			if(array_key_exists('id',$data)){
+				$product = Product::where('id',$data['id'])->first();   
+				$message = "Successfully updated product details";
+			}else{
+				$product = Product::create($data); 
+				$message = "Successfully added product";
+			}
+			$product->save();
+			$status = 'success';
+			
+			$data = $product;    
+		}
+		
+		return Response::json(['status'=>$status,'message'=>$message,'data'=>$data]);
+	}
+
+	public function acceptTerms(){
+		$rules = [
+			'accept_terms'=> 'required'
+		];
+
+		$validator = Validator::make($data = Input::all(),$rules);
+		//return Input::all();
+		if ($validator->fails())
+		{
+			return Response::json(['status'=>'fail','message'=>'You must accept the terms in order to continue']);
+		}
+
+		return Response::json(['status'=>'success','message'=>'Thanks for accepting the terms','next_page'=>'bankinfo']);
+	}
 
 	/**
 	 * Remove the specified preregister from storage.

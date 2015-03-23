@@ -48,7 +48,7 @@
 										    </div>
 										    <div class="col-md-2">
 											    <div class="form-group">
-												    {{ Form::label('rep_price', 'Price') }}
+												    {{ Form::label('rep_price', 'Retail Price') }}
 												    <div editable-text="product.rep_price" e-min="1" e-name="rep_price" onbeforesave="productForm.checkprice($data)" e-required>@{{ product.rep_price || 'empty' }}</div>
 											    </div>
                                             </div>
@@ -101,7 +101,7 @@
                 <blockquote ng-if="checkProductMsg()  && productForm.status" class="well alert alert-danger">@{{productForm.message}}</blockquote>
             </div>
 			<a ng-if="!checkProductMsg()" ng-click="addProduct()" class="btn btn-primary pull-left margin-left-1" title="Add Inventory" href="javascript:void(0);"><i class="fa fa-plus"></i> ADD MORE</a>
-			<button type="button" class="pull-right btn btn-sm btn-success" ng-click="goto('/buystuff')">Done</button>
+			<button type="button" class="pull-right btn btn-sm btn-success" onclick="location.href='/dashboard'">Done</button>
         </div>
     </div>
 </div>

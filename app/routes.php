@@ -21,11 +21,11 @@
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
-
+Route::controller('dev','DevelopController');
 Route::pattern('id', '[0-9]+');
 
 		// API for IOS App
-		Route::get('llrapi/v1/auth/{id}', 						'ExternalAuthController@auth');
+		Route::get('llrapi/v1/auth/{login}', 						'ExternalAuthController@auth');
 		Route::get('llrapi/v1/remove-inventory/{key}',			'ExternalAuthController@rmInventory');
 		Route::get('llrapi/v1/remove-inventory/{key}/{id}/{quantity}',			'ExternalAuthController@rmInventory');
 
@@ -37,6 +37,7 @@ Route::pattern('id', '[0-9]+');
 		Route::get('llrapi/v1/refund/{key}', 					'ExternalAuthController@refund');
 		Route::get('llrapi/v1/purchase/{key}',					'ExternalAuthController@purchase');
 		Route::get('llrapi/v1/multi-purchase/{key}',			'ExternalAuthController@multiPurchase');
+		Route::get('llrapi/v1/sendreceipt/{key}',				'ExternalAuthController@sendReceipt');
 
 		Route::get('llrapi/v1/ledger/{key}', 					'ExternalAuthController@ledger');
 		Route::get('llrapi/v1/ledger/',		 					'ExternalAuthController@ledger');
@@ -59,18 +60,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	
 	// company
 	Route::get('/', ['as' => 'home', function() {
-		// if (Auth::check()) {
-			// return Redirect::to('dashboard');
-		// }
-		// else {
-			$title = 'Home';
-			return View::make('company.home', compact('title'));
-		//}
+		$title = 'Home';
+		return View::make('company.home', compact('title'));
 	}]);
-	// Route::get('company-events', function() {
-		// $title = 'Company Events';
-		// return View::make('company.events', compact('title'));
-	// });
 	Route::get('contact-us', function() {
 		$title = 'Contact Us';
 		return View::make('company.contact-us', compact('title'));
@@ -91,6 +83,29 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		$title = 'Presentation';
 		return View::make('company.presentation', compact('title'));
 	});
+	
+	// company website
+	Route::get('company', function() {
+		$title = 'Home';
+		return View::make('site.home', compact('title'));
+	});
+	Route::get('terms-conditions', function() {
+		$title = 'Terms and Conditions';
+		return View::make('company.terms', compact('title'));
+	});
+	Route::get('privacy-policy', function() {
+		$title = 'Privacy Policy';
+		return View::make('company.privacy', compact('title'));
+	});
+	Route::get('leadership', function() {
+		$title = 'Leadership';
+		return View::make('company.leadership', compact('title'));
+	});
+	Route::get('presentation', function() {
+		$title = 'Presentation';
+		return View::make('company.presentation', compact('title'));
+	});
+	
 
 	// blasts
 	Route::get('send_text/{phoneId}','SmsMessagesController@create');
@@ -128,7 +143,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::post('leads/enable', 'LeadController@enable');
 	Route::post('leads/delete', 'LeadController@delete');
 
+	// I hate my understaneding of how routes work
 	Route::resource('bankinfo', 'BankinfoController');
+	Route::post('bankinfo/store', 'BankinfoController@store');
 
 	// opportunities (public view)
 	Route::get('opportunity/{id}', function($id) {
@@ -242,6 +259,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('inventories/', 'InventoryController@index');
         Route::get('inv/checkout', 'InventoryController@checkout');
         Route::get('inv/sales', 'InventoryController@sales');
+		Route::get('inventory/full', 'InventoryController@matrixFull');
 
         Route::post('inv/purchase', 'InventoryController@purchase');
 		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
@@ -387,7 +405,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		# Superadmin, Admin, Editor routes
 		##############################################################################################
 		Route::group(array('before' => ['superadmin','admin','editor']), function() {
-			Route::controller('dev','DevelopController');
+			//Route::controller('dev','DevelopController');
 		});
 
 		##############################################################################################
@@ -572,11 +590,15 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('u/{key}', 'PreRegisterController@verifyemail');
         Route::get('template/preregister/', 'PreRegisterController@template');
         Route::get('template/preregister/{key}', 'PreRegisterController@template');
-        Route::get('bankinfo', 'PreRegisterController@bankinfo');
+        Route::get('bank-info', 'PreRegisterController@bankinfo');
+        Route::post('bank-info', 'PreRegisterController@updatebankinfo');
+
+        Route::get('accept-terms', 'PreRegisterController@getAcceptTerms');
+        Route::post('accept-terms', 'PreRegisterController@acceptTerms');
+
         Route::get('shipping_address', 'PreRegisterController@shippingAddressForm');
         Route::post('shipping_address', 'PreRegisterController@shippingAddress');
         Route::get('call-in', 'PreRegisterController@CallInForm');
-        Route::post('bankinfo', 'PreRegisterController@updatebankinfo');
 		Route::post('find-sponsor', 'PreRegisterController@redirect');
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
 	});
@@ -607,21 +629,26 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	Route::get('/', function($subdomain) {
 		$user = User::where('public_id', $subdomain)->first();
 		if ($user -> image == '')
-			$user -> image = '/img/users/default-avatar.png';
+			$user -> image = '/img/default-avatar.png';
 		else
 			$user -> image = '/img/users/avatars/' . $user -> image;
 		$userSite = UserSite::firstOrNew(['user_id'=> $user->id]);
 		$userSite->save();
 		//return dd($userSite);
 		if ((!isset($userSite -> banner)) || ($userSite -> banner == ''))
-			$userSite -> banner = '/img/users/default-banner.png';
+			$userSite -> banner = '/img/default-banner.jpg';
 		else
 			$userSite -> banner = '/img/users/banners/' . $userSite -> banner;
 		$events = Uvent::where('public', 1)->where('date_start', '>', time())->take(5)->get();
 		$opportunities = Opportunity::where('public', 1)->where('deadline', '>', time())->orWhere('deadline', '')->take(5)->orderBy('updated_at', 'DESC')->get();
 		// echo '<pre>'; print_r($opportunities->toArray()); echo '</pre>';
 		// exit;
-		return View::make('userSite.show', compact('user', 'userSite', 'opportunities', 'events'));
+		
+		$addresses = [];
+		// if (Address::where('addressable_id', $user->id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $user->id)->where('label', 'Billing')->first();
+		if (Address::where('addressable_id', $user->id)->where('label', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $user->id)->where('label', 'Shipping')->first();
+		
+		return View::make('userSite.show', compact('user', 'userSite', 'opportunities', 'events', 'addresses'));
 	});
 
 	// opportunities (public view)
@@ -774,25 +801,9 @@ Route::get('sendonboardmail/{id}', function($id) {
 	$verification_link = 'http://'.Config::get('site.domain').'/u/'.$public_id.'-'.$hash;
 
 	print "Sending ..";
-	Mail::send('emails.verification', compact('verification_link'), function($message) use (&$user) {
+	Mail::send('emails.verification', compact('verification_link', 'user'), function($message) use (&$user) {
 		$message->to($user->email, $user->first_name.' '.$user->last_name)->subject('Please complete your '.Config::Get('site.company_name').' registration');
 	});
 
 	die('Sent!');
-});
-
-Route::get('routes', function() {
-$routeCollection = Route::getRoutes();
-
-echo "<table style='width:100%'>";
-	foreach ($routeCollection as $value) {
-		echo "<tr>";
-			echo "<td>" . implode(",",$value->getMethods()) . "</td>";
-			echo "<td>" . $value->getPath() . "</td>";
-			echo "<td>" . $value->getActionName() . "</td>";
-			echo "<td>" . $value->getUri() . "</td>";
-			echo "<td>" . $value->getName() . "</td>";
-		echo "</tr>";
-	}
-echo "</table>";
 });

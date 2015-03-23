@@ -2,11 +2,13 @@
 @section('content')
 	<div class="row">
 		<div class="col-md-12">
-			<h1>Welcome, {{ $user->first_name }}</h1>
-			<div class="alert alert-success inline-block">
-				Copy and paste the following link and send it to anyone whom you'd like to join your team:<br>
+			<h1 class="pull-left">Welcome, {{ $user->first_name }}</h1>
+			<a class="btn btn-primary pull-right margin-bottom-2" href="/sales"><i class='fa fa-plus'></i> New Sale</a>
+			<div class="clear"></div>
+			<p class="well inline-block">
+				Send the following link to anyone whom you'd like to join your team:<br>
 				<a href="{{ url() }}/join/{{ $user->public_id }}">{{ url() }}/join/{{ $user->public_id }}</a>
-			</div>
+			</p>
 		</div>
 	</div><!-- row -->
 	<div class="row masonry">
@@ -20,7 +22,7 @@
 		</div><!-- col -->
 		<div class="col col-xl-3 col-lg-4 col-md-6 col-sm-6">
 			<div class="panel panel-default">
-				<div class="panel-heading">
+				<div class="panel-heading" style="background:#9595D2 !important;">
 					<h2 class="panel-title">Overview</h2>
 				</div>
 				<table class="table table-striped">
@@ -84,7 +86,7 @@
 		@endif
 		<div class="col col-xl-3 col-lg-4 col-md-6 col-sm-6">
 			<div class="panel panel-default">
-				<div class="panel-heading">
+				<div class="panel-heading" style="background:#DD7FD3 !important;">
 					<h2 class="panel-title">Quick Links</h2>
 				</div>
 				<div class="list-group">

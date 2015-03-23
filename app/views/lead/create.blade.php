@@ -40,8 +40,8 @@
 			    <div class="form-group">
 		    		{{ Form::label('gender', 'Gender') }}<br>
 		    		{{ Form::select('gender', array(
-				    	'M' => 'Male',
 				    	'F' => 'Female',
+				    	'M' => 'Male',
 				    ), null, array('class' => 'selectpicker form-control')) }}
 			    </div>
 			    

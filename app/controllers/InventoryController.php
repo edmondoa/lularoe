@@ -24,6 +24,7 @@ class InventoryController extends \BaseController {
     public function matrix() {
 		return View::make('inventory.matrix');
     }
+	
 
     /**
      * Data only
@@ -44,7 +45,7 @@ class InventoryController extends \BaseController {
 		// Do the MATHS
 		foreach ($this->discounts as $discount) {
 			// I <3 Eval .. NOT!
-			if ($discount['repsale'] == Session::get('repsale')) {
+			if (($discount['repsale'] == true) && (Session::get('repsale'))) {
 				if ($discount['math']['op'] == '=') 
 					$dcamt = $discount['math']['n'];
 				else
@@ -58,6 +59,7 @@ class InventoryController extends \BaseController {
 			}
 		}
 		$discounted['total'] = $dctotal;
+		$discounted['repsale'] = Session::get('repsale');
 
 		// Return my requestors appropriately
         if(Request::wantsJson()){
@@ -72,14 +74,31 @@ class InventoryController extends \BaseController {
 	}
 
     public function getTax($value,$viaRequest=true,$doTemplate=false){
-		if (Session::get('repsale'))  { 
-			// Corona California tax
+
+		if (!Session::get('repsale'))  { 
+			// TURN OFF TAX ON NON-REP SALE FOR NOW
+			$value = 0;
 			$data = file_get_contents('https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/33.8667,-117.5667/get?saleamount='.$value);
 			$tax = json_decode($data);
 		}
-		else { // No tax calculated (or flat tax!)
-			$tax = new stdClass();
-			$tax->Tax = 0;
+		else { 
+			// <sarc>Thanks Avalara for not having an API based on address.</sarc>
+			$a = Auth::user()->addresses;
+			$zipcode = $a[0]->zip;
+			if (Cache::has('tax-'.$zipcode)) {
+				$googhelp = Cache::get('tax-'.$zipcode);
+			}
+			else {
+				$googhelp = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address=84047');
+				Cache::put('tax-'.$zipcode, $googhelp, 86400);
+			}
+
+			$googdata = json_decode($googhelp);
+			$latlon = $googdata->results[0]->geometry->location;
+
+            $data = file_get_contents("https://1100053163:F62F796CE160CBC7@avatax.avalara.net/1.0/tax/{$latlon->lat},{$latlon->lng}/get?saleamount=".$value);
+
+			$tax = json_decode($data);
 		}
 
         if($doTemplate) return $tax;
@@ -129,11 +148,23 @@ class InventoryController extends \BaseController {
 	 */
 	public function index()
 	{
-		Session::put('repsale', 0);
+		Session::put('repsale', false);
 		$inventories = Inventory::all();
 
 		return View::make('inventory.index', compact('inventories'));
 	}
+	
+	/**
+	 * Display a listing of inventories (after initial onboarding)
+	 *
+	 * @return Response
+	 */
+    public function matrixFull() {
+		Session::put('repsale', false);
+		$inventories = Inventory::all();
+    	$full = true;
+		return View::make('inventory.index', compact('inventories', 'full'));
+    }
 
 	/**
 	 * Show the form for creating a new inventory
@@ -283,7 +314,7 @@ class InventoryController extends \BaseController {
      */
     public function sales()
     {
-			Session::put('repsale',1);
+			Session::put('repsale',true);
             return View::make('inventory.repsales');
     }
 	
@@ -421,13 +452,6 @@ class InventoryController extends \BaseController {
 
 	public function finalizePurchase($auth, $invitems) {
 
-		if (Session::get('repsale')) {
-			// Deduct item quantity from inventory
-			foreach ($invitems as $item) {
-				$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
-				$deduction	= json_decode(Route::dispatch($request)->getContent());
-			}
-		}
 
 		$sessiondata = Session::all();
 		$csuser 	 = '';
@@ -451,15 +475,6 @@ class InventoryController extends \BaseController {
 		// If the session has an emailto person
 		$data['email'] = isset($sessiondata['emailto']) ? $sessiondata['emailto'] : Auth::user()->email;
 
-		// A new world order
-		$o = new Order();
-		$o->user_id			= (!empty($csuser->sponsor_id)) ?  $csuser->sponsor_id : Auth::user()->id;
-		$o->total_price		= Session::get('subtotal',0);
-		$o->total_points	= Session::get('subtotal',0);
-		$o->total_tax		= Session::get('tax',0);
-		$o->total_shipping	= Session::get('shipcost',0);
-		$o->details			= json_encode(array('orders'=>Session::get('orderdata'),'payments'=>Session::get('paymentdata')));
-		$o->save();
 
 		// If ordering NEW inventory
 		if (!Session::get('repsale'))
@@ -479,6 +494,28 @@ class InventoryController extends \BaseController {
 				->replyTo($data['email'])
 				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 			});
+		}
+		// If a REP sold this
+		else {
+			$authkey = Auth::user()->key;
+			@list($key,$exp) = explode('|',$authkey);
+			$authinfo->mwl = $key;
+
+			// A new world order
+			$o = new Order();
+			$o->user_id			= (!empty($csuser->sponsor_id)) ?  $csuser->sponsor_id : Auth::user()->id;
+			$o->total_price		= Session::get('subtotal',0);
+			$o->total_points	= Session::get('subtotal',0);
+			$o->total_tax		= Session::get('tax',0);
+			$o->total_shipping	= Session::get('shipcost',0);
+			$o->details			= json_encode(array('orders'=>Session::get('orderdata'),'payments'=>Session::get('paymentdata')));
+			$o->save();
+
+			// Deduct item quantity from inventory
+			foreach ($invitems as $item) {
+				$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
+				$deduction	= json_decode(Route::dispatch($request)->getContent());
+			}
 		}
 
 		if (isset($sessiondata['consignment_purchase'])) {

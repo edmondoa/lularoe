@@ -16,7 +16,7 @@
 	}
 
 	$bi =  Auth::user()->bankinfo;
-	$has_bank = false; // (!empty($bi->first())) ? $bi->first()->bank_name : false;
+	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
 	$consignment_bal = Auth::user()->consignment;
 
  	$balanceAmount = $inittotal + $tax - Session::get('paidout');
@@ -85,7 +85,7 @@
                 <div class="col-lg-12 col-sm-12 col-md-12">
 				<h3>Payment Information</h3>
 				<ul class="nav nav-tabs">
-@if ($has_bank)
+@if ($has_bank && !Session::get('repsale'))
 					<li class="nav"><a href="#bankinfo" data-toggle="tab">Pay With ACH / Bank Account</a></li>
 @endif
 					<li class="nav"><a href="#creditcard" data-toggle="tab">Pay With Credit Card</a></li>

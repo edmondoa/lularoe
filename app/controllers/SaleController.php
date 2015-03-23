@@ -14,7 +14,7 @@ class SaleController extends \BaseController {
 	 */
 	public function index()
 	{
-		Session::put('repsale',1);
+		Session::put('repsale',true);
 		//$sales = Sale::all();
 
 		return View::make('sale.index');
@@ -22,7 +22,7 @@ class SaleController extends \BaseController {
 
 	public function consignmentsale($repid)
 	{
-		Session::put('repsale', 1);
+		Session::put('repsale', false);
 		$user = User::where('id','=',$repid)->first();
 		return View::make('sale.consignmentsale',compact('user'));
 	}

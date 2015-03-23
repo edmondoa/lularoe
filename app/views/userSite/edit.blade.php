@@ -12,11 +12,11 @@
 			        {{ Form::text('user_id', null, array('class' => 'form-control')) }}
 			    </div> -->
 			    
-			    <div class="form-group">
+			    <!-- <div class="form-group">
 					{{ Form::label('banner','Your Banner') }}
 					{{ Form::file('banner') }}
 					<small>Ideal Dimensions: 1170 &times; 340 | Max File Size: 1M</small>
-			    </div>
+			    </div> -->
 			    
 			    <div class="form-group">
 					{{ Form::label('image','Your Picture') }}
@@ -35,7 +35,11 @@
 			    </div>
 
 			    <div class="form-group">
-			        <label>{{ Form::checkbox('display_phone') }} Display Phone Number</label>
+			    	<h2>Privacy Preferences</h2>
+			        <label>{{ Form::checkbox('hide_email', null, $checked['hide_email']) }} Show Email</label><br>
+			        <label>{{ Form::checkbox('hide_phone', null, $checked['hide_phone']) }} Show Phone</label><br>
+			        <!-- <label>{{ Form::checkbox('hide_billing_address', null, $checked['hide_billing_address']) }} Show Billing Address</label><br> -->
+			        <label>{{ Form::checkbox('hide_shipping_address', null, $checked['hide_shipping_address']) }} Show Home (Shipping) Address</label><br>
 			    </div>
 
 			    {{ Form::submit('Update Site', array('class' => 'btn btn-primary')) }}

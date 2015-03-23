@@ -31,7 +31,22 @@ class UpdateProductsTable20150227 extends Migration {
 	{
 		Schema::table('products', function(Blueprint $table)
 		{
-			
+			if (Schema::hasColumn('products', 'user_id'))
+			{
+				$table->dropColumn('user_id');
+			}
+			if (Schema::hasColumn('products', 'make'))
+			{
+				$table->dropColumn('make');
+			}
+			if (Schema::hasColumn('products', 'model'))
+			{
+				$table->dropColumn('model');
+			}
+			if (Schema::hasColumn('products', 'size'))
+			{
+				$table->dropColumn('size');
+			}
 		});
 	}
 

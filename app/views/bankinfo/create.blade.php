@@ -9,7 +9,7 @@
 	</div>
 	<div class="row">
 		<div class="col col-lg-3 col-md-4 col-sm-6">
-		    {{ Form::open(array('url' => 'bankinfo')) }}
+		    {{ Form::open(array('url' => 'bankinfo/store')) }}
 		
 		    <div class="form-group">
 		        {{ Form::label('bank_name', 'Bank Name') }}

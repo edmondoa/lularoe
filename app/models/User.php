@@ -46,7 +46,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'image',
 		'disabled',
 		'created_at',
-		'updated_at'
+		'updated_at',
+		'hide_email',
+		'hide_phone',
+		'hide_billing_address',
+		'hide_shipping_address',
 	];
 
 	use UserTrait, RemindableTrait;
@@ -362,6 +366,7 @@ public function getAccountBalanceAttribute()
 	
 	public function hasRole($key) {
 		if(!is_array($key)) return false;
+		if(!isset($this->role->name)) return false;
 		foreach($key as $role){
 			if($this->role->name === $role){
 				return true;

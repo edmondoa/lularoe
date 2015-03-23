@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col col-md-12">
 		    @include('_helpers.breadcrumbs')
-		    <h1 class="no-top">Step 4: Address Information</h1>
+		    <h1 class="no-top">Step 5: Address Information</h1>
 		    <p><small>(You can change these settings later.)</small></p>
 		</div>
 	</div>

@@ -106,7 +106,7 @@ class partyController extends \BaseController {
 				}
 			}
 			
-			return Redirect::route('parties.index')->with('message', 'Popup-Boutique created.');
+			return Redirect::route('parties.index')->with('message', 'Pop-Up Boutique created.');
 		}
 	}
 
@@ -305,7 +305,7 @@ class partyController extends \BaseController {
 			
 			$party->update($data);
 			
-			return Redirect::route('parties.show', $id)->with('message', 'Popup-Boutique updated.');
+			return Redirect::route('parties.show', $id)->with('message', 'Pop-Up Boutique updated.');
 		}
 	}
 
@@ -406,7 +406,7 @@ class partyController extends \BaseController {
 		if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Rep'])) {
 			Party::destroy($id);
 	
-			return Redirect::route('parties.index')->with('message', 'Popup-Boutique deleted.');
+			return Redirect::route('parties.index')->with('message', 'Pop-Up Boutique deleted.');
 		}
 	}
 	
@@ -420,10 +420,10 @@ class partyController extends \BaseController {
 				Party::destroy($id);
 			}
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('parties.index')->with('message', 'Popup-Boutiques deleted.');
+				return Redirect::route('parties.index')->with('message', 'Pop-Up Boutiques deleted.');
 			}
 			else {
-				return Redirect::back()->with('message', 'Popup-Boutique deleted.');
+				return Redirect::back()->with('message', 'Pop-Up Boutique deleted.');
 			}
 		}
 	}
@@ -438,10 +438,10 @@ class partyController extends \BaseController {
 				Party::find($id)->update(['disabled' => 1]);	
 			}
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('parties.index')->with('message', 'Popup-Boutiques disabled.');
+				return Redirect::route('parties.index')->with('message', 'Pop-Up Boutiques disabled.');
 			}
 			else {
-				return Redirect::back()->with('message', 'Popup-Boutique disabled.');
+				return Redirect::back()->with('message', 'Pop-Up Boutique disabled.');
 			}
 		}
 	}
@@ -456,10 +456,10 @@ class partyController extends \BaseController {
 				Party::find($id)->update(['disabled' => 0]);	
 			}
 			if (count(Input::get('ids')) > 1) {
-				return Redirect::route('parties.index')->with('message', 'Popup-Boutiques enabled.');
+				return Redirect::route('parties.index')->with('message', 'Pop-Up Boutiques enabled.');
 			}
 			else {
-				return Redirect::back()->with('message', 'Popup-Boutique enabled.');
+				return Redirect::back()->with('message', 'Pop-Up Boutique enabled.');
 			}
 		}
 	}

@@ -39,7 +39,7 @@
                     @endforeach
                 </ul>
             @endif
-            <p>&copy; {{Config::get('site.company_name')}} {{ date('Y') }}</p>
+            <p>&copy; {{ date('Y') }} LLR INC</p>
         </footer>
     </div><!--/col-->
 </div><!--/row-->

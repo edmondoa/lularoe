@@ -6,7 +6,7 @@
 	    	<div class="page-actions">
 		        <div class="row">
 		            <div class="col-md-12">
-		                <h1 class="no-top pull-left no-pull-xs">Your current products</h1>
+		                <h1 class="no-top pull-left no-pull-xs">My Inventory</h1>
 		            	<div class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
@@ -87,7 +87,7 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='rep_price'; reverseSort = !reverseSort">Rep Price
+                            	<th class="link" ng-click="orderByField='rep_price'; reverseSort = !reverseSort">Retail Price
                             		<span>
                             			<span ng-show="orderByField == 'rep_price'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
@@ -141,8 +141,9 @@
 	                            </td>
 	                            
 					            <td>
-					                <a href="/products/@include('_helpers.product_id')">
-					                	<img class="thumb" src="@include('_helpers.attachment_image_sm')">
+					                <a href="/products/@include('_helpers.product_id')/edit">
+					                	<img ng-show="product.featured_image" class="thumb" src="@include('_helpers.attachment_image_sm')">
+					                	<img ng-show="!product.featured_image" class="thumb" src="/img/media/{{'{'.'{product.name}'.'}'}}.jpg">
 					                </a>
 					            </td>
 								

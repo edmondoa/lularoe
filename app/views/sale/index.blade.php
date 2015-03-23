@@ -1,6 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <?php 
+	Session::put('repsale',true);
 	$userkey = Auth::user()->key; 
 	@list($key,$timeout) = explode('|',$userkey);
 ?>
@@ -89,7 +90,7 @@
                                     <div class="row">
                                         <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
                                             <div class="label label-info">$<span ng-bind="order.price"></span> / <span ng-bind="order.size"></span></div>
-                                            <br/><img ng-src="/img/media/@{{order.model}}.jpg" width="50" />
+                                            <br/><img src="@{{order.image}}" width="50" />
                                             <div style="width:80px">
                                                 <span class="btn btn-xs btn-success" style="display:none;" ng-click="plus(order)">+</span>
                                                 <span class="btn btn-xs btn-danger" style="display:none;" ng-click="minus(order)">-</span>
@@ -134,7 +135,7 @@
                     <ul class="media-list" id="currentinventory">
                         <li class="media" dir-paginate-start="inventory in inventories | filter:search | itemsPerPage: pageSize " current-page="currentPage" total-items="countItems">
                             <a class="pull-left" href="#">
-                                <img class="media-object" ng-src="/img/media/@{{inventory.model}}.jpg" width="100">
+                                <img class="media-object" src="@{{inventory.image}}" width="100">
                             </a>
                             <div class="media-body clearfix">
                                 <div class="row">

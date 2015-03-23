@@ -13,7 +13,7 @@ class PageController extends \BaseController {
 			$pages = Page::all();
 			return View::make('page.index', compact('pages'));
 		}else{
-            return View::make('errors.missing');    
+            return View::make('errors.missing');
         }
 	}
 
