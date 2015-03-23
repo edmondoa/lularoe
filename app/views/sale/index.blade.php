@@ -1,6 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <?php 
+	Session::put('repsale',true);
 	$userkey = Auth::user()->key; 
 	@list($key,$timeout) = explode('|',$userkey);
 ?>
