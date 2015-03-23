@@ -86,6 +86,8 @@ class ExternalAuthController extends \BaseController {
 
                 $model      = $this->escapemodelname($item->name);
                 $size       = $item->size;
+
+				// Please keep the full https path in here it is for IOS
                 $image      = (!empty($dbImage) && isset($dbImage->url)) ? $dbImage->url : 'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg';
 
 				// Initialize this set of item data
