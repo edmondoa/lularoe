@@ -30,7 +30,33 @@
 							<li ng-click="filteredRows = groups['K']; activeGroup = 'K'">
 								<a href="#">Kids Package</a>
 							</li>
+							<li ng-click="chooseSize();">
+								<a href="#" data-toggle="modal" data-target="#chooseSize">Choose Size</a>
+							</li>
 						</ul>
+						<div style="z-index:100000" class="modal modal-default fade" id="chooseSize" role="dialog">
+						    <div class="modal-dialog modal-sm">
+						    	<div class="modal-content">
+						    		<div class="modal-body">
+								    	<label>What Size are You?</label>
+								    	<br>
+								    	<select class="form-control width-auto" ng-model="repSize">
+								    		<option class="disabled" selected value="">Choose One</option>
+								    		<option>XXS</option>
+								    		<option>XS</option>
+								    		<option>S</option>
+								    		<option>M</option>
+								    		<option>L</option>
+								    		<option>XL</option>
+								    		<option>2XL</option>
+								    	</select>
+								    	<br>
+								    	<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+								    	<button type="button" class="btn btn-success" data-dismiss="modal" ng-click="addAllInRepSize()"><i class="fa fa-plus"></i> Add 1 of Everything</button>
+						    		</div>
+						    	</div>
+						    </div><!-- modal-dialog -->
+						</div>
 					@endif
 					<table class="table table-bordered table-striped" id="currentinventory">
 						@if (!isset($full))
