@@ -41,14 +41,14 @@
 							@if (!isset($full))
 								<td style="width:1px;">
 									<input id="@{{$index}}" ng-show="!buttonActive" type="radio" name="group[@{{groupMatrix[inventory.model].group}}]" value="inventory.model" ng-click="selectRow(inventory.model)">
-									<input id="@{{$index + \'b\'}}" ng-show="buttonActive" type="radio" name="{ selected }" ng-click="selectRow(inventory.model, 'true')">
+									<input ng-id="$index + 'b'" ng-show="buttonActive" type="radio" name="selected" ng-click="selectRow(inventory.model, 'true')">
 								</td>
 							@endif
 							<td class="align-top">
 								<label ng-show="!buttonActive" for="@{{$index}}" class="pull-left margin-right-2">
 									<img width="150" src="/img/media/@{{inventory.model|urlencode}}.jpg" class="image-full">
 								</label>
-								<label ng-show="buttonActive" for="@{{$index + \'b\'}}" class="pull-left margin-right-2">
+								<label ng-show="buttonActive" ng-for="$index + 'b'" class="pull-left margin-right-2">
 									<img width="150" src="/img/media/@{{inventory.model|urlencode}}.jpg" class="image-full">
 								</label>
 								<h4 style="color:black;" class="no-top no-bottom"><span ng-bind="inventory.model"></span></h4>
