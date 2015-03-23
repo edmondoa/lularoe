@@ -48,7 +48,7 @@
 										    </div>
 										    <div class="col-md-2">
 											    <div class="form-group">
-												    {{ Form::label('rep_price', 'Price') }}
+												    {{ Form::label('rep_price', 'Retail Price') }}
 												    <div editable-text="product.rep_price" e-min="1" e-name="rep_price" onbeforesave="productForm.checkprice($data)" e-required>@{{ product.rep_price || 'empty' }}</div>
 											    </div>
                                             </div>

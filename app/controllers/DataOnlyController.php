@@ -646,14 +646,15 @@ class DataOnlyController extends \BaseController
 		elseif (Auth::user()->hasRole(['Rep'])) $products = Product::where('user_id', Auth::user()->id)->where('disabled', 0)->with('tags')->get();
 			
 		// get product images		
-		foreach($products as $product) {
+		foreach($products as $idx=>$product) {
 			$attachment = Attachment::where('attachable_type', 'Product')->where('attachable_id', $product->id)->where('featured', 1)->get();
 			if (isset($attachment[0])) {
 				$media = Media::find($attachment[0]['media_id']);
 				$image_sm = explode('.', $media->url);
 				if (isset($image_sm[1])) $image_sm = $image_sm[0] . '-sm.' . $image_sm[1];
 				else $image_sm = '';
-				$product->featured_image = $image_sm;
+				$products[$idx]->featured_image = $image_sm;
+				// $product->featured_image = $image_sm;
 			}
 		}
 
