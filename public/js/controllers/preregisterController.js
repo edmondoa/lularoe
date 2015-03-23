@@ -82,7 +82,7 @@ try {
 		$scope.params = $routeParams;
 		$scope.countItems = 0;
 		$scope.currentPage = 1;
-		$scope.pageSize = 10;
+		$scope.pageSize = 100;
 		$scope.data = [];
 		$scope.emailAlertMessage = "";
 		
