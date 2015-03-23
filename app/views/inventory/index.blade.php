@@ -83,7 +83,7 @@
 									<div ng-repeat="(key,size) in inventory.sizes" class="pull-left margin-right-1">
 										<small ng-bind="size.key"></small>
 										<Br />
-										<input ng-model="size.numOrder" ng-blur="massAdd(inventory,size)" type="number" style="width:3em" size="3" value="0">
+										<input ng-model="size.numOrder" ng-change="massAdd(inventory,size)" type="number" style="width:3em" size="3" value="0">
 									</div>
 								</div>
 							</td>
