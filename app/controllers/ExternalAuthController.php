@@ -490,6 +490,11 @@ class ExternalAuthController extends \BaseController {
 		}
 	}
 
+	public function sendReceipt($key = '') {
+		$result = array('error'=>'This is a stub error.');
+		return Response::json($result, 500);
+	}
+
 	public function getNextAvailableMid() {
 		return 1;
 	}
