@@ -87,7 +87,7 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='rep_price'; reverseSort = !reverseSort">Rep Price
+                            	<th class="link" ng-click="orderByField='rep_price'; reverseSort = !reverseSort">Retail Price
                             		<span>
                             			<span ng-show="orderByField == 'rep_price'">
 	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>

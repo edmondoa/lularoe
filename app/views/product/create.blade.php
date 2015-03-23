@@ -66,7 +66,7 @@
 -->
 			    
 			    <div class="form-group">
-			        {{ Form::label('rep_price', 'Rep Price') }}
+			        {{ Form::label('rep_price', 'Retail Price') }}
 			        <div class="input-group">
 			        	<span class="input-group-addon">$</span>
 			        	{{ Form::text('rep_price', Input::old('rep_price'), array('class' => 'form-control')) }}

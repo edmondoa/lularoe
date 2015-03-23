@@ -66,7 +66,7 @@
 		        </tr>
 
 		        <tr>
-		            <th>Rep Price:</th>
+		            <th>Retail Price:</th>
 		            <td>
 		               	{{ money($product->rep_price) }}
 		            </td>
