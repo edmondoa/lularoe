@@ -511,7 +511,6 @@ class InventoryController extends \BaseController {
 		else {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
 
 			// A new world order
 			$o = new Order();
@@ -525,7 +524,7 @@ class InventoryController extends \BaseController {
 
 			// Deduct item quantity from inventory
 			foreach ($invitems as $item) {
-				$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
+				$request	= Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$item['numOrder']}/",'GET', array());
 				$deduction	= json_decode(Route::dispatch($request)->getContent());
 			}
 		}
