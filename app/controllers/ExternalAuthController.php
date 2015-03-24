@@ -433,6 +433,7 @@ class ExternalAuthController extends \BaseController {
         $mbr = User::find($user_id);
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
+		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id,$password);
 		$merchant_id = $mwl_user->Merchant->ID;
 		$address = Address::where('addressable_id',$mbr->id)->first();
 		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
@@ -470,7 +471,7 @@ class ExternalAuthController extends \BaseController {
 			$headers[] = "Account-Route: ".$bank_info->bank_routing; //
 		}
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
-		if(!is_null($password))
+		if(!empty($password))
 		{
 			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		}
@@ -573,24 +574,7 @@ class ExternalAuthController extends \BaseController {
 	}
 
 	public function setmwlpassword($id, $pass, $cid = 'llr') {
-		$cid = $this->mwl_db;
-
-		try {
-			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
-		}
-		catch (Exception $e)
-		{
-			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
-			return(Response::json($noconnect, 500));
-		}
-
-		$pwd = base64_encode(md5($pass,true));
-		$pwdf = base64_encode(md5($cid.$pwd,true));
-		$Q = "INSERT INTO users SET id='{$id}', username='{$id}', password='{$pwdf}' ON DUPLICATE KEY UPDATE password='{$pwdf}'";
-		$res = $mysqli->query($Q);
-
-		$mysqli->close();
-		return($res);
+		return($this->updateMwlUser($id,$pass));
 	}
 
 	// It is this way until we have proper api access to the ledger.
