@@ -555,8 +555,8 @@ class ExternalAuthController extends \BaseController {
 		$data['body'] 	= preg_replace('/\s\s+/', ' ',$receipt);
 
         // This one goes to the final user
-        Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'body'=>$data['body']), function($body) use($user, $data) {
-            $body->to($data['email'])
+        Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
+            $message->to($data['email'])
 			->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
             ->from($user->email, $user->first_name.' '.$user->last_name);
         });
