@@ -53,6 +53,7 @@ if (!$sessiondata['repsale'])
                     </div>
 					@endif
 @endif
+@section('receipt')
 							<h3>Purchase Receipt</h3>
 							  <div class="well">
 								<table class="table">
@@ -112,6 +113,7 @@ if (!$sessiondata['repsale'])
 							</div>
 						</div>
 @stop
+@yield('receipt')
 @yield('manifest')
                 </div>
             </div>

@@ -498,8 +498,70 @@ class ExternalAuthController extends \BaseController {
 	}
 
 	public function sendReceipt($key = '') {
+
+		// First we fetch the Request instance
+		$request = Request::instance();
+
+		// Now we can get the content from it
+		$content = $request->getContent();
+		$vals = json_decode($content,true);
+
+		if (empty($vals['err'])) $vals['err'] = 200;
+
+		$invitems		= $vals['products'];
+		$auth			= $vals['txids'];
+		$sessiondata	= $vals;
+
+		// Wish we could use sessions on all this, thanks IOS!
+        $user = User::where('key', 'LIKE', $key.'|%')->first();
+
+		// A new world order
+		$o = new Order();
+		$o->user_id         = $user->id;
+		$o->total_price     = $vals['subtotal'];
+		$o->total_points    = $vals['subtotal'];
+		$o->total_tax       = $vals['tax'];
+		$o->total_shipping  = 0;
+		$o->details         = json_encode(array('orders'=>$invitems,'payments'=>$vals['txids']));
+		$o->save();
+
 		$result = array('error'=>true,'message'=>'This is a stub error.');
-		return Response::json($result, 500);
+
+		$orderitems	= [];
+		// Deduct item quantity from inventory
+        foreach ($vals['products'] as $item) {
+			foreach($item['quantities'] as $size=>$num)  {
+				$request    = Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/",'GET', array());
+				$deduction  = json_decode(Route::dispatch($request)->getContent());
+				$orderitems[] = array('model'=>$item['model'],'numOrder'=>$num,'size'=>$size,'price'=>$item['price']);
+			}
+        }
+
+		$sessiondata['repsale']		= true;
+		$sessiondata['tax']			= $vals['tax'];
+		$sessiondata['orderdata']	= $orderitems;
+		$sessiondata['subtotal']	= $vals['subtotal'];
+		$sessiondata['paidout']		= $vals['subtotal'] + $vals['tax'];
+
+		$vals['discounts'] = (isset($vals['discounts'])) ? $vals['discounts'] : [];
+
+		// Make the final receipt
+		$receiptView	= View::make('inventory.validpurchase',compact('auth','invitems','sessiondata','user'));
+		$receipt		= $receiptView->renderSections();
+
+        $receipt		= $receipt['receipt'];
+		$data			= [];
+		$data['email']	= $vals['emailto'];
+		$data['body'] 	= preg_replace('/\s\s+/', ' ',$receipt);
+
+        // This one goes to the final user
+        Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'body'=>$data['body']), function($body) use($user, $data) {
+            $body->to($data['email'])
+			->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
+            ->from($user->email, $user->first_name.' '.$user->last_name);
+        });
+
+		return Response::json($result, $vals['err']);
 	}
 
 	public function getNextAvailableMid() {
