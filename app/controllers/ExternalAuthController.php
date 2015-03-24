@@ -406,7 +406,7 @@ class ExternalAuthController extends \BaseController {
 		$headers[] = "Account-Number:".$bank_info->bank_account;
 		$headers[] = "Account-Route: ".$bank_info->bank_routing; //
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
-		$headers[] = "Password: ".base64_encode($password); //base 64 encoded password
+		$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		//return $headers;
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -472,7 +472,7 @@ class ExternalAuthController extends \BaseController {
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
 		if(!is_null($password))
 		{
-			$headers[] = "Password: ".base64_encode($password); //base 64 encoded password
+			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		}
 
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -498,8 +498,70 @@ class ExternalAuthController extends \BaseController {
 	}
 
 	public function sendReceipt($key = '') {
+
+		// First we fetch the Request instance
+		$request = Request::instance();
+
+		// Now we can get the content from it
+		$content = $request->getContent();
+		$vals = json_decode($content,true);
+
+		if (empty($vals['err'])) $vals['err'] = 200;
+
+		$invitems		= $vals['products'];
+		$auth			= $vals['txids'];
+		$sessiondata	= $vals;
+
+		// Wish we could use sessions on all this, thanks IOS!
+        $user = User::where('key', 'LIKE', $key.'|%')->first();
+
+		// A new world order
+		$o = new Order();
+		$o->user_id         = $user->id;
+		$o->total_price     = $vals['subtotal'];
+		$o->total_points    = $vals['subtotal'];
+		$o->total_tax       = $vals['tax'];
+		$o->total_shipping  = 0;
+		$o->details         = json_encode(array('orders'=>$invitems,'payments'=>$vals['txids']));
+		$o->save();
+
 		$result = array('error'=>true,'message'=>'This is a stub error.');
-		return Response::json($result, 500);
+
+		$orderitems	= [];
+		// Deduct item quantity from inventory
+        foreach ($vals['products'] as $item) {
+			foreach($item['quantities'] as $size=>$num)  {
+				$request    = Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/",'GET', array());
+				$deduction  = json_decode(Route::dispatch($request)->getContent());
+				$orderitems[] = array('model'=>$item['model'],'numOrder'=>$num,'size'=>$size,'price'=>$item['price']);
+			}
+        }
+
+		$sessiondata['repsale']		= true;
+		$sessiondata['tax']			= $vals['tax'];
+		$sessiondata['orderdata']	= $orderitems;
+		$sessiondata['subtotal']	= $vals['subtotal'];
+		$sessiondata['paidout']		= $vals['subtotal'] + $vals['tax'];
+
+		$vals['discounts'] = (isset($vals['discounts'])) ? $vals['discounts'] : [];
+
+		// Make the final receipt
+		$receiptView	= View::make('inventory.validpurchase',compact('auth','invitems','sessiondata','user'));
+		$receipt		= $receiptView->renderSections();
+
+        $receipt		= $receipt['manifest'];
+		$data			= [];
+		$data['email']	= $vals['emailto'];
+		$data['body'] 	= preg_replace('/\s\s+/', ' ',$receipt);
+
+        // This one goes to the final user
+        Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
+            $message->to($data['email'])
+			->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
+            ->from($user->email, $user->first_name.' '.$user->last_name);
+        });
+
+		return Response::json($result, $vals['err']);
 	}
 
 	public function getNextAvailableMid() {
@@ -728,7 +790,7 @@ class ExternalAuthController extends \BaseController {
 	}
 
 
-	private function midcrypt($pass)
+	private static function midcrypt($pass)
 	{
 		return base64_encode(md5($pass,true));
 	}
@@ -1045,13 +1107,13 @@ class ExternalAuthController extends \BaseController {
 		$tstamp		= 0;
 		$sessionkey = '';
 
-
 		 // Find them here 5.2.0 feature filter_var
-		if (filter_var($login,FILTER_VALIDATE_EMAIL))
-        $mbr = User::where('email', '=', $login)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
-		else
-        $mbr = User::where('id', '=', $login)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
-
+		if (filter_var($login,FILTER_VALIDATE_EMAIL)) {
+			$mbr = User::where('email', '=', $login)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
+		}
+		else {
+			$mbr = User::where('id', '=', $login)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
+		}
 		//$mbr->password_entered = $pass;
 		//return $mbr;
         // Can't find them?
@@ -1064,27 +1126,27 @@ class ExternalAuthController extends \BaseController {
         	$error  = false;
 			$status = 'User '.strip_tags($login).' found ok';
 			$data = array(
-				'id'			=> $mbr['attributes']['id'],
-				'public_id'		=> $mbr['attributes']['public_id'],
-				'first_name'	=> $mbr['attributes']['first_name'],
-				'last_name'		=> $mbr['attributes']['last_name'],
-				'image'			=> $mbr['attributes']['image'],
-				'key'			=> $mbr['attributes']['key'],
-				'email'			=> $mbr['attributes']['email']
+				'id'			=> $mbr->id,
+				'public_id'		=> $mbr->public_id,
+				'first_name'	=> $mbr->first_name,
+				'last_name'		=> $mbr->last_name,
+				'image'			=> $mbr->image,
+				'key'			=> $mbr->key,
+				'email'			=> $mbr->email
 			);
 
-			if (!empty($mbr['attributes']['key'])) @list($sessionkey, $tstamp) = explode('|',$mbr['attributes']['key']);
+			if (!empty($mbr->key)) @list($sessionkey, $tstamp) = explode('|',$mbr->key);
 
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
 			if (empty($sessionkey) || $tstamp < (time() - 10))
 			{
-				\Log::info('Return the user is able to log in, but shut out of MWL');
+				\Log::info("Return the user {$mbr->id} is able to log in, but shut out of MWL - need them to change password?");
 				// Return the user is able to log in, but shut out of MWL
 
 				// If we use the 'key' parameter, we could feasibly have 
 				// Multiple acconts using 1 TID .. Feature?
 				//$sessionkey = Self::midauth($data['id'], $pass);
-				$sessionkey = Self::midauth(0, 'controlpad1');
+				$sessionkey = Self::midauth($mbr->id, $pass);
 				//return $sessionkey;
 				$tstamp		= time();
 

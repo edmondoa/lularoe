@@ -1,5 +1,3 @@
-@extends('layouts.default')
-@section('content')
 <?php
 // Session is tracking all data, I want to spit this into mongodb
 // All this data is an order.
@@ -25,10 +23,14 @@ if (!$sessiondata['repsale'])
 						We hope you will enjoy the wonderful fashionable world of LuLaRoe!
                     </div>
 
-@else
+@endif
 @section('manifest')
 	<div style="max-width:600px; box-shadow:0 0 3px rgba(0,0,0,.1); margin:0 auto; font-family:helvetica, arial; font-weight:300; color:#7d7d7d; text-align:center; font-size:12pt; line-height:1.5em;">
-		<img src="<?php echo $message->embed('img/email/order-header.png'); ?>" style="width:100%;">
+		@if ($sessiondata['repsale'])
+			<img src="{{ $message->embed('img/email/purchase-header.jpg') }}" style="width:100%;">
+		@else
+			<img src="{{ $message->embed('img/email/order-header.jpg') }}" style="width:100%;">
+		@endif
 		@if (!empty($shipinfo))
 			<h3>Shipping Information</h3>
 			<div class="row">
@@ -111,8 +113,6 @@ if (!$sessiondata['repsale'])
 		</div>
 	</div>
 @stop
-@yield('manifest')
                 </div>
             </div>
     </div><!-- app -->
-@stop
