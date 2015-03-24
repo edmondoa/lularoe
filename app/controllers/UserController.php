@@ -58,7 +58,7 @@ class userController extends \BaseController {
 		// Need to pass plain pass to MWL auth
 		// Update MWL data
 		$plainpass = $data['password'];
-		App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
+		App::make('ExternalAuthController')->createMwlUser($user->id, $plainpass);
 		App::make('ExternalAuthController')->auth($user->id, $plainpass);
 
 		$data['password'] = Hash::make($data['password']);
