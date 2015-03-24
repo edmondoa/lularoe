@@ -27,45 +27,6 @@ if (!$sessiondata['repsale'])
 
 @else
 @section('manifest')
-<<<<<<< HEAD
-					@if (!empty($shipinfo))
-                    <h3>Shipping Information</h3>
-                    <div class="well">
-						<div class="row">
-							<div class="col-lg-8 col-sm-8 col-md-8">
-							<h4>{{ $shipinfo->address_1 }}</h4>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-lg-8 col-sm-8 col-md-8">
-							<h4>{{ $shipinfo->address_2 }}</h4>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-lg-8 col-sm-8 col-md-8">
-							<h4>{{ $shipinfo->city }}, {{ $shipinfo->state }}</h4>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-lg-8 col-sm-8 col-md-8">
-							<h4>{{ $shipinfo->zip }}</h4>
-							</div>
-						</div>
-                    </div>
-					@endif
-@endif
-@section('receipt')
-							<h3>Purchase Receipt</h3>
-							  <div class="well">
-								<table class="table">
-									<tr>
-										<th style="Border-bottom:1px solid black;text-align:left"><h3>Amt</h3></th>
-										<th style="Border-bottom:1px solid black;text-align:left"><h3>Item</h3></th>
-										<th style="Border-bottom:1px solid black;text-align:left"><h3>Price EA</h3></th>
-										<th style="Border-bottom:1px solid black;text-align:left"><h3>Total</h3></th>
-									</tr>
-			@foreach ($orderlist as $order)
-=======
 	<div style="max-width:600px; box-shadow:0 0 3px rgba(0,0,0,.1); margin:0 auto; font-family:helvetica, arial; font-weight:300; color:#7d7d7d; text-align:center; font-size:12pt; line-height:1.5em;">
 		<img src="<?php echo $message->embed('img/email/order-header.png'); ?>" style="width:100%;">
 		@if (!empty($shipinfo))
@@ -101,8 +62,6 @@ if (!$sessiondata['repsale'])
 					<th style="Border-bottom:1px solid black;text-align:left"><h3>Total</h3></th>
 				</tr>
 				@foreach ($orderlist as $order)
->>>>>>> b3ee1eb2c94a0eff5632e896bec44c750ce42e90
-
 				<tr>
 					<td>{{ $order['numOrder'] }}</td>
 					<td>{{ $order['model'] }} @if (!empty($order['size'])) <span class="label label-info">{{ $order['size'] }}</span>@endif</td>
@@ -151,7 +110,6 @@ if (!$sessiondata['repsale'])
 		</div>
 	</div>
 @stop
-@yield('receipt')
 @yield('manifest')
                 </div>
             </div>
