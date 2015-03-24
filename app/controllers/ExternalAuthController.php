@@ -776,7 +776,8 @@ class ExternalAuthController extends \BaseController {
 
 	private static function midcrypt($pass)
 	{
-		return base64_encode(md5($pass,true));
+        return base64_encode(md5($cid.base64_encode(md5($pass,true)),true));
+		//return base64_encode(md5($pass,true));
 	}
 	/*##############################################################################################
 	MiddleWare Authentication
