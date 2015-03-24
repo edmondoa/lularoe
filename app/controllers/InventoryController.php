@@ -487,20 +487,22 @@ class InventoryController extends \BaseController {
 		// If the session has an emailto person
 		$data['email'] = isset($sessiondata['emailto']) ? $sessiondata['emailto'] : Auth::user()->email;
 
+		$body = preg_replace('/\s\s+/', ' ',$receipt);
+		$user = Auth::user();
+
+		$data['user']	= $user;
+		$data['body']	= $body;
+		$data['email']	= $user->email;
 
 		// If ordering NEW inventory
 		if (!Session::get('repsale'))
 		{
-			$body = preg_replace('/\s\s+/', ' ',$receipt);
-			$user = Auth::user();
 			$user = (!empty($csuser->sponsor_id)) ?  $csuser : Auth::user();
 
-			$data['user']	= $user;
-			$data['body']	= $body;
 			$data['email']	= $user->email;
 			
 			// This one goes to the main warehouse
-			Mail::send('emails.invoice', $data, function($body) use($user,$data) {
+			Mail::send('emails.invoice', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($body) use($user,$data) {
 				$body->to(Config::get('site.contact_email'), "Order Warehousing")
 				->subject('Invoice From: '."{$user->first_name} {$user->last_name}")
 				->replyTo($data['email'])
@@ -509,9 +511,7 @@ class InventoryController extends \BaseController {
 		}
 		// If a REP sold this
 		else {
-			$authkey = Auth::user()->key;
-			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
+			@list($key,$exp) = explode('|',$user->key);
 
 			// A new world order
 			$o = new Order();
@@ -525,7 +525,7 @@ class InventoryController extends \BaseController {
 
 			// Deduct item quantity from inventory
 			foreach ($invitems as $item) {
-				$request	= Request::create("llrapi/v1/remove-inventory/{$authinfo->mwl}/{$item['id']}/{$item['numOrder']}/",'GET', array());
+				$request	= Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$item['numOrder']}/",'GET', array());
 				$deduction	= json_decode(Route::dispatch($request)->getContent());
 			}
 		}
@@ -538,7 +538,7 @@ class InventoryController extends \BaseController {
 		}
 
 		// This one goes to the final user
-		Mail::send('emails.standard', $data, function($body) use($user,$data) {
+		Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($body) use($user,$data) {
 			$body->to($data['email'], "{$user->first_name} {$user->last_name}")
 			->subject('Order receipt from '.Config::get('site.company_name'))
 			->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
@@ -556,7 +556,7 @@ class InventoryController extends \BaseController {
 		Session::forget('previous_page_2');
 		Session::put('previous_page_2','/dashboard');
 
-		return $view2;
+		return $view;
 	}
 
 	public function cashpurchase() {
