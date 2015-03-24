@@ -549,7 +549,7 @@ class ExternalAuthController extends \BaseController {
 		$receiptView	= View::make('inventory.validpurchase',compact('auth','invitems','sessiondata','user'));
 		$receipt		= $receiptView->renderSections();
 
-        $receipt		= $receipt['receipt'];
+        $receipt		= $receipt['manifest'];
 		$data			= [];
 		$data['email']	= $vals['emailto'];
 		$data['body'] 	= preg_replace('/\s\s+/', ' ',$receipt);
