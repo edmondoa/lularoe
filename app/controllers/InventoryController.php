@@ -538,11 +538,20 @@ class InventoryController extends \BaseController {
 		}
 
 		// This one goes to the final user
-		Mail::send('emails.standard', $data, function($body) use($user,$data) {
-			$body->to($data['email'], "{$user->first_name} {$user->last_name}")
-			->subject('Order receipt from '.Config::get('site.company_name'))
-			->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
-		});
+		if (Auth::user()->hasRole(['Rep'])) {
+			Mail::send('emails.standard', $data, function($body) use($user,$data) {
+				$body->to($data['email'], "{$user->first_name} {$user->last_name}")
+				->subject('Order receipt from '.Config::get('site.company_name'))
+				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+			});
+		}
+		elseif (Auth::user()->hasRole('Customer')) {
+			Mail::send('emails.standard', $data, function($body) use($user,$data) {
+				$body->to($data['email'], "{$user->first_name} {$user->last_name}")
+				->subject('Purchase receipt from '.Config::get('site.company_name'))
+				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+			});
+		}
 
 		Session::forget('customdiscount');
 		Session::forget('emailto');
