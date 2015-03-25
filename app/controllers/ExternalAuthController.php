@@ -9,6 +9,7 @@ class ExternalAuthController extends \BaseController {
 	private $mwl_db		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
+	private	$SESSIONKEY_TIMEOUT = 3600;
 
 	// These items are to be ignored and not shown
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
@@ -20,10 +21,27 @@ class ExternalAuthController extends \BaseController {
 		return(htmlspecialchars($modelname));
 	}
 
+	public static function getUserByKey($key = '') {
+		\Log::info("Get User by Key {$key}");
+		if (empty($key)) {
+			\Log::info("Veilen Schlecht - Empty Key.");
+			return App::abort(401,json_encode(array('error'=>'true','message'=>'No Key Specified - Please Login and try again')));
+		}
+		$mbr = User::where('key', 'LIKE', $key.'|%')->first();
+		if (!isset($mbr)) {
+			\Log::info("{$key} is not locked to a user account");
+			return App::abort(401,json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again')));
+		}
+		else { 
+			\Log::info("{$key} = {$mbr->id}");
+		}
+		return $mbr;
+	}
+
 	// STUB for removing inventory
 	public function rmInventory($key,$id,$quan) {
 		// Magic database voodoo
-        $mbr	= User::where('key', 'LIKE', $key.'|%')->first();
+        $mbr	= self::getUserByKey($key);
 		
 		$prod = Product::where('user_id','=',$mbr->id)->where('id','=',$id)->get()->first();
 
@@ -46,7 +64,7 @@ class ExternalAuthController extends \BaseController {
 	public function getInventory($key = '', $location='')
 	{
 		// Magic database voodoo
-        $mbr = User::where('key', 'LIKE', $key.'|%')->first();
+        $mbr	= self::getUserByKey($key);
 		if ($mbr) $location = $mbr->first_name.' '.$mbr->last_name;
 
 		if ($this->logdata) file_put_contents('/tmp/logData.txt','OKey: '.$key."\n",FILE_APPEND);
@@ -519,7 +537,7 @@ class ExternalAuthController extends \BaseController {
 		$sessiondata	= $vals;
 
 		// Wish we could use sessions on all this, thanks IOS!
-        $user = User::where('key', 'LIKE', $key.'|%')->first();
+        $user	= self::getUserByKey($key);
 
 		// A new world order
 		$o = new Order();
@@ -580,7 +598,24 @@ class ExternalAuthController extends \BaseController {
 	}
 
 	public function setmwlpassword($id, $pass, $cid = 'llr') {
-		return($this->updateMwlUser($id,$pass));
+		$cid = $this->mwl_db;
+
+		try {
+			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
+		}
+		catch (Exception $e)
+		{
+			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
+			return(Response::json($noconnect, 500));
+		}
+
+		$pwd = base64_encode(md5($pass,true));
+		$pwdf = base64_encode(md5($cid.$pwd,true));
+		$Q = "INSERT INTO users SET id='{$id}', username='{$id}', password='{$pwdf}' ON DUPLICATE KEY UPDATE password='{$pwdf}'";
+		$res = $mysqli->query($Q);
+
+		$mysqli->close();
+		return($res);
 	}
 
 	// It is this way until we have proper api access to the ledger.
@@ -701,21 +736,22 @@ class ExternalAuthController extends \BaseController {
 		$endpoint	= '';
 
 		// If this is a taxless purchase such as consignment
-		if (Session::has('notax')) Input::merge(array('tax'=>0));
+		if (empty(Input::get('tax')) || Session::has('notax')) {
+			Input::merge(array('tax'=>0));
+		}
 
 		if 		(Input::get('cash')) 	$txtype = 'CASH';
 		elseif	(Input::get('check'))	$txtype = 'ACH';
 		else 							$txtype = 'CARD';
 
 		// Wish we could use sessions on all this, thanks IOS!
-        $mbr = User::where('key', 'LIKE', $key.'|%')->first();
-
+        $mbr	= self::getUserByKey($key);
 
 		// Set up appropraite transaction headers
 		if ($txtype == 'CARD'){
 			$txdata = array(
-				'Subtotal'          => Input::get('subtotal'),
-				'Tax'               => Input::get('tax'),
+				'Subtotal'          => Input::get('subtotal',0),
+				'Tax'               => Input::get('tax',0),
 				'Account-name'      => Input::get('cardname'),
 				'Card-Number'       => Input::get('cardnumber'),
 				'Card-Code'     	=> Input::get('cardcvv'),
@@ -731,8 +767,8 @@ class ExternalAuthController extends \BaseController {
 		}
 		else if ($txtype == 'CASH') {
 			$txdata = array(
-				'Subtotal'          => Input::get('subtotal'),
-				'Tax'               => Input::get('tax'),
+				'Subtotal'          => Input::get('subtotal',0),
+				'Tax'               => Input::get('tax',0),
 				'Description'       => json_encode($cartdata)
 			);
 			$endpoint = 'cash';
@@ -749,8 +785,8 @@ class ExternalAuthController extends \BaseController {
 				'License-State' 	=> Input::get('dlstate'),
 				'License-Number' 	=> Input::get('dlnum'),
 				'Check-Number' 		=> Input::get('checknum'),
-				'Subtotal'          => Input::get('subtotal'),
-				'Tax'               => Input::get('tax'),
+				'Subtotal'          => Input::get('subtotal',0),
+				'Tax'               => Input::get('tax',0),
 				'Description'       => json_encode($cartdata)
 			);
 			$endpoint = 'checkSale';
@@ -769,8 +805,8 @@ class ExternalAuthController extends \BaseController {
 			$lg = new Ledger();
 			$lg->user_id		= @$mbr->id;
 			$lg->account		= '';
-			$lg->amount			= Input::get('subtotal');
-			$lg->tax			= Input::get('tax');
+			$lg->amount			= Input::get('subtotal',0);
+			$lg->tax			= Input::get('tax',0);
 			$lg->txtype			= $txtype; 
 			$lg->transactionid	= $purchase['id'];
 			$lg->data			= json_encode($cartdata);
@@ -1094,7 +1130,7 @@ class ExternalAuthController extends \BaseController {
 	public function auth($login, $pass = '') {
 		$pass	= trim(Input::get('pass', $pass));
         $status = 'ERR';
-        $error  = true;
+        $error  = false;
 		$data   = [];
 
 		// Initialize these two
@@ -1112,12 +1148,12 @@ class ExternalAuthController extends \BaseController {
 		//return $mbr;
         // Can't find them?
         if (!isset($mbr)) {
+			$error = true;
             $mbr	= null;
             $status = 'User '.strip_tags($login).' not found';
         }
 		elseif($attempt = \Auth::attempt(['email' => $mbr->email,'password' => $pass], false))
 		{
-        	$error  = false;
 			$status = 'User '.strip_tags($login).' found ok';
 			$data = array(
 				'id'			=> $mbr->id,
@@ -1132,35 +1168,35 @@ class ExternalAuthController extends \BaseController {
 			if (!empty($mbr->key)) @list($sessionkey, $tstamp) = explode('|',$mbr->key);
 
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
-			if (empty($sessionkey) || $tstamp < (time() - 10))
+			if (empty($sessionkey) || $tstamp < (time() - $this->SESSIONKEY_TIMEOUT))
 			{
-				\Log::info("Return the user {$mbr->id} / {$pass} is able to log in, but shut out of MWL - need them to change password?");
+				\Log::info("User {$mbr->id} / {$pass} ".date('Y-m-d H:i:s',$tstamp)." MWL - timeout or login need them to change password?");
 				// Return the user is able to log in, but shut out of MWL
 
 				// If we use the 'key' parameter, we could feasibly have 
 				// Multiple acconts using 1 TID .. Feature?
-				//$sessionkey = Self::midauth($data['id'], $pass);
 				$sessionkey = Self::midauth($mbr->id, $pass);
+
 				//return $sessionkey;
 				$tstamp		= time();
 
-				if ($this->logdata) file_put_contents('/tmp/logData.txt','TSTP: '.$tstamp." ".$sessionkey."\n",FILE_APPEND);
-				if (!$sessionkey)
-				{
+				if (!$sessionkey) {
+					$error = true;
+					\Log::info("Cannot get key from MWL {$mbr->id} / {$pass} ".date('Y-m-d H:i:s',$tstamp)." MWL - need them to change password?");
 					$status .= '; cannot retrieve key from payment system';
 					$data['key'] = null;
 
-					$mbr->update(array('key'=>''));
 					// Also perform a logging notify here in papertrail or syslog?
 				}
 				else {
 					$mbr->update(array('key'=>$sessionkey.'|'.time()));
 				}
 			}
-
 		}
 		else
 		{
+			$error = true;
+			\Log::info("Cannot authorize {$mbr->id} / {$pass}");
 			$status = 'Cannot authorize';
 			$mbr->update(array('key'=>''));
 		}
