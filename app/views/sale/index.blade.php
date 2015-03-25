@@ -2,6 +2,7 @@
 @section('content')
 <?php 
 	Session::put('repsale',true);
+	Session::put('paidout',0);
 	$userkey = Auth::user()->key; 
 	@list($key,$timeout) = explode('|',$userkey);
 ?>
