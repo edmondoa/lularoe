@@ -61,7 +61,7 @@
 		<div class="col col-md-6 col-sm-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 div class="panel-title">Information
+					<h2 div class="panel-title">Information xyz
 						@if (Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->id == $user->id)
 							<a class="pull-right" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 						@endif
@@ -91,7 +91,7 @@
 			            	Consignment:
 			            </th>
 			            <td>
-			            	{{ $user->consignment }} @if ($user->hasRole(['superadmin','Admin'])) <a href="/sales/consignment/{{ $user->id }}">Purchase Initial Order</a> @endif
+			            	{{ $user->consignment }} @if (Auth::user()->hasRole(['Superadmin','Admin'])) <a href="/sales/consignment/{{ $user->id }}">Purchase Initial Order</a> @endif
 			            </td>
 			        </tr>
 			        <tr>
