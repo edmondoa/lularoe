@@ -477,7 +477,7 @@ class ExternalAuthController extends \BaseController {
 
 		$headers = [];
 		$headers[] = "Merchant-ID: ".$merchant_id; 
-		$headers[] = "Merchant-Name: ".$mbr->first_name." Gooberville";
+		$headers[] = "Merchant-Name: {$mbr->first_name} {$mbr->last_name}";
 		if(!empty($address->id))
 		{
 			//Hacky, I know
