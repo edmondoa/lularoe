@@ -22,6 +22,11 @@ class ExternalAuthController extends \BaseController {
 	}
 
 	public static function getUserByKey($key = '') {
+		if (empty($key) && Auth::user()) {
+			\Log::info("No Key, but Authed = Return default inventory user");
+			return(false);
+		}
+
 		\Log::info("Get User by Key {$key}");
 		if (empty($key)) {
 			\Log::info("Veilen Schlecht - Empty Key.");
@@ -495,7 +500,7 @@ class ExternalAuthController extends \BaseController {
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
 		if(!empty($password))
 		{
-			$headers[] = "Password: ".self::midcrypt($password,'llr',2); //base 64 encoded password
+			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		}
 
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
