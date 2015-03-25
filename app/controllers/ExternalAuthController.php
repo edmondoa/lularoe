@@ -370,6 +370,8 @@ class ExternalAuthController extends \BaseController {
 
 	public function createMwlUser($user_id,$password = null) {
 
+		\Log::info("CreateMwlUser for [{$user_id} / {$password}]");
+
         $mbr = User::find($user_id);
 
 		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
@@ -403,8 +405,8 @@ class ExternalAuthController extends \BaseController {
 		}
 		$headers[] = "Account-Type: checking"; // reqd (checking or saving)
 		$headers[] = "Account-Name: ".$mbr->first_name." ".$mbr->last_name;
-		$headers[] = "Account-Number:".$bank_info->bank_account;
-		$headers[] = "Account-Route: ".$bank_info->bank_routing; //
+		$headers[] = "Account-Number:".@$bank_info->bank_account;
+		$headers[] = "Account-Route: ".@$bank_info->bank_routing; //
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
 		$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		//return $headers;
@@ -429,12 +431,14 @@ class ExternalAuthController extends \BaseController {
 	}
 
 	public function updateMwlUser($user_id,$password = null) {
+		\Log::info("updateMwlUser for [{$user_id} / {$password}]");
 
         $mbr = User::find($user_id);
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
 		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id,$password);
 		$merchant_id = $mwl_user->Merchant->ID;
+
 		$address = Address::where('addressable_id',$mbr->id)->first();
 		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
 		if(!isset($bank_info->id)) return false;
@@ -473,7 +477,7 @@ class ExternalAuthController extends \BaseController {
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
 		if(!empty($password))
 		{
-			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
+			$headers[] = "Password: ".self::midcrypt($password,'llr',2); //base 64 encoded password
 		}
 
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -490,6 +494,7 @@ class ExternalAuthController extends \BaseController {
 		}
 		curl_close ($ch);
 
+		file_put_contents('/tmp/test.txt',json_encode($headers));
 		if (!$server_output) return(false);
 		else {
 			$so = json_decode($server_output);
@@ -526,12 +531,13 @@ class ExternalAuthController extends \BaseController {
 		$o->details         = json_encode(array('orders'=>$invitems,'payments'=>$vals['txids']));
 		$o->save();
 
-		$result = array('error'=>true,'message'=>'This is a stub error.');
+		$result = array('error'=>false,'message'=>array('GOT HERE'));
 
 		$orderitems	= [];
 		// Deduct item quantity from inventory
         foreach ($vals['products'] as $item) {
 			foreach($item['quantities'] as $size=>$num)  {
+				$result['message'][] = "Removed {$num} {$size} from {$item['id']}";
 				$request    = Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/",'GET', array());
 				$deduction  = json_decode(Route::dispatch($request)->getContent());
 				$orderitems[] = array('model'=>$item['model'],'numOrder'=>$num,'size'=>$size,'price'=>$item['price']);
@@ -758,8 +764,10 @@ class ExternalAuthController extends \BaseController {
 		// Drop this into product table too.
 		if (!$purchase['error']) {
 
+			\Log::info("Dropping into ledger for [{$key}]");
+
 			$lg = new Ledger();
-			$lg->user_id		= $mbr->id;
+			$lg->user_id		= @$mbr->id;
 			$lg->account		= '';
 			$lg->amount			= Input::get('subtotal');
 			$lg->tax			= Input::get('tax');
@@ -773,12 +781,13 @@ class ExternalAuthController extends \BaseController {
         return Response::json($purchase, 200);
 	}
 
-
-	private static function midcrypt($pass)
-	{
+    private static function midcrypt($pass, $cid = 'llr',$level = 1)
+    {
+		if ($level == 1) return base64_encode(md5($pass,true));
         return base64_encode(md5($cid.base64_encode(md5($pass,true)),true));
-		//return base64_encode(md5($pass,true));
-	}
+    //    return base64_encode(md5($pass,true));
+    }
+
 	/*##############################################################################################
 	MiddleWare Authentication
 	##############################################################################################*/
@@ -1125,7 +1134,7 @@ class ExternalAuthController extends \BaseController {
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
 			if (empty($sessionkey) || $tstamp < (time() - 10))
 			{
-				\Log::info("Return the user {$mbr->id} is able to log in, but shut out of MWL - need them to change password?");
+				\Log::info("Return the user {$mbr->id} / {$pass} is able to log in, but shut out of MWL - need them to change password?");
 				// Return the user is able to log in, but shut out of MWL
 
 				// If we use the 'key' parameter, we could feasibly have 
