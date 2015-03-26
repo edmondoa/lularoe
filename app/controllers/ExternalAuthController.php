@@ -824,7 +824,7 @@ class ExternalAuthController extends \BaseController {
         return Response::json($purchase, 200);
 	}
 
-    private static function midcrypt($pass, $cid = 'llr',$level = 1)
+    private static function midcrypt($pass, $cid = 'llr', $level = 1)
     {
 		if ($level == 1) return base64_encode(md5($pass,true));
         return base64_encode(md5($cid.base64_encode(md5($pass,true)),true));
@@ -835,7 +835,7 @@ class ExternalAuthController extends \BaseController {
 	MiddleWare Authentication
 	##############################################################################################*/
 	
-	public function midauth($username = '', $password = '')
+	public function midauth($username = '', $password = '', $returnJson = false)
 	{
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
@@ -862,19 +862,24 @@ class ExternalAuthController extends \BaseController {
 
 		$server_output = curl_exec ($ch);
 
+
 		if ($errno = curl_errno($ch)) {
 			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 			return(Response::json($result,401));
 		}
 		curl_close ($ch);
 
+		$returnthis = ($returnJson) ? json_encode(['key'=>$server_output]) : $server_output;
+
+		\Log::info("Midauth {$username} / {$password} : {$server_output} / {$returnthis}");
+
 		if (!$server_output) return(false);
 		else {
+			if ($returnJson) 
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') return Response::json(null, 401);
-			return($server_output);
+			if (isset($so->Code) && $so->Code == '401') $returnthis = ($returnJson) ? json_encode(['key'=>null]) : null;
 		}
-		
+		return $returnthis;
 	}
 
 	private function makeVoid($key, $txdata) {

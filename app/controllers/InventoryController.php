@@ -423,14 +423,13 @@ class InventoryController extends \BaseController {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 
-			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
-			$authinfo	= json_decode($data);
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass, true));
 		}
 		// This is the individual REP TID
 		else {
-			$authkey = Auth::user()->key;
+			$authkey = $currentuser->key;
 			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
+			$authinfo->key = $key;
 		}
 
 		$purchaseInfo = array(
@@ -443,7 +442,7 @@ class InventoryController extends \BaseController {
 		
 		//$ia = Input::all();
 		//Input::replace($purchaseInfo);
-		//$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		//$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
 		//$cardauth	= json_decode(Route::dispatch($request)->getContent());
 		//Input::replace($ia);
 
@@ -625,14 +624,13 @@ class InventoryController extends \BaseController {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 
-			$data = App::make('ExternalAuthController')->auth($user, $pass, FALSE)->getContent();
-			$authinfo	= json_decode($data);
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass, true));
 		}
 		// This is the individual REP TID
 		else {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
+			$authinfo->key = $key;
 		}
 
 		$purchaseInfo = array(
@@ -644,7 +642,7 @@ class InventoryController extends \BaseController {
 
 		$ia = Input::all();
 		Input::replace($purchaseInfo);
-		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
 		Input::replace($ia);
 
@@ -693,14 +691,13 @@ class InventoryController extends \BaseController {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 
-			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
-			$authinfo	= json_decode($data);
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass));
 		}
 		// This is the individual REP TID
 		else {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
+			$authinfo->key = $key;
 		}
 
 		$purchaseInfo = array(
@@ -717,7 +714,7 @@ class InventoryController extends \BaseController {
 
 		$ia = Input::all();
 		Input::replace($purchaseInfo);
-		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
 		Input::replace($ia);
 
@@ -755,14 +752,13 @@ class InventoryController extends \BaseController {
 		if (!Session::get('repsale')) {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
-			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
-			$authinfo	= json_decode($data);
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass, true));
 		}
 		// This is the individual REP TID
 		else {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
+			$authinfo->key = $key;
 		}
 
 		$purchaseInfo = array(
@@ -779,7 +775,7 @@ class InventoryController extends \BaseController {
 		
 		$ia = Input::all();
 		Input::replace($purchaseInfo);
-		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
 		Input::replace($ia);
 
@@ -795,5 +791,4 @@ class InventoryController extends \BaseController {
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
 	}
-    
 }
