@@ -27,9 +27,9 @@ if (!$sessiondata['repsale'])
 @section('manifest')
 	<div style="max-width:600px; box-shadow:0 0 3px rgba(0,0,0,.1); margin:0 auto; font-family:helvetica, arial; font-weight:300; color:#7d7d7d; text-align:center; font-size:12pt; line-height:1.5em;">
 		@if ($sessiondata['repsale'])
-			<img src="{{ $message->embed('img/email/purchase-header.jpg') }}" style="width:100%;">
+			<img src="{{ $message->embedData('img/email/purchase-header.jpg') }}" style="width:100%;">
 		@else
-			<img src="{{ $message->embed('img/email/order-header.jpg') }}" style="width:100%;">
+			<img src="{{ $message->embedData('img/email/order-header.jpg') }}" style="width:100%;">
 		@endif
 		@if (!empty($shipinfo))
 			<h3>Shipping Information</h3>
