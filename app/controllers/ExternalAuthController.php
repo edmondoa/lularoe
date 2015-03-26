@@ -1134,7 +1134,7 @@ class ExternalAuthController extends \BaseController {
         return ($returndata);
 	}
 
-	public function auth($login, $pass = '') {
+	public function auth($login, $pass = '', $login = true) {
 		$pass	= trim(Input::get('pass', $pass));
         $status = 'ERR';
         $error  = false;
@@ -1159,7 +1159,8 @@ class ExternalAuthController extends \BaseController {
             $mbr	= null;
             $status = 'User '.strip_tags($login).' not found';
         }
-		elseif($attempt = \Auth::attempt(['email' => $mbr->email,'password' => $pass], false))
+		//elseif($attempt = \Auth::attempt(['email' => $mbr->email,'password' => $pass], false)) // BAD NO NO!!
+		elseif(Hash::check($pass, $mbr->password))
 		{
 			$status = 'User '.strip_tags($login).' found ok';
 			$data = array(

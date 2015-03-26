@@ -384,11 +384,13 @@ class InventoryController extends \BaseController {
 		else {
 			$currentuser = Auth::user();
 		}
+		
 
 		// Make sure we have enough consignment to pull this off
 		$cons 		= $currentuser->consignment;
 		$absamount	= abs(Input::get('amount'));
 		$absamount = $this->totalCheck($absamount);
+
 
 		if ($cons <= 0) {
 			$cardauth = new stdClass();
@@ -479,6 +481,16 @@ class InventoryController extends \BaseController {
 
 	public function finalizePurchase($auth, $invitems) {
 
+		// This means the superadmin can set a user to "order for someone" 
+		// more on this functionality later
+		if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
+			$currentuser = User::find(Session::get('userbypass'));
+		}
+		else {
+			$currentuser = Auth::user();
+		}
+
+		$user = $currentuser;
 
 		$sessiondata = Session::all();
 		$csuser 	 = '';
@@ -492,11 +504,11 @@ class InventoryController extends \BaseController {
 			$csuser->save();
 		}
 
-		$view2 = View::make('inventory.thankyoupage',compact('auth','invitems','sessiondata'));
+		$view  = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
 
 		$data		= [];
+		$data['body'] = $view->renderSections()['manifest'];
 
-		$user = Auth::user();
 
 		// If the session has an emailto person
 		$data['email'] = isset($sessiondata['emailto']) ? $sessiondata['emailto'] : $user->email;
@@ -585,9 +597,10 @@ class InventoryController extends \BaseController {
 		Session::forget('payments');
         Session::forget('paymentdata');
 		Session::forget('previous_page_2');
+		Session::forget('userbypass');
 		Session::put('previous_page_2','/dashboard');
 
-		return $view;
+		return View::make('inventory.thankyoupage',compact('auth','invitems','sessiondata'));
 	}
 
 	public function cashpurchase() {
@@ -612,7 +625,7 @@ class InventoryController extends \BaseController {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 
-			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
+			$data = App::make('ExternalAuthController')->auth($user, $pass, FALSE)->getContent();
 			$authinfo	= json_decode($data);
 		}
 		// This is the individual REP TID
