@@ -737,6 +737,8 @@ class ExternalAuthController extends \BaseController {
 
 	public function purchase($key = 0, $cart = '')
 	{
+        \Log::info("[{$key}] Purchasing cart full of ".json_encode(Input::all()));
+
 		$cartdata	= Input::get('cart', $cart);
 		$endpoint	= '';
 
