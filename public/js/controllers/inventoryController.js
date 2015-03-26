@@ -118,11 +118,13 @@ try {
         
         $http.get(path).success(function(v) {
             shared.updateLocalCart();
+
             var b = new RegExp('Sloan');
             for(var i in v){
                 var isInsideInventory = [];
                 isInsideInventory = $scope.inventories.filter(function(inventory){
-                    return b.test(inventory.model);
+					return false;
+                    //return b.test(inventory.model);
                 });
 
                 if(isInsideInventory.length == 0){
@@ -136,6 +138,7 @@ try {
             $scope.countItems = $scope.inventories.length;
             $scope.pageSize = $scope.inventories.length;
             $scope.isComplete = true;
+
             angular.forEach($scope.inventories, function(inventory){
                  inventory.sizes = [];   
                  inventory.doNag = false;   
@@ -156,6 +159,7 @@ try {
                      });
                  }
             });
+
             console.log($scope.inventories);
 
         });
@@ -185,10 +189,10 @@ try {
 			'Tall and Curvy Leggings (2 Pack)'
 			],
 		'K' : [
-			// 'Sloan (2-8)',
-			// 'Sloan (10-14)',
+			'Sloan (2-8)',
+			'Sloan (10-14)',
 			'Dotdotsmile Lucy Sleeve',
-			// 'Dotdotsmile Lucy Tank',
+			'Dotdotsmile Lucy Tank',
 			'Kid\'s Leggings (2 Pack)'
 		]
 	};
@@ -250,6 +254,10 @@ try {
 			'quantities': [35],
 			'group': 'L'
 		},
+		'Tall and Curvy Leggings (2 Pack)':{
+			'quantities': [0],
+			'group': 'L'
+		},
 		'Sloan (2-8)':{
 			'quantities': [4,4,4,4],
 			'group': 'K'
@@ -269,7 +277,7 @@ try {
 		'Kid\'s Leggings (2 Pack)':{
 			'quantities': [23,0],
 			'group': 'K'
-		} 
+		}
 	};
     
     	// filter rows by group

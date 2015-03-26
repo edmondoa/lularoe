@@ -160,12 +160,12 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ClassPreloader/ClassPreloader.git",
+                "url": "https://github.com/mtdowling/ClassPreloader.git",
                 "reference": "2c9f3bcbab329570c57339895bd11b5dd3b00877"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ClassPreloader/ClassPreloader/zipball/2c9f3bcbab329570c57339895bd11b5dd3b00877",
+                "url": "https://api.github.com/repos/mtdowling/ClassPreloader/zipball/2c9f3bcbab329570c57339895bd11b5dd3b00877",
                 "reference": "2c9f3bcbab329570c57339895bd11b5dd3b00877",
                 "shasum": ""
             },
@@ -207,12 +207,12 @@
             "version": "v1.0.10",
             "source": {
                 "type": "git",
-                "url": "https://github.com/d11wtq/boris.git",
+                "url": "https://github.com/borisrepl/boris.git",
                 "reference": "31055b15e2d3fe47f31f6aa8e277f8f3fc7eb483"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/d11wtq/boris/zipball/31055b15e2d3fe47f31f6aa8e277f8f3fc7eb483",
+                "url": "https://api.github.com/repos/borisrepl/boris/zipball/31055b15e2d3fe47f31f6aa8e277f8f3fc7eb483",
                 "reference": "31055b15e2d3fe47f31f6aa8e277f8f3fc7eb483",
                 "shasum": ""
             },
@@ -2599,12 +2599,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php.git",
-                "reference": "7bdcba07e4d45817635b3f48e661b119a8088b5a"
+                "reference": "de9a6d63a01d83fc990121b99a5b78889514b2e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/7bdcba07e4d45817635b3f48e661b119a8088b5a",
-                "reference": "7bdcba07e4d45817635b3f48e661b119a8088b5a",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/de9a6d63a01d83fc990121b99a5b78889514b2e1",
+                "reference": "de9a6d63a01d83fc990121b99a5b78889514b2e1",
                 "shasum": ""
             },
             "require": {
@@ -2641,7 +2641,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2015-02-18 17:52:47"
+            "time": "2015-03-25 15:45:18"
         }
     ],
     "packages-dev": [

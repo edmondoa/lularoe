@@ -20,9 +20,20 @@
         Session::forget('paymentdata');
 	}
 
-	$bi =  Auth::user()->bankinfo;
+	
+	// This means the superadmin can set a user to "order for someone" 
+	// more on this functionality later
+	if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
+		$currentuser = User::find(Session::get('userbypass'));
+	}
+	else {
+		$currentuser = Auth::user();
+	}
+
+	$bi =  $currentuser->bankinfo;
+
 	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
-	$consignment_bal = Auth::user()->consignment;
+	$consignment_bal = $currentuser->consignment;
 
  	$balanceAmount = $inittotal + $tax - Session::get('paidout');
 ?>
@@ -97,7 +108,7 @@
 			</div>
             <div class="row">
                 <div class="col-lg-12 col-sm-12 col-md-12">
-				<h3>Payment Information</h3>
+				<h3>Payment Information @if (!Session::get('repsale')) for #{{$currentuser->id}} ({{$currentuser->first_name}} {{$currentuser->last_name}})@endif</h3>
 				<ul class="nav nav-tabs">
 @if ($has_bank && !Session::get('repsale'))
 					<li class="nav"><a href="#bankinfo" data-toggle="tab">Pay With ACH / Bank Account</a></li>

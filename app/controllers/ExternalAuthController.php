@@ -221,7 +221,6 @@ class ExternalAuthController extends \BaseController {
 
 			$itemList[$model] = '';
 			
-
 			// Delimiting sizes with hyphen and spaces
 			if (strpos($itemnumber,' -') === false) 
 			{
@@ -230,8 +229,6 @@ class ExternalAuthController extends \BaseController {
 			else list($model, $size) = explode(' -',$itemnumber);
 
 			$model		= $this->escapemodelname($model);
-			
-			
 			
 			// Initialize this set of item data
 			if (!isset($items[$model]))
@@ -246,7 +243,7 @@ class ExternalAuthController extends \BaseController {
 			}
 
 			// Cut useless spaces
-			$size = ltrim($size); // str_replace('/^ /','',$size);
+			$size = str_replace('/^ /','_',ltrim($size));
 
 			// Set up the quantities of each size
 			if (!isset($items[$model]['quantities'][$size])) 
@@ -737,6 +734,8 @@ class ExternalAuthController extends \BaseController {
 
 	public function purchase($key = 0, $cart = '')
 	{
+        \Log::info("[{$key}] Purchasing cart full of ".json_encode(Input::all()));
+
 		$cartdata	= Input::get('cart', $cart);
 		$endpoint	= '';
 
@@ -822,7 +821,7 @@ class ExternalAuthController extends \BaseController {
         return Response::json($purchase, 200);
 	}
 
-    private static function midcrypt($pass, $cid = 'llr',$level = 1)
+    private static function midcrypt($pass, $cid = 'llr', $level = 1)
     {
 		if ($level == 1) return base64_encode(md5($pass,true));
         return base64_encode(md5($cid.base64_encode(md5($pass,true)),true));
@@ -833,7 +832,7 @@ class ExternalAuthController extends \BaseController {
 	MiddleWare Authentication
 	##############################################################################################*/
 	
-	private function midauth($username = '', $password = '')
+	public function midauth($username = '', $password = '', $returnJson = false)
 	{
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
@@ -860,19 +859,24 @@ class ExternalAuthController extends \BaseController {
 
 		$server_output = curl_exec ($ch);
 
+
 		if ($errno = curl_errno($ch)) {
 			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 			return(Response::json($result,401));
 		}
 		curl_close ($ch);
 
+		$returnthis = ($returnJson) ? json_encode(['key'=>$server_output]) : $server_output;
+
+		\Log::info("Midauth {$username} / {$password} : {$server_output} / {$returnthis}");
+
 		if (!$server_output) return(false);
 		else {
+			if ($returnJson) 
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') return null;
-			return($server_output);
+			if (isset($so->Code) && $so->Code == '401') $returnthis = ($returnJson) ? json_encode(['key'=>null]) : null;
 		}
-		
+		return $returnthis;
 	}
 
 	private function makeVoid($key, $txdata) {
@@ -1055,7 +1059,6 @@ class ExternalAuthController extends \BaseController {
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $txdata);
 
-//die(print_r($txdata,true));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 		if ($verbose)

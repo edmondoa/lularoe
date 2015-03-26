@@ -1,3 +1,4 @@
+@extends('layouts.default')
 <?php
 // Session is tracking all data, I want to spit this into mongodb
 // All this data is an order.
@@ -6,9 +7,35 @@ $orderlist	= $sessiondata['orderdata'];
 $inittotal	= $sessiondata['subtotal'];
 $discounts  = isset($sessiondata['discounts']) ? $sessiondata['discounts'] : [];
 
+if (!$sessiondata['repsale'])
+	$shipinfo	= Auth::user()->addresses()->where('label','=','Shipping')->first();
+
 ?>
-@section('manifest')
+
+@section('content')
+<style>	
+	.toggleBg { background : #efefef }
+</style>
+<div ng-app="app" class="index">
+        <div ng-controller="InventoryController" class="my-controller">
+			<h1>Thank you for your order</h1>
+            <div class="row">
+				<div class="col-lg-12 col-sm-12 col-md-12">
+					  <div class="row">
+						<div class="col-lg-8 col-sm-8 col-md-8">
+@if ($sessiondata['repsale']) 
+                    <h3>Thank you!</h3>
+                    <div class="well">
+						We hope you will enjoy the wonderful fashionable world of LuLaRoe!
+                    </div>
+
+@endif
 	<div style="max-width:600px; box-shadow:0 0 3px rgba(0,0,0,.1); margin:0 auto; font-family:helvetica, arial; font-weight:300; color:#7d7d7d; text-align:center; font-size:12pt; line-height:1.5em;">
+		@if ($sessiondata['repsale'])
+			<img src="/img/email/purchase-header.jpg" style="width:100%;">
+		@else
+			<img src="/img/email/order-header.jpg" style="width:100%;">
+		@endif
 		@if (!empty($shipinfo))
 			<h3>Shipping Information</h3>
 			<div class="row">
@@ -90,4 +117,12 @@ $discounts  = isset($sessiondata['discounts']) ? $sessiondata['discounts'] : [];
 			</table>
 		</div>
 	</div>
+                </div>
+            </div>
+    </div><!-- app -->
+</div><!-- app -->
+@stop
+@section('scripts')
+<script>
+</script>
 @stop

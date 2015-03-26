@@ -171,11 +171,16 @@ class InventoryController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-    public function matrixFull() {
+    public function matrixFull($by_group = false) {
 		Session::put('repsale', false);
 		$inventories = Inventory::all();
-    	$full = true;
-		return View::make('inventory.index', compact('inventories', 'full'));
+
+		// Hackery - get this users bank info if ordering from onboarding
+		if (Auth::user()->hasRole(array('Superadmin','Admin')) && $by_group) {
+			session::put('userbypass',$by_group);
+		}
+
+		return View::make('inventory.index', compact('inventories', 'by_group'));
     }
 
 	/**
@@ -370,10 +375,22 @@ class InventoryController extends \BaseController {
 
 	// Consignment purchase
 	public function conspurchase() {
+
+		// This means the superadmin can set a user to "order for someone" 
+		// more on this functionality later
+		if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
+			$currentuser = User::find(Session::get('userbypass'));
+		}
+		else {
+			$currentuser = Auth::user();
+		}
+		
+
 		// Make sure we have enough consignment to pull this off
-		$cons 		= Auth::user()->consignment;
+		$cons 		= $currentuser->consignment;
 		$absamount	= abs(Input::get('amount'));
 		$absamount = $this->totalCheck($absamount);
+
 
 		if ($cons <= 0) {
 			$cardauth = new stdClass();
@@ -406,14 +423,13 @@ class InventoryController extends \BaseController {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 
-			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
-			$authinfo	= json_decode($data);
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass, true));
 		}
 		// This is the individual REP TID
 		else {
-			$authkey = Auth::user()->key;
+			$authkey = $currentuser->key;
 			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
+			$authinfo->key = $key;
 		}
 
 		$purchaseInfo = array(
@@ -426,7 +442,7 @@ class InventoryController extends \BaseController {
 		
 		//$ia = Input::all();
 		//Input::replace($purchaseInfo);
-		//$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		//$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
 		//$cardauth	= json_decode(Route::dispatch($request)->getContent());
 		//Input::replace($ia);
 
@@ -434,7 +450,7 @@ class InventoryController extends \BaseController {
 		$cardauth	= json_decode('{ "error":false }');
 
 		if (!$cardauth->error) {
-			$user = Auth::user();
+			$user = $currentuser;
 			$user->consignment = $user->consignment - floatval($absamount);
 			$user->save();
 
@@ -464,6 +480,16 @@ class InventoryController extends \BaseController {
 
 	public function finalizePurchase($auth, $invitems) {
 
+		// This means the superadmin can set a user to "order for someone" 
+		// more on this functionality later
+		if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
+			$currentuser = User::find(Session::get('userbypass'));
+		}
+		else {
+			$currentuser = Auth::user();
+		}
+
+		$user = $currentuser;
 
 		$sessiondata = Session::all();
 		$csuser 	 = '';
@@ -477,37 +503,36 @@ class InventoryController extends \BaseController {
 			$csuser->save();
 		}
 
-		$view = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
-		$view2 = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
+		$view  = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
 
-		$receipt	= $view->renderSections();
-		$receipt	= $receipt['manifest'];
 		$data		= [];
+		$data['body'] = $view->renderSections()['manifest'];
+
 
 		// If the session has an emailto person
-		$data['email'] = isset($sessiondata['emailto']) ? $sessiondata['emailto'] : Auth::user()->email;
-
-		$body = preg_replace('/\s\s+/', ' ',$receipt);
-		$user = Auth::user();
+		$data['email'] = isset($sessiondata['emailto']) ? $sessiondata['emailto'] : $user->email;
 
 		$data['user']	= $user;
-		$data['body']	= $body;
 		$data['email']	= $user->email;
 
 		// If ordering NEW inventory
 		if (!Session::get('repsale'))
 		{
-			$user = (!empty($csuser->sponsor_id)) ?  $csuser : Auth::user();
+			$user = (!empty($csuser->sponsor_id)) ?  $csuser : $user;
 
 			$data['email']	= $user->email;
 			
 			// This one goes to the main warehouse
-			Mail::send('emails.invoice', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($body) use($user,$data) {
-				$body->to(Config::get('site.contact_email'), "Order Warehousing")
-				->subject('Invoice From: '."{$user->first_name} {$user->last_name}")
-				->replyTo($data['email'])
-				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
-			});
+			try { 
+				Mail::send('emails.invoice', $data, function($message) use($user,$data) {
+					$message->to(Config::get('site.warehouse_email'), "Order Warehousing");
+					$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
+					$message->replyTo($data['email']);
+					$message->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+				});
+			} catch (Exception $e) {
+				die('Sploded'. $e->getMessage());
+			}
 		}
 		// If a REP sold this
 		else {
@@ -515,7 +540,7 @@ class InventoryController extends \BaseController {
 
 			// A new world order
 			$o = new Order();
-			$o->user_id			= (!empty($csuser->sponsor_id)) ?  $csuser->sponsor_id : Auth::user()->id;
+			$o->user_id			= (!empty($csuser->sponsor_id)) ?  $csuser->sponsor_id : $user->id;
 			$o->total_price		= Session::get('subtotal',0);
 			$o->total_points	= Session::get('subtotal',0);
 			$o->total_tax		= Session::get('tax',0);
@@ -540,19 +565,24 @@ class InventoryController extends \BaseController {
 		// This one goes to the final user
 		// customer purchase
 		if ($sessiondata['repsale']) {
-			Mail::send('emails.standard', $data, function($body) use($user,$data) {
-				$body->to($data['email'], "{$user->first_name} {$user->last_name}")
+			Mail::send('emails.standard', $data, function($message) use($user,$data) {
+				$message->to($data['email'], "{$user->first_name} {$user->last_name}")
 				->subject('Order receipt from '.Config::get('site.company_name'))
 				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 			});
 		}
  		// ordering inventory
 		else {
-			Mail::send('emails.standard', $data, function($body) use($user,$data) {
-				$body->to($data['email'], "{$user->first_name} {$user->last_name}")
-				->subject('Purchase receipt from '.Config::get('site.company_name'))
-				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
-			});
+			try { 
+				Mail::send('emails.standard', $data, function($message) use($user,$data) {
+					$message->to($data['email'], "{$user->first_name} {$user->last_name}")
+					->subject('Purchase receipt from '.Config::get('site.company_name'))
+					->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+				});
+			}
+			catch (Exception $e) {
+				die('Barf');
+			}
 		}
 
 		Session::forget('customdiscount');
@@ -565,9 +595,10 @@ class InventoryController extends \BaseController {
 		Session::forget('payments');
         Session::forget('paymentdata');
 		Session::forget('previous_page_2');
+		Session::forget('userbypass');
 		Session::put('previous_page_2','/dashboard');
 
-		return $view;
+		return View::make('inventory.thankyoupage',compact('auth','invitems','sessiondata'));
 	}
 
 	public function cashpurchase() {
@@ -592,14 +623,13 @@ class InventoryController extends \BaseController {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 
-			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
-			$authinfo	= json_decode($data);
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass, true));
 		}
 		// This is the individual REP TID
 		else {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
+			$authinfo->key = $key;
 		}
 
 		$purchaseInfo = array(
@@ -611,7 +641,7 @@ class InventoryController extends \BaseController {
 
 		$ia = Input::all();
 		Input::replace($purchaseInfo);
-		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
 		Input::replace($ia);
 
@@ -628,7 +658,16 @@ class InventoryController extends \BaseController {
 	}
 
 	public function achpurchase() {
-		$checking = Auth::user()->bankinfo->find(Input::get('account'));
+		// This means the superadmin can set a user to "order for someone" 
+		// more on this functionality later
+		$acct = Input::get('account');
+		if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
+			Session::put('repsale',false);
+			$checking = User::find(Session::get('userbypass'))->bankinfo->find($acct);
+		}
+		else {
+			$checking =  Auth::user()->bankinfo->find($acct);
+		}
 
 		$absamount	= abs(Input::get('amount'));
 		$tax		= $this->getTax($absamount);
@@ -651,14 +690,13 @@ class InventoryController extends \BaseController {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 
-			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
-			$authinfo	= json_decode($data);
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass));
 		}
 		// This is the individual REP TID
 		else {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
+			$authinfo->key = $key;
 		}
 
 		$purchaseInfo = array(
@@ -675,7 +713,7 @@ class InventoryController extends \BaseController {
 
 		$ia = Input::all();
 		Input::replace($purchaseInfo);
-		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
 		Input::replace($ia);
 
@@ -713,14 +751,13 @@ class InventoryController extends \BaseController {
 		if (!Session::get('repsale')) {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
-			$data = App::make('ExternalAuthController')->auth($user, $pass)->getContent();
-			$authinfo	= json_decode($data);
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass, true));
 		}
 		// This is the individual REP TID
 		else {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
-			$authinfo->mwl = $key;
+			$authinfo->key = $key;
 		}
 
 		$purchaseInfo = array(
@@ -737,7 +774,7 @@ class InventoryController extends \BaseController {
 		
 		$ia = Input::all();
 		Input::replace($purchaseInfo);
-		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->mwl,'GET', array());
+		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
 		$cardauth	= json_decode(Route::dispatch($request)->getContent());
 		Input::replace($ia);
 
@@ -753,5 +790,4 @@ class InventoryController extends \BaseController {
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
 	}
-    
 }
