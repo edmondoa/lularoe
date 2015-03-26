@@ -20,9 +20,20 @@
         Session::forget('paymentdata');
 	}
 
-	$bi =  Auth::user()->bankinfo;
+	
+	// This means the superadmin can set a user to "order for someone" 
+	// more on this functionality later
+	if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
+		$currentuser = User::find(Session::get('userbypass'));
+	}
+	else {
+		$currentuser = Auth::user();
+	}
+
+	$bi =  $currentuser->bankinfo;
+
 	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
-	$consignment_bal = Auth::user()->consignment;
+	$consignment_bal = $currentuser->consignment;
 
  	$balanceAmount = $inittotal + $tax - Session::get('paidout');
 ?>
