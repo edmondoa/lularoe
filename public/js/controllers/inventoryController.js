@@ -118,11 +118,13 @@ try {
         
         $http.get(path).success(function(v) {
             shared.updateLocalCart();
+
             var b = new RegExp('Sloan');
             for(var i in v){
                 var isInsideInventory = [];
                 isInsideInventory = $scope.inventories.filter(function(inventory){
-                    return b.test(inventory.model);
+					return false;
+                    //return b.test(inventory.model);
                 });
 
                 if(isInsideInventory.length == 0){
@@ -136,6 +138,7 @@ try {
             $scope.countItems = $scope.inventories.length;
             $scope.pageSize = $scope.inventories.length;
             $scope.isComplete = true;
+
             angular.forEach($scope.inventories, function(inventory){
                  inventory.sizes = [];   
                  inventory.doNag = false;   
@@ -156,6 +159,7 @@ try {
                      });
                  }
             });
+
             console.log($scope.inventories);
 
         });

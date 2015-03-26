@@ -221,7 +221,6 @@ class ExternalAuthController extends \BaseController {
 
 			$itemList[$model] = '';
 			
-
 			// Delimiting sizes with hyphen and spaces
 			if (strpos($itemnumber,' -') === false) 
 			{
@@ -230,8 +229,6 @@ class ExternalAuthController extends \BaseController {
 			else list($model, $size) = explode(' -',$itemnumber);
 
 			$model		= $this->escapemodelname($model);
-			
-			
 			
 			// Initialize this set of item data
 			if (!isset($items[$model]))
@@ -246,7 +243,7 @@ class ExternalAuthController extends \BaseController {
 			}
 
 			// Cut useless spaces
-			$size = ltrim($size); // str_replace('/^ /','',$size);
+			$size = str_replace('/^ /','_',ltrim($size));
 
 			// Set up the quantities of each size
 			if (!isset($items[$model]['quantities'][$size])) 
