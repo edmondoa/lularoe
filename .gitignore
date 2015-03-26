@@ -2,6 +2,7 @@
 /app/controllers/Server.php
 /vendor
 composer.phar
+composer.lock
 .env.*.php
 .env.php
 .DS_Store
