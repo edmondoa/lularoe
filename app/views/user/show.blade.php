@@ -91,7 +91,7 @@
 			            	Consignment:
 			            </th>
 			            <td>
-			            	{{ $user->consignment }} @if (Auth::user()->hasRole(['Superadmin','Admin'])) <a href="/sales/consignment/{{ $user->id }}">Purchase Initial Order</a> @endif
+			            	{{ $user->consignment }} @if (Auth::user()->hasRole(['Superadmin','Admin'])) <a href="/inventory/matrix/{{ $user->id }}">Purchase Initial Order</a> @endif
 			            </td>
 			        </tr>
 			        <tr>
