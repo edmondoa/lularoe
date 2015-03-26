@@ -835,7 +835,7 @@ class ExternalAuthController extends \BaseController {
 	MiddleWare Authentication
 	##############################################################################################*/
 	
-	private function midauth($username = '', $password = '')
+	public function midauth($username = '', $password = '')
 	{
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
@@ -871,7 +871,7 @@ class ExternalAuthController extends \BaseController {
 		if (!$server_output) return(false);
 		else {
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') return null;
+			if (isset($so->Code) && $so->Code == '401') return Response::json(null, 401);
 			return($server_output);
 		}
 		
@@ -1134,7 +1134,7 @@ class ExternalAuthController extends \BaseController {
         return ($returndata);
 	}
 
-	public function auth($login, $pass = '', $login = true) {
+	public function auth($login, $pass = '') {
 		$pass	= trim(Input::get('pass', $pass));
         $status = 'ERR';
         $error  = false;
@@ -1159,8 +1159,7 @@ class ExternalAuthController extends \BaseController {
             $mbr	= null;
             $status = 'User '.strip_tags($login).' not found';
         }
-		//elseif($attempt = \Auth::attempt(['email' => $mbr->email,'password' => $pass], false)) // BAD NO NO!!
-		elseif(Hash::check($pass, $mbr->password))
+		elseif($attempt = \Auth::attempt(['email' => $mbr->email,'password' => $pass], false))
 		{
 			$status = 'User '.strip_tags($login).' found ok';
 			$data = array(
