@@ -251,7 +251,7 @@ try {
 			'group': 'L'
 		},
 		'Tall and Curvy Leggings (2 Pack)':{
-			'quantities': [1],
+			'quantities': [0],
 			'group': 'L'
 		},
 		'Sloan (2-8)':{
