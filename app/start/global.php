@@ -55,22 +55,28 @@ App::error(function(Exception $exception, $code)
 
 	$message = $exception->getMessage();
 
-    Log::error($exception);
 
 	if ($code == 401) {
+        Log::error("Not Authorized - {$message}");
+
 		return Response::json(array(
 				'error'		=> true,
 				'code'      =>  401,
 				'message'   =>  'Not authorized'
 			), 401);
     }
-
+    Log::error($exception);
 
     return Response::view('errors.missing', compact("exception"), 404);
 });
 
-App::missing(function($exception)
+App::missing(function(Exception $exception)
 {
+    if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException)
+    {
+        Log::error('NotFoundHttpException Route: ' . Request::url() );
+    }
+
     return Response::view('errors.missing', compact("exception"), 404);
 });
 

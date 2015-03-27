@@ -28,6 +28,5 @@ class Ledger extends \Eloquent
 
 	public function getLedgerList($id = null) {
 		return $this->ledger($id);
-		
 	}
 }

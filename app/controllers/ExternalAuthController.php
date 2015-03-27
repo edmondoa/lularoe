@@ -23,18 +23,19 @@ class ExternalAuthController extends \BaseController {
 
 	public static function getUserByKey($key = '') {
 		if (empty($key) && Auth::user()) {
-			\Log::info("No Key, but Authed = Return default inventory user");
+			\Log::info("No Key, but Authed = Return warehouse inventory user");
 			return(false);
 		}
 
 		\Log::info("Get User by Key {$key}");
 		if (empty($key)) {
-			\Log::info("Veilen Schlecht - Empty Key.");
-			return App::abort(401,json_encode(array('error'=>'true','message'=>'No Key Specified - Please Login and try again')));
-		}
-		$mbr = User::where('key', 'LIKE', $key.'|%')->first();
-		if (!isset($mbr)) {
-			\Log::info("{$key} is not locked to a user account");
+           \Log::info("Veilen Schlecht - Empty Key");
+            return App::abort(401,json_encode(array('error'=>'true','message'=>'No Key Specified - Please Login and try again')));
+        }
+
+        $mbr = User::where('key', 'LIKE', $key.'|%')->first();
+        if (!isset($mbr)) {
+            \Log::info("{$key} is not locked to a user account");
 			return App::abort(401,json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again')));
 		}
 		else { 
@@ -620,6 +621,7 @@ class ExternalAuthController extends \BaseController {
 		return($res);
 	}
 
+
 	// It is this way until we have proper api access to the ledger.
 	public function ledger($key = 0)
 	{
@@ -639,17 +641,7 @@ class ExternalAuthController extends \BaseController {
 		$Q = "SELECT tid, refNum as order_number, result, authAmount as subtotal, salesTax as tax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".$mysqli->escape_string($key)."'";
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
-		$txns = [];
-
-		// Pull these from inventory data
-		$stub_items = json_decode('[{"quantities":{"M":2,"L":3,"XXS":5},
-									"price":59.99,
-									"image":"http://mylularoe.com/img/media/Lola.jpg",
-									"model":"Lola"},
-									{"quantities":{"M":8,"L":6,"XXS":1},
-									"price":59.99,
-									"image":"http://mylularoe.com/img/media/Ana.jpg",
-									"model":"Ana"}]');
+		$txns		= [];
 		$stub_items = [];
 
 		$res = $mysqli->query($Q);
@@ -671,6 +663,68 @@ class ExternalAuthController extends \BaseController {
 		return(Response::json($txns, 200, [], JSON_PRETTY_PRINT));
 	}
 
+	public function getLedger($id, $ref = null)
+	{
+		//return App::abort(401, json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again')));
+
+		$currentuser	= Auth::user();
+		$id				= $currentuser->id;
+
+		try {
+			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
+		}
+		catch (Exception $e)
+		{
+			return json_encode(array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage()));
+			//return(Response::json($noconnect,200));
+		}
+	
+		// This is not good .. WHERE'S MY API!
+		$Q = "SELECT 	
+					transaction.refNum as order_number,
+					transaction.authAmount AS amount,
+					transaction.salesTax AS tax,
+					transaction.custNum AS customer,
+					transaction.cashsale AS is_cash,
+					transaction.refunded AS is_refunded,
+					transaction.created_at AS date,
+					users.username AS username,
+					tid.id AS tid,
+					accounts.name AS account 
+				FROM users LEFT JOIN tid 
+					ON users.id=tid.id LEFT JOIN accounts 
+					ON accounts.id=tid.account LEFT JOIN transaction 
+					ON transaction.tid=tid.id 
+				WHERE users.username='{$id}' ORDER BY created_at DESC";
+		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
+
+		$txns		= [];
+		$stub_items = [];
+
+		$res = $mysqli->query($Q);
+
+		while($txn = $res->fetch_assoc())
+		{
+			$txn['date'] = date('M d Y H:i:s',strtotime($txn['date']));
+			$ordernum = $txn['order_number'];
+
+			if (!isset($stub_items["".$ordernum])) 
+			{
+				$l = Ledger::where('transactionid', '=', $ordernum)->get(array('data'))->first();
+				if ($l) {
+					$stub_items["".$ordernum] = json_decode(json_decode($l->data));
+				}
+				else $stub_items["".$ordernum] = array();
+			}
+			$txn['items'] = $stub_items["".$ordernum];
+
+			$txns[] = $txn;
+		}	
+		$mysqli->close();
+		return $txns;
+		//	return(Response::json($txns, 200, [], JSON_PRETTY_PRINT));
+	}
+
 	// Keep these separate for now
 	public function refund($key = 0)
 	{
@@ -678,8 +732,8 @@ class ExternalAuthController extends \BaseController {
 
 		$txdata = array(
 			'transactionId'     => Input::get('transactionid'),
-			'Subtotal'          => Input::get('subtotal'),
-			'Tax'               => Input::get('tax'),
+			'Subtotal'          => floatval(Input::get('subtotal')),
+			'Tax'               => floatval(Input::get('tax')),
 			'Account-name'      => Input::get('cardname'),
 			'Card-Number'       => Input::get('cardnumber'),
 			'Card-Code'     	=> Input::get('cardcvv'),
@@ -754,8 +808,8 @@ class ExternalAuthController extends \BaseController {
 		// Set up appropraite transaction headers
 		if ($txtype == 'CARD'){
 			$txdata = array(
-				'Subtotal'          => Input::get('subtotal',0),
-				'Tax'               => Input::get('tax',0),
+				'Subtotal'          => floatval(Input::get('subtotal',0)),
+				'Tax'               => floatval(Input::get('tax',0)),
 				'Account-name'      => Input::get('cardname'),
 				'Card-Number'       => Input::get('cardnumber'),
 				'Card-Code'     	=> Input::get('cardcvv'),
@@ -771,8 +825,8 @@ class ExternalAuthController extends \BaseController {
 		}
 		else if ($txtype == 'CASH') {
 			$txdata = array(
-				'Subtotal'          => Input::get('subtotal',0),
-				'Tax'               => Input::get('tax',0),
+				'Subtotal'          => floatval(Input::get('subtotal',0)),
+				'Tax'               => floatval(Input::get('tax',0)),
 				'Description'       => json_encode($cartdata)
 			);
 			$endpoint = 'cash';
@@ -789,8 +843,8 @@ class ExternalAuthController extends \BaseController {
 				'License-State' 	=> Input::get('dlstate'),
 				'License-Number' 	=> Input::get('dlnum'),
 				'Check-Number' 		=> Input::get('checknum'),
-				'Subtotal'          => Input::get('subtotal',0),
-				'Tax'               => Input::get('tax',0),
+				'Subtotal'          => floatval(Input::get('subtotal',0)),
+				'Tax'               => floatval(Input::get('tax',0)),
 				'Description'       => json_encode($cartdata)
 			);
 			$endpoint = 'checkSale';

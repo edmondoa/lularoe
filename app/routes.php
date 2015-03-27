@@ -324,6 +324,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		# API functions that shouldn't be cached
 		##############################################################################################
+
         Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
         Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
         Route::get('api/all-users', 'DataOnlyController@getAllUsers');
@@ -602,6 +603,11 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::post('find-sponsor', 'PreRegisterController@redirect');
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
 	});
+
+	Route::get('reports', 'ReportController@index');
+	Route::get('api/report/sales/details/{id}', 'ReportController@saleDetails');
+	Route::get('api/report/sales', 'ReportController@getReportSales');
+	Route::get('api/report/inventory', 'ReportController@getReportInventory');
 
 	Route::get('populate-levels', function(){
 		$level_count = Level::all()->count();
