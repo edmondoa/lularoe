@@ -52,7 +52,7 @@ class ExternalAuthController extends \BaseController {
 		$prod = Product::where('user_id','=',$mbr->id)->where('id','=',$id)->get()->first();
 
 		if (!empty($prod)) { 
-			if ($prod->quantity >= intval($quan)+1) {
+			if ($prod->quantity >= intval($quan)) {
 				$prod->quantity = $prod->quantity - intval($quan);
 				$prod->save();
 				return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
@@ -552,18 +552,21 @@ class ExternalAuthController extends \BaseController {
 		$o->details         = json_encode(array('orders'=>$invitems,'payments'=>$vals['txids']));
 		$o->save();
 
-		$result = array('error'=>false,'message'=>array('GOT HERE'));
+		$result = array('error'=>false,'message'=>'Receipt Sent to '.$vals['emailto']);
 
 		$orderitems	= [];
-		// Deduct item quantity from inventory
-        foreach ($vals['products'] as $item) {
-			foreach($item['quantities'] as $size=>$num)  {
-				$result['message'][] = "Removed {$num} {$size} from {$item['id']}";
-				$request    = Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/",'GET', array());
-				$deduction  = json_decode(Route::dispatch($request)->getContent());
-				$orderitems[] = array('model'=>$item['model'],'numOrder'=>$num,'size'=>$size,'price'=>$item['price']);
+		if (!isset($vals['emailonly'])) {
+			// Deduct item quantity from inventory
+			foreach ($vals['products'] as $item) {
+				foreach($item['quantities'] as $size=>$num)  {
+					$request    = Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/",'GET', array());
+					$deduction  = json_decode(Route::dispatch($request)->getContent());
+					$result['deducted'][$item['id']] = $deduction;//"Removed {$num} {$size} from {$item['id']}";
+					$orderitems[] = array('model'=>$item['model'],'numOrder'=>$num,'size'=>$size,'price'=>$item['price']);
+				}
 			}
-        }
+		}
+		else $result['deducted'] = [];
 
 		$sessiondata['repsale']		= true;
 		$sessiondata['tax']			= $vals['tax'];
@@ -582,12 +585,14 @@ class ExternalAuthController extends \BaseController {
 		$data['email']	= $vals['emailto'];
 		$data['body'] 	= preg_replace('/\s\s+/', ' ',$receipt);
 
-        // This one goes to the final user
-        Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
-            $message->to($data['email'])
-			->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
-            ->from($user->email, $user->first_name.' '.$user->last_name);
-        });
+		if (!empty($data['email'])) {
+			// This one goes to the final user
+			Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
+				$message->to($data['email'])
+				->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
+				->from($user->email, $user->first_name.' '.$user->last_name);
+			});
+		} else $result['message'] = 'No receipt sent: Please specify an email address.';
 
 		return Response::json($result, $vals['err']);
 	}
@@ -1184,7 +1189,8 @@ class ExternalAuthController extends \BaseController {
 							'amount'=>$response_obj->TransactionResponse->AuthAmount,
 							'data'=>$raw_response);
 
-	$returndata['id'] = (isset($response_obj->TransactionResponse->ID))  ? $response_obj->TransactionResponse->ID  : null;
+		$returndata['id'] = (isset($response_obj->TransactionResponse->ID))  ? $response_obj->TransactionResponse->ID  : null;
+		$returndata['id'] = (string)$returndata['id'];
 
         return ($returndata);
 	}
