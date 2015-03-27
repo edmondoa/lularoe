@@ -706,6 +706,7 @@ class ExternalAuthController extends \BaseController {
 		{
 			$txn['date'] = date('M d Y H:i:s',strtotime($txn['date']));
 			$ordernum = $txn['order_number'];
+			$txn['amount'] = ''.money_format('%2n', $txn['amount']);
 
 			if (!isset($stub_items["".$ordernum])) 
 			{
@@ -789,7 +790,7 @@ class ExternalAuthController extends \BaseController {
 	{
         \Log::info("[{$key}] Purchasing cart full of ".json_encode(Input::all()));
 
-		$cartdata	= Input::get('cart', $cart);
+		$cartdata	= Input::all();
 		$endpoint	= '';
 
 		// If this is a taxless purchase such as consignment
