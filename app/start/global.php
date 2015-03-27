@@ -52,7 +52,20 @@ App::error(function(Exception $exception, $code)
     {
         Log::error('NotFoundHttpException Route: ' . Request::url() );
     }
+
+	$message = $exception->getMessage();
+
     Log::error($exception);
+
+	if ($code == 401) {
+		return Response::json(array(
+				'error'		=> true,
+				'code'      =>  401,
+				'message'   =>  'Not authorized'
+			), 401);
+    }
+
+
     return Response::view('errors.missing', compact("exception"), 404);
 });
 
