@@ -604,10 +604,17 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
 	});
 
-	Route::get('reports', 'ReportController@index');
-	Route::get('api/report/sales/details/{id}', 'ReportController@saleDetails');
-	Route::get('api/report/sales', 'ReportController@getReportSales');
-	Route::get('api/report/inventory', 'ReportController@getReportInventory');
+	Route::group(array(), function() {
+		Route::get('reports', 'ReportController@index');
+		Route::get('api/report/sales/details/{id}', 'ReportController@saleDetails');
+		Route::get('api/report/sales', 'ReportController@getReportSales');
+		Route::get('api/report/inventory', 'ReportController@getReportInventory');
+
+		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
+			Route::get('reports/{id}', 'ReportController@index');
+		}
+	});
+
 
 	Route::get('populate-levels', function(){
 		$level_count = Level::all()->count();

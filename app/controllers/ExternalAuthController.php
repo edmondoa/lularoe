@@ -663,12 +663,11 @@ class ExternalAuthController extends \BaseController {
 		return(Response::json($txns, 200, [], JSON_PRETTY_PRINT));
 	}
 
-	public function getLedger($id, $ref = null)
+	// I have to have this here because I don't want myswl credentials all over the place .. sorry
+	// This for now until we have an api in place
+	public function getLedger($id = 0, $ref = null)
 	{
-		//return App::abort(401, json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again')));
-
-		$currentuser	= Auth::user();
-		$id				= $currentuser->id;
+        $currentuser	= User::find($id);
 
 		try {
 			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
@@ -695,7 +694,7 @@ class ExternalAuthController extends \BaseController {
 					ON users.id=tid.id LEFT JOIN accounts 
 					ON accounts.id=tid.account LEFT JOIN transaction 
 					ON transaction.tid=tid.id 
-				WHERE users.username='{$id}' ORDER BY created_at DESC";
+				WHERE users.username='{$currentuser->id}' ORDER BY created_at DESC";
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
 		$txns		= [];
