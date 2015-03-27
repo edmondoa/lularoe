@@ -8,7 +8,7 @@
 	</div>
 	<form editable-form name="editableForm" onaftersave="saveBankinfo($data)">
 	    <div class="row">
-	        <div class="col col-xl-3 col-lg-4 col-sm-6 col-sm-6">
+	        <div class="col col-xl-6 col-lg-6 col-sm-6 col-sm-6">
 	            <!-- {{ Form::open(array('url' => '/bank-info')) }} -->
 	
 				<input type="hidden" name="onboard_process" value="true">
@@ -45,10 +45,12 @@
 								
 				 -->				<div class="form-group">
 					<button type="button" class="btn btn-primary" ng-click="saveBankinfo($data)">Next <i class="fa fa-angle-right"></i></button>
-				</div>
-
-	        </div><!-- col -->
-	    </div><!-- row -->
+			</div>
+	        <div class="col col-xl-6 col-lg-6 col-sm-6 col-sm-6 pull-left">
+				<img src="/img/media/check.png">
+			</div>
+        </div><!-- col -->
+    </div><!-- row -->
 	{{Form::close()}}
 </div>
 
