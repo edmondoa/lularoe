@@ -628,11 +628,16 @@ class ExternalAuthController extends \BaseController {
 
 
 	// It is this way until we have proper api access to the ledger.
-	public function ledger($key = 0)
-	{
-		$ref = Input::get('ref');
+	public function ledger($key = 0) {
+
+		$mbr = $this->getUserByKey($key);
+
+		$ref = Input::get('ref', null);
 		$key = Session::get('mwl_id', $key);
 
+		$txns = $this->getLedger($mbr->id, $ref);
+
+/*
 		try {
 			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
 		}
@@ -657,18 +662,19 @@ class ExternalAuthController extends \BaseController {
 			{
 				$l = Ledger::where('transactionid', '=', $ordernum)->get(array('data'))->first();
 				if ($l) {
-					$stub_items["".$ordernum] = json_decode(json_decode($l->data));
+					$stub_items[$ordernum] = json_decode($l->data);
 				}
-				else $stub_items["".$ordernum] = array();
+				else $stub_items[$ordernum] = array();
 			}
 			$txn['items'] = $stub_items["".$ordernum];
 			$txns[] = $txn;
 		}	
 		$mysqli->close();
+*/
 		return(Response::json($txns, 200, [], JSON_PRETTY_PRINT));
 	}
 
-	// I have to have this here because I don't want myswl credentials all over the place .. sorry
+	// I have to have this here because I don't want mysql credentials all over the place .. sorry
 	// This for now until we have an api in place
 	public function getLedger($id = 0, $ref = null)
 	{
@@ -717,7 +723,7 @@ class ExternalAuthController extends \BaseController {
 			{
 				$l = Ledger::where('transactionid', '=', $ordernum)->get(array('data'))->first();
 				if ($l) {
-					$stub_items["".$ordernum] = json_decode(json_decode($l->data));
+					$stub_items["".$ordernum] = json_decode($l->data);
 				}
 				else $stub_items["".$ordernum] = array();
 			}
@@ -791,12 +797,23 @@ class ExternalAuthController extends \BaseController {
 
 	}
 
-	public function purchase($key = 0, $cart = '')
-	{
+	public function purchase($key = 0, $cart = '') {
         \Log::info("[{$key}] Purchasing cart full of ".json_encode(Input::all()));
 
 		$cartdata	= Input::all();
 		$endpoint	= '';
+
+		if (isset($cartdata['cardname'])) {
+			$cartdata['cardnumber'] = 'xxxx-xxxx-xxxx-'.substr(@$cartdata['cardnumber'],-4);
+			unset($cartdata['cardcvv']);
+			unset($cartdata['cardpin']);
+			$cartdata['cardexp']	= @$cartdata['cardexp'];
+			$cartdata['cardzip']	= @$cartdata['cardzip'];
+		}
+		if (isset($cartdata['routing'])) {
+			$cartdata['routing']	= 'xxxxxxx'.substr(@$cartdata['rounting'],-4);
+			$cartdata['account']	= 'xxxxxxx'.substr(@$cartdata['account'],-4);
+		}
 
 		// If this is a taxless purchase such as consignment
 		if (empty(Input::get('tax')) || Session::has('notax')) {
@@ -811,7 +828,7 @@ class ExternalAuthController extends \BaseController {
         $mbr	= self::getUserByKey($key);
 
 		// Set up appropraite transaction headers
-		if ($txtype == 'CARD'){
+		if ($txtype == 'CARD') {
 			$txdata = array(
 				'Subtotal'          => floatval(Input::get('subtotal',0)),
 				'Tax'               => floatval(Input::get('tax',0)),
@@ -891,8 +908,7 @@ class ExternalAuthController extends \BaseController {
 	MiddleWare Authentication
 	##############################################################################################*/
 	
-	public function midauth($username = '', $password = '', $returnJson = false)
-	{
+	public function midauth($username = '', $password = '', $returnJson = false) {
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
 

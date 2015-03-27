@@ -48,6 +48,9 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 
 App::error(function(Exception $exception, $code)
 {
+	$uri = Request::server('REQUEST_URI');
+	Log::error('From: '.$uri);
+
     if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException)
     {
         Log::error('NotFoundHttpException Route: ' . Request::url() );
@@ -57,7 +60,7 @@ App::error(function(Exception $exception, $code)
 
 
 	if ($code == 401) {
-        Log::error("Not Authorized - {$message}");
+        Log::error("Not Authorized - {$message} {$uri}");
 
 		return Response::json(array(
 				'error'		=> true,
