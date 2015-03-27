@@ -8,7 +8,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col col-lg-3 col-md-4 col-sm-6">
+		<div class="col col-lg-6 col-md-6 col-sm-6">
 		    {{ Form::model($bankinfo, array('route' => array('bankinfo.update', $bankinfo->id), 'method' => 'PUT')) }}
 
 		    <div class="form-group">
@@ -42,6 +42,9 @@
 
 			{{ Form::open(array('url' => 'bankinfo/' . $bankinfo->id, 'method' => 'DELETE', 'onsubmit' => 'return confirm("Are you sure you want to delete this record? This cannot be undone.");')) }}
 		    {{ Form::submit('Delete', array('class' => 'btn btn-warning pull-left')) }}{{ Form::close() }}
+		</div>
+		<div class="col col-lg-6 col-md-6 col-sm-6 pull-right">
+			<img src="/img/media/check.png">
 		</div>
 	</div>
 </div>
