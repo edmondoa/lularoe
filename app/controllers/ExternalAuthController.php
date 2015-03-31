@@ -52,7 +52,7 @@ class ExternalAuthController extends \BaseController {
 		$prod = Product::where('user_id','=',$mbr->id)->where('id','=',$id)->get()->first();
 
 		if (!empty($prod)) { 
-			if ($prod->quantity >= intval($quan)+1) {
+			if ($prod->quantity >= intval($quan)) {
 				$prod->quantity = $prod->quantity - intval($quan);
 				$prod->save();
 				return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
@@ -452,7 +452,6 @@ class ExternalAuthController extends \BaseController {
 	}
 
 	public function updateMwlUser($user_id,$password = null) {
-		\Log::info("updateMwlUser for [{$user_id} / {$password}]");
 
         $mbr = User::find($user_id);
 
@@ -465,6 +464,8 @@ class ExternalAuthController extends \BaseController {
 		if(!isset($bank_info->id)) return false;
 
 		$key = Self::midauth();
+
+		\Log::info("updateMwlUser for [{$user_id} / {$key}]");
 
 		$ch = curl_init();
 
@@ -492,7 +493,7 @@ class ExternalAuthController extends \BaseController {
 		{
 			$headers[] = "Account-Type: checking"; // reqd (checking or saving)
 			$headers[] = "Account-Name: ".$mbr->first_name." ".$mbr->last_name;
-			$headers[] = "Account-Number:".$bank_info->bank_account;
+			$headers[] = "Account-Number: ".$bank_info->bank_account;
 			$headers[] = "Account-Route: ".$bank_info->bank_routing; //
 		}
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
@@ -501,6 +502,7 @@ class ExternalAuthController extends \BaseController {
 			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		}
 
+		\Log::info('Output: '.print_r($headers, true));
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 		//curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -520,11 +522,12 @@ class ExternalAuthController extends \BaseController {
 		else {
 			$so = json_decode($server_output);
 			if (isset($so->Code) && $so->Code == '401') return null;
+			\Log::info('Result: '.print_r($server_output, true));
 			return($server_output);
 		}
 	}
 
-	public function sendReceipt($key = '') {
+	public function sendReceipt($key = '',  $repsale = true) {
 
 		// First we fetch the Request instance
 		$request = Request::instance();
@@ -533,11 +536,17 @@ class ExternalAuthController extends \BaseController {
 		$content = $request->getContent();
 		$vals = json_decode($content,true);
 
+		// We should always have transaction IDS
+		if (!isset($vals['txids'])) return Response::json(array('error'=>true,'message'=>'Receipt invalid - no transactions?'), 500);
+
+
+        \Log::info("[{$key}]".print_r($vals,true));
+
 		if (empty($vals['err'])) $vals['err'] = 200;
 
-		$invitems		= $vals['products'];
-		$auth			= $vals['txids'];
-		$sessiondata	= $vals;
+		$invitems		= @$vals['products'];
+		$auth			= @$vals['txids'];
+		$sessiondata	= @$vals;
 
 		// Wish we could use sessions on all this, thanks IOS!
         $user	= self::getUserByKey($key);
@@ -552,20 +561,27 @@ class ExternalAuthController extends \BaseController {
 		$o->details         = json_encode(array('orders'=>$invitems,'payments'=>$vals['txids']));
 		$o->save();
 
-		$result = array('error'=>false,'message'=>array('GOT HERE'));
+		$result = array('error'=>false,'message'=>'Receipt Sent to '.$vals['emailto']);
 
 		$orderitems	= [];
-		// Deduct item quantity from inventory
-        foreach ($vals['products'] as $item) {
-			foreach($item['quantities'] as $size=>$num)  {
-				$result['message'][] = "Removed {$num} {$size} from {$item['id']}";
-				$request    = Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/",'GET', array());
-				$deduction  = json_decode(Route::dispatch($request)->getContent());
-				$orderitems[] = array('model'=>$item['model'],'numOrder'=>$num,'size'=>$size,'price'=>$item['price']);
+		if (!isset($vals['emailonly'])) {
+			// Deduct item quantity from inventory
+			foreach ($vals['products'] as $item) {
+				foreach($item['quantities'] as $size=>$num)  {
+					// Careful on this route 
+					\Log::info("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/");
+					if ($item['id'] != Null) {
+						$request    = Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/",'GET', array());
+						$deduction  = json_decode(Route::dispatch($request)->getContent());
+					}
+					else $result['deducted'][$item['id']] = false;//"Removed {$num} {$size} from {$item['id']}";
+				}
 			}
-        }
+			$orderitems = $invitems;
+		}
+		else $result['deducted'] = [];
 
-		$sessiondata['repsale']		= true;
+		$sessiondata['repsale']		= $repsale;
 		$sessiondata['tax']			= $vals['tax'];
 		$sessiondata['orderdata']	= $orderitems;
 		$sessiondata['subtotal']	= $vals['subtotal'];
@@ -582,12 +598,14 @@ class ExternalAuthController extends \BaseController {
 		$data['email']	= $vals['emailto'];
 		$data['body'] 	= preg_replace('/\s\s+/', ' ',$receipt);
 
-        // This one goes to the final user
-        Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
-            $message->to($data['email'])
-			->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
-            ->from($user->email, $user->first_name.' '.$user->last_name);
-        });
+		if (!empty($data['email'])) {
+			// This one goes to the final user
+			Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
+				$message->to($data['email'])
+				->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
+				->from($user->email, $user->first_name.' '.$user->last_name);
+			});
+		} else $result['message'] = 'No receipt sent: Please specify an email address.';
 
 		return Response::json($result, $vals['err']);
 	}
@@ -623,10 +641,19 @@ class ExternalAuthController extends \BaseController {
 
 
 	// It is this way until we have proper api access to the ledger.
-	public function ledger($key = 0)
-	{
-		$ref = Input::get('ref');
+	public function ledger($key = 0) {
+
+		$mbr = $this->getUserByKey($key);
+		\Log::info("Getting Ledger Items for {$mbr->id} [{$key}]");
+
+		$ref = Input::get('ref', null);
 		$key = Session::get('mwl_id', $key);
+
+		//$txns = $this->getLedger($mbr->id, $ref);
+
+		// This will barf on ammons user
+		return Response::json($this->getLedger($mbr->id, $ref),200,[],JSON_PRETTY_PRINT);
+
 
 		try {
 			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
@@ -652,18 +679,19 @@ class ExternalAuthController extends \BaseController {
 			{
 				$l = Ledger::where('transactionid', '=', $ordernum)->get(array('data'))->first();
 				if ($l) {
-					$stub_items["".$ordernum] = json_decode(json_decode($l->data));
+					$stub_items[$ordernum] = json_decode($l->data);
 				}
-				else $stub_items["".$ordernum] = array();
+				else $stub_items[$ordernum] = array();
 			}
 			$txn['items'] = $stub_items["".$ordernum];
 			$txns[] = $txn;
 		}	
 		$mysqli->close();
+
 		return(Response::json($txns, 200, [], JSON_PRETTY_PRINT));
 	}
 
-	// I have to have this here because I don't want myswl credentials all over the place .. sorry
+	// I have to have this here because I don't want mysql credentials all over the place .. sorry
 	// This for now until we have an api in place
 	public function getLedger($id = 0, $ref = null)
 	{
@@ -700,23 +728,39 @@ class ExternalAuthController extends \BaseController {
 		$txns		= [];
 		$stub_items = [];
 
+		/*
+		"tid": "10412",
+        "order_number": "1041200055",
+        "result": "Approved",
+        "subtotal": "12.06",
+        "tax": "0",
+        "cashsale": "1",
+        "processed": "1",
+        "refunded": "0",
+		*/
 		$res = $mysqli->query($Q);
 
 		while($txn = $res->fetch_assoc())
 		{
-			$txn['date'] = date('M d Y H:i:s',strtotime($txn['date']));
+			//$txn['date'] = date('M d Y H:i:s',strtotime($txn['date']));
+			$txn['date'] = date('Y-m-d\TH:i:sO',strtotime($txn['date']));
 			$ordernum = $txn['order_number'];
 			$txn['amount'] = ''.money_format('%2n', $txn['amount']);
+			$txn['is_cash'] = (bool)$txn['is_cash'];
+			$txn['is_refunded'] = (bool)$txn['is_refunded'];
 
-			if (!isset($stub_items["".$ordernum])) 
+			if (!isset($stub_items[$ordernum])) 
 			{
+				$stub_items[$ordernum] = [];
+/*
 				$l = Ledger::where('transactionid', '=', $ordernum)->get(array('data'))->first();
 				if ($l) {
-					$stub_items["".$ordernum] = json_decode(json_decode($l->data));
+					$stub_items["".$ordernum] = json_decode($l->data);
 				}
 				else $stub_items["".$ordernum] = array();
+*/
 			}
-			$txn['items'] = $stub_items["".$ordernum];
+			$txn['items'] = $stub_items[$ordernum];
 
 			$txns[] = $txn;
 		}	
@@ -786,12 +830,23 @@ class ExternalAuthController extends \BaseController {
 
 	}
 
-	public function purchase($key = 0, $cart = '')
-	{
+	public function purchase($key = 0, $cart = '') {
         \Log::info("[{$key}] Purchasing cart full of ".json_encode(Input::all()));
 
 		$cartdata	= Input::all();
 		$endpoint	= '';
+
+		if (isset($cartdata['cardname'])) {
+			$cartdata['cardnumber'] = 'xxxx-xxxx-xxxx-'.substr(@$cartdata['cardnumber'],-4);
+			unset($cartdata['cardcvv']);
+			unset($cartdata['cardpin']);
+			$cartdata['cardexp']	= @$cartdata['cardexp'];
+			$cartdata['cardzip']	= @$cartdata['cardzip'];
+		}
+		if (isset($cartdata['routing'])) {
+			$cartdata['routing']	= 'xxxxxxx'.substr(@$cartdata['rounting'],-4);
+			$cartdata['account']	= 'xxxxxxx'.substr(@$cartdata['account'],-4);
+		}
 
 		// If this is a taxless purchase such as consignment
 		if (empty(Input::get('tax')) || Session::has('notax')) {
@@ -806,7 +861,7 @@ class ExternalAuthController extends \BaseController {
         $mbr	= self::getUserByKey($key);
 
 		// Set up appropraite transaction headers
-		if ($txtype == 'CARD'){
+		if ($txtype == 'CARD') {
 			$txdata = array(
 				'Subtotal'          => floatval(Input::get('subtotal',0)),
 				'Tax'               => floatval(Input::get('tax',0)),
@@ -886,8 +941,7 @@ class ExternalAuthController extends \BaseController {
 	MiddleWare Authentication
 	##############################################################################################*/
 	
-	public function midauth($username = '', $password = '', $returnJson = false)
-	{
+	public function midauth($username = '', $password = '', $returnJson = false) {
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
 
@@ -901,7 +955,7 @@ class ExternalAuthController extends \BaseController {
 		$password = Self::midcrypt($password);
 
 		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/login/?username={$username}&password={$password}";
+		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/login/?username={$username}&password=".rawurlencode($password);
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		/* If we ever decide to 'POST'
@@ -1184,9 +1238,8 @@ class ExternalAuthController extends \BaseController {
 							'amount'=>$response_obj->TransactionResponse->AuthAmount,
 							'data'=>$raw_response);
 
-	$returndata['id'] = (isset($response_obj->TransactionResponse->ID))  ? $response_obj->TransactionResponse->ID  : null;
-	$returndata['id'] = (string)$returndata['id'];
-	
+		$returndata['id'] = (isset($response_obj->TransactionResponse->ID))  ? $response_obj->TransactionResponse->ID  : null;
+		$returndata['id'] = (string)$returndata['id'];
 
         return ($returndata);
 	}
