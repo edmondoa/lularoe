@@ -69,14 +69,16 @@ if (!$sessiondata['repsale'])
 					<th style="Border-bottom:1px solid black;text-align:left"><h3>Total</h3></th>
 				</tr>
 				@foreach ($orderlist as $order)
+                @foreach($order['quantities'] as $size=>$numorder)
+                <tr>
+                    <td>{{ $numorder }}</td>
+                    <td>{{ $order['model'] }} @if (!empty($size)) <span class="label label-info">{{$size}}</span>@endif</td>
+                    <td>${{ number_format($order['price'],2) }}</td>
+                    <td>${{ number_format(floatval($order['price']) * intval($numorder),2) }}</td>
+                </tr>
+                @endforeach
+                @endforeach
 
-				<tr>
-					<td>{{ $order['numOrder'] }}</td>
-					<td>{{ $order['model'] }} @if (!empty($order['size'])) <span class="label label-info">{{ $order['size'] }}</span>@endif</td>
-					<td>${{ number_format($order['price'],2) }}</td>
-					<td>${{ number_format(floatval($order['price']) * intval($order['numOrder']),2) }}</td>
-				</tr>
-				@endforeach
 
 				@if (!empty($discounts))
 				@foreach ($discounts as $discount) @if (!empty($discount['amount']))

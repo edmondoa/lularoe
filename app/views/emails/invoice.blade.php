@@ -1,5 +1,8 @@
 @extends('emails.layouts.basic')
-<?php $shipinfo = $user->addresses->filter(function($d) { return $d->label == 'Shipping'; })->first(); ?>
+<?php 
+	$shipinfo = $user->addresses->filter(function($d) { return $d->label == 'Shipping'; })->first(); 
+	if (!isset($shipinfo)) $shipinfo = $user->addresses->first();
+?>
 
 @section('body')
 <body style="width:100%" width="100%">
