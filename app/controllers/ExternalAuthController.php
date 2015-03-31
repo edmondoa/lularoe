@@ -1185,6 +1185,8 @@ class ExternalAuthController extends \BaseController {
 							'data'=>$raw_response);
 
 	$returndata['id'] = (isset($response_obj->TransactionResponse->ID))  ? $response_obj->TransactionResponse->ID  : null;
+	$returndata['id'] = (string)$returndata['id'];
+	
 
         return ($returndata);
 	}
