@@ -106,7 +106,7 @@ class BankinfoController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
-        App::make('ExternalAuthController')->setbankinfo(Auth::user()->id, Input::all());
+        App::make('ExternalAuthController')->updateMwlUser(Auth::user()->id);
 		$bankinfo->update($data);
 		
 		if (preg_match('/achpurchase/',Session::get('previous_page_2'))){
