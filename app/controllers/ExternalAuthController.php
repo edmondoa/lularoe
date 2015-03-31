@@ -749,6 +749,17 @@ class ExternalAuthController extends \BaseController {
 			$txn['is_cash'] = (bool)$txn['is_cash'];
 			$txn['is_refunded'] = (bool)$txn['is_refunded'];
 
+			if ($id == 11950) {
+				$stub_items[$ordernum][0]  = array(
+							'model'			=>'Test - Disregard',
+							'id'			=>1,
+							'UPC'			=>null,
+							'SKU'			=>null,
+							'price'			=>50,
+							'image'			=>'https://mylularoe.com/img/media/Maxi.jpg',
+							'quantities'	=> ['M'=>1,'L'=>2]);
+			}
+
 			if (!isset($stub_items[$ordernum])) 
 			{
 				$stub_items[$ordernum] = [];
