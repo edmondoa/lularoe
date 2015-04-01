@@ -478,6 +478,52 @@ class InventoryController extends \BaseController {
 	}
 
 
+	private function mergeOrderData($orderdata = array()) {
+		// List of sizes in order
+        $sizelist = array('XXS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0,'S/M'=>0,'L/XL'=>0,'2'=>0,'4'=>0,'6'=>0,'8'=>0,'10'=>0,'12'=>0,'14'=>0,'3/4'=>0,'5/6'=>0,'8/10'=>0,'One Size'=>0,'Tall & Curvy'=>0);
+
+        $m = array();
+        foreach($orderdata as $o) {
+            $om = $o['model'];
+            if (!is_array(@$m[$om]['quantities'])) {
+                $m[$om]['quantities'] = $sizelist;
+            }
+            foreach($o['quantities'] as $size=>$num) {
+                $m[$om]['quantities'][$size] += intval($num);
+            }
+        }
+        return($m);
+    }
+
+	private function buildOrderTable($od) {
+		$bgdark = '#EFEFEF';
+		$bglight = '#FFFFFF';
+		$bgc = 0;
+		
+		$databody = "<table width='100%' cellpadding=\"0\" cellspacing=\"0\"><tr><th>Model</th>";
+		$heading = reset($od);
+			foreach($heading['quantities'] as $size=>$quan) {
+				$bg = ($bgc++ %2  ==0) ? $bgdark : $bglight;
+				$databody .= "<th style=\"border:1px dotted #CDCDCD;background:{$bg}\">{$size}</th>";
+			}
+		$databody .= "</tr>";
+		foreach($od as $model=>$item) {
+			$databody .= "<tr><td>{$model}</td>";
+			foreach($item['quantities'] as $size=>$quan) {
+				$bg = ($bgc++ %2  ==0) ? $bgdark : $bglight;
+				$hilight = "padding:5px;border:1px dotted #CDCDCD;background:{$bg}";
+				if ($quan < 1) {
+					$hilight = "padding:5px;border:1px dotted #CDCDCD;background:{$bg}";
+					$quan = '';
+				}
+				$databody .= "<td align=\"center\" style=\"{$hilight}\">{$quan}</td>";
+			}
+		}
+		$databody .= "</tr></table>";
+		return $databody;
+	}
+
+
 	public function finalizePurchase($auth, $invitems) {
 
 		// This means the superadmin can set a user to "order for someone" 
@@ -525,9 +571,13 @@ class InventoryController extends \BaseController {
 		$data['user']	= $user;
 		$data['email']	= $user->email;
 
+
 		// If ordering NEW inventory
 		if (!Session::get('repsale'))
 		{
+			$od = $this->mergeOrderData($sessiondata['orderdata']);
+			$data['body'] = $this->buildOrderTable($od);
+
 			$user = (!empty($csuser->sponsor_id)) ?  $csuser : $user;
 
 			$data['email']	= $user->email;
@@ -535,7 +585,7 @@ class InventoryController extends \BaseController {
 			// This one goes to the main warehouse
 			try { 
 				$emailto = Config::get('site.warehouse_email');
-				//$emailto = 'mfrederico@gmail.com';
+				$emailto = 'mfrederico@gmail.com';
 				Mail::send('emails.invoice', $data, function($message) use($user,$data, $emailto) {
 					$message->to($emailto, "Order Warehousing");
 					$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
