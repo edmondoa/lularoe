@@ -759,10 +759,29 @@ function addOrder($order, $key = 'orderdata') {
 */
 
 Route::get('testfunction', function() {
-	$sd = Session::all();
+/*
+	$r = new Receipt();
+	$r->to_email		= 'mfrederico@gmail.com';
+	$r->to_firstname	= 'Matthew';
+	$r->to_lastname		= 'Frederico';
+	$r->tax				= 1.00;
+	$r->subtotal		= 10.00;
+	$r->date_paid		= 0;
+	$r->user_id			= 11950;
+	$rid = $r->save();
+
 	print "<pre>";
-	
-	print_r($sd);
+	//return Receipt::find(1)->ledger;
+*/
+
+	Session::put('repsale',false);
+	Session::put('paidout',12.0);
+	Session::put('tax','1.0');
+	Session::put('subtotal','11.0');
+	Session::put('orderdata',array());
+	Session::put('userbypass','11950');
+	App::make('InventoryController')->finalizePurchase(array(),array());
+
 });
 
 Route::get('test-orders', function() {

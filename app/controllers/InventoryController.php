@@ -585,7 +585,7 @@ class InventoryController extends \BaseController {
 			// This one goes to the main warehouse
 			try { 
 				$emailto = Config::get('site.warehouse_email');
-				$emailto = 'mfrederico@gmail.com';
+				//$emailto = 'mfrederico@gmail.com';
 				Mail::send('emails.invoice', $data, function($message) use($user,$data, $emailto) {
 					$message->to($emailto, "Order Warehousing");
 					$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
