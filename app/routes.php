@@ -262,6 +262,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('inv/sales', 'InventoryController@sales');
 		Route::get('inventory/full', 'InventoryController@matrixFull');
 
+        Route::post('inv/invoice', 'InventoryController@sendInvoice');
         Route::post('inv/purchase', 'InventoryController@purchase');
 		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
 		Route::post('inv/cashpurchase', 'InventoryController@cashpurchase');

@@ -9,6 +9,9 @@ class Receipt extends \Eloquent {
 	public function ledger() {
 		return $this->hasMany('Ledger');
 	}
-	
+
+    public function receipt() {
+        return $this->belongsTo('User');
+    }
 
 }

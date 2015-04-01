@@ -37,6 +37,7 @@ class InventoryController extends \BaseController {
         ];
     }
 
+
 	public function getDiscounts($subt, $viaRequest=true,$doTemplate=false){
 		// Init my vars
 		$discounted	= array();
@@ -477,7 +478,6 @@ class InventoryController extends \BaseController {
 		// return Session::save();
 	}
 
-
 	private function mergeOrderData($orderdata = array()) {
 		// List of sizes in order
         $sizelist = array('XXS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0,'S/M'=>0,'L/XL'=>0,'2'=>0,'4'=>0,'6'=>0,'8'=>0,'10'=>0,'12'=>0,'14'=>0,'3/4'=>0,'5/6'=>0,'8/10'=>0,'One Size'=>0,'Tall & Curvy'=>0);
@@ -494,6 +494,45 @@ class InventoryController extends \BaseController {
         }
         return($m);
     }
+
+	public function sendInvoice($key = '') {
+
+		// If we're passing a key, coming from api / json
+		if (!empty($key)) {
+			$user = App::make('ExternalAuthController')->getUserByKey($key);
+
+			// First we fetch the Request instance
+			$request = Request::instance();
+
+			// Now we can get the content from it
+			$content = $request->getContent();
+			$vals = json_decode($content,true);
+
+			$orderdata	= $vals['orderdata'];
+		}
+		else {
+			$user		= Auth::user();
+			$od	= Sesssion::get('orderdata'); 
+			$orderdata  = $this->mergeOrderData($od);
+		}
+
+/*
+Array
+(
+    [_token] => z0jV2bIVXgOGRIEXM2K8SNkYbxN2TRDVwimtYfxC
+    [customername] => Bobby Jones
+    [emailto] => mfrederico@gmail.com
+    [amount] => 274.61
+    [note] => Thank you for your order.
+)
+*/
+
+		$data['body'] = $this->buildOrderTable($od);
+
+		print_r(Session::all());
+		print_r(Input::all());
+		return Response::json(array('hi'=>'there'),200);
+	}
 
 	private function buildOrderTable($od) {
 		$bgdark = '#EFEFEF';
