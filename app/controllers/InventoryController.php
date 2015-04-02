@@ -37,6 +37,7 @@ class InventoryController extends \BaseController {
         ];
     }
 
+
 	public function getDiscounts($subt, $viaRequest=true,$doTemplate=false){
 		// Init my vars
 		$discounted	= array();
@@ -477,23 +478,94 @@ class InventoryController extends \BaseController {
 		// return Session::save();
 	}
 
-
-	private function mergeOrderData($orderdata = array()) {
+	private function mergeOrderData($orderdata = array(), $removeunusedsizes = false) {
 		// List of sizes in order
-        $sizelist = array('XXS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0,'S/M'=>0,'L/XL'=>0,'2'=>0,'4'=>0,'6'=>0,'8'=>0,'10'=>0,'12'=>0,'14'=>0,'3/4'=>0,'5/6'=>0,'8/10'=>0,'One Size'=>0,'Tall & Curvy'=>0);
+        $sizelist	= array('XXS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0,'S/M'=>0,'L/XL'=>0,'2'=>0,'4'=>0,'6'=>0,'8'=>0,'10'=>0,'12'=>0,'14'=>0,'3/4'=>0,'5/6'=>0,'8/10'=>0,'One Size'=>0,'Tall & Curvy'=>0);
+        $m			= array();
+		$hassizes	= array();
 
-        $m = array();
+		// Creates the entire order manifest
         foreach($orderdata as $o) {
             $om = $o['model'];
+
             if (!is_array(@$m[$om]['quantities'])) {
                 $m[$om]['quantities'] = $sizelist;
             }
+
             foreach($o['quantities'] as $size=>$num) {
-                $m[$om]['quantities'][$size] += intval($num);
+				if (intval($num) > 0) @$hassizes[$size] += intval($num);
+
+				$m[$om]['quantities'][$size] += intval($num);
             }
+
         }
+
+		// This reduces the size of the order grid to only contain the sizes that are used on the manifest
+		if ($removeunusedsizes) {
+			foreach($m as $om=>$o) {
+				foreach($o['quantities'] as $size=>$num) {
+					if (!isset($hassizes[$size])) unset($m[$om]['quantities'][$size]);
+				}
+			}
+		}
+
         return($m);
     }
+
+	// Better name create invoice
+	public function sendInvoice($key = '') {
+
+		// If we're passing a key, coming from api / json
+		if (!empty($key)) {
+			$user = App::make('ExternalAuthController')->getUserByKey($key);
+
+			// First we fetch the Request instance
+			$request = Request::instance();
+
+			// Now we can get the content from it
+			$content = $request->getContent();
+			$vals = json_decode($content,true);
+
+			$orderdata	= $vals['orderdata'];
+		}
+		else {
+			// Get the order data from the session
+			$orderdata  = $this->mergeOrderData($this->fixOrderData(Session::get('orderdata')), true);
+			$user		= Auth::user();
+			$vals 		= Input::all();
+		}
+
+		$inv = new Receipt();
+		$inv->user_id	= $user->id;
+		$inv->subtotal	= $vals['amount'];
+		$inv->note		= $vals['note'];
+		$inv->to_email	= $vals['emailto'];
+		$inv->tax		= !empty($vals['tax']) 		? floatval($vals['tax']) : 0;
+		$inv->balance	= !empty($vals['balance'])	? floatval($vals['balance']) : 100.00;
+		list($inv->to_firstname,$inv->to_lastname)	= explode(' ',$vals['customername']);
+		$inv->data		= json_encode($orderdata);
+		$inv->save();
+
+
+		if ($inv->balance > 0) $data['payment_url'] = '//'.Config::get('site.domain')."/invoice/pay/{$inv->id}";
+		#print_r(Session::all());
+		#print_r(Input::all());
+
+		// Build the content of the email message
+		$data['body'] = $this->buildOrderTable($orderdata);
+		$data['user'] = $user;
+		$data['inv']  = $inv;
+
+		Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
+			$message->to($inv->to_email, "{$inv->to_firstname} {$inv->to_lastname}");
+			$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
+			$message->from($user->email, $user->first_name.' '.$user->last_name);
+		});
+
+		print $data['body'];
+		die();
+		return ;
+	}
 
 	private function buildOrderTable($od) {
 		$bgdark = '#EFEFEF';
@@ -524,6 +596,49 @@ class InventoryController extends \BaseController {
 	}
 
 
+	// Until we get this fixed from the javascript submittal
+	public function fixOrderData($od) {
+		// This creates the correct array out of the order data 
+		foreach($od as $items) {
+			$sod[] = array(
+			'model'		=> $items['model'],
+			'price'		=> $items['price'],
+			'quantities'=> array($items['size'] => $items['numOrder'])
+			);
+		}
+		return $sod;
+		//----------- FIX THIS IN THE ORDER JSON GENERATION
+	}
+
+	public function putOrderInMyInventory($user, $od) {
+		foreach($od as $item) {
+			$model = $item['model'];
+			$price	 = $item['price'];
+			foreach($item['quantities'] as $size=>$numOrdered) {
+
+				\Log::info("Adding inventory to User: {$user->id} Model: {$model} Size: {$size} Quantity: {$numOrdered} Price: {$price}");
+				$prod = Product::where('user_id',$user->id)->where('name',$model)->where('size',$size)->first();
+
+				if (isset($prod->quantity)) { 
+					$prod->quantity += intval($numOrdered); 
+				}
+				else {
+					$prod			= new Product();
+					$prod->user_id 	= $user->id;
+					$prod->name 	= $model;
+					$prod->rep_price= floatval($item['price']) + (floatval($item['price']) * .3);
+					$prod->size		= $size;
+					$prod->quantity = intval($numOrdered);
+					$prod->price	= floatval($item['price']);
+				}
+				$prod->save();
+
+			}
+
+		}
+	}
+
+
 	public function finalizePurchase($auth, $invitems) {
 
 		// This means the superadmin can set a user to "order for someone" 
@@ -549,15 +664,9 @@ class InventoryController extends \BaseController {
 			$csuser->save();
 		}
 
-		// This creates the correct array out of the order data 
-		foreach($sessiondata['orderdata'] as $items) {
-			$sod[] = array(
-					'model'=>$items['model'],
-					'price'=>$items['price'],
-					'quantities'=>array($items['size']=>$items['numOrder']));
-		}
-		$sessiondata['orderdata'] = $sod;
-		//----------- FIX THIS IN THE ORDER JSON GENERATION
+		// This means we are getting the javascript style order data
+		if (isset($sessiondata['orderdata'][0]['numOrder']))
+			$sessiondata['orderdata'] = $this->fixOrderData($sessiondata['orderdata']);
 
 		$view  = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
 
@@ -575,8 +684,14 @@ class InventoryController extends \BaseController {
 		// If ordering NEW inventory
 		if (!Session::get('repsale'))
 		{
+			// Fix the weird shit that the JS gives me from orderdata
 			$od = $this->mergeOrderData($sessiondata['orderdata']);
+
+			// Build the order table based on what we're ordering
 			$data['body'] = $this->buildOrderTable($od);
+
+			// This should eventually be scanned in, but whatevs 
+			$this->putOrderInMyInventory($user, $od);
 
 			$user = (!empty($csuser->sponsor_id)) ?  $csuser : $user;
 
@@ -585,7 +700,7 @@ class InventoryController extends \BaseController {
 			// This one goes to the main warehouse
 			try { 
 				$emailto = Config::get('site.warehouse_email');
-				$emailto = 'mfrederico@gmail.com';
+				//$emailto = 'mfrederico@gmail.com';
 				Mail::send('emails.invoice', $data, function($message) use($user,$data, $emailto) {
 					$message->to($emailto, "Order Warehousing");
 					$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
@@ -752,7 +867,7 @@ class InventoryController extends \BaseController {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 
-			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass));
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass, true));
 		}
 		// This is the individual REP TID
 		else {

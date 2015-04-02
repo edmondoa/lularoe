@@ -30,6 +30,9 @@
 		$currentuser = Auth::user();
 	}
 
+	$invnumber = count($currentuser->receipts);
+	$invnumber++;
+
 	$bi =  $currentuser->bankinfo;
 
 	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
@@ -119,6 +122,7 @@
 @endif
 @if (Session::get('repsale'))  <!-- // and has wallet balance.. ? -->
 					<li class="nav"><a href="#cash" data-toggle="tab">Cash Sale</a></li>
+					<li class="nav"><a href="#invoice" data-toggle="tab">Send Invoice</a></li>
 @endif
 				</ul>
 
@@ -134,6 +138,46 @@
 						<div class="row">
 							<div class="col-lg-12 col-sm-12 col-md-12">
 								<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
+								<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
+							</div>
+						</div>
+						{{ Form::close() }}
+					</div>
+
+					 <div class="well tab-pane fade" id="invoice">
+						{{ Form::open(array('url' => 'inv/invoice', 'method' => 'post','name'=>'inven')) }}
+						<div class="row">
+							<div class="col-lg-7 col-sm-5 col-md-5">
+								<h3>Invoice #{{$invnumber}}</h3>
+								<table class="table table-striped">
+									<tr>
+										<td>Send Invoice To</td>
+										<td align="right">
+											<input type="text" name="customername" placeholder="Customer Name" value="">
+										</td>
+									</tr>
+									<tr>
+										<td>Email</td>
+										<td align="right">
+											<input type="text" name="emailto" placeholder="Email Address" value="">
+										</td>
+									</tr>
+									<tr>
+										<td>Invoice Amount</td>
+										<td align="right">$<input type="text" name="amount" value="{{ $balanceAmount }}"></td>
+									</tr>
+									<tr>
+										<td>Optional Note</td>
+										<td align="right">
+											<textarea name="note" style="width:100%;height:7em">Thank you for your order.</textarea>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-7 col-sm-12 col-md-12">
+								<button type="submit" class="pull-right btn btn-sm btn-success">Send Invoice</button>
 								<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
 							</div>
 						</div>
@@ -201,7 +245,7 @@
                     <div class="well tab-pane fade" id="creditcard">
 						{{ Form::open(array('url' => 'inv/purchase', 'method' => 'post','name'=>'inven')) }}
 						<div class="row">
-							<div class="col-lg-12 col-sm-12 col-md-12">
+							<div class="col-lg-5 col-sm-12 col-md-12">
 								<table class="table">
 									<tr>
 										<td>Name on card</td>
