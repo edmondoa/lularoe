@@ -13,7 +13,6 @@ class ExternalAuthController extends \BaseController {
 
 	// These items are to be ignored and not shown
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
-	public 	$logdata = false;
 
 	// Thanks Ampersand, just thank you for screwing things up.
 	public function escapemodelname($modelname) {
@@ -34,8 +33,8 @@ class ExternalAuthController extends \BaseController {
         }
 
         $mbr = User::where('key', 'LIKE', $key.'|%')->first();
-        if (!isset($mbr)) {
-            \Log::info("{$key} is not locked to a user account");
+        if (!isset($mbr) && Session::get('repsale')) {
+            \Log::error("{$key} this is a rep sale, and this key is not locked to a user account!");
 			return App::abort(401,json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again')));
 		}
 		else { 
@@ -73,20 +72,14 @@ class ExternalAuthController extends \BaseController {
         $mbr	= self::getUserByKey($key);
 		if ($mbr) $location = $mbr->first_name.' '.$mbr->last_name;
 
-		if ($this->logdata) file_put_contents('/tmp/logData.txt','OKey: '.$key."\n",FILE_APPEND);
-		if ($this->logdata) file_put_contents('/tmp/logData.txt','OLoc: '.$location."\n",FILE_APPEND);
-
 		// Get MAIN inventory as default
-		if (empty($location)) // $key == 0 || $key == null)
+		if (empty($location) || $mbr->id == 0) // $key == 0 || $key == null)
 		{
 			$location = 'Main';
 
 			// Return the user is able to log in, but shut out of MWL
 			$key = Self::midauth(Config::get('site.mwl_username'), Config::get('site.mwl_password')); 
 		}
-
-		if ($this->logdata) file_put_contents('/tmp/logData.txt','TKey: '.$key."\n",FILE_APPEND);
-		if ($this->logdata) file_put_contents('/tmp/logData.txt','TLoc: '.$location."\n",FILE_APPEND);
 
 		$server_output = '';
 
@@ -153,7 +146,6 @@ class ExternalAuthController extends \BaseController {
 		// Simple caching - probably a better way to do this
 		if (!is_dir($this->mwl_cache)) @mkdir($this->mwl_cache);
 		$mwlcachefile = $this->mwl_cache.urlencode($location).'.json';
-		if ($this->logdata) file_put_contents('/tmp/logData.txt','File: '.$mwlcachefile."\n",FILE_APPEND);
 		if (file_exists($mwlcachefile)) {
 			$fs = stat($mwlcachefile);
 			if (time() - $fs['ctime'] > $this->mwl_cachetime || filesize($mwlcachefile) < 500) {
@@ -536,9 +528,8 @@ class ExternalAuthController extends \BaseController {
 		$content = $request->getContent();
 		$vals = json_decode($content,true);
 
-		// We should always have transaction IDS
+		// We should always have transaction IDS!
 		if (!isset($vals['txids'])) return Response::json(array('error'=>true,'message'=>'Receipt invalid - no transactions?'), 500);
-
 
         \Log::info("[{$key}]".print_r($vals,true));
 
@@ -858,7 +849,13 @@ class ExternalAuthController extends \BaseController {
 		else 							$txtype = 'CARD';
 
 		// Wish we could use sessions on all this, thanks IOS!
-        $mbr	= self::getUserByKey($key);
+        if (Session::has('repsale') && !Session::get('repsale'))  {
+            $mbr    = User::find(Config::get('site.mwl_username')); // Use 0 user info
+        }
+        else {
+            $mbr    = self::getUserByKey($key);
+        }
+
 
 		// Set up appropraite transaction headers
 		if ($txtype == 'CARD') {
@@ -1179,6 +1176,7 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		$server_output = curl_exec ($ch);
+		\Log::info($server_output);
 		$response_obj = json_decode($server_output);
 
 		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS

@@ -10,7 +10,7 @@ class ReportController extends \BaseController {
 	public function index($id = '')
 	{
 		if (Auth::user()->hasRole(['Superadmin','Admin'])) { 
-			Session::put('ledgerUserId',$id);
+			Session::flash('ledgerUserId',$id);
 		}
 		return View::make('reports.index');
 	}
