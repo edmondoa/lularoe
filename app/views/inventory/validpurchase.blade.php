@@ -73,7 +73,7 @@ $discounts  = isset($sessiondata['discounts']) ? $sessiondata['discounts'] : [];
 				</tr>
 				@endif
 
-				@if ($sessiondata['repsale'] > 0)
+				@if ($tax > 0)
 				<tr>
 					<td colspan="3" align="right"><b>Tax</b></td>
 					<td>${{ number_format($tax,2) }}</td>

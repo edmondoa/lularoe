@@ -263,6 +263,8 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('inventory/full', 'InventoryController@matrixFull');
 
         Route::post('inv/invoice', 'InventoryController@sendInvoice');
+		Route::get('invoice/pay/{id}', 'InventoryController@viewInvoice');
+
         Route::post('inv/purchase', 'InventoryController@purchase');
 		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
 		Route::post('inv/cashpurchase', 'InventoryController@cashpurchase');
@@ -760,6 +762,12 @@ function addOrder($order, $key = 'orderdata') {
 */
 
 Route::get('testfunction', function() {
+$cart = stripslashes('[{\"model\":\"Irma\",\"size\":\"XXS\",\"numOrder\":3,\"price\":14,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Irma.jpg\"},{\"model\":\"Irma\",\"size\":\"XS\",\"numOrder\":3,\"price\":14,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Irma.jpg\"},{\"model\":\"Irma\",\"size\":\"S\",\"numOrder\":3,\"price\":14,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Irma.jpg\"},{\"model\":\"Julia\",\"size\":\"XXS\",\"numOrder\":3,\"price\":17,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Julia.jpg\"},{\"model\":\"Julia\",\"size\":\"XS\",\"numOrder\":3,\"price\":17,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Julia.jpg\"},{\"model\":\"Julia\",\"size\":\"S\",\"numOrder\":3,\"price\":17,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Julia.jpg\"},{\"model\":\"Julia\",\"size\":\"M\",\"numOrder\":3,\"price\":17,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Julia.jpg\"},{\"model\":\"Julia\",\"size\":\"L\",\"numOrder\":3,\"price\":17,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Julia.jpg\"},{\"model\":\"Lola\",\"size\":\"XXS\",\"numOrder\":3,\"price\":20,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Lola.jpg\"},{\"model\":\"Lola\",\"size\":\"XS\",\"numOrder\":3,\"price\":20,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Lola.jpg\"},{\"model\":\"Lola\",\"size\":\"S\",\"numOrder\":3,\"price\":20,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Lola.jpg\"},{\"model\":\"Lola\",\"size\":\"M\",\"numOrder\":3,\"price\":20,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Lola.jpg\"},{\"model\":\"Lola\",\"size\":\"L\",\"numOrder\":3,\"price\":20,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Lola.jpg\"}]');
+
+	$od		= App::make('InventoryController')->fixOrderData(json_decode($cart,true));
+	$user	= User::find(11950);
+	App::make('InventoryController')->putOrderInMyInventory($user,$od);
+          
 /*
 	$r = new Receipt();
 	$r->to_email		= 'mfrederico@gmail.com';
@@ -775,13 +783,13 @@ Route::get('testfunction', function() {
 	//return Receipt::find(1)->ledger;
 */
 
-	Session::put('repsale',false);
-	Session::put('paidout',12.0);
-	Session::put('tax','1.0');
-	Session::put('subtotal','11.0');
-	Session::put('orderdata',array());
-	Session::put('userbypass','11950');
-	App::make('InventoryController')->finalizePurchase(array(),array());
+	#Session::put('repsale',false);
+	#Session::put('paidout',12.0);
+	#Session::put('tax','1.0');
+	#Session::put('subtotal','11.0');
+	#Session::put('orderdata',array());
+	#Session::put('userbypass','11950');
+	#App::make('InventoryController')->finalizePurchase(array(),array());
 
 });
 

@@ -56,7 +56,7 @@ class InventoryController extends \BaseController {
 		// Do the MATHS
 		foreach ($this->discounts as $discount) {
 			// I <3 Eval .. NOT!
-			if (($discount['repsale'] == true) && (Session::get('repsale'))) {
+			if (Session::has('repsale') && ($discount['repsale'] == Session::get('repsale'))) {
 				if ($discount['math']['op'] == '=') 
 					$dcamt = $discount['math']['n'];
 				else
@@ -555,6 +555,7 @@ class InventoryController extends \BaseController {
 		$data['body'] = $this->buildOrderTable($orderdata);
 		$data['user'] = $user;
 		$data['inv']  = $inv;
+		$data['date'] = date('Y-m-d H:i:s');
 
 		Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
 			$message->to($inv->to_email, "{$inv->to_firstname} {$inv->to_lastname}");
@@ -664,13 +665,21 @@ class InventoryController extends \BaseController {
 			$csuser->save();
 		}
 
+		$data		= [];
+
 		// This means we are getting the javascript style order data
-		if (isset($sessiondata['orderdata'][0]['numOrder']))
+		if (isset($sessiondata['orderdata'][0]['numOrder'])) {
+
+			$data['total_items_ordered'] = 0;
+			// Count the number of items ordered
+			foreach($sessiondata['orderdata'] as $items) {
+				$data['total_items_ordered'] += intval($items['numOrder']);
+			}			
 			$sessiondata['orderdata'] = $this->fixOrderData($sessiondata['orderdata']);
+		}
 
 		$view  = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
 
-		$data		= [];
 		$data['body'] = $view->renderSections()['manifest'];
 
 
@@ -680,33 +689,58 @@ class InventoryController extends \BaseController {
 		$data['user']	= $user;
 		$data['email']	= $user->email;
 
-
 		// If ordering NEW inventory
 		if (!Session::get('repsale'))
 		{
-			// Fix the weird shit that the JS gives me from orderdata
-			$od = $this->mergeOrderData($sessiondata['orderdata']);
-
-			// Build the order table based on what we're ordering
-			$data['body'] = $this->buildOrderTable($od);
-
-			// This should eventually be scanned in, but whatevs 
-			$this->putOrderInMyInventory($user, $od);
-
 			$user = (!empty($csuser->sponsor_id)) ?  $csuser : $user;
 
-			$data['email']	= $user->email;
+
+			$emailto = Config::get('site.warehouse_email');
+			$emailto = 'mfrederico@gmail.com';
+			$data['email']	= $emailto;
+
+			$inv = new Receipt();
+			$inv->user_id		= Config::get('site.mwl_username');
+			$inv->subtotal		= $sessiondata['subtotal'];
+			$inv->note			= isset($sessiondata['note']) ? $sessiondata['note'] : '';
+			$inv->to_email		= $user->email;
+			$inv->tax			= $sessiondata['tax'];
+			$inv->balance		= $sessiondata['subtotal'] - $sessiondata['paidout'];
+			$inv->to_firstname  = $user->first_name;
+			$inv->to_lastname	= $user->last_name;
+			$inv->data			= json_encode($sessiondata['orderdata']);
+			$data['receipt_id'] = $inv->save();
+
+			// This should eventually be scanned in, but whatevs 
+			$this->putOrderInMyInventory($user, $sessiondata['orderdata']); // Previsouly Fixed see above
+
+			// Fix the weird shit that the JS gives me from orderdata
+			$od = $this->mergeOrderData($sessiondata['orderdata'], true);
 			
+			// Build the order table based on what we're ordering
+			$data['body'] = $this->buildOrderTable($od);
+			$data['user'] = $user;
+			$data['inv']  = $inv;
+			$data['date'] = date('Y-m-d H:i:s');
+
 			// This one goes to the main warehouse
 			try { 
-				$emailto = Config::get('site.warehouse_email');
-				//$emailto = 'mfrederico@gmail.com';
-				Mail::send('emails.invoice', $data, function($message) use($user,$data, $emailto) {
-					$message->to($emailto, "Order Warehousing");
+
+				\Log::info("Dispatching order invoice off to {$inv->to_email}");
+				Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
+					$message->to($data['email'], "Order Warehousing");
 					$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
+					$message->from($user->email, $user->first_name.' '.$user->last_name);
+				});
+
+				\Log::info("Dispatching receipt email to {$user->email}");
+				Mail::send('emails.invoice', $data, function($message) use($user,$data, $inv) {
+					$message->to($user->email, "{$user->first_name} {$user->last_name}");
+					$message->subject("Order Receipt for {$data['total_items_ordered']} items");
 					$message->replyTo($data['email']);
 					$message->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 				});
+
 			} catch (Exception $e) {
 				die('Sploded'. $e->getMessage());
 			}
@@ -730,6 +764,12 @@ class InventoryController extends \BaseController {
 				$request	= Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$item['numOrder']}/",'GET', array());
 				$deduction	= json_decode(Route::dispatch($request)->getContent());
 			}
+
+			Mail::send('emails.standard', $data, function($message) use($user,$data) {
+				$message->to($data['email'], "{$user->first_name} {$user->last_name}")
+				->subject('Purchase receipt from '.Config::get('site.company_name'))
+				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+			});
 		}
 
 		if (isset($sessiondata['consignment_purchase'])) {
@@ -737,29 +777,6 @@ class InventoryController extends \BaseController {
 			// If the session has an emailto person
 			$data['email'] = $csuser->email;
 			$user = $csuser;
-		}
-
-		// This one goes to the final user
-		// customer purchase
-		if ($sessiondata['repsale']) {
-			Mail::send('emails.standard', $data, function($message) use($user,$data) {
-				$message->to($data['email'], "{$user->first_name} {$user->last_name}")
-				->subject('Order receipt from '.Config::get('site.company_name'))
-				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
-			});
-		}
- 		// ordering inventory
-		else {
-			try { 
-				Mail::send('emails.standard', $data, function($message) use($user,$data) {
-					$message->to($data['email'], "{$user->first_name} {$user->last_name}")
-					->subject('Purchase receipt from '.Config::get('site.company_name'))
-					->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
-				});
-			}
-			catch (Exception $e) {
-				die('Barf');
-			}
 		}
 
 		Session::forget('customdiscount');
