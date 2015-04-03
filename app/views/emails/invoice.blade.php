@@ -5,13 +5,35 @@
 ?>
 
 @section('body')
-<body style="width:100%" width="100%">
+<body>
 
-@if ($inv->balance)
-	This invoice has a balance of ${{ $inv->balance }} <a href="{{ $payment_url }}">Click here to pay</a>
-@endif
+<div style="clear:both">
+	<table style="width:100%" width="100%" cellspacing=10>
+		<tbody>
+			@if ($inv->note)
+			<tr>
+				<td>
+				<blockquote>
+					{{$inv->note}}
+				</blockquote>
+				</td>
+			</tr>
+			@endif
 
-<div>
+			@if ($inv->balance)
+			<tr>
+				<td>
+					<fieldset><legend>Balance Due</legend>
+					This invoice has a balance of ${{ $inv->balance }} <a href="{{ $payment_url }}">Click here to pay</a>
+					</fieldset>
+				</td>
+			</tr>
+			@endif
+		</tbody>
+	</table>
+</div>
+
+<div style="clear:both">
 	<table style="width:100%" width="100%" cellspacing=10>
 		<tbody>
 			<tr>

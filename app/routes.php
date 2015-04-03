@@ -59,6 +59,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	# Public Routes
 	##############################################################################################
 	
+
 	// company
 	Route::get('/', ['as' => 'home', function() {
 		$title = 'Home';
@@ -642,6 +643,13 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	function ($subdomain){
 		dd($subdomain);
 	};
+
+	# Make invoice payment
+	Route::get('invoice/pay/{id]', function() {
+		$title = 'Invoice Payment';
+		die('GOT HERE');
+		return View::make('inventory.payinvoice');
+	});
 
 	Route::get('/', function($subdomain) {
 		$user = User::where('public_id', $subdomain)->first();

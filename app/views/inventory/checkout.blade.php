@@ -145,6 +145,7 @@
 					</div>
 
 					 <div class="well tab-pane fade" id="invoice">
+						<pre>{{ print_r(Session::all()) }}</pre>
 						{{ Form::open(array('url' => 'inv/invoice', 'method' => 'post','name'=>'inven')) }}
 						<div class="row">
 							<div class="col-lg-7 col-sm-5 col-md-5">

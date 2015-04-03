@@ -535,18 +535,30 @@ class InventoryController extends \BaseController {
 			$vals 		= Input::all();
 		}
 
+		$sessiondata = Session::all();
+		// This means we are getting the javascript style order data
+		if (isset($sessiondata['orderdata'][0]['numOrder'])) {
+
+			$data['total_items_ordered'] = 0;
+			// Count the number of items ordered
+			foreach($sessiondata['orderdata'] as $items) {
+				$data['total_items_ordered'] += intval($items['numOrder']);
+			}			
+			$sessiondata['orderdata'] = $this->fixOrderData($sessiondata['orderdata']);
+		}
+
 		$inv = new Receipt();
 		$inv->user_id	= $user->id;
 		$inv->subtotal	= $vals['amount'];
 		$inv->note		= $vals['note'];
 		$inv->to_email	= $vals['emailto'];
 		$inv->tax		= !empty($vals['tax']) 		? floatval($vals['tax']) : 0;
-		$inv->balance	= !empty($vals['balance'])	? floatval($vals['balance']) : 100.00;
+		$inv->balance	= $sessiondata['paidout'] ? floatval($vals['amount']) - floatval($sessiondata['paidout']) : floatval($vals['amount']);
 		list($inv->to_firstname,$inv->to_lastname)	= explode(' ',$vals['customername']);
 		$inv->data		= json_encode($orderdata);
 		$inv->save();
 
-
+		$data['payment_url'] = 'xyz';
 		if ($inv->balance > 0) $data['payment_url'] = '//'.Config::get('site.domain')."/invoice/pay/{$inv->id}";
 		#print_r(Session::all());
 		#print_r(Input::all());
@@ -557,6 +569,7 @@ class InventoryController extends \BaseController {
 		$data['inv']  = $inv;
 		$data['date'] = date('Y-m-d H:i:s');
 
+
 		\Log::info("Dispatching invoice to {$inv->to_email}");
 		Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
 			$message->to($inv->to_email, "{$inv->to_firstname} {$inv->to_lastname}");
@@ -564,9 +577,7 @@ class InventoryController extends \BaseController {
 			$message->from($user->email, $user->first_name.' '.$user->last_name);
 		});
 
-		print $data['body'];
-		die();
-		return ;
+		return View::make('inventory.invoicesent', compact('sessiondata','user','data','inv'));
 	}
 
 	private function buildOrderTable($od) {
