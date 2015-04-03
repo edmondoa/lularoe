@@ -37,7 +37,7 @@ class ExternalAuthController extends \BaseController {
             \Log::error("{$key} this is a rep sale, and this key is not locked to a user account!");
 			return App::abort(401,json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again')));
 		}
-		else { 
+		else if ($mbr) { 
 			\Log::info("{$key} = {$mbr->id}");
 		}
 		return $mbr;
@@ -635,6 +635,7 @@ class ExternalAuthController extends \BaseController {
 	public function ledger($key = 0) {
 
 		$mbr = $this->getUserByKey($key);
+		if (!$mbr) return Response::json(array('error'=>'true','message'=>'Please login again.'),401);
 		\Log::info("Getting Ledger Items for {$mbr->id} [{$key}]");
 
 		$ref = Input::get('ref', null);
