@@ -696,7 +696,7 @@ class InventoryController extends \BaseController {
 
 
 			$emailto = Config::get('site.warehouse_email');
-			$emailto = 'mfrederico@gmail.com';
+			// $emailto = 'mfrederico@gmail.com';
 			$data['email']	= $emailto;
 
 			$inv = new Receipt();
