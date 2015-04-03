@@ -25,6 +25,12 @@ class InventoryController extends \BaseController {
 		return View::make('inventory.matrix');
     }
 	
+	public function showInvoice($public_id, $id) {
+		$invoice	= Receipt::find($id);
+		$orderdata	= json_decode($invoice->data);
+
+        return View::make('inventory.invoiceCheckout',compact('invoice','orderdata'));
+	}
 
     /**
      * Data only
@@ -536,9 +542,9 @@ class InventoryController extends \BaseController {
 		}
 
 		$sessiondata = Session::all();
+
 		// This means we are getting the javascript style order data
 		if (isset($sessiondata['orderdata'][0]['numOrder'])) {
-
 			$data['total_items_ordered'] = 0;
 			// Count the number of items ordered
 			foreach($sessiondata['orderdata'] as $items) {
@@ -555,20 +561,17 @@ class InventoryController extends \BaseController {
 		$inv->tax		= !empty($vals['tax']) 		? floatval($vals['tax']) : 0;
 		$inv->balance	= $sessiondata['paidout'] ? floatval($vals['amount']) - floatval($sessiondata['paidout']) : floatval($vals['amount']);
 		list($inv->to_firstname,$inv->to_lastname)	= explode(' ',$vals['customername']);
-		$inv->data		= json_encode($orderdata);
+		$inv->data		= json_encode($sessiondata['orderdata']);
 		$inv->save();
 
-		$data['payment_url'] = 'xyz';
-		if ($inv->balance > 0) $data['payment_url'] = '//'.Config::get('site.domain')."/invoice/pay/{$inv->id}";
-		#print_r(Session::all());
-		#print_r(Input::all());
+		$data['payment_url'] = '';
+		if ($inv->balance > 0) $data['payment_url'] = '//'.$user->public_id.'.'.Config::get('site.domain')."/invoice/pay/{$inv->id}";
 
 		// Build the content of the email message
 		$data['body'] = $this->buildOrderTable($orderdata);
 		$data['user'] = $user;
 		$data['inv']  = $inv;
 		$data['date'] = date('Y-m-d H:i:s');
-
 
 		\Log::info("Dispatching invoice to {$inv->to_email}");
 		Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
@@ -614,9 +617,10 @@ class InventoryController extends \BaseController {
 		// This creates the correct array out of the order data 
 		foreach($od as $items) {
 			$sod[] = array(
-			'model'		=> $items['model'],
-			'price'		=> $items['price'],
-			'quantities'=> array($items['size'] => $items['numOrder'])
+				'id'		=> $items['id'],
+				'model'		=> $items['model'],
+				'price'		=> $items['price'],
+				'quantities'=> array($items['size'] => $items['numOrder'])
 			);
 		}
 		return $sod;
@@ -652,15 +656,17 @@ class InventoryController extends \BaseController {
 	}
 
 
-	public function finalizePurchase($auth, $invitems) {
+	public function finalizePurchase($auth, $invitems, $currentuser = '') {
 
-		// This means the superadmin can set a user to "order for someone" 
-		// more on this functionality later
-		if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
-			$currentuser = User::find(Session::get('userbypass'));
-		}
-		else {
-			$currentuser = Auth::user();
+		if (empty($currentuser)) { 
+			// This means the superadmin can set a user to "order for someone" 
+			// more on this functionality later
+			if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
+				$currentuser = User::find(Session::get('userbypass'));
+			}
+			else {
+				$currentuser = Auth::user();
+			}
 		}
 
 		$user = $currentuser;
@@ -773,6 +779,10 @@ class InventoryController extends \BaseController {
 
 			// Deduct item quantity from inventory
 			foreach ($invitems as $item) {
+				\Log::info('ITEMS REMOVING: '.json_encode($item));
+				if (isset($item['quantities'])) {
+					$item['numOrder'] = array_shift($item['quantities']);
+				}
 				$request	= Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$item['numOrder']}/",'GET', array());
 				$deduction	= json_decode(Route::dispatch($request)->getContent());
 			}
@@ -939,11 +949,12 @@ class InventoryController extends \BaseController {
 	public function purchase(){
 		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
-		$absamount	= abs(Input::get('amount'));
-		$tax		= $this->getTax($absamount);
-		$absamount	= $this->totalCheck($absamount);
-
-		$invitems	= Session::get('orderdata');
+		if (!Input::get('invoice')) {
+			$absamount	= abs(Input::get('amount'));
+			$tax		= $this->getTax($absamount);
+			$absamount	= $this->totalCheck($absamount);
+			$invitems	= Session::get('orderdata');
+		}
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
@@ -952,16 +963,32 @@ class InventoryController extends \BaseController {
 			return Redirect::route('dashboard');
 		}
 
+		$user = '';
+		// Load up the invoice
+		if (Input::get('invoice')) {
+			$invoice	= Receipt::find(Input::get('invoice'));
+			$invitems	= json_decode($invoice->data, true);
+			$absamount	= .50;//$invoice->balance;
+			$tax		= $invoice->tax;
+			$user		= User::find($invoice->user_id);
+			$authkey    = $user->key;
+			@list($key,$exp) = explode('|',$authkey);
+			$authinfo->key = $key;
+
+			Session::put('repsale',true);
+			Session::put('orderdata', $invitems);
+		}	
+
 		// MATT HACKERY - 
 		// Watch for changes in mwl_password
 		// It is no longer encoded in the site.php file. 
 		if (!Session::get('repsale')) {
-			$user = Config::get('site.mwl_username');
-			$pass = Config::get('site.mwl_password');
-			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass, true));
+			$un = Config::get('site.mwl_username');
+			$pw = Config::get('site.mwl_password');
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($un, $pw, true));
 		}
 		// This is the individual REP TID
-		else {
+		else if (!isset($authkey)) {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
 			$authinfo->key = $key;
@@ -978,7 +1005,7 @@ class InventoryController extends \BaseController {
 					'cardaddress'	=>$oldInput['address'],
 					'cart'			=>json_encode($invitems)
 				);
-		
+
 		$ia = Input::all();
 		Input::replace($purchaseInfo);
 		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
@@ -989,11 +1016,19 @@ class InventoryController extends \BaseController {
 
 			$this->addPayment($cardauth);
 
-			if (!$this->checkFinalSaleAmount($absamount)) {
-				return Redirect::to('/inv/checkout');
-			}
 
-			return $this->finalizePurchase($cardauth, $invitems);
+			// Update the invoice has been paid!
+			if (isset($invoice)) {
+				$invoice->date_paid = date('Y-m-d H:i:s');
+				$invoice->save();
+			}
+			else { 
+				// Perhaps check if its an invoice and redirect there with a balance?
+				if (!$this->checkFinalSaleAmount($absamount)) {
+					return Redirect::to('/inv/checkout');
+				}
+			}
+			return $this->finalizePurchase($cardauth, $invitems, $user);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
 	}

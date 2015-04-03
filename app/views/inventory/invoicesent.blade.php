@@ -19,6 +19,10 @@ if (!$sessiondata['repsale'])
 <div ng-app="app" class="index">
         <div ng-controller="InventoryController" class="my-controller">
 		<h1>Invoice has been sent!</h1>
+		<fieldset>
+			<Legend>{{$inv->to_firstname}} {{$inv->to_lastname}}</legend>
+			{{$inv->to_email}}
+		</fieldset>
 		<h3>Invoice Manifest</h3>
 		<div class="well">
 			<table class="table">

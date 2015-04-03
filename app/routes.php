@@ -645,11 +645,15 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	};
 
 	# Make invoice payment
-	Route::get('invoice/pay/{id]', function() {
+	Route::post('invoice/pay/{id}', 'InventoryController@payInvoice');
+	Route::get('invoice/pay/{id}', 'InventoryController@showInvoice');
+	Route::post('inv/purchase', 'InventoryController@purchase');
+
+/*
 		$title = 'Invoice Payment';
-		die('GOT HERE');
-		return View::make('inventory.payinvoice');
-	});
+		$receipt = Receipt::find($id)->get();
+		return View::make('inventory.payinvoice',compact($receipt));
+*/
 
 	Route::get('/', function($subdomain) {
 		$user = User::where('public_id', $subdomain)->first();
