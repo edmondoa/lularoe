@@ -583,6 +583,7 @@ class ExternalAuthController extends \BaseController {
 	public function ledger($key = 0) {
 
 		$mbr = $this->getUserByKey($key);
+		if (!$mbr) return Response::json(array('error'=>'true','message'=>'Please login again.'),401);
 		\Log::info("Getting Ledger Items for {$mbr->id} [{$key}]");
 
 		$ref = Input::get('ref', null);
@@ -687,6 +688,17 @@ class ExternalAuthController extends \BaseController {
 			$txn['amount'] = ''.money_format('%2n', $txn['amount']);
 			$txn['is_cash'] = (bool)$txn['is_cash'];
 			$txn['is_refunded'] = (bool)$txn['is_refunded'];
+
+			if ($id == 11950) {
+				$stub_items[$ordernum][0]  = array(
+							'model'			=>'Test - Disregard',
+							'id'			=>1,
+							'UPC'			=>null,
+							'SKU'			=>null,
+							'price'			=>50,
+							'image'			=>'https://mylularoe.com/img/media/Maxi.jpg',
+							'quantities'	=> ['M'=>1,'L'=>2]);
+			}
 
 			if (!isset($stub_items[$ordernum])) 
 			{
