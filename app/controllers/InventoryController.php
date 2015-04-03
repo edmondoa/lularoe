@@ -968,7 +968,7 @@ class InventoryController extends \BaseController {
 		if (Input::get('invoice')) {
 			$invoice	= Receipt::find(Input::get('invoice'));
 			$invitems	= json_decode($invoice->data, true);
-			$absamount	= .50;//$invoice->balance;
+			$absamount	= $invoice->balance;
 			$tax		= $invoice->tax;
 			$user		= User::find($invoice->user_id);
 			$authkey    = $user->key;
