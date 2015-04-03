@@ -557,6 +557,7 @@ class InventoryController extends \BaseController {
 		$data['inv']  = $inv;
 		$data['date'] = date('Y-m-d H:i:s');
 
+		\Log::info("Dispatching invoice to {$inv->to_email}");
 		Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
 			$message->to($inv->to_email, "{$inv->to_firstname} {$inv->to_lastname}");
 			$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
@@ -726,7 +727,7 @@ class InventoryController extends \BaseController {
 			// This one goes to the main warehouse
 			try { 
 
-				\Log::info("Dispatching order invoice off to {$inv->to_email}");
+				\Log::info("Dispatching order invoice off to {$data['email']}");
 				Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
 					$message->to($data['email'], "Order Warehousing");
 					$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
@@ -765,6 +766,7 @@ class InventoryController extends \BaseController {
 				$deduction	= json_decode(Route::dispatch($request)->getContent());
 			}
 
+			\Log::info("Dispatching receipt to {$data['email']}");
 			Mail::send('emails.standard', $data, function($message) use($user,$data) {
 				$message->to($data['email'], "{$user->first_name} {$user->last_name}")
 				->subject('Purchase receipt from '.Config::get('site.company_name'))
