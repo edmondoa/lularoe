@@ -774,35 +774,21 @@ function addOrder($order, $key = 'orderdata') {
 */
 
 Route::get('testfunction', function() {
-$cart = stripslashes('[{\"model\":\"Irma\",\"size\":\"XXS\",\"numOrder\":3,\"price\":14,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Irma.jpg\"},{\"model\":\"Irma\",\"size\":\"XS\",\"numOrder\":3,\"price\":14,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Irma.jpg\"},{\"model\":\"Irma\",\"size\":\"S\",\"numOrder\":3,\"price\":14,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Irma.jpg\"},{\"model\":\"Julia\",\"size\":\"XXS\",\"numOrder\":3,\"price\":17,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Julia.jpg\"},{\"model\":\"Julia\",\"size\":\"XS\",\"numOrder\":3,\"price\":17,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Julia.jpg\"},{\"model\":\"Julia\",\"size\":\"S\",\"numOrder\":3,\"price\":17,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Julia.jpg\"},{\"model\":\"Julia\",\"size\":\"M\",\"numOrder\":3,\"price\":17,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Julia.jpg\"},{\"model\":\"Julia\",\"size\":\"L\",\"numOrder\":3,\"price\":17,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Julia.jpg\"},{\"model\":\"Lola\",\"size\":\"XXS\",\"numOrder\":3,\"price\":20,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Lola.jpg\"},{\"model\":\"Lola\",\"size\":\"XS\",\"numOrder\":3,\"price\":20,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Lola.jpg\"},{\"model\":\"Lola\",\"size\":\"S\",\"numOrder\":3,\"price\":20,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Lola.jpg\"},{\"model\":\"Lola\",\"size\":\"M\",\"numOrder\":3,\"price\":20,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Lola.jpg\"},{\"model\":\"Lola\",\"size\":\"L\",\"numOrder\":3,\"price\":20,\"image\":\"https:\\\/\\\/mylularoe.com\\\/img\\\/media\\\/Lola.jpg\"}]');
 
-	$od		= App::make('InventoryController')->fixOrderData(json_decode($cart,true));
-	$user	= User::find(11950);
-	App::make('InventoryController')->putOrderInMyInventory($user,$od);
-          
-/*
-	$r = new Receipt();
-	$r->to_email		= 'mfrederico@gmail.com';
-	$r->to_firstname	= 'Matthew';
-	$r->to_lastname		= 'Frederico';
-	$r->tax				= 1.00;
-	$r->subtotal		= 10.00;
-	$r->date_paid		= 0;
-	$r->user_id			= 11950;
-	$rid = $r->save();
+	$invoice = Receipt::find(57);
+	$address = new Address();
+	$address->address_1 = 'Test1';
+	$address->address_2 = 'Test2';
+	$address->city      = 'Test City';
+	$address->state     = 'Test State';
+	$address->zip       = 'Test Zip';
+	$address->save();
 
-	print "<pre>";
-	//return Receipt::find(1)->ledger;
-*/
+	$invoice->address_id	= $address->id;
+	$invoice->save();
 
-	#Session::put('repsale',false);
-	#Session::put('paidout',12.0);
-	#Session::put('tax','1.0');
-	#Session::put('subtotal','11.0');
-	#Session::put('orderdata',array());
-	#Session::put('userbypass','11950');
-	#App::make('InventoryController')->finalizePurchase(array(),array());
-
+	return Response::json($invoice);
+	die();
 });
 
 Route::get('test-orders', function() {

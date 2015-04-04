@@ -111,6 +111,10 @@
 											<td align="right"><input size="16" style="width:16em" name="shipping[address2]"></td>
 										</tr>
 										<tr>
+											<td>Shipping City</td>
+											<td align="right"><input size="16" style="width:16em" name="shipping[city]"></td>
+										</tr>
+										<tr>
 											<td>Shipping State</td>
 											<td align="right">
 											{{ Form::select('shipping[state]',State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control')) }}

@@ -10,6 +10,10 @@ class Receipt extends \Eloquent {
 		return $this->hasMany('Ledger');
 	}
 
+    public function address() {
+        return $this->belongsTo('Address');
+    }
+
     public function receipt() {
         return $this->belongsTo('User');
     }

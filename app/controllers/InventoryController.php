@@ -486,9 +486,10 @@ class InventoryController extends \BaseController {
 
 	private function mergeOrderData($orderdata = array(), $removeunusedsizes = false) {
 		// List of sizes in order
-        $sizelist	= array('XXS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0,'S/M'=>0,'L/XL'=>0,'2'=>0,'4'=>0,'6'=>0,'8'=>0,'10'=>0,'12'=>0,'14'=>0,'3/4'=>0,'5/6'=>0,'8/10'=>0,'One Size'=>0,'Tall & Curvy'=>0);
+        $sizelist	= array('XXS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0,'S/M'=>0,'S/M & L/XL'=>0,'L/XL'=>0,'2'=>0,'4'=>0,'6'=>0,'8'=>0,'10'=>0,'12'=>0,'14'=>0,'3/4'=>0,'5/6'=>0,'8/10'=>0,'One Size'=>0,'Tall & Curvy'=>0);
         $m			= array();
 		$hassizes	= array();
+
 
 		// Creates the entire order manifest
         foreach($orderdata as $o) {
@@ -501,6 +502,7 @@ class InventoryController extends \BaseController {
             foreach($o['quantities'] as $size=>$num) {
 				if (intval($num) > 0) @$hassizes[$size] += intval($num);
 
+				if (!isset($m[$om]['quantities'][$size])) $m[$om]['quantities'][$size] = 0;
 				$m[$om]['quantities'][$size] += intval($num);
             }
 
@@ -555,11 +557,11 @@ class InventoryController extends \BaseController {
 
 		$inv = new Receipt();
 		$inv->user_id	= $user->id;
-		$inv->subtotal	= $vals['amount'];
+		$inv->subtotal	= floatval($vals['amount']) + floatval($sessiondata['paidout']);
 		$inv->note		= $vals['note'];
 		$inv->to_email	= $vals['emailto'];
 		$inv->tax		= !empty($vals['tax']) 		? floatval($vals['tax']) : 0;
-		$inv->balance	= $sessiondata['paidout'] ? floatval($vals['amount']) - floatval($sessiondata['paidout']) : floatval($vals['amount']);
+		$inv->balance	= $vals['amount'];
 		list($inv->to_firstname,$inv->to_lastname)	= explode(' ',$vals['customername']);
 		$inv->data		= json_encode($sessiondata['orderdata']);
 		$inv->save();
@@ -617,7 +619,7 @@ class InventoryController extends \BaseController {
 		// This creates the correct array out of the order data 
 		foreach($od as $items) {
 			$sod[] = array(
-				'id'		=> $items['id'],
+				'id'		=> isset($items['id']) ? $items['id'] : '',
 				'model'		=> $items['model'],
 				'price'		=> $items['price'],
 				'quantities'=> array($items['size'] => $items['numOrder'])
@@ -711,7 +713,6 @@ class InventoryController extends \BaseController {
 		if (!Session::get('repsale'))
 		{
 			$user = (!empty($csuser->sponsor_id)) ?  $csuser : $user;
-
 
 			$emailto = Config::get('site.warehouse_email');
 			// $emailto = 'mfrederico@gmail.com';
@@ -1016,9 +1017,18 @@ class InventoryController extends \BaseController {
 
 			$this->addPayment($cardauth);
 
-
 			// Update the invoice has been paid!
 			if (isset($invoice)) {
+				$address = new Address();
+				$address->address_1 = Input::get('shipping.address1');
+				$address->address_2 = Input::get('shipping.address2');
+				$address->city      = Input::get('shipping.city');
+				$address->state     = Input::get('shipping.state');
+				$address->zip       = Input::get('shipping.zip');
+				$address->save();
+
+				$invoice->address_id = $address->id;
+				$invoice->balance = $invoice->balance - $absamount;
 				$invoice->date_paid = date('Y-m-d H:i:s');
 				$invoice->save();
 			}
