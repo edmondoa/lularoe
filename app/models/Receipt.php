@@ -6,6 +6,10 @@ class Receipt extends \Eloquent {
 	protected $table = 'receipts';
 	protected $fillable = ['to_email','to_firstname','to_lastname','data','date_paid','tax','subtotal','user_id'];
 
+	public function getReceipts($user_id) {
+		return($this->where('user_id',$user_id));
+	}
+
 	public function ledger() {
 		return $this->hasMany('Ledger');
 	}
