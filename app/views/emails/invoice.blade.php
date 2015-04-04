@@ -24,7 +24,7 @@
 			<tr>
 				<td>
 					<fieldset><legend>Balance Due</legend>
-					This invoice has a balance of ${{ $inv->balance }} <a href="{{ $payment_url }}">Click here to pay</a>
+					This invoice has a balance of ${{ $inv->balance }} Pay Here: <a href="{{ $payment_url }}">{{$payment_url}}</a>
 					</fieldset>
 				</td>
 			</tr>
