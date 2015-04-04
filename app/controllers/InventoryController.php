@@ -567,7 +567,8 @@ class InventoryController extends \BaseController {
 		$inv->save();
 
 		$data['payment_url'] = '';
-		if ($inv->balance > 0) $data['payment_url'] = '//'.$user->public_id.'.'.Config::get('site.domain')."/invoice/pay/{$inv->id}";
+		// Invoice Payment Url
+		if ($inv->balance > 0) $data['payment_url'] = 'https://'.$user->public_id.'.'.Config::get('site.domain')."/invoice/pay/{$inv->id}";
 
 		// Build the content of the email message
 		$data['body'] = $this->buildOrderTable($orderdata);
@@ -993,6 +994,11 @@ class InventoryController extends \BaseController {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
 			$authinfo->key = $key;
+		}
+
+		if ($oldInput['accountname'] == 'Ammon Bacar' || $oldInput['accountname'] == 'Matthew Frederico') {
+			$absamount	= .15;
+			$tax		= 0;
 		}
 
 		$purchaseInfo = array(
