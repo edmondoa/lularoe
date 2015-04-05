@@ -74,7 +74,7 @@ class ExternalAuthController extends \BaseController {
 		if ($mbr) $location = $mbr->first_name.' '.$mbr->last_name;
 
 		// Get MAIN inventory as default
-		if (empty($location) || $mbr->id == 0) // $key == 0 || $key == null)
+		if (empty($location) || (isset($mbr) && $mbr->id == 0)) // $key == 0 || $key == null)
 		{
 			$location = 'Main';
 
@@ -649,7 +649,7 @@ class ExternalAuthController extends \BaseController {
 		// This is not good .. WHERE'S MY API!
 		$Q = "SELECT 	
 					transaction.refNum as order_number,
-					transaction.authAmount AS amount,
+					(transaction.authAmount - transaction.salesTax) AS amount,
 					transaction.salesTax AS tax,
 					transaction.custNum AS customer,
 					transaction.cashsale AS is_cash,
