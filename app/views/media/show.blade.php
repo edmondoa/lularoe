@@ -89,7 +89,7 @@
 		        
 		        @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) && $media->reps)
 			        <tr>
-			            <th>Shared with FC's:</th>
+			            <th>Shared with Reps:</th>
 			            <td><i class="fa fa-check"></i></td>
 			        </tr>
 		        @endif
