@@ -3,10 +3,10 @@
 class ExternalAuthController extends \BaseController {
 
 	// Private vars for this controller only
-	private $mwl_server	= 'mwl.controlpad.com';
-	private $mwl_un		= 'llr_txn';
-	private $mwl_pass	= 'ilovetexas';
-	private $mwl_db		= 'llr';
+	const MWL_SERVER	= 'mwl.controlpad.com';
+	const MWL_UN		= 'llr_txn';
+	const MWL_PASS		= 'ilovetexas';
+ 	const MWL_DB 		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
 	private	$SESSIONKEY_TIMEOUT = 3600;
@@ -32,10 +32,27 @@ class ExternalAuthController extends \BaseController {
             return App::abort(401, json_encode(array('error'=>'true','message'=>'No Key Specified - Please Login and try again')));
         }
 
-        $mbr = User::where('key', 'LIKE', $key.'|%')->first();
+		\Log::info("Pulling all the way back from the MWL: {$key}");			
+		try {
+			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+		}
+		catch (Exception $e)
+		{
+			\Log::error("{$key} this this key is not locked to a user account in mwl!");
+			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
+			return App::abort(401, json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again (2)')));
+		}
+		// This is not good .. WHERE'S MY API!
+		$Q = "SELECT username FROM sessionkey LEFT JOIN users ON (userid=id) WHERE `key`='".$mysqli->escape_string($key)."' LIMIT 1";
+		$res = $mysqli->query($Q);
+		$mwluser = $res->fetch_assoc();
+		\Log::info('DUMP: '.print_r($mwluser['username'],true));
+		$mbr = User::find($mwluser['username']);
+
+        //$mbr = User::where('key', 'LIKE', $key.'|%')->first();
         if (!isset($mbr) && Session::get('repsale')) {
             \Log::error("{$key} this is a rep sale, and this key is not locked to a user account!");
-			return App::abort(401, json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again')));
+			return App::abort(401, json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again (1)')));
 		}
 		else if ($mbr) { 
 			\Log::info("{$key} = {$mbr->id}");
@@ -561,7 +578,7 @@ class ExternalAuthController extends \BaseController {
 		$cid = $this->mwl_db;
 
 		try {
-			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
+			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
 		}
 		catch (Exception $e)
 		{
@@ -596,7 +613,7 @@ class ExternalAuthController extends \BaseController {
 
 
 		try {
-			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
+			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
 		}
 		catch (Exception $e)
 		{
@@ -638,7 +655,7 @@ class ExternalAuthController extends \BaseController {
         $currentuser	= User::find($id);
 
 		try {
-			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
+			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
 		}
 		catch (Exception $e)
 		{
