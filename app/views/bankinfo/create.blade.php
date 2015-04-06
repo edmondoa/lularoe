@@ -8,7 +8,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col col-lg-3 col-md-4 col-sm-6">
+		<div class="col col-lg-6 col-md-6 col-sm-6">
 		    {{ Form::open(array('url' => 'bankinfo/store')) }}
 		
 		    <div class="form-group">
@@ -41,6 +41,9 @@
 		
 		    {{Form::close()}}
 		</div>
+		<div class="col col-lg-6 col-md-6 col-sm-6">
+			<img src="/img/media/check.png">
+		<div>
 	</div>
 </div>
 @stop

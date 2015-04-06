@@ -36,6 +36,7 @@ Route::pattern('id', '[0-9]+');
 
 		Route::get('llrapi/v1/refund/{key}', 					'ExternalAuthController@refund');
 		Route::get('llrapi/v1/purchase/{key}',					'ExternalAuthController@purchase');
+		Route::post('llrapi/v1/purchase/{key}',					'ExternalAuthController@purchase');
 		Route::get('llrapi/v1/multi-purchase/{key}',			'ExternalAuthController@multiPurchase');
 		Route::post('llrapi/v1/sendreceipt/{key}',				'ExternalAuthController@sendReceipt');
 
@@ -58,6 +59,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	# Public Routes
 	##############################################################################################
 	
+
 	// company
 	Route::get('/', ['as' => 'home', function() {
 		$title = 'Home';
@@ -261,6 +263,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('inv/sales', 'InventoryController@sales');
 		Route::get('inventory/full', 'InventoryController@matrixFull');
 
+        Route::post('inv/invoice', 'InventoryController@sendInvoice');
+		Route::get('invoice/pay/{id}', 'InventoryController@viewInvoice');
+
         Route::post('inv/purchase', 'InventoryController@purchase');
 		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
 		Route::post('inv/cashpurchase', 'InventoryController@cashpurchase');
@@ -324,6 +329,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		# API functions that shouldn't be cached
 		##############################################################################################
+
         Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
         Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
         Route::get('api/all-users', 'DataOnlyController@getAllUsers');
@@ -603,6 +609,19 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::resource('join', 'PreRegisterController', ['only' => ['create', 'store']]);
 	});
 
+	Route::group(array(), function() {
+		Route::get('reports', 'ReportController@index');
+		Route::get('api/report/sales/details/{id}', 'ReportController@saleDetails');
+		Route::get('api/report/sales', 'ReportController@getReportSales');
+		Route::get('api/report/inventory', 'ReportController@getReportInventory');
+		Route::get('api/report/receipts', 'ReportController@getReportReceipts');
+
+		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin'])) {
+			Route::get('reports/{id}', 'ReportController@index');
+		}
+	});
+
+
 	Route::get('populate-levels', function(){
 		$level_count = Level::all()->count();
 		DB::connection()->disableQueryLog();
@@ -625,6 +644,17 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	function ($subdomain){
 		dd($subdomain);
 	};
+
+	# Make invoice payment
+	Route::post('invoice/pay/{id}', 'InventoryController@payInvoice');
+	Route::get('invoice/pay/{id}', 'InventoryController@showInvoice');
+	Route::post('inv/purchase', 'InventoryController@purchase');
+
+/*
+		$title = 'Invoice Payment';
+		$receipt = Receipt::find($id)->get();
+		return View::make('inventory.payinvoice',compact($receipt));
+*/
 
 	Route::get('/', function($subdomain) {
 		$user = User::where('public_id', $subdomain)->first();
@@ -745,10 +775,21 @@ function addOrder($order, $key = 'orderdata') {
 */
 
 Route::get('testfunction', function() {
-	$sd = Session::all();
-	print "<pre>";
-	
-	print_r($sd);
+
+	$invoice = Receipt::find(57);
+	$address = new Address();
+	$address->address_1 = 'Test1';
+	$address->address_2 = 'Test2';
+	$address->city      = 'Test City';
+	$address->state     = 'Test State';
+	$address->zip       = 'Test Zip';
+	$address->save();
+
+	$invoice->address_id	= $address->id;
+	$invoice->save();
+
+	return Response::json($invoice);
+	die();
 });
 
 Route::get('test-orders', function() {

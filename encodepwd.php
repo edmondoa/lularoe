@@ -6,7 +6,7 @@ $pwdl1 = dropcrypt($argv[2]);
 $pwdl2 = dropcrypt($argv[2],'llr',2);
 
 print ("https://mylularoe.com/llrapi/v1/auth/{$uid}?pass={$unpwd}\n");
-print ("mwl.controlpad.com:8080/cms/llr/login?username={$uid}&password={$pwdl1}\n");
+print ("mwl.controlpad.com:8080/cms/llr/login?username={$uid}&password=".rawurlencode($pwdl1)."\n");
 print "UPDATE users SET password='{$pwdl2}' WHERE username='{$uid}'\n";
 
 function dropcrypt($pass,$cid = 'llr', $level = 1)

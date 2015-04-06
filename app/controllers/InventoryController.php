@@ -25,6 +25,12 @@ class InventoryController extends \BaseController {
 		return View::make('inventory.matrix');
     }
 	
+	public function showInvoice($public_id, $id) {
+		$invoice	= Receipt::find($id);
+		$orderdata	= json_decode($invoice->data);
+
+        return View::make('inventory.invoiceCheckout',compact('invoice','orderdata'));
+	}
 
     /**
      * Data only
@@ -36,6 +42,7 @@ class InventoryController extends \BaseController {
             'data' => Inventory::all()
         ];
     }
+
 
 	public function getDiscounts($subt, $viaRequest=true,$doTemplate=false){
 		// Init my vars
@@ -55,7 +62,7 @@ class InventoryController extends \BaseController {
 		// Do the MATHS
 		foreach ($this->discounts as $discount) {
 			// I <3 Eval .. NOT!
-			if (($discount['repsale'] == true) && (Session::get('repsale'))) {
+			if (Session::has('repsale') && ($discount['repsale'] == Session::get('repsale'))) {
 				if ($discount['math']['op'] == '=') 
 					$dcamt = $discount['math']['n'];
 				else
@@ -477,16 +484,192 @@ class InventoryController extends \BaseController {
 		// return Session::save();
 	}
 
+	private function mergeOrderData($orderdata = array(), $removeunusedsizes = false) {
+		// List of sizes in order
+        $sizelist	= array('XXS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0,'S/M'=>0,'S/M & L/XL'=>0,'L/XL'=>0,'2'=>0,'4'=>0,'6'=>0,'8'=>0,'10'=>0,'12'=>0,'14'=>0,'3/4'=>0,'5/6'=>0,'8/10'=>0,'One Size'=>0,'Tall & Curvy'=>0);
+        $m			= array();
+		$hassizes	= array();
 
-	public function finalizePurchase($auth, $invitems) {
 
-		// This means the superadmin can set a user to "order for someone" 
-		// more on this functionality later
-		if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
-			$currentuser = User::find(Session::get('userbypass'));
+		// Creates the entire order manifest
+        foreach($orderdata as $o) {
+            $om = $o['model'];
+
+            if (!is_array(@$m[$om]['quantities'])) {
+                $m[$om]['quantities'] = $sizelist;
+            }
+
+            foreach($o['quantities'] as $size=>$num) {
+				if (intval($num) > 0) @$hassizes[$size] += intval($num);
+
+				if (!isset($m[$om]['quantities'][$size])) $m[$om]['quantities'][$size] = 0;
+				$m[$om]['quantities'][$size] += intval($num);
+            }
+
+        }
+
+		// This reduces the size of the order grid to only contain the sizes that are used on the manifest
+		if ($removeunusedsizes) {
+			foreach($m as $om=>$o) {
+				foreach($o['quantities'] as $size=>$num) {
+					if (!isset($hassizes[$size])) unset($m[$om]['quantities'][$size]);
+				}
+			}
+		}
+
+        return($m);
+    }
+
+	// Better name create invoice
+	public function sendInvoice($key = '') {
+
+		// If we're passing a key, coming from api / json
+		if (!empty($key)) {
+			$user = App::make('ExternalAuthController')->getUserByKey($key);
+
+			// First we fetch the Request instance
+			$request = Request::instance();
+
+			// Now we can get the content from it
+			$content = $request->getContent();
+			$vals = json_decode($content,true);
+
+			$orderdata	= $vals['orderdata'];
 		}
 		else {
-			$currentuser = Auth::user();
+			// Get the order data from the session
+			$orderdata  = $this->mergeOrderData($this->fixOrderData(Session::get('orderdata')), true);
+			$user		= Auth::user();
+			$vals 		= Input::all();
+		}
+
+		$sessiondata = Session::all();
+
+		// This means we are getting the javascript style order data
+		if (isset($sessiondata['orderdata'][0]['numOrder'])) {
+			$data['total_items_ordered'] = 0;
+			// Count the number of items ordered
+			foreach($sessiondata['orderdata'] as $items) {
+				$data['total_items_ordered'] += intval($items['numOrder']);
+			}			
+			$sessiondata['orderdata'] = $this->fixOrderData($sessiondata['orderdata']);
+		}
+
+		$inv = new Receipt();
+		$inv->user_id	= $user->id;
+		$inv->subtotal	= floatval($vals['amount']) + floatval($sessiondata['paidout']);
+		$inv->note		= $vals['note'];
+		$inv->to_email	= $vals['emailto'];
+		$inv->tax		= !empty($vals['tax']) 		? floatval($vals['tax']) : 0;
+		$inv->balance	= $vals['amount'];
+		list($inv->to_firstname,$inv->to_lastname)	= explode(' ',$vals['customername']);
+		$inv->data		= json_encode($sessiondata['orderdata']);
+		$inv->save();
+
+		$data['payment_url'] = '';
+		// Invoice Payment Url
+		if ($inv->balance > 0) $data['payment_url'] = 'https://'.$user->public_id.'.'.Config::get('site.domain')."/invoice/pay/{$inv->id}";
+
+		// Build the content of the email message
+		$data['body'] = $this->buildOrderTable($orderdata);
+		$data['user'] = $user;
+		$data['inv']  = $inv;
+		$data['date'] = date('Y-m-d H:i:s');
+
+		\Log::info("Dispatching invoice to {$inv->to_email}");
+		Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
+			$message->to($inv->to_email, "{$inv->to_firstname} {$inv->to_lastname}");
+			$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
+			$message->from($user->email, $user->first_name.' '.$user->last_name);
+		});
+
+		return View::make('inventory.invoicesent', compact('sessiondata','user','data','inv'));
+	}
+
+	private function buildOrderTable($od) {
+		$bgdark = '#EFEFEF';
+		$bglight = '#FFFFFF';
+		$bgc = 0;
+		
+		$databody = "<table width='100%' cellpadding=\"0\" cellspacing=\"0\"><tr><th>Model</th>";
+		$heading = reset($od);
+			foreach($heading['quantities'] as $size=>$quan) {
+				$bg = ($bgc++ %2  ==0) ? $bgdark : $bglight;
+				$databody .= "<th style=\"border:1px dotted #CDCDCD;background:{$bg}\">{$size}</th>";
+			}
+		$databody .= "</tr>";
+		foreach($od as $model=>$item) {
+			$databody .= "<tr><td>{$model}</td>";
+			foreach($item['quantities'] as $size=>$quan) {
+				$bg = ($bgc++ %2  ==0) ? $bgdark : $bglight;
+				$hilight = "padding:5px;border:1px dotted #CDCDCD;background:{$bg}";
+				if ($quan < 1) {
+					$hilight = "padding:5px;border:1px dotted #CDCDCD;background:{$bg}";
+					$quan = '';
+				}
+				$databody .= "<td align=\"center\" style=\"{$hilight}\">{$quan}</td>";
+			}
+		}
+		$databody .= "</tr></table>";
+		return $databody;
+	}
+
+
+	// Until we get this fixed from the javascript submittal
+	public function fixOrderData($od) {
+		// This creates the correct array out of the order data 
+		foreach($od as $items) {
+			$sod[] = array(
+				'id'		=> isset($items['id']) ? $items['id'] : '',
+				'model'		=> $items['model'],
+				'price'		=> $items['price'],
+				'quantities'=> array($items['size'] => $items['numOrder'])
+			);
+		}
+		return $sod;
+		//----------- FIX THIS IN THE ORDER JSON GENERATION
+	}
+
+	public function putOrderInMyInventory($user, $od) {
+		foreach($od as $item) {
+			$model = $item['model'];
+			$price	 = $item['price'];
+			foreach($item['quantities'] as $size=>$numOrdered) {
+
+				\Log::info("Adding inventory to User: {$user->id} Model: {$model} Size: {$size} Quantity: {$numOrdered} Price: {$price}");
+				$prod = Product::where('user_id',$user->id)->where('name',$model)->where('size',$size)->first();
+
+				if (isset($prod->quantity)) { 
+					$prod->quantity += intval($numOrdered); 
+				}
+				else {
+					$prod			= new Product();
+					$prod->user_id 	= $user->id;
+					$prod->name 	= $model;
+					$prod->rep_price= floatval($item['price']) + (floatval($item['price']) * .3);
+					$prod->size		= $size;
+					$prod->quantity = intval($numOrdered);
+					$prod->price	= floatval($item['price']);
+				}
+				$prod->save();
+
+			}
+
+		}
+	}
+
+
+	public function finalizePurchase($auth, $invitems, $currentuser = '') {
+
+		if (empty($currentuser)) { 
+			// This means the superadmin can set a user to "order for someone" 
+			// more on this functionality later
+			if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
+				$currentuser = User::find(Session::get('userbypass'));
+			}
+			else {
+				$currentuser = Auth::user();
+			}
 		}
 
 		$user = $currentuser;
@@ -503,9 +686,21 @@ class InventoryController extends \BaseController {
 			$csuser->save();
 		}
 
+		$data		= [];
+
+		// This means we are getting the javascript style order data
+		if (isset($sessiondata['orderdata'][0]['numOrder'])) {
+
+			$data['total_items_ordered'] = 0;
+			// Count the number of items ordered
+			foreach($sessiondata['orderdata'] as $items) {
+				$data['total_items_ordered'] += intval($items['numOrder']);
+			}			
+			$sessiondata['orderdata'] = $this->fixOrderData($sessiondata['orderdata']);
+		}
+
 		$view  = View::make('inventory.validpurchase',compact('auth','invitems','sessiondata'));
 
-		$data		= [];
 		$data['body'] = $view->renderSections()['manifest'];
 
 
@@ -520,16 +715,52 @@ class InventoryController extends \BaseController {
 		{
 			$user = (!empty($csuser->sponsor_id)) ?  $csuser : $user;
 
-			$data['email']	= $user->email;
+			$emailto = Config::get('site.warehouse_email');
+			// $emailto = 'mfrederico@gmail.com';
+			$data['email']	= $emailto;
+
+			$inv = new Receipt();
+			$inv->user_id		= Config::get('site.mwl_username');
+			$inv->subtotal		= $sessiondata['subtotal'];
+			$inv->note			= isset($sessiondata['note']) ? $sessiondata['note'] : '';
+			$inv->to_email		= $user->email;
+			$inv->tax			= $sessiondata['tax'];
+			$inv->balance		= $sessiondata['subtotal'] - $sessiondata['paidout'];
+			$inv->to_firstname  = $user->first_name;
+			$inv->to_lastname	= $user->last_name;
+			$inv->data			= json_encode($sessiondata['orderdata']);
+			$data['receipt_id'] = $inv->save();
+
+			// This should eventually be scanned in, but whatevs 
+			$this->putOrderInMyInventory($user, $sessiondata['orderdata']); // Previsouly Fixed see above
+
+			// Fix the weird shit that the JS gives me from orderdata
+			$od = $this->mergeOrderData($sessiondata['orderdata'], true);
 			
+			// Build the order table based on what we're ordering
+			$data['body'] = $this->buildOrderTable($od);
+			$data['user'] = $user;
+			$data['inv']  = $inv;
+			$data['date'] = date('Y-m-d H:i:s');
+
 			// This one goes to the main warehouse
 			try { 
-				Mail::send('emails.invoice', $data, function($message) use($user,$data) {
-					$message->to(Config::get('site.warehouse_email'), "Order Warehousing");
+
+				\Log::info("Dispatching order invoice off to {$data['email']}");
+				Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
+					$message->to($data['email'], "Order Warehousing");
 					$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
+					$message->from($user->email, $user->first_name.' '.$user->last_name);
+				});
+
+				\Log::info("Dispatching receipt email to {$user->email}");
+				Mail::send('emails.invoice', $data, function($message) use($user,$data, $inv) {
+					$message->to($user->email, "{$user->first_name} {$user->last_name}");
+					$message->subject("Order Receipt for {$data['total_items_ordered']} items");
 					$message->replyTo($data['email']);
 					$message->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 				});
+
 			} catch (Exception $e) {
 				die('Sploded'. $e->getMessage());
 			}
@@ -550,9 +781,20 @@ class InventoryController extends \BaseController {
 
 			// Deduct item quantity from inventory
 			foreach ($invitems as $item) {
+				\Log::info('ITEMS REMOVING: '.json_encode($item));
+				if (isset($item['quantities'])) {
+					$item['numOrder'] = array_shift($item['quantities']);
+				}
 				$request	= Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$item['numOrder']}/",'GET', array());
 				$deduction	= json_decode(Route::dispatch($request)->getContent());
 			}
+
+			\Log::info("Dispatching receipt to {$data['email']}");
+			Mail::send('emails.standard', $data, function($message) use($user,$data) {
+				$message->to($data['email'], "{$user->first_name} {$user->last_name}")
+				->subject('Purchase receipt from '.Config::get('site.company_name'))
+				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+			});
 		}
 
 		if (isset($sessiondata['consignment_purchase'])) {
@@ -560,29 +802,6 @@ class InventoryController extends \BaseController {
 			// If the session has an emailto person
 			$data['email'] = $csuser->email;
 			$user = $csuser;
-		}
-
-		// This one goes to the final user
-		// customer purchase
-		if ($sessiondata['repsale']) {
-			Mail::send('emails.standard', $data, function($message) use($user,$data) {
-				$message->to($data['email'], "{$user->first_name} {$user->last_name}")
-				->subject('Order receipt from '.Config::get('site.company_name'))
-				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
-			});
-		}
- 		// ordering inventory
-		else {
-			try { 
-				Mail::send('emails.standard', $data, function($message) use($user,$data) {
-					$message->to($data['email'], "{$user->first_name} {$user->last_name}")
-					->subject('Purchase receipt from '.Config::get('site.company_name'))
-					->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
-				});
-			}
-			catch (Exception $e) {
-				die('Barf');
-			}
 		}
 
 		Session::forget('customdiscount');
@@ -690,7 +909,7 @@ class InventoryController extends \BaseController {
 			$user = Config::get('site.mwl_username');
 			$pass = Config::get('site.mwl_password');
 
-			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass));
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass, true));
 		}
 		// This is the individual REP TID
 		else {
@@ -732,11 +951,12 @@ class InventoryController extends \BaseController {
 	public function purchase(){
 		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
-		$absamount	= abs(Input::get('amount'));
-		$tax		= $this->getTax($absamount);
-		$absamount	= $this->totalCheck($absamount);
-
-		$invitems	= Session::get('orderdata');
+		if (!Input::get('invoice')) {
+			$absamount	= abs(Input::get('amount'));
+			$tax		= $this->getTax($absamount);
+			$absamount	= $this->totalCheck($absamount);
+			$invitems	= Session::get('orderdata');
+		}
 
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
@@ -745,19 +965,40 @@ class InventoryController extends \BaseController {
 			return Redirect::route('dashboard');
 		}
 
+		$user = '';
+		// Load up the invoice
+		if (Input::get('invoice')) {
+			$invoice	= Receipt::find(Input::get('invoice'));
+			$invitems	= json_decode($invoice->data, true);
+			$absamount	= $invoice->balance;
+			$tax		= $invoice->tax;
+			$user		= User::find($invoice->user_id);
+			$authkey    = $user->key;
+			@list($key,$exp) = explode('|',$authkey);
+			$authinfo->key = $key;
+
+			Session::put('repsale',true);
+			Session::put('orderdata', $invitems);
+		}	
+
 		// MATT HACKERY - 
 		// Watch for changes in mwl_password
 		// It is no longer encoded in the site.php file. 
 		if (!Session::get('repsale')) {
-			$user = Config::get('site.mwl_username');
-			$pass = Config::get('site.mwl_password');
-			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($user, $pass, true));
+			$un = Config::get('site.mwl_username');
+			$pw = Config::get('site.mwl_password');
+			$authinfo = json_decode(App::make('ExternalAuthController')->midauth($un, $pw, true));
 		}
 		// This is the individual REP TID
-		else {
+		else if (!isset($authkey)) {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
 			$authinfo->key = $key;
+		}
+
+		if ($oldInput['accountname'] == 'Ammon Bacar' || $oldInput['accountname'] == 'Matthew Frederico') {
+			$absamount	= .15;
+			$tax		= 0;
 		}
 
 		$purchaseInfo = array(
@@ -771,7 +1012,7 @@ class InventoryController extends \BaseController {
 					'cardaddress'	=>$oldInput['address'],
 					'cart'			=>json_encode($invitems)
 				);
-		
+
 		$ia = Input::all();
 		Input::replace($purchaseInfo);
 		$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
@@ -782,11 +1023,28 @@ class InventoryController extends \BaseController {
 
 			$this->addPayment($cardauth);
 
-			if (!$this->checkFinalSaleAmount($absamount)) {
-				return Redirect::to('/inv/checkout');
-			}
+			// Update the invoice has been paid!
+			if (isset($invoice)) {
+				$address = new Address();
+				$address->address_1 = Input::get('shipping.address1');
+				$address->address_2 = Input::get('shipping.address2');
+				$address->city      = Input::get('shipping.city');
+				$address->state     = Input::get('shipping.state');
+				$address->zip       = Input::get('shipping.zip');
+				$address->save();
 
-			return $this->finalizePurchase($cardauth, $invitems);
+				$invoice->address_id = $address->id;
+				$invoice->balance = $invoice->balance - $absamount;
+				$invoice->date_paid = date('Y-m-d H:i:s');
+				$invoice->save();
+			}
+			else { 
+				// Perhaps check if its an invoice and redirect there with a balance?
+				if (!$this->checkFinalSaleAmount($absamount)) {
+					return Redirect::to('/inv/checkout');
+				}
+			}
+			return $this->finalizePurchase($cardauth, $invitems, $user);
 		}
 		else return View::make('inventory.invalidpurchase',compact('cardauth'));
 	}
