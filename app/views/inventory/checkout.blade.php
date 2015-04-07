@@ -77,16 +77,14 @@
 								</tr>
 								@endif @endforeach
 								<tr>
-									<td>Total Discounts</td>
-									<td colspan="2"></td>
+									<td colspan="3" align="right"><b>Total Discounts</b></td>
 									<td align="right">-${{number_format($discounts['total'],2)}}</td>
 								</tr>
 							@endif
 
 							@if (Session::get('repsale'))
 							<tr>
-								<td><b>{{ $totalItems }} Items</b></td>
-								<td colspan="2" align="right"><b>Tax</b></td>
+								<td colspan="3" align="right"><b>Tax</b></td>
 								<td align="right">${{ number_format($tax,2) }}</td>
 							</tr>
 							@endif
@@ -98,7 +96,8 @@
 							</tr>
 							@endif
 							<tr>
-								<td colspan="3"align="right"><b>Balance</b></td>
+								<td><b>{{ $totalItems }} Items</b></td>
+								<td colspan="2"align="right"><b>Balance</b></td>
 								<td align="right" class="{{ ($balanceAmount > 0) ? 'danger' : 'success' }}">${{number_format($balanceAmount,2)}}</td>
 							</tr>
 						</tbody>
