@@ -8,6 +8,7 @@
 
 	// Bank info
 	if (Input::get('nuke')) {
+		Session::forget('discount');
 		Session::forget('paidout');
         Session::forget('emailto');
         Session::forget('repsale');
@@ -39,6 +40,9 @@
 	$consignment_bal = $currentuser->consignment;
 
  	$balanceAmount = $inittotal + $tax - Session::get('paidout');
+	$totalItems = 0;
+
+	foreach ($orders as $order): $totalItems += $order['numOrder']; endforeach;
 ?>
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
@@ -64,15 +68,6 @@
 							</tr>
 							@endforeach
 
-							@if (Session::get('repsale'))
-<!--
-							<tr>
-								<td colspan="2">Set Discount</td>
-								<td colspan="2"><form method="GET" action="#disc"><input type="text" name="discount" placeholder="0.00"><input type="submit" value="Apply"></form>
-							</tr>
--->
-							@endif
-
 							@if (!empty($discounts) && $discounts['total'] > 0)
 								@foreach ($discounts as $discount) @if (!empty($discount['amount']))
 								<tr>
@@ -90,7 +85,8 @@
 
 							@if (Session::get('repsale'))
 							<tr>
-								<td colspan="3" align="right"><b>Tax</b></td>
+								<td><b>{{ $totalItems }} Items</b></td>
+								<td colspan="2" align="right"><b>Tax</b></td>
 								<td align="right">${{ number_format($tax,2) }}</td>
 							</tr>
 							@endif
@@ -107,6 +103,7 @@
 							</tr>
 						</tbody>
 					</table>
+					
 				</div>
 			</div>
             <div class="row">
