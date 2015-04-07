@@ -114,6 +114,11 @@
 			    -->
 			    
 			    <div class="form-group">
+			        {{ Form::label('company_name', 'Company Name') }}
+			        {{ Form::text('company_name', Input::old('company_name'), array('class' => 'form-control')) }}
+			    </div>
+			    
+			    <div class="form-group">
 			        {{ Form::label('disabled', 'Status') }}
 			        <br>
 			    	{{ Form::select('disabled', [
