@@ -517,6 +517,28 @@ class ExternalAuthController extends \BaseController {
 		$o->details         = json_encode(array('orders'=>$invitems,'payments'=>$vals['txids']));
 		$o->save();
 
+		\Log::info('Creating new receipt');
+		$inv = new Receipt();
+		$inv->date_paid     = date('Y-m-d H:i:s');
+		$inv->user_id       = $user->id;
+		$inv->subtotal      = $vals['subtotal'];
+		$inv->tax           = floatval($vals['tax']);
+		$inv->balance       = 0;
+
+		$inv->note          = isset($vals['notes'])          ? $vals['notes']         : '';
+		$inv->to_email      = isset($vals['emailto'])        ? $vals['emailto']      : $user->email;
+		$inv->to_firstname  = isset($vals['to_firstname'])   ? $vals['to_firstname']  : 'n/a';
+		$inv->to_lastname   = isset($vals['to_lastname'])    ? $vals['to_lastname']   : 'n/a';
+
+		$inv->data          = json_encode($invitems);
+		$inv->save();
+
+		\Log::info('Assigning ledger items to this receipt');
+		foreach($vals['txids'] as $txn) {
+			\Log::info("\t TXN:".$txn.' GOES INTO RECEIPT '.$inv->id);
+			$l = Ledger::where('transactionid', '=', $txn)->update(array('receipt_id'=>$inv->id));
+		}
+
 		$result = array('error'=>false,'message'=>'Receipt Sent to '.$vals['emailto']);
 
 		$orderitems	= [];
@@ -555,12 +577,17 @@ class ExternalAuthController extends \BaseController {
 		$data['body'] 	= preg_replace('/\s\s+/', ' ',$receipt);
 
 		if (!empty($data['email'])) {
-			// This one goes to the final user
-			Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
-				$message->to($data['email'])
-				->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
-				->from($user->email, $user->first_name.' '.$user->last_name);
-			});
+			try { 
+				// This one goes to the final user
+				Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
+					$message->to($data['email'])
+					->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
+					->from($user->email, $user->first_name.' '.$user->last_name);
+				});
+			}
+			catch (Exception $e) {
+				$result['message'] = $e->getMessage();
+			}
 		} else $result['message'] = 'No receipt sent: Please specify an email address.';
 
 		return Response::json($result, $vals['err']);
