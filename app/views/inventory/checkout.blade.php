@@ -102,7 +102,6 @@
 							</tr>
 						</tbody>
 					</table>
-					
 				</div>
 			</div>
             <div class="row">
@@ -125,8 +124,20 @@
 				<div class="tab-content">
 					 <div class="well tab-pane fade" id="cash">
 						<div class="row">
-							<div class="col-lg-12 col-sm-12 col-md-12">
-								{{ Form::open(array('url' => 'inv/cashpurchase', 'method' => 'post','name'=>'inven')) }}
+							<div class="col-lg-6 col-sm-6 col-md-6">
+						{{ Form::open(array('url' => 'inv/cashpurchase', 'method' => 'post','name'=>'inven')) }}
+						@if (Session::get('repsale'))
+						<fieldset>
+							<legend>Send final receipt email to</legend>
+							<input type="text" name="to_firstname" placeholder="first name">
+							<input type="text" name="to_lastname" placeholder="last name">
+							<input type="text" name="to_email" placeholder="email address">
+						</fieldset><br/>
+						@endif
+						<fieldset>
+							<legend>Notes</legend>
+							<textarea name="notes" style="width:100%" rows="4" placeholder="Please type notes here"></textarea>
+						</fieldset>
 								{{ Form::label('cash', 'Cash Amount') }}
 								$<input type="text" name="amount" value="{{ $balanceAmount }}">
 							</div>
@@ -182,7 +193,20 @@
 
                     <div class="well tab-pane fade" id="consignment">
 						{{ Form::open(array('url' => 'inv/conspurchase', 'method' => 'post','name'=>'inven')) }}
+						@if (Session::get('repsale'))
+						<fieldset>
+							<legend>Send final receipt email to</legend>
+							<input type="text" name="to_firstname" placeholder="first name">
+							<input type="text" name="to_lastname" placeholder="last name">
+							<input type="text" name="to_email" placeholder="email address">
+						</fieldset><br/>
+						@endif
+						<fieldset>
+							<legend>Notes</legend>
+							<textarea name="notes" style="width:100%" rows="4" placeholder="Please type notes here"></textarea>
+						</fieldset>
 						<h2>Consignment</h2>
+						<input type="hidden" name="note">
 						<table class="table">
 							<tr>
 								<td></td>
@@ -213,7 +237,23 @@
                     <div class="well tab-pane fade" id="bankinfo">
 						{{ Form::open(array('url' => 'inv/achpurchase', 'method' => 'post','name'=>'inven')) }}
 						<div class="row">
-							<div class="col-lg-12 col-sm-12 col-md-12">
+							<div class="col-lg-5 col-sm-12 col-md-12">
+								@if (Session::get('repsale'))
+								<fieldset>
+									<legend>Send final receipt email to</legend>
+									<input type="text" name="to_firstname" placeholder="first name">
+									<input type="text" name="to_lastname" placeholder="last name">
+									<input type="text" name="to_email" placeholder="email address">
+								</fieldset><br/>
+								@endif
+								<fieldset>
+									<legend>Notes</legend>
+									<textarea name="notes" style="width:100%" rows="4" placeholder="Please type notes here"></textarea>
+								</fieldset>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-5 col-sm-12 col-md-12">
 								{{ Form::label('bankinfo', 'Bank Account') }}
 								<select name="account" class="form-control">
 								@foreach ($bi as $bank)
@@ -242,6 +282,18 @@
 						{{ Form::open(array('url' => 'inv/purchase', 'method' => 'post','name'=>'inven')) }}
 						<div class="row">
 							<div class="col-lg-5 col-sm-12 col-md-12">
+						@if (Session::get('repsale'))
+						<fieldset>
+							<legend>Send final receipt email to</legend>
+							<input type="text" name="to_firstname" placeholder="first name">
+							<input type="text" name="to_lastname" placeholder="last name">
+							<input type="text" name="to_email" placeholder="email address">
+						</fieldset><br/>
+						@endif
+						<fieldset>
+							<legend>Notes</legend>
+							<textarea name="notes" style="width:100%" rows="4" placeholder="Please type notes here"></textarea>
+						</fieldset>
 								<table class="table">
 									<tr>
 										<td>Name on card</td>
