@@ -49,14 +49,15 @@ class InventoryController extends \BaseController {
 		$discounted	= array();
 		$dctotal	= 0;
 
-		if (Input::get('discount')) {
-			Session::put('customdiscount', Input::get('discount'));
+		if (Input::has('discount')) {
+			if (Input::get('discount') == 0) Session::forget('customdiscount');
+			else Session::put('customdiscount', Input::get('discount'));
 		}
 
 		if (Session::get('customdiscount')) {
-			$discounted[] = array('title'	=> 'Special Discount',
-								  'amount'	=> floatval(Session::get('customdiscount')));
-			$dctotal = floatval(Session::get('customdiscount'));
+			$this->discounts[] = array('title'	=> 'Special Discount',
+								  'math'=>array('op'=>'=','n'=>floatVal(Session::get('customdiscount'))),
+								  'repsale'=>true);
 		}
 
 		// Do the MATHS
@@ -152,6 +153,7 @@ class InventoryController extends \BaseController {
 
 		$tax = $this->getTax($inittotal);
 
+        Session::put('emailto',Input::get('emailto'));
         Session::put('discounts',$discounts);
         Session::put('subtotal',$inittotal);
         Session::put('tax',$tax);
@@ -392,6 +394,11 @@ class InventoryController extends \BaseController {
 			$currentuser = Auth::user();
 		}
 		
+		Session::put('notes',Input::get('notes'));
+		Session::put('to_email',Input::get('to_email'));
+		Session::put('to_firstname',Input::get('to_firstname'));
+		Session::put('to_lastname',Input::get('to_lastname'));
+
 
 		// Make sure we have enough consignment to pull this off
 		$cons 		= $currentuser->consignment;
@@ -562,7 +569,16 @@ class InventoryController extends \BaseController {
 		$inv->to_email	= $vals['emailto'];
 		$inv->tax		= !empty($vals['tax']) 		? floatval($vals['tax']) : 0;
 		$inv->balance	= $vals['amount'];
-		list($inv->to_firstname,$inv->to_lastname)	= explode(' ',$vals['customername']);
+
+		// Make nice with the explode
+		if (strpos($vals['customername'], ' ')  === false) {
+			$inv->to_firstname = $vals['customername'];
+			$inv->to_lastname  = 'N/A';
+		}
+		else {
+			list($inv->to_firstname,$inv->to_lastname)	= explode(' ',$vals['customername']);
+		}
+
 		$inv->data		= json_encode($sessiondata['orderdata']);
 		$inv->save();
 
@@ -705,7 +721,7 @@ class InventoryController extends \BaseController {
 
 
 		// If the session has an emailto person
-		$data['email'] = isset($sessiondata['emailto']) ? $sessiondata['emailto'] : $user->email;
+		$data['email'] = isset($sessiondata['email_to']) ? $sessiondata['email_to'] : $user->email;
 
 		$data['user']	= $user;
 		$data['email']	= $user->email;
@@ -720,9 +736,10 @@ class InventoryController extends \BaseController {
 			$data['email']	= $emailto;
 
 			$inv = new Receipt();
+			$inv->date_paid		= date('Y-m-d H:i:s');
 			$inv->user_id		= Config::get('site.mwl_username');
 			$inv->subtotal		= $sessiondata['subtotal'];
-			$inv->note			= isset($sessiondata['note']) ? $sessiondata['note'] : '';
+			$inv->note			= isset($sessiondata['notes']) ? $sessiondata['notes'] : '';
 			$inv->to_email		= $user->email;
 			$inv->tax			= $sessiondata['tax'];
 			$inv->balance		= $sessiondata['subtotal'] - $sessiondata['paidout'];
@@ -742,6 +759,7 @@ class InventoryController extends \BaseController {
 			$data['user'] = $user;
 			$data['inv']  = $inv;
 			$data['date'] = date('Y-m-d H:i:s');
+			$data['note'] = $sessiondata['notes'];
 
 			// This one goes to the main warehouse
 			try { 
@@ -770,14 +788,37 @@ class InventoryController extends \BaseController {
 			@list($key,$exp) = explode('|',$user->key);
 
 			// A new world order
+			\Log::info('Creating new world order');
 			$o = new Order();
 			$o->user_id			= (!empty($csuser->sponsor_id)) ?  $csuser->sponsor_id : $user->id;
 			$o->total_price		= Session::get('subtotal',0);
 			$o->total_points	= Session::get('subtotal',0);
 			$o->total_tax		= Session::get('tax',0);
 			$o->total_shipping	= Session::get('shipcost',0);
-			$o->details			= json_encode(array('orders'=>Session::get('orderdata'),'payments'=>Session::get('paymentdata')));
+			$o->details			= json_encode(array('orders'=>$sessiondata['orderdata'],'payments'=>$sessiondata['paymentdata']));
 			$o->save();
+
+			\Log::info('Creating new receipt');
+			$inv = new Receipt();
+			$inv->date_paid		= date('Y-m-d H:i:s');
+			$inv->user_id		= $user->id;
+			$inv->subtotal		= $sessiondata['subtotal'];
+			$inv->tax			= floatval(Session::get('tax',0));
+			$inv->balance		= 0;
+
+			$inv->note			= isset($sessiondata['notes'])			? $sessiondata['notes']			: '';
+			$inv->to_email		= isset($sessiondata['to_email'])		? $sessiondata['to_email']		: $user->email; 
+			$inv->to_firstname  = isset($sessiondata['to_firstname'])	? $sessiondata['to_firstname']	: 'n/a';
+			$inv->to_lastname	= isset($sessiondata['to_lastname'])	? $sessiondata['to_lastname']	: 'n/a';
+
+			$inv->data			= json_encode($sessiondata['orderdata']);
+			$inv->save();
+			
+			\Log::info('Assigning ledger items to this receipt');
+			foreach($sessiondata['paymentdata'] as $txn) {
+				\Log::info("\t TXN:".$txn->id.' GOES INTO RECEIPT '.$inv->id);
+				$l = Ledger::where('transactionid', '=', $txn->id)->update(array('receipt_id'=>$inv->id));
+			}
 
 			// Deduct item quantity from inventory
 			foreach ($invitems as $item) {
@@ -789,12 +830,26 @@ class InventoryController extends \BaseController {
 				$deduction	= json_decode(Route::dispatch($request)->getContent());
 			}
 
-			\Log::info("Dispatching receipt to {$data['email']}");
+			$data['notes']			= $sessiondata['notes'];
+			$data['to_email']		= $inv->to_email;
+			$data['to_firstname']	= $inv->to_firstname;
+			$data['to_lastname']	= $inv->to_lastname;
+
+			\Log::info("Dispatching original receipt to {$data['to_email']}");
+			Mail::send('emails.standard', $data, function($message) use($user,$data) {
+				$message->to($data['to_email'], "{$data['to_firstname']} {$data['to_lastname']}")
+				->subject("Purchase receipt from {$user->first_name} {$user->last_name}")
+				->from($user->email, "{$user->first_name} {$user->last_name}");
+			});
+
+			\Log::info("Dispatching receipt copy to {$data['email']}");
 			Mail::send('emails.standard', $data, function($message) use($user,$data) {
 				$message->to($data['email'], "{$user->first_name} {$user->last_name}")
 				->subject('Purchase receipt from '.Config::get('site.company_name'))
 				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 			});
+
+
 		}
 
 		if (isset($sessiondata['consignment_purchase'])) {
@@ -815,6 +870,10 @@ class InventoryController extends \BaseController {
         Session::forget('paymentdata');
 		Session::forget('previous_page_2');
 		Session::forget('userbypass');
+		Session::forget('note');
+		Session::forget('to_email');
+		Session::forget('to_firstname');
+		Session::forget('to_lastname');
 		Session::put('previous_page_2','/dashboard');
 
 		return View::make('inventory.thankyoupage',compact('auth','invitems','sessiondata'));
@@ -831,6 +890,11 @@ class InventoryController extends \BaseController {
 		$oldInput = Input::all();
 
 		$invitems	= Session::get('orderdata');
+
+		Session::put('notes',Input::get('notes'));
+		Session::put('to_email',Input::get('to_email'));
+		Session::put('to_firstname',Input::get('to_firstname'));
+		Session::put('to_lastname',Input::get('to_lastname'));
 
 		if (!Session::has('orderdata')) {
 			return Redirect::route('dashboard');
@@ -887,6 +951,11 @@ class InventoryController extends \BaseController {
 		else {
 			$checking =  Auth::user()->bankinfo->find($acct);
 		}
+
+		Session::put('notes',Input::get('notes'));
+		Session::put('to_email',Input::get('to_email'));
+		Session::put('to_firstname',Input::get('to_firstname'));
+		Session::put('to_lastname',Input::get('to_lastname'));
 
 		$absamount	= abs(Input::get('amount'));
 		$tax		= $this->getTax($absamount);
@@ -958,6 +1027,11 @@ class InventoryController extends \BaseController {
 			$invitems	= Session::get('orderdata');
 		}
 
+		Session::put('notes',Input::get('notes'));
+		Session::put('to_email',Input::get('to_email'));
+		Session::put('to_firstname',Input::get('to_firstname'));
+		Session::put('to_lastname',Input::get('to_lastname'));
+
 		$authinfo = new stdClass();
 		$oldInput = Input::all();
 
@@ -980,6 +1054,7 @@ class InventoryController extends \BaseController {
 			Session::put('repsale',true);
 			Session::put('orderdata', $invitems);
 		}	
+
 
 		// MATT HACKERY - 
 		// Watch for changes in mwl_password
