@@ -46,9 +46,9 @@ class ExternalAuthController extends \BaseController {
 		$Q = "SELECT username FROM sessionkey LEFT JOIN users ON (userid=id) WHERE `key`='".$mysqli->escape_string($key)."' LIMIT 1";
 		$res = $mysqli->query($Q);
 		$mwluser = $res->fetch_assoc();
-		\Log::info('DUMP: '.print_r($mwluser['username'],true));
-		$mbr = User::find($mwluser['username']);
+		\Log::info('FOUND: '.print_r($mwluser['username'],true));
 
+		$mbr = User::find($mwluser['username']);
         //$mbr = User::where('key', 'LIKE', $key.'|%')->first();
         if (!isset($mbr) && Session::get('repsale')) {
             \Log::error("{$key} this is a rep sale, and this key is not locked to a user account!");
@@ -1300,6 +1300,7 @@ class ExternalAuthController extends \BaseController {
 
 	}
 	
+	// This is a SHIV .. I mean SHIM for angular to do its magic
     public function reorder(){
         $data = Input::all();
         if(empty($data)){
@@ -1310,7 +1311,7 @@ class ExternalAuthController extends \BaseController {
             $message = "Successfully posted data";
             $status = "success"; 
         }
-        return Response::json(['message'=>$message,'status'=>$status,'data'=>$data]);
+        return Response::json(['message'=>$message,'status'=>$status,'data'=>$data], 200);
     }
 
 }
