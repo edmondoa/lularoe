@@ -694,9 +694,9 @@ class DataOnlyController extends \BaseController
             $data = User::orderBy("updated_at", "DESC")
                         ->orderBy($order, $sequence)
                         ->orderBy("last_name", "DESC")
-                        ->orderBy("first_name", "DESC")
+                        /*->orderBy("first_name", "DESC")
                         ->skip($offset)
-                        ->take($limit)
+                        ->take($limit)*/
                         ->get();
 			return [
                         'count'=>User::count(),
