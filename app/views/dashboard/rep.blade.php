@@ -92,6 +92,7 @@
 				<div class="list-group">
 					<a class="link list-group-item" href="{{ url() }}/join/{{ $user->public_id }}">Join My Team</a>
 					<a class="link list-group-item" href='//{{ Auth::user()->public_id }}.{{ Config::get("site.base_domain") }}'>My site</a>
+					<a class="link list-group-item" href='https://itunes.apple.com/us/app/lularoe/id960368800?mt=8&uo=4'><span class="fa fa-apple"></span> Audrey IOS App</a>
 					<!-- <a class="link list-group-item" target='_blank' href='https://rightsignature.com/forms/2014w9-4555d8/token/12e754b6c0b'>W9 form</a> -->
 				</div>
 			</div><!-- panel -->

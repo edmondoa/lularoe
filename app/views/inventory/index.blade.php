@@ -7,7 +7,7 @@
 		<div ng-controller="InventoryController" class="my-controller">
 			<div class="row">
 				<div class="col col-md-8">
-					@if ($by_group)
+					@if (isset($by_group) && $by_group)
 						<ul class="nav nav-tabs">
 							<!-- <li class="active" ng-click="filterRows('')"><a href="#">All</a></li> -->
 							<li class="active" ng-click="filteredRows = groups['A']; activeGroup = 'A'">
@@ -54,12 +54,12 @@
 						</div>
 					@endif
 					<table class="table table-bordered table-striped" id="currentinventory">
-						@if ($by_group)
+						@if (isset($by_group) && $by_group)
 							<tr class="media" ng-repeat="inventory in inventories | filter:filterRows">
 						@else
 							<tr class="media" ng-repeat="inventory in inventories">
 						@endif
-							@if ($by_group)
+							@if (isset($by_group) && $by_group)
 								<td style="width:1px;">
 									<input id="@{{$index}}" ng-show="!buttonActive" type="radio" name="group[@{{groupMatrix[inventory.model].group}}]" value="inventory.model" ng-click="selectRow(inventory.model)">
 									<input id="@{{$index}}b" ng-show="buttonActive" type="radio" name="selected" ng-click="selectRow(inventory.model, 'true')">

@@ -27,7 +27,7 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		\Log::info("Get User by Key {$key}");
-		if (empty($key)) {
+		if (empty($key) || $key == '{"Code" : 401, "Message" : "failed invalid username or password"}') {
            \Log::info("Veilen Schlecht - Empty Key");
             return App::abort(401, json_encode(array('error'=>'true','message'=>'No Key Specified - Please Login and try again')));
         }
@@ -206,6 +206,7 @@ class ExternalAuthController extends \BaseController {
 		if (empty($output)) { 
 			// Last resort!
 			$output = json_decode(file_get_contents($mwlcachefile));
+			\Log::info('Nothing returned from inventory system!');
 			//return Response::json(array('errors'=>true,'message'=>'Nothing returned from inventory system.'),500);
 		}
 
@@ -395,6 +396,7 @@ class ExternalAuthController extends \BaseController {
 		$server_output = curl_exec ($ch);
 
 		if ($errno = curl_errno($ch)) {
+			\Log::error('Something went wrong to mwl system');
 			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 			return(Response::json($result,401));
 		}
@@ -402,6 +404,7 @@ class ExternalAuthController extends \BaseController {
 
 		if (!$server_output) return(false);
 		else {
+			\Log::info('MWL Responded with: '.$server_output);
 			$so = json_decode($server_output);
 			if (isset($so->Code) && $so->Code == '401') return null;
 			return($server_output);
@@ -578,6 +581,7 @@ class ExternalAuthController extends \BaseController {
 
 		if (!empty($data['email'])) {
 			try { 
+				\Log::info('Dispatching final email receipt to: '.$data['email']);
 				// This one goes to the final user
 				Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
 					$message->to($data['email'])
@@ -1202,6 +1206,12 @@ class ExternalAuthController extends \BaseController {
 				$response_obj->TransactionResponse->Result		= 'Declined';
 				$response_obj->TransactionResponse->ResultCode	= 'F';
 				$response_obj->TransactionResponse->Status		= 'Attempt Failed';
+				$response_obj->TransactionResponse->AuthAmount	= 0;
+			}
+			if ($response_obj->Status == 'Error'){
+				$response_obj->TransactionResponse->Result		= 'Declined';
+				$response_obj->TransactionResponse->ResultCode	= $response_obj->Error->Code;
+				$response_obj->TransactionResponse->Status		= $response_obj->Error->Description;
 				$response_obj->TransactionResponse->AuthAmount	= 0;
 			}
 		}

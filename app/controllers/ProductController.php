@@ -9,9 +9,9 @@ class productController extends \BaseController {
 	 */
 	public function index()
 	{
-		$products = Product::all();
-		$categories = ProductCategory::all();
-		$tags = ProductTag::all();
+		#$products = Product::all();
+		#$categories = ProductCategory::all();
+		#$tags = ProductTag::all();
 		return View::make('product.index', compact('products', 'categories', 'tags'));
 	}
 	
@@ -68,14 +68,16 @@ class productController extends \BaseController {
 			foreach($data['images'] as $key => $image) {
 				$image['featured'] = isset($image['featured']) ? 1 : 0;
 				$image['path'] = explode('/uploads/', $image['path']);
-				$image['path'] = $image['path'][1];
+				$image['path'] = isset($image['path'][1]) ? $image['path'][1] : '';
 				$media = Media::where('url', $image['path'])->get()->first();
-				$attachment = Attachment::create([
-					'attachable_type' => 'Product',
-					'attachable_id' => $product->id,
-					'media_id' => $media->id,
-					'featured' => $image['featured'],
-				]);
+				if ($media) { 
+					$attachment = Attachment::create([
+						'attachable_type' => 'Product',
+						'attachable_id' => $product->id,
+						'media_id' => $media->id,
+						'featured' => $image['featured'],
+					]);
+				}
 			}
 		}
 
@@ -224,12 +226,14 @@ class productController extends \BaseController {
 					$image['path'] = explode('/uploads/', $image['path']);
 					if (isset($image['path'][1])) $image['path'] = $image['path'][1];
 					$media = Media::where('url', $image['path'])->get()->first();
-					$attachment = Attachment::create([
-						'attachable_type' => 'Product',
-						'attachable_id' => $product->id,
-						'media_id' => $media->id,
-						'featured' => $image['featured'],
-					]);
+					if ($media) { 
+						$attachment = Attachment::create([
+							'attachable_type' => 'Product',
+							'attachable_id' => $product->id,
+							'media_id' => $media->id,
+							'featured' => $image['featured'],
+						]);
+					}
 				}
 				
 				// update existing images
