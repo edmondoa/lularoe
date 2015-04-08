@@ -8,8 +8,8 @@
         Session::forget('paymentdata');
 		Session::forget('paidout');
 	}
-	$has_bank			= $user->bankinfo;
-	$consignment_bal 	= $user->consignment;
+    $bi =  $user->bankinfo;
+	$has_bank = (!empty($bi->first())) ? $bi->first()->bank_name : false;
 
 	$orders[] = ['numOrder'=>1,'price'=>2500,'model'=>'Initial Order'];
 	$balanceAmount = $orders[0]['price'];
@@ -25,6 +25,8 @@
 	Session::put('subtotal',2500);
 	Session::put('orderdata',$orders);
 	Session::put('notax',true);
+
+
 
 ?>
         <div ng-controller="InventoryController" class="my-controller">
@@ -85,32 +87,44 @@
                 <div class="col-lg-12 col-sm-12 col-md-12">
 				<h3>Payment Information</h3>
 				<ul class="nav nav-tabs">
+					@if ($has_bank)
 					<li class="nav"><a href="#bankinfo" data-toggle="tab">Pay With ACH / Bank Account</a></li>
+					@endif
 					<li class="nav"><a href="#creditcard" data-toggle="tab">Pay With Credit Card</a></li>
 				</ul>
 
 				<div class="tab-content">
 					{{ Form::close() }}
-                    <div class="well tab-pane fade" id="bankinfo">
-						{{ Form::open(array('url' => 'inv/cashpurchase', 'method' => 'post','name'=>'inven')) }}
-						<div class="row">
-							<div class="col-lg-6 col-sm-6 col-md-6"></div>
-							<div class="col-lg-6 col-sm-6 col-md-6">
-								<a class="btn btn-success" href="https://zb.rpropayments.com/Buyer/CheckOutFormPay/oTHKVswiXCL-mf--W-YJdq7tyd0-" TARGET="_BLANK">Payment Portal for ACH</a>
-								<h4>Amount to apply to this order</h4>
-								$<input type="text" name="amount" value="{{ $balanceAmount }}">
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-lg-12 col-sm-12 col-md-12">
-								<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
-								<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
-							</div>
-						</div>
-						{{ Form::close() }}
-                    </div><!-- ACH -->
-					
-                    <div class="well tab-pane fade" id="creditcard">
+<div class="well tab-pane fade" id="bankinfo">
+{{ Form::open(array('url' => 'inv/achpurchase', 'method' => 'post','name'=>'inven')) }}
+<div class="row">
+<div class="col-lg-12 col-sm-12 col-md-12">
+{{ Form::label('bankinfo', 'Bank Account') }}
+<select name="account" class="form-control">
+@foreach ($bi as $bank)
+<option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
+@endforeach
+</select>
+</div>
+</div>
+<div class="row">
+<div class="col-lg-6 col-sm-6 col-md-6"></div>
+<div class="col-lg-6 col-sm-6 col-md-6">
+<h4>Amount to apply to this order</h4>
+$<input type="text" name="amount" value="{{ $balanceAmount }}">
+</div>
+</div>
+<div class="row">
+<div class="col-lg-12 col-sm-12 col-md-12">
+<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
+<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
+</div>
+				</div>
+										{{ Form::close() }}
+															</div><!-- ACH -->
+
+
+<div class="well tab-pane fade" id="creditcard">
 						{{ Form::open(array('url' => 'inv/purchase', 'method' => 'post','name'=>'inven')) }}
 						<div class="row">
 							<div class="col-lg-12 col-sm-12 col-md-12">

@@ -44,11 +44,11 @@
 			    </div>
 			    
 				<div class="form-group">
-					{{ Form::radio('gender', 'M', true, array('id' => 'gender_male')) }}
-					{{ Form::label('gender_male', 'Male') }}
-					<br>
 					{{ Form::radio('gender', 'F', false, array('id' => 'gender_female')) }}
 					{{ Form::label('gender_female', 'Female') }}
+					<br>
+					{{ Form::radio('gender', 'M', true, array('id' => 'gender_male')) }}
+					{{ Form::label('gender_male', 'Male') }}
 				</div>
 			       
 			    <div class="form-group">
@@ -112,6 +112,11 @@
 			        {{ Form::text('min_commission', Input::old('min_commission'), array('class' => 'form-control')) }}
 			    </div>
 			    -->
+			    
+			    <div class="form-group">
+			        {{ Form::label('company_name', 'Company Name') }}
+			        {{ Form::text('company_name', Input::old('company_name'), array('class' => 'form-control')) }}
+			    </div>
 			    
 			    <div class="form-group">
 			        {{ Form::label('disabled', 'Status') }}

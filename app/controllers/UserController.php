@@ -43,7 +43,7 @@ class userController extends \BaseController {
 		$rules['state'] = 'required';
 		$rules['zip'] = 'required|digits_between:5,10';
 		$rules['dob'] = 'required|before:'.date('Y-m-d',strtotime('18 years ago'));
-		$rules['password'] = 'sometimes|confirmed|between:8,12';
+		$rules['password'] = 'sometimes|confirmed|between:8,20';
 		#$rules['password_confirmation'] = 'sometimes|digits_between:8,12';
 		$rules['sponsor_id'] = 'required|numeric';
 		$check_sponsor_id = User::where('public_id', $data['sponsor_id']);
@@ -58,7 +58,7 @@ class userController extends \BaseController {
 		// Need to pass plain pass to MWL auth
 		// Update MWL data
 		$plainpass = $data['password'];
-		App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
+		App::make('ExternalAuthController')->createMwlUser($user->id, $plainpass);
 		App::make('ExternalAuthController')->auth($user->id, $plainpass);
 
 		$data['password'] = Hash::make($data['password']);
@@ -219,7 +219,7 @@ class userController extends \BaseController {
 			$old_user_data = $user;
 			$rules = User::$rules;
 			$rules['email'] = 'required|email|unique:users,email,' . $user->id;
-			$rules['password'] = 'sometimes|confirmed|between:8,12';
+			$rules['password'] = 'sometimes|confirmed|between:8,20';
 
 			//$rules['sponsor_id'] = 'required|digits';
 			$data = Input::all();
@@ -246,7 +246,7 @@ class userController extends \BaseController {
 			// Update MWL data
 			// Need to pass plain pass to MWL auth
 			$plainpass = $data['password'];
-			App::make('ExternalAuthController')->setmwlpassword($user->id, $plainpass);
+			App::make('ExternalAuthController')->updateMwlUser($user->id, $plainpass);
 			App::make('ExternalAuthController')->auth($user->id, $plainpass);
 
 			// before save we need to control a couple of things

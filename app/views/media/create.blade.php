@@ -8,7 +8,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col col-lg-3 col-md-4 col-sm-6">
+		<div class="col col-xl-3 col-lg-4 col-md-6 col-sm-6">
 		    {{ Form::open(array('url' => 'media', 'files' => true)) }}
 			    
                 <div class="form-group">
@@ -38,6 +38,9 @@
 							<button type="button" class="btn btn-default addTag"><i class='fa fa-plus'></i></button>
 			            </div>
 			    	</div>
+			    </div>
+			    
+			    <div class="form-group">
 					{{ Form::label('tags', 'New Tag') }}
 			    	<div class="input-group">
 						{{ Form::text('', '', ['class' => 'form-control tagger new']) }}
@@ -51,7 +54,7 @@
                 @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
 	                <div class="form-group">
 	                	<label>
-	                		{{ Form::checkbox('reps', null, ['checked' => 'checked']) }} Share with FC's
+	                		{{ Form::checkbox('reps', null, ['checked' => 'checked']) }} Share with Reps
 	                	</label>
 	                </div>
 	            @endif

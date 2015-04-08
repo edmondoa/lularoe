@@ -45,19 +45,21 @@ class Product extends \Eloquent
 	
 	public function getBarCodeAttribute() {
 		if (isset($this->barcode_image)) {
-			if(empty($this->barcode_image))
-			{
-				$this->barcode_image = \DNS1D::getBarcodePNGPath($this->sku, "C128",3,75);
-				$this->save();
+			if (!empty($this->sku)) { 
+				if(empty($this->barcode_image))
+				{
+					$this->barcode_image = \DNS1D::getBarcodePNGPath($this->sku, "C128",3,75);
+					$this->save();
+				}
+				elseif(!is_file(public_path().$this->barcode_image))
+				{
+					$this->barcode_image = \DNS1D::getBarcodePNGPath($this->sku, "C128",3,75);
+					$this->save();
+				}
+				return $this->barcode_image;
 			}
-			elseif(!is_file(public_path().$this->barcode_image))
-			{
-				$this->barcode_image = \DNS1D::getBarcodePNGPath($this->sku, "C128",3,75);
-				$this->save();
-			}
-			return $this->barcode_image;
 		}
-		else return '';
+		return '';
 	}
 	
     public function items() {

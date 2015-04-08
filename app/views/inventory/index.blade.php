@@ -1,6 +1,4 @@
-@extends('layouts.default')
-@section('content')
-<style>	
+@extends('layouts.default') @section('content') <style>	
 	.toggleBg { background : #efefef }
 </style>
 <div ng-app="app" class="index">
@@ -9,10 +7,7 @@
 		<div ng-controller="InventoryController" class="my-controller">
 			<div class="row">
 				<div class="col col-md-8">
-					<div class="pull-right" style="position:relative;">
-						@include('_helpers.loading')
-					</div>
-					@if (!isset($full))
+					@if (isset($by_group) && $by_group)
 						<ul class="nav nav-tabs">
 							<!-- <li class="active" ng-click="filterRows('')"><a href="#">All</a></li> -->
 							<li class="active" ng-click="filteredRows = groups['A']; activeGroup = 'A'">
@@ -59,12 +54,12 @@
 						</div>
 					@endif
 					<table class="table table-bordered table-striped" id="currentinventory">
-						@if (!isset($full))
+						@if (isset($by_group) && $by_group)
 							<tr class="media" ng-repeat="inventory in inventories | filter:filterRows">
 						@else
 							<tr class="media" ng-repeat="inventory in inventories">
 						@endif
-							@if (!isset($full))
+							@if (isset($by_group) && $by_group)
 								<td style="width:1px;">
 									<input id="@{{$index}}" ng-show="!buttonActive" type="radio" name="group[@{{groupMatrix[inventory.model].group}}]" value="inventory.model" ng-click="selectRow(inventory.model)">
 									<input id="@{{$index}}b" ng-show="buttonActive" type="radio" name="selected" ng-click="selectRow(inventory.model, 'true')">
@@ -83,7 +78,7 @@
 									<div ng-repeat="(key,size) in inventory.sizes" class="pull-left margin-right-1">
 										<small ng-bind="size.key"></small>
 										<Br />
-										<input ng-model="size.numOrder" ng-model-options="{ debounce: 1000 }" ng-change="massAdd(inventory,size); $rollbackViewValue();" type="number" style="width:3em" size="3" value="0">
+										<input ng-model="size.numOrder" ng-bind="size.numOrder" ng-model-options="{ debounce: 1000 }" ng-change="massAdd(inventory,size); $rollbackViewValue();" type="number" style="width:3em" size="3" value="0">
 									</div>
 								</div>
 							</td>
@@ -109,6 +104,10 @@
 								</tr>
 								@endif
 								<tr>
+									<td># Items Selected</td>
+									<td align="right"><span ng-bind="totalQuantity"></span></td>
+								</tr>
+								<tr>
 									<td>Subtotal</td>
 									<td align="right">$<span ng-bind="subtotal()|number:2">0.00</span></td>
 								</tr>
@@ -132,9 +131,13 @@
 									<td colspan="2"><span class="label label-info">Please allow 3 days for shipping</span></td>
 								</tr>
 								<tr>
-									<td colspan="2"><h4 ng-show="!showCheckoutButton" class="pull-right">You must add 33 items to checkout</h4>
+									<td colspan="2">
+										<div class="pull-right" style="position:relative;">
+											@include('_helpers.loading')
+										</div>
+										<h4 ng-show="!showCheckoutButton" class="pull-right">You must add <span ng-bind="(minQuantity - totalQuantity)"></span> items to checkout</h4>
 									<button type="button" ng-show="showCheckoutButton" class="pull-right btn btn-sm btn-success" ng-click="checkout()">
-										Checkout
+										Checkout (<span ng-bind="totalQuantity"></span>)
 									</button>
 									<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">
 										Cancel

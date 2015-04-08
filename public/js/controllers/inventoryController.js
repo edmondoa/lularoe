@@ -98,6 +98,8 @@ try {
         var path =  ctrlpad.inventoryCtrl.path;
         
         $scope.name = "InventoryController";
+		$scope.minQuantity		= 33;
+		$scope.totalQuantity	= 0;
         $scope.params = $routeParams;
         $scope.cart = [];
         $scope.countItems = 0;
@@ -118,11 +120,13 @@ try {
         
         $http.get(path).success(function(v) {
             shared.updateLocalCart();
+
             var b = new RegExp('Sloan');
             for(var i in v){
                 var isInsideInventory = [];
                 isInsideInventory = $scope.inventories.filter(function(inventory){
-                    return b.test(inventory.model);
+					return false;
+                    //return b.test(inventory.model);
                 });
 
                 if(isInsideInventory.length == 0){
@@ -136,10 +140,11 @@ try {
             $scope.countItems = $scope.inventories.length;
             $scope.pageSize = $scope.inventories.length;
             $scope.isComplete = true;
+
             angular.forEach($scope.inventories, function(inventory){
                  inventory.sizes = [];   
                  inventory.doNag = false;   
-                 inventory.numOrder = 1; 
+                 inventory.numOrder = 0;  // was 1
                  var b = new RegExp("Kid's Leggings");
                  var tst = b.test(inventory.model);
                  if(!tst){  
@@ -156,6 +161,7 @@ try {
                      });
                  }
             });
+
             console.log($scope.inventories);
 
         });
@@ -185,10 +191,10 @@ try {
 			'Tall and Curvy Leggings (2 Pack)'
 			],
 		'K' : [
-			// 'Sloan (2-8)',
-			// 'Sloan (10-14)',
+			'Sloan (2-8)',
+			'Sloan (10-14)',
 			'Dotdotsmile Lucy Sleeve',
-			// 'Dotdotsmile Lucy Tank',
+			'Dotdotsmile Lucy Tank',
 			'Kid\'s Leggings (2 Pack)'
 		]
 	};
@@ -250,6 +256,10 @@ try {
 			'quantities': [35],
 			'group': 'L'
 		},
+		'Tall and Curvy Leggings (2 Pack)':{
+			'quantities': [0],
+			'group': 'L'
+		},
 		'Sloan (2-8)':{
 			'quantities': [4,4,4,4],
 			'group': 'K'
@@ -269,7 +279,7 @@ try {
 		'Kid\'s Leggings (2 Pack)':{
 			'quantities': [23,0],
 			'group': 'K'
-		} 
+		}
 	};
     
     	// filter rows by group
@@ -371,7 +381,7 @@ try {
 						
 						// increment up
 						size.checked = true;
-						size.numOrder = size.numOrder + 1;
+						size.numOrder = parseInt(size.numOrder) + 1;
 						// inventory.numOrder ++;
 						// inventory.sizes[sidx].numOrder ++;
 						$scope.addOrder(inventory);
@@ -415,9 +425,10 @@ try {
             }
         };
 
-        
-        $scope.addOrder = function(n){
-			// console.log('ORDER ',n);
+
+        $scope.addOrder = function(inventoryItem) {
+
+/*
             var checkedItems = n.sizes.filter(function(s){
                 return s.checked;
             });
@@ -425,32 +436,48 @@ try {
             if(!checkedItems.length){
                 n.doNag = "none-selected";
             }else n.doNag = false;
+*/
             
-            angular.forEach(n.sizes, function(size){
-                if(!$scope.isInOrder($scope.orders, n, size)) {
-                    if(size.checked || (size.value && size.checked)){
-                        var quantity = (size.numOrder > 0) ? size.numOrder : n.numOrder;
+            angular.forEach(inventoryItem.sizes, function(size, sidx){
 
-                        if(size.value >= quantity){
-                            size.numOrder = quantity;
-                            size.value -= quantity;
-                            if(!size.value || size.value < 0) size.value = 0;
-                            
-                            $scope.orders.push({
-                                'id':n.id,
-                                'model':n.model,
-                                'itemnumber':n.itemnumber,
-                                'size':size.key,
-                                'numOrder':quantity,
-                                'price':n.price,
-                                'image':n.image
-                            });
-                            shared.updateCart($scope.orders);
-                        }else{
-                            n.doNag = "volume-too-large";
-                        }
-                    }    
-                }
+				console.log('TEST 4: '+inventoryItem.model+' size '+size.key+' #'+sidx+' has a numOrder '+size.numOrder+' / '+size.value);
+				// make sure we have an integer parsable numOrder value
+				if(typeof size.numOrder != undefined && parseInt(size.numOrder) > 0) {
+					// Make sure we never over order.
+					if(size.numOrder > size.value) size.numOrder = size.value;
+
+					var quantity = parseInt(size.numOrder);
+
+					console.log('Updating to : '+quantity + ' / '+size.value);
+
+					// Make sure we don't add more quantity than we have on hand
+					if(size.value >= quantity && size.numOrder > 0) {
+						size.numOrder	= quantity;
+/*
+						size.value		-= quantity;
+*/
+						if(!size.value || size.value < 0) size.value = 0;
+						
+						if($scope.isInOrder($scope.orders, inventoryItem, size) == false) {
+							// Push the inventory Item into the orders!
+							$scope.orders.push({
+								'id':inventoryItem.id,
+								'model':inventoryItem.model,
+								'itemnumber':inventoryItem.itemnumber,
+								'size':size.key,
+								'numOrder':quantity,
+								'price':inventoryItem.price,
+								'image':inventoryItem.image
+							});
+						} 
+						else {
+							$scope.updateOrder($scope.orders, inventoryItem, size);
+						}
+					} else {
+						size.numOrder = size.value;
+						inventoryItem.doNag = "volume-too-large";
+					}
+				}    
             });   
         };
         
@@ -496,23 +523,28 @@ try {
         
 		// array = inventory
 		// n = size chart
-		$scope.massAdd = function(array, n) {
+		$scope.massAdd = function(inventoryItem, itemSizes) {
+
+			console.log('ITEM SIZES: ',itemSizes);
             angular.forEach($scope.inventories, function(inventory){
 				// If we've selected the appropriate scope level inventory with the passed array inventory
-                if(inventory.itemnumber == array.itemnumber && inventory.model == array.model){
+                console.log('TEST 1: '+inventory.id+' == '+inventoryItem.id + ' && ' + inventory.model + ' == ' + inventoryItem.model);
+
+                if((inventory.id == inventoryItem.id) && (inventory.model == inventoryItem.model)) {
+
 					// Go through each size if the scope level inventory until we find the passed in size chart key
-                    angular.forEach(inventory.sizes, function(size,sidx){
-                        if(size.key == n.key) {
+                    angular.forEach(inventory.sizes, function(size, sidx){
+						console.log('TEST 2: '+size.key+' == '+itemSizes.key);
+                        if(size.key == itemSizes.key) {
 									
-                            if(size.numOrder > 0){
-								for(var i=0; i< $scope.orders.length; i++){
-									if ($scope.orders[i].size == n.key) $scope.orders[i].numOrder = n.numOrder;
-								}
-								size.checked = true;
-                                $scope.addOrder(array);     
+							console.log('TEST 3: '+size.numOrder+' > 0');
+                            if(parseInt(size.numOrder) > 0){
+                                $scope.addOrder(inventoryItem);     
                             }else{
+								console.log('REMOVING ORDER');
+								size.numOrder = '';
 								size.checked = false;
-                                $scope.removeOrder(array, size.key);
+                                $scope.removeOrder(inventoryItem, size.key);
                             };
                         };
                     });
@@ -528,24 +560,57 @@ try {
                             size.checked = !n.checked;
                             if(!size.value) size.checked = false;
                             if(size.checked){
-                                $scope.addOrder(array);     
+               //                 $scope.addOrder(array);     
                             }else{
-                                $scope.removeOrder(array, size.key);
+                //                $scope.removeOrder(array, size.key);
                             };
                         };
                     });
                 } ;   
             });
         };
+
+		$scope.updateOrder = function(orderManifest, currentItem, currentSize) {
+			console.log('I GOT UPDATE,',orderManifest);
+			var returnmode = false;
+
+			angular.forEach(orderManifest, function (manifestItem) {
+				console.log('TEST 6: '+manifestItem.size+' == '+currentSize.key);
+				if ((manifestItem.id == currentItem.id) && (manifestItem.model == currentItem.model) && (manifestItem.size == currentSize.key))  {
+					console.log('Update order manifest for '+manifestItem.model+': '+currentSize.key+ ' = '+currentSize.numOrder);
+					manifestItem.numOrder = currentSize.numOrder;
+					// Update order amount
+				}
+			});
+		}
+
+        $scope.isInOrder = function(orderManifest, currentItem, currentSize){
+			console.log('I GOT JERE,',orderManifest);
+			var returnmode = false;
+
+			angular.forEach(orderManifest, function (manifestItem) {
+				console.log('TEST 5: '+manifestItem.size+' == '+currentSize.key);
+				if ((manifestItem.id == currentItem.id) && (manifestItem.model == currentItem.model) && (manifestItem.size == currentSize.key))  {
+					console.log('Yup, it\'s in there wanna seee?');
+					console.log('ListItem: ',manifestItem);
+					console.log('CurrentItem: ',currentItem);
+					console.log('Current Size: ',currentSize);
+					returnmode = true;
+				}
+			});
+			
+			return returnmode;	
+		}
         
-        $scope.isInOrder = function(array,n, size){
+        $scope.xisInOrder = function(array,n, size){
             if(array.length){
                 var res = array.filter(function(o){
-                    if(o.itemnumber == n.itemnumber && o.model == n.model && o.size == size.key){
-                        angular.forEach(n.sizes, function(size){
-                            if(size.checked && o.size == size.key && size.value) {
+                    if(o.itemnumber == n.itemnumber && o.model == n.model && o.size == size.key) {
+                        angular.forEach(n.sizes, function(cksize) {
+                            if(size.checked && o.size == cksize.key && cksize.value) {
                                 if(size.value >= n.numOrder) {
                                     if(o.numOrder){
+										console.log(n,o);
                                         /*
                                         if((size.value - n.numOrder) >= 0)
                                         o.numOrder += n.numOrder;
@@ -554,14 +619,14 @@ try {
                                         o.numOrder = n.numOrder;  
                                     }
                                     /*size.value -= n.numOrder;*/
-                                    if(!size.value || size.value < 0) size.value = 0;
+                                    if(!cksize.value || cksize.value < 0) cksize.value = 0;
                                 }else{
                                     n.doNag = "volume-too-large";
                                 }
                             }    
                         });
                         return true;
-                    }else return false;
+                    } else return false;
                 });    
                 return !(!res.length);
             }
@@ -571,8 +636,9 @@ try {
         $scope.countSelect = function(){
 			var totalQuantity = 0;
             angular.forEach($scope.orders, function (order){
-                totalQuantity += order.numOrder;   
+                totalQuantity += parseInt(order.numOrder); 
             });
+       		console.log(totalQuantity); 
             //return !(!$scope.orders.length);
             return !(!totalQuantity);
         };
@@ -580,17 +646,22 @@ try {
         $scope.subtotal = function(){
             var total = 0;
             var totalQuantity = 0;
+			console.log('subtotal()');
+
             angular.forEach($scope.orders, function (order){
-                total += order.numOrder * order.price; 
-                totalQuantity += order.numOrder;   
+                total += parseInt(order.numOrder) * order.price; 
+                totalQuantity += parseInt(order.numOrder); 
             });
-            
+
+			$scope.totalQuantity = totalQuantity;
+
             //need to detect if its only reorder
-            if(totalQuantity < 33){
+            if(totalQuantity < $scope.minQuantity){
                 $scope.showCheckoutButton = false;
             }else{
                 $scope.showCheckoutButton = true;
             }
+		
             //$scope.tax = total * 0.0825; // Get this from avalara?
             //$scope.total = $scope.tax + total;
 			$scope.subtotalnum = total;
@@ -628,7 +699,7 @@ try {
         };
         
         $scope.fixInvalidNumber = function(n){
-            if(n.numOrder == undefined){
+            if(typeof n.numOrder == "undefined"){
                 n.numOrder = 0;
             }
         };

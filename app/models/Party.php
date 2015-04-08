@@ -36,6 +36,11 @@ class Party extends \Eloquent
 		return $this->hasOne('Address', 'addressable_id');
 	}
 
+	public function emailMessages()
+	{
+		return $this->hasMany('EmailMessage', 'messagable');
+	}
+
 	public function getLocalStartDateAttribute($value)
 	{
 		$updated_time = $this->attributes['date_start'];

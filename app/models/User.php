@@ -51,6 +51,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'hide_phone',
 		'hide_billing_address',
 		'hide_shipping_address',
+		'company_name'
 	];
 
 	use UserTrait, RemindableTrait;
@@ -87,6 +88,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public function addresses()
 	{
 		return $this->hasMany('Address', 'addressable_id', 'id');
+	}
+
+	public function receipts()
+	{
+		return $this->hasMany('Receipt');
 	}
 
 	public function products()

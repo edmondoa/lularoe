@@ -28,6 +28,10 @@ class Ledger extends \Eloquent
 
 	public function getLedgerList($id = null) {
 		return $this->ledger($id);
-		
 	}
+
+	public function receipt() {
+		return $this->belongsTo('Receipt','receipt_id');
+	}
+
 }

@@ -8,7 +8,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col col-lg-3 col-md-4 col-sm-6">
+		<div class="col col-xl-3 col-lg-4 col-md-6 col-sm-6">
 		    {{ Form::model($media, array('route' => array('media.update', $media->id), 'method' => 'PUT', 'files' => true)) }}
 		
                 <div class="form-group">
@@ -58,7 +58,7 @@
                 @if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']))
 	                <div class="form-group">
 	                	<label>
-	                		{{ Form::checkbox('reps') }} Share with FC's
+	                		{{ Form::checkbox('reps') }} Share with Reps
 	                	</label>
 	                </div>
 	            @endif

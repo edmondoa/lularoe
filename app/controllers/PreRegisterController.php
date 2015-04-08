@@ -12,7 +12,10 @@ class PreRegisterController extends \BaseController {
 	public function create($public_id = '')
 	{
 		if (empty($public_id)) return View::make('pre-register.sponsor');
-		$sponsor = User::where('public_id',$public_id)->first();
+
+		if (intVal($public_id)) $sponsor = User::where('id',$public_id)->first();
+		else $sponsor = User::where('public_id',$public_id)->first();
+
 		if (!isset($sponsor->id)) return View::make('pre-register.sponsor')->with('message_danger', 'Missing or incorrect sponsor ID');
 		
 		if($sponsor->disabled)

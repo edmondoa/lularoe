@@ -3,16 +3,16 @@
 class ExternalAuthController extends \BaseController {
 
 	// Private vars for this controller only
-	private $mwl_server	= 'mwl.controlpad.com';
-	private $mwl_un		= 'llr_txn';
-	private $mwl_pass	= 'ilovetexas';
-	private $mwl_db		= 'llr';
+	const MWL_SERVER	= 'mwl.controlpad.com';
+	const MWL_UN		= 'llr_txn';
+	const MWL_PASS		= 'ilovetexas';
+ 	const MWL_DB 		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
+	private	$SESSIONKEY_TIMEOUT = 3600;
 
 	// These items are to be ignored and not shown
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
-	public 	$logdata = false;
 
 	// Thanks Ampersand, just thank you for screwing things up.
 	public function escapemodelname($modelname) {
@@ -20,15 +20,56 @@ class ExternalAuthController extends \BaseController {
 		return(htmlspecialchars($modelname));
 	}
 
+	public static function getUserByKey($key = '') {
+		if (empty($key) && Auth::user()) {
+			\Log::info("No Key, but Authed = Return warehouse inventory user");
+			return(false);
+		}
+
+		\Log::info("Get User by Key {$key}");
+		if (empty($key) || $key == '{"Code" : 401, "Message" : "failed invalid username or password"}') {
+           \Log::info("Veilen Schlecht - Empty Key");
+            return App::abort(401, json_encode(array('error'=>'true','message'=>'No Key Specified - Please Login and try again')));
+        }
+
+		\Log::info("Pulling all the way back from the MWL: {$key}");			
+		try {
+			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+		}
+		catch (Exception $e)
+		{
+			\Log::error("{$key} this this key is not locked to a user account in mwl!");
+			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
+			return App::abort(401, json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again (2)')));
+		}
+		// This is not good .. WHERE'S MY API!
+		$Q = "SELECT username FROM sessionkey LEFT JOIN users ON (userid=id) WHERE `key`='".$mysqli->escape_string($key)."' LIMIT 1";
+		$res = $mysqli->query($Q);
+		$mwluser = $res->fetch_assoc();
+		\Log::info('FOUND: '.print_r($mwluser['username'],true));
+
+		$mbr = User::find($mwluser['username']);
+        //$mbr = User::where('key', 'LIKE', $key.'|%')->first();
+        if (!isset($mbr) && Session::get('repsale')) {
+            \Log::error("{$key} this is a rep sale, and this key is not locked to a user account!");
+			return App::abort(401, json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again (1)')));
+		}
+		else if ($mbr) { 
+			\Log::info("{$key} = {$mbr->id}");
+		}
+
+		return $mbr;
+	}
+
 	// STUB for removing inventory
 	public function rmInventory($key,$id,$quan) {
 		// Magic database voodoo
-        $mbr	= User::where('key', 'LIKE', $key.'|%')->first();
+        $mbr	= self::getUserByKey($key);
 		
 		$prod = Product::where('user_id','=',$mbr->id)->where('id','=',$id)->get()->first();
 
 		if (!empty($prod)) { 
-			if ($prod->quantity >= intval($quan)+1) {
+			if ($prod->quantity >= intval($quan)) {
 				$prod->quantity = $prod->quantity - intval($quan);
 				$prod->save();
 				return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
@@ -46,23 +87,17 @@ class ExternalAuthController extends \BaseController {
 	public function getInventory($key = '', $location='')
 	{
 		// Magic database voodoo
-        $mbr = User::where('key', 'LIKE', $key.'|%')->first();
+        $mbr	= self::getUserByKey($key);
 		if ($mbr) $location = $mbr->first_name.' '.$mbr->last_name;
 
-		if ($this->logdata) file_put_contents('/tmp/logData.txt','OKey: '.$key."\n",FILE_APPEND);
-		if ($this->logdata) file_put_contents('/tmp/logData.txt','OLoc: '.$location."\n",FILE_APPEND);
-
 		// Get MAIN inventory as default
-		if (empty($location)) // $key == 0 || $key == null)
+		if (empty($location) || (isset($mbr) && $mbr->id == 0)) // $key == 0 || $key == null)
 		{
 			$location = 'Main';
 
 			// Return the user is able to log in, but shut out of MWL
 			$key = Self::midauth(Config::get('site.mwl_username'), Config::get('site.mwl_password')); 
 		}
-
-		if ($this->logdata) file_put_contents('/tmp/logData.txt','TKey: '.$key."\n",FILE_APPEND);
-		if ($this->logdata) file_put_contents('/tmp/logData.txt','TLoc: '.$location."\n",FILE_APPEND);
 
 		$server_output = '';
 
@@ -129,7 +164,6 @@ class ExternalAuthController extends \BaseController {
 		// Simple caching - probably a better way to do this
 		if (!is_dir($this->mwl_cache)) @mkdir($this->mwl_cache);
 		$mwlcachefile = $this->mwl_cache.urlencode($location).'.json';
-		if ($this->logdata) file_put_contents('/tmp/logData.txt','File: '.$mwlcachefile."\n",FILE_APPEND);
 		if (file_exists($mwlcachefile)) {
 			$fs = stat($mwlcachefile);
 			if (time() - $fs['ctime'] > $this->mwl_cachetime || filesize($mwlcachefile) < 500) {
@@ -172,6 +206,7 @@ class ExternalAuthController extends \BaseController {
 		if (empty($output)) { 
 			// Last resort!
 			$output = json_decode(file_get_contents($mwlcachefile));
+			\Log::info('Nothing returned from inventory system!');
 			//return Response::json(array('errors'=>true,'message'=>'Nothing returned from inventory system.'),500);
 		}
 
@@ -198,7 +233,6 @@ class ExternalAuthController extends \BaseController {
 
 			$itemList[$model] = '';
 			
-
 			// Delimiting sizes with hyphen and spaces
 			if (strpos($itemnumber,' -') === false) 
 			{
@@ -207,8 +241,6 @@ class ExternalAuthController extends \BaseController {
 			else list($model, $size) = explode(' -',$itemnumber);
 
 			$model		= $this->escapemodelname($model);
-			
-			
 			
 			// Initialize this set of item data
 			if (!isset($items[$model]))
@@ -223,7 +255,7 @@ class ExternalAuthController extends \BaseController {
 			}
 
 			// Cut useless spaces
-			$size = ltrim($size); // str_replace('/^ /','',$size);
+			$size = str_replace('/^ /','_',ltrim($size));
 
 			// Set up the quantities of each size
 			if (!isset($items[$model]['quantities'][$size])) 
@@ -273,59 +305,6 @@ class ExternalAuthController extends \BaseController {
 		return($item);
 	}
 
-	// What is this hackery?!
-	// PLEASE baby Jesus, lets get an api for these things.
-	// USE THE UPDATE USER FUNCTION FOR THIS FUNCTIONALITY
-	public function setbankinfo($user_id, $data/*, $cid = 'llr'*/) {
-		return false;
-
-
-/*		try {
-			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
-		}
-		catch (Exception $e)
-		{
-			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
-			return(Response::json($noconnect, 500));
-		}
-
-		// Get the TID
-		$Q = "SELECT * from tid where id={$mbr->id} LIMIT 1";
-
-		$res = $mysqli->query($Q);
-		if ($res->num_rows) {
-			$tidinfo = $res->fetch_object();
-			$tid_id	 = $tidinfo->id;
-			$acct_id = $tidinfo->account;
-		}
-
-		if (empty($tid_id)) {
-			$accttype	= $this->getAccountType('Checking');
-
-			// select count number of tids inside a mid if > 100 get next mid .. etc.
-			$mid		= $this->getNextAvailableMid();
-
-			$Q="INSERT INTO tid SET id={$mbr->id}, mid={$mid}, name='LuLaRoe Rep# {$mbr->id}'";
-			$mysqli->query($Q);
-			$tid_id = $mbr->id;//$mysqli->insert_id;
-
-			// Set up a BLANK account to tie to this TID .. yeah.. I know .. right? API .. 
-			$Q="INSERT INTO accounts SET number='n/a',routing='n/a',type='{$accttype}',name='".$mysqli->escape_string($data['bank_name'])."'";
-			$mysqli->query($Q);
-			$acct_id = $mysqli->insert_id;
-
-			$Q="UPDATE tid SET account={$acct_id} WHERE id='{$tid_id}' LIMIT 1";
-			$mysqli->query($Q);
-		}
-
-		// GRODY
-		// This is why we need the API .. right effing here .. 
-		$shakey =  "{$cid} ".$mysqli->escape_string($data['bank_name'])." {$acct_id}";
-		$Q="UPDATE accounts SET number=AES_ENCRYPT('".$mysqli->escape_string($data['bank_account'])."',SHA2('{$shakey}',512)), routing=AES_ENCRYPT('".$mysqli->escape_string($data['bank_routing'])."', SHA2('{$shakey}',512)), name='".$mysqli->escape_string($data['bank_name'])."' WHERE id={$acct_id} LIMIT 1";
-		$mysqli->query($Q);
-		$mysqli->close();
-*/	}
-
 	public function getMwlUserInfo($user_id) {
 
         $mbr	= User::find($user_id);
@@ -370,6 +349,8 @@ class ExternalAuthController extends \BaseController {
 
 	public function createMwlUser($user_id,$password = null) {
 
+		\Log::info("CreateMwlUser for [{$user_id} / {$password}]");
+
         $mbr = User::find($user_id);
 
 		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
@@ -403,8 +384,8 @@ class ExternalAuthController extends \BaseController {
 		}
 		$headers[] = "Account-Type: checking"; // reqd (checking or saving)
 		$headers[] = "Account-Name: ".$mbr->first_name." ".$mbr->last_name;
-		$headers[] = "Account-Number:".$bank_info->bank_account;
-		$headers[] = "Account-Route: ".$bank_info->bank_routing; //
+		$headers[] = "Account-Number:".@$bank_info->bank_account;
+		$headers[] = "Account-Route: ".@$bank_info->bank_routing; //
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
 		$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		//return $headers;
@@ -415,6 +396,7 @@ class ExternalAuthController extends \BaseController {
 		$server_output = curl_exec ($ch);
 
 		if ($errno = curl_errno($ch)) {
+			\Log::error('Something went wrong to mwl system');
 			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 			return(Response::json($result,401));
 		}
@@ -422,6 +404,7 @@ class ExternalAuthController extends \BaseController {
 
 		if (!$server_output) return(false);
 		else {
+			\Log::info('MWL Responded with: '.$server_output);
 			$so = json_decode($server_output);
 			if (isset($so->Code) && $so->Code == '401') return null;
 			return($server_output);
@@ -433,12 +416,16 @@ class ExternalAuthController extends \BaseController {
         $mbr = User::find($user_id);
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
+		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id,$password);
 		$merchant_id = $mwl_user->Merchant->ID;
+
 		$address = Address::where('addressable_id',$mbr->id)->first();
 		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
 		if(!isset($bank_info->id)) return false;
 
 		$key = Self::midauth();
+
+		\Log::info("updateMwlUser for [{$user_id} / {$key}]");
 
 		$ch = curl_init();
 
@@ -449,7 +436,7 @@ class ExternalAuthController extends \BaseController {
 
 		$headers = [];
 		$headers[] = "Merchant-ID: ".$merchant_id; 
-		$headers[] = "Merchant-Name: ".$mbr->first_name." Gooberville";
+		$headers[] = "Merchant-Name: {$mbr->first_name} {$mbr->last_name}";
 		if(!empty($address->id))
 		{
 			//Hacky, I know
@@ -466,15 +453,16 @@ class ExternalAuthController extends \BaseController {
 		{
 			$headers[] = "Account-Type: checking"; // reqd (checking or saving)
 			$headers[] = "Account-Name: ".$mbr->first_name." ".$mbr->last_name;
-			$headers[] = "Account-Number:".$bank_info->bank_account;
+			$headers[] = "Account-Number: ".$bank_info->bank_account;
 			$headers[] = "Account-Route: ".$bank_info->bank_routing; //
 		}
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
-		if(!is_null($password))
+		if(!empty($password))
 		{
 			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		}
 
+		\Log::info('Output: '.print_r($headers, true));
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 		//curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -489,15 +477,17 @@ class ExternalAuthController extends \BaseController {
 		}
 		curl_close ($ch);
 
+		file_put_contents('/tmp/test.txt',json_encode($headers));
 		if (!$server_output) return(false);
 		else {
 			$so = json_decode($server_output);
 			if (isset($so->Code) && $so->Code == '401') return null;
+			\Log::info('Result: '.print_r($server_output, true));
 			return($server_output);
 		}
 	}
 
-	public function sendReceipt($key = '') {
+	public function sendReceipt($key = '',  $repsale = true) {
 
 		// First we fetch the Request instance
 		$request = Request::instance();
@@ -506,14 +496,19 @@ class ExternalAuthController extends \BaseController {
 		$content = $request->getContent();
 		$vals = json_decode($content,true);
 
+		// We should always have transaction IDS!
+		if (!isset($vals['txids'])) return Response::json(array('error'=>true,'message'=>'Receipt invalid - no transactions?'), 500);
+
+        \Log::info("[{$key}]".print_r($vals,true));
+
 		if (empty($vals['err'])) $vals['err'] = 200;
 
-		$invitems		= $vals['products'];
-		$auth			= $vals['txids'];
-		$sessiondata	= $vals;
+		$invitems		= @$vals['products'];
+		$auth			= @$vals['txids'];
+		$sessiondata	= @$vals;
 
 		// Wish we could use sessions on all this, thanks IOS!
-        $user = User::where('key', 'LIKE', $key.'|%')->first();
+        $user	= self::getUserByKey($key);
 
 		// A new world order
 		$o = new Order();
@@ -525,19 +520,49 @@ class ExternalAuthController extends \BaseController {
 		$o->details         = json_encode(array('orders'=>$invitems,'payments'=>$vals['txids']));
 		$o->save();
 
-		$result = array('error'=>true,'message'=>'This is a stub error.');
+		\Log::info('Creating new receipt');
+		$inv = new Receipt();
+		$inv->date_paid     = date('Y-m-d H:i:s');
+		$inv->user_id       = $user->id;
+		$inv->subtotal      = $vals['subtotal'];
+		$inv->tax           = floatval($vals['tax']);
+		$inv->balance       = 0;
+
+		$inv->note          = isset($vals['notes'])          ? $vals['notes']         : '';
+		$inv->to_email      = isset($vals['emailto'])        ? $vals['emailto']      : $user->email;
+		$inv->to_firstname  = isset($vals['to_firstname'])   ? $vals['to_firstname']  : 'n/a';
+		$inv->to_lastname   = isset($vals['to_lastname'])    ? $vals['to_lastname']   : 'n/a';
+
+		$inv->data          = json_encode($invitems);
+		$inv->save();
+
+		\Log::info('Assigning ledger items to this receipt');
+		foreach($vals['txids'] as $txn) {
+			\Log::info("\t TXN:".$txn.' GOES INTO RECEIPT '.$inv->id);
+			$l = Ledger::where('transactionid', '=', $txn)->update(array('receipt_id'=>$inv->id));
+		}
+
+		$result = array('error'=>false,'message'=>'Receipt Sent to '.$vals['emailto']);
 
 		$orderitems	= [];
-		// Deduct item quantity from inventory
-        foreach ($vals['products'] as $item) {
-			foreach($item['quantities'] as $size=>$num)  {
-				$request    = Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/",'GET', array());
-				$deduction  = json_decode(Route::dispatch($request)->getContent());
-				$orderitems[] = array('model'=>$item['model'],'numOrder'=>$num,'size'=>$size,'price'=>$item['price']);
+		if (!isset($vals['emailonly'])) {
+			// Deduct item quantity from inventory
+			foreach ($vals['products'] as $item) {
+				foreach($item['quantities'] as $size=>$num)  {
+					// Careful on this route 
+					\Log::info("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/");
+					if ($item['id'] != Null) {
+						$request    = Request::create("llrapi/v1/remove-inventory/{$key}/{$item['id']}/{$num}/",'GET', array());
+						$deduction  = json_decode(Route::dispatch($request)->getContent());
+					}
+					else $result['deducted'][$item['id']] = false;//"Removed {$num} {$size} from {$item['id']}";
+				}
 			}
-        }
+			$orderitems = $invitems;
+		}
+		else $result['deducted'] = [];
 
-		$sessiondata['repsale']		= true;
+		$sessiondata['repsale']		= $repsale;
 		$sessiondata['tax']			= $vals['tax'];
 		$sessiondata['orderdata']	= $orderitems;
 		$sessiondata['subtotal']	= $vals['subtotal'];
@@ -554,12 +579,20 @@ class ExternalAuthController extends \BaseController {
 		$data['email']	= $vals['emailto'];
 		$data['body'] 	= preg_replace('/\s\s+/', ' ',$receipt);
 
-        // This one goes to the final user
-        Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
-            $message->to($data['email'])
-			->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
-            ->from($user->email, $user->first_name.' '.$user->last_name);
-        });
+		if (!empty($data['email'])) {
+			try { 
+				\Log::info('Dispatching final email receipt to: '.$data['email']);
+				// This one goes to the final user
+				Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
+					$message->to($data['email'])
+					->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
+					->from($user->email, $user->first_name.' '.$user->last_name);
+				});
+			}
+			catch (Exception $e) {
+				$result['message'] = $e->getMessage();
+			}
+		} else $result['message'] = 'No receipt sent: Please specify an email address.';
 
 		return Response::json($result, $vals['err']);
 	}
@@ -576,7 +609,7 @@ class ExternalAuthController extends \BaseController {
 		$cid = $this->mwl_db;
 
 		try {
-			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
+			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
 		}
 		catch (Exception $e)
 		{
@@ -593,14 +626,25 @@ class ExternalAuthController extends \BaseController {
 		return($res);
 	}
 
+
 	// It is this way until we have proper api access to the ledger.
-	public function ledger($key = 0)
-	{
-		$ref = Input::get('ref');
+	public function ledger($key = 0) {
+
+		$mbr = $this->getUserByKey($key);
+		if (!$mbr) return Response::json(array('error'=>'true','message'=>'Please login again.'),401);
+		\Log::info("Getting Ledger Items for {$mbr->id} [{$key}]");
+
+		$ref = Input::get('ref', null);
 		$key = Session::get('mwl_id', $key);
 
+		//$txns = $this->getLedger($mbr->id, $ref);
+
+		// This will barf on ammons user
+		return Response::json($this->getLedger($mbr->id, $ref),200,[],JSON_PRETTY_PRINT);
+
+
 		try {
-			$mysqli = new mysqli($this->mwl_server, $this->mwl_un, $this->mwl_pass, $this->mwl_db);
+			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
 		}
 		catch (Exception $e)
 		{
@@ -612,17 +656,7 @@ class ExternalAuthController extends \BaseController {
 		$Q = "SELECT tid, refNum as order_number, result, authAmount as subtotal, salesTax as tax,  cashsale, processed, refunded FROM transaction LEFT JOIN sessionkey ON(userid=tid) WHERE `key`='".$mysqli->escape_string($key)."'";
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
-		$txns = [];
-
-		// Pull these from inventory data
-		$stub_items = json_decode('[{"quantities":{"M":2,"L":3,"XXS":5},
-									"price":59.99,
-									"image":"http://mylularoe.com/img/media/Lola.jpg",
-									"model":"Lola"},
-									{"quantities":{"M":8,"L":6,"XXS":1},
-									"price":59.99,
-									"image":"http://mylularoe.com/img/media/Ana.jpg",
-									"model":"Ana"}]');
+		$txns		= [];
 		$stub_items = [];
 
 		$res = $mysqli->query($Q);
@@ -633,15 +667,105 @@ class ExternalAuthController extends \BaseController {
 			{
 				$l = Ledger::where('transactionid', '=', $ordernum)->get(array('data'))->first();
 				if ($l) {
-					$stub_items["".$ordernum] = json_decode(json_decode($l->data));
+					$stub_items[$ordernum] = json_decode($l->data);
 				}
-				else $stub_items["".$ordernum] = array();
+				else $stub_items[$ordernum] = array();
 			}
 			$txn['items'] = $stub_items["".$ordernum];
 			$txns[] = $txn;
 		}	
 		$mysqli->close();
+
 		return(Response::json($txns, 200, [], JSON_PRETTY_PRINT));
+	}
+
+	// I have to have this here because I don't want mysql credentials all over the place .. sorry
+	// This for now until we have an api in place
+	public function getLedger($id = 0, $ref = null)
+	{
+        $currentuser	= User::find($id);
+
+		try {
+			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+		}
+		catch (Exception $e)
+		{
+			return json_encode(array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage()));
+			//return(Response::json($noconnect,200));
+		}
+	
+		// This is not good .. WHERE'S MY API!
+		$Q = "SELECT 	
+					transaction.refNum as order_number,
+					(transaction.authAmount - transaction.salesTax) AS amount,
+					transaction.salesTax AS tax,
+					transaction.custNum AS customer,
+					transaction.cashsale AS is_cash,
+					transaction.refunded AS is_refunded,
+					transaction.created_at AS date,
+					users.username AS username,
+					tid.id AS tid,
+					accounts.name AS account 
+				FROM users LEFT JOIN tid 
+					ON users.id=tid.id LEFT JOIN accounts 
+					ON accounts.id=tid.account LEFT JOIN transaction 
+					ON transaction.tid=tid.id 
+				WHERE users.username='{$currentuser->id}' ORDER BY created_at DESC";
+		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
+
+		$txns		= [];
+		$stub_items = [];
+
+		/*
+		"tid": "10412",
+        "order_number": "1041200055",
+        "result": "Approved",
+        "subtotal": "12.06",
+        "tax": "0",
+        "cashsale": "1",
+        "processed": "1",
+        "refunded": "0",
+		*/
+		$res = $mysqli->query($Q);
+
+		while($txn = $res->fetch_assoc())
+		{
+			//$txn['date'] = date('M d Y H:i:s',strtotime($txn['date']));
+			$txn['date'] = date('Y-m-d\TH:i:sO',strtotime($txn['date']));
+			$ordernum = $txn['order_number'];
+			$txn['amount'] = ''.money_format('%2n', $txn['amount']);
+			$txn['is_cash'] = (bool)$txn['is_cash'];
+			$txn['is_refunded'] = (bool)$txn['is_refunded'];
+
+			if ($id == 11950) {
+				$stub_items[$ordernum][0]  = array(
+							'model'			=>'Test - Disregard',
+							'id'			=>1,
+							'UPC'			=>null,
+							'SKU'			=>null,
+							'price'			=>50,
+							'image'			=>'https://mylularoe.com/img/media/Maxi.jpg',
+							'quantities'	=> ['M'=>1,'L'=>2]);
+			}
+
+			if (!isset($stub_items[$ordernum])) 
+			{
+				$stub_items[$ordernum] = [];
+/*
+				$l = Ledger::where('transactionid', '=', $ordernum)->get(array('data'))->first();
+				if ($l) {
+					$stub_items["".$ordernum] = json_decode($l->data);
+				}
+				else $stub_items["".$ordernum] = array();
+*/
+			}
+			$txn['items'] = $stub_items[$ordernum];
+
+			$txns[] = $txn;
+		}	
+		$mysqli->close();
+		return $txns;
+		//	return(Response::json($txns, 200, [], JSON_PRETTY_PRINT));
 	}
 
 	// Keep these separate for now
@@ -651,8 +775,8 @@ class ExternalAuthController extends \BaseController {
 
 		$txdata = array(
 			'transactionId'     => Input::get('transactionid'),
-			'Subtotal'          => Input::get('subtotal'),
-			'Tax'               => Input::get('tax'),
+			'Subtotal'          => floatval(Input::get('subtotal')),
+			'Tax'               => floatval(Input::get('tax')),
 			'Account-name'      => Input::get('cardname'),
 			'Card-Number'       => Input::get('cardnumber'),
 			'Card-Code'     	=> Input::get('cardcvv'),
@@ -705,27 +829,47 @@ class ExternalAuthController extends \BaseController {
 
 	}
 
-	public function purchase($key = 0, $cart = '')
-	{
-		$cartdata	= Input::get('cart', $cart);
+	public function purchase($key = 0, $cart = '') {
+        \Log::info("[{$key}] Purchasing cart full of ".json_encode(Input::all()));
+
+		$cartdata	= Input::all();
 		$endpoint	= '';
 
+		if (isset($cartdata['cardname'])) {
+			$cartdata['cardnumber'] = 'xxxx-xxxx-xxxx-'.substr(@$cartdata['cardnumber'],-4);
+			unset($cartdata['cardcvv']);
+			unset($cartdata['cardpin']);
+			$cartdata['cardexp']	= @$cartdata['cardexp'];
+			$cartdata['cardzip']	= @$cartdata['cardzip'];
+		}
+		if (isset($cartdata['routing'])) {
+			$cartdata['routing']	= 'xxxxxxx'.substr(@$cartdata['rounting'],-4);
+			$cartdata['account']	= 'xxxxxxx'.substr(@$cartdata['account'],-4);
+		}
+
 		// If this is a taxless purchase such as consignment
-		if (Session::has('notax')) Input::merge(array('tax'=>0));
+		if (empty(Input::get('tax')) || Session::has('notax')) {
+			Input::merge(array('tax'=>0));
+		}
 
 		if 		(Input::get('cash')) 	$txtype = 'CASH';
 		elseif	(Input::get('check'))	$txtype = 'ACH';
 		else 							$txtype = 'CARD';
 
 		// Wish we could use sessions on all this, thanks IOS!
-        $mbr = User::where('key', 'LIKE', $key.'|%')->first();
+        if (Session::has('repsale') && !Session::get('repsale'))  {
+            $mbr    = User::find(Config::get('site.mwl_username')); // Use 0 user info
+        }
+        else {
+            $mbr    = self::getUserByKey($key);
+        }
 
 
 		// Set up appropraite transaction headers
-		if ($txtype == 'CARD'){
+		if ($txtype == 'CARD') {
 			$txdata = array(
-				'Subtotal'          => Input::get('subtotal'),
-				'Tax'               => Input::get('tax'),
+				'Subtotal'          => floatval(Input::get('subtotal',0)),
+				'Tax'               => floatval(Input::get('tax',0)),
 				'Account-name'      => Input::get('cardname'),
 				'Card-Number'       => Input::get('cardnumber'),
 				'Card-Code'     	=> Input::get('cardcvv'),
@@ -741,8 +885,8 @@ class ExternalAuthController extends \BaseController {
 		}
 		else if ($txtype == 'CASH') {
 			$txdata = array(
-				'Subtotal'          => Input::get('subtotal'),
-				'Tax'               => Input::get('tax'),
+				'Subtotal'          => floatval(Input::get('subtotal',0)),
+				'Tax'               => floatval(Input::get('tax',0)),
 				'Description'       => json_encode($cartdata)
 			);
 			$endpoint = 'cash';
@@ -759,8 +903,8 @@ class ExternalAuthController extends \BaseController {
 				'License-State' 	=> Input::get('dlstate'),
 				'License-Number' 	=> Input::get('dlnum'),
 				'Check-Number' 		=> Input::get('checknum'),
-				'Subtotal'          => Input::get('subtotal'),
-				'Tax'               => Input::get('tax'),
+				'Subtotal'          => floatval(Input::get('subtotal',0)),
+				'Tax'               => floatval(Input::get('tax',0)),
 				'Description'       => json_encode($cartdata)
 			);
 			$endpoint = 'checkSale';
@@ -774,11 +918,13 @@ class ExternalAuthController extends \BaseController {
 		// Drop this into product table too.
 		if (!$purchase['error']) {
 
+			\Log::info("Dropping into ledger for [{$key}]");
+
 			$lg = new Ledger();
-			$lg->user_id		= $mbr->id;
+			$lg->user_id		= @$mbr->id;
 			$lg->account		= '';
-			$lg->amount			= Input::get('subtotal');
-			$lg->tax			= Input::get('tax');
+			$lg->amount			= Input::get('subtotal',0);
+			$lg->tax			= Input::get('tax',0);
 			$lg->txtype			= $txtype; 
 			$lg->transactionid	= $purchase['id'];
 			$lg->data			= json_encode($cartdata);
@@ -789,17 +935,18 @@ class ExternalAuthController extends \BaseController {
         return Response::json($purchase, 200);
 	}
 
+    private static function midcrypt($pass, $cid = 'llr', $level = 1)
+    {
+		if ($level == 1) return base64_encode(md5($pass,true));
+        return base64_encode(md5($cid.base64_encode(md5($pass,true)),true));
+    //    return base64_encode(md5($pass,true));
+    }
 
-	private static function midcrypt($pass)
-	{
-		return base64_encode(md5($pass,true));
-	}
 	/*##############################################################################################
 	MiddleWare Authentication
 	##############################################################################################*/
 	
-	private function midauth($username = '', $password = '')
-	{
+	public function midauth($username = '', $password = '', $returnJson = false) {
 		// Pull this out into an actual class for MWL php api
 		$ch = curl_init();
 
@@ -813,7 +960,7 @@ class ExternalAuthController extends \BaseController {
 		$password = Self::midcrypt($password);
 
 		// Set this to HTTPS TLS / SSL
-		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/login/?username={$username}&password={$password}";
+		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/login/?username={$username}&password=".rawurlencode($password);
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
 		/* If we ever decide to 'POST'
@@ -825,19 +972,24 @@ class ExternalAuthController extends \BaseController {
 
 		$server_output = curl_exec ($ch);
 
+
 		if ($errno = curl_errno($ch)) {
 			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 			return(Response::json($result,401));
 		}
 		curl_close ($ch);
 
+		$returnthis = ($returnJson) ? json_encode(['key'=>$server_output]) : $server_output;
+
+		\Log::info("Midauth {$username} / {$password} : {$server_output} / {$returnthis}");
+
 		if (!$server_output) return(false);
 		else {
+			if ($returnJson) 
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') return null;
-			return($server_output);
+			if (isset($so->Code) && $so->Code == '401') $returnthis = ($returnJson) ? json_encode(['key'=>null]) : null;
 		}
-		
+		return $returnthis;
 	}
 
 	private function makeVoid($key, $txdata) {
@@ -1020,7 +1172,6 @@ class ExternalAuthController extends \BaseController {
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $txdata);
 
-//die(print_r($txdata,true));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 		if ($verbose)
@@ -1033,6 +1184,7 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		$server_output = curl_exec ($ch);
+		\Log::info($server_output);
 		$response_obj = json_decode($server_output);
 
 		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
@@ -1054,6 +1206,12 @@ class ExternalAuthController extends \BaseController {
 				$response_obj->TransactionResponse->Result		= 'Declined';
 				$response_obj->TransactionResponse->ResultCode	= 'F';
 				$response_obj->TransactionResponse->Status		= 'Attempt Failed';
+				$response_obj->TransactionResponse->AuthAmount	= 0;
+			}
+			if ($response_obj->Status == 'Error'){
+				$response_obj->TransactionResponse->Result		= 'Declined';
+				$response_obj->TransactionResponse->ResultCode	= $response_obj->Error->Code;
+				$response_obj->TransactionResponse->Status		= $response_obj->Error->Description;
 				$response_obj->TransactionResponse->AuthAmount	= 0;
 			}
 		}
@@ -1092,7 +1250,8 @@ class ExternalAuthController extends \BaseController {
 							'amount'=>$response_obj->TransactionResponse->AuthAmount,
 							'data'=>$raw_response);
 
-	$returndata['id'] = (isset($response_obj->TransactionResponse->ID))  ? $response_obj->TransactionResponse->ID  : null;
+		$returndata['id'] = (isset($response_obj->TransactionResponse->ID))  ? $response_obj->TransactionResponse->ID  : null;
+		$returndata['id'] = (string)$returndata['id'];
 
         return ($returndata);
 	}
@@ -1100,7 +1259,7 @@ class ExternalAuthController extends \BaseController {
 	public function auth($login, $pass = '') {
 		$pass	= trim(Input::get('pass', $pass));
         $status = 'ERR';
-        $error  = true;
+        $error  = false;
 		$data   = [];
 
 		// Initialize these two
@@ -1118,12 +1277,12 @@ class ExternalAuthController extends \BaseController {
 		//return $mbr;
         // Can't find them?
         if (!isset($mbr)) {
+			$error = true;
             $mbr	= null;
             $status = 'User '.strip_tags($login).' not found';
         }
 		elseif($attempt = \Auth::attempt(['email' => $mbr->email,'password' => $pass], false))
 		{
-        	$error  = false;
 			$status = 'User '.strip_tags($login).' found ok';
 			$data = array(
 				'id'			=> $mbr->id,
@@ -1138,35 +1297,35 @@ class ExternalAuthController extends \BaseController {
 			if (!empty($mbr->key)) @list($sessionkey, $tstamp) = explode('|',$mbr->key);
 
 			// 3 minutes timeout for session key - put this in a Config::get('site.mwl_session_timeout')!
-			if (empty($sessionkey) || $tstamp < (time() - 10))
+			if (empty($sessionkey) || $tstamp < (time() - $this->SESSIONKEY_TIMEOUT))
 			{
-				\Log::info("Return the user {$mbr->id} is able to log in, but shut out of MWL - need them to change password?");
+				\Log::info("User {$mbr->id} / {$pass} ".date('Y-m-d H:i:s',$tstamp)." MWL - timeout or login need them to change password?");
 				// Return the user is able to log in, but shut out of MWL
 
 				// If we use the 'key' parameter, we could feasibly have 
 				// Multiple acconts using 1 TID .. Feature?
-				//$sessionkey = Self::midauth($data['id'], $pass);
 				$sessionkey = Self::midauth($mbr->id, $pass);
+
 				//return $sessionkey;
 				$tstamp		= time();
 
-				if ($this->logdata) file_put_contents('/tmp/logData.txt','TSTP: '.$tstamp." ".$sessionkey."\n",FILE_APPEND);
-				if (!$sessionkey)
-				{
+				if (!$sessionkey) {
+					$error = true;
+					\Log::info("Cannot get key from MWL {$mbr->id} / {$pass} ".date('Y-m-d H:i:s',$tstamp)." MWL - need them to change password?");
 					$status .= '; cannot retrieve key from payment system';
 					$data['key'] = null;
 
-					$mbr->update(array('key'=>''));
 					// Also perform a logging notify here in papertrail or syslog?
 				}
 				else {
 					$mbr->update(array('key'=>$sessionkey.'|'.time()));
 				}
 			}
-
 		}
 		else
 		{
+			$error = true;
+			\Log::info("Cannot authorize {$mbr->id} / {$pass}");
 			$status = 'Cannot authorize';
 			$mbr->update(array('key'=>''));
 		}
@@ -1178,6 +1337,7 @@ class ExternalAuthController extends \BaseController {
 
 	}
 	
+	// This is a SHIV .. I mean SHIM for angular to do its magic
     public function reorder(){
         $data = Input::all();
         if(empty($data)){
@@ -1188,7 +1348,7 @@ class ExternalAuthController extends \BaseController {
             $message = "Successfully posted data";
             $status = "success"; 
         }
-        return Response::json(['message'=>$message,'status'=>$status,'data'=>$data]);
+        return Response::json(['message'=>$message,'status'=>$status,'data'=>$data], 200);
     }
 
 }

@@ -156,7 +156,8 @@
 					            </td>
 
 					            <td class="hidable-xs">
-					                <span ng-bind="product.quantity"></span>
+                                    <b ng-bind="product.quantity"></b> /
+                                    <span ng-bind="product.size"></span>
 					            </td>
 					            
 <!--

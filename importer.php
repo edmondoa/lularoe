@@ -10,11 +10,14 @@ while($line = fgetcsv($fd,2048))
 	$line = array_combine($headers,$line);
 
 	// hacky way to create unique ids
-	$id = strtolower($line['FirstName'].$line['Surname']);
+	$id = preg_replace('/[^a-z]/','',strtolower($line['FirstName'].$line['Surname']));
 	while(in_array($id, $pubids)) $id .= date('s');
 	$pibids[] = $id;
 
-	$Q="INSERT INTO users set id='{$line['ID']}', first_name='".addslashes($line['FirstName'])."', last_name='".addslashes($line['Surname'])."', public_id='".addslashes($id)."', email='".addslashes($line['Email'])."', sponsor_id='{$line['SponsorID']}' ON DUPLICATE KEY UPDATE first_name='".addslashes($line['FirstName'])."', last_name='".addslashes($line['Surname'])."', public_id='".addslashes($id)."', email='".addslashes($line['Email'])."'";
+	if ($line['MemberStatus'] == 'active') { 
+		$Q="INSERT INTO users set id='{$line['ID']}', first_name='".addslashes($line['FirstName'])."', last_name='".addslashes($line['Surname'])."', public_id='".addslashes($id)."', email='".addslashes($line['Email'])."', sponsor_id='{$line['SponsorID']}' ON DUPLICATE KEY UPDATE first_name='".addslashes($line['FirstName'])."', last_name='".addslashes($line['Surname'])."', public_id='".addslashes($id)."', email='".addslashes($line['Email'])."'";
+	}
+	else $Q = "DELETE FROM users WHERE id='{$line['ID']}'";
 
 	print $Q.";\n";
 }

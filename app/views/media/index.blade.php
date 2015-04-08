@@ -31,19 +31,19 @@
 		                		@if (Auth::user()->hasRole(['Rep']))
 		                			Tool/Asset Library
 		                		@else
-		                			Tools/Assets Shared with FC's
+		                			Tools/Assets Shared with Reps
 		                		@endif
 		                	@else
 		                		Tools/Assets Library
 		                	@endif
 		                </h1>
-		            	<div ng-if="media.length > 10" class="pull-right hidable-xs">
+		            	<!-- <div ng-if="media.length > 10" class="pull-right hidable-xs">
 		                    <div class="input-group pull-right">
 		                    	<span class="input-group-addon no-width">Count</span>
 		                    	<input class="form-control itemsPerPage width-auto" ng-model="pageSize" type="number" min="1">
 		                    </div>
 		                    <h4 class="pull-right margin-right-1">Page <span ng-bind="currentPage"></span></h4>
-		            	</div>
+		            	</div> -->
 			    	</div>
 		        </div><!-- row -->
 		        <div class="row">
@@ -84,14 +84,14 @@
 		                        <div class="pull-left margin-right-1">
 		                            <select ng-model="search.$" id="categories" class="form-control">
 		                            	<option value="">All file types</option>
-		                            	<option value="@include('_helpers.media_count_type')" ng-if="count.count > 0" ng-repeat="count in media_counts">@include('_helpers.media_count_type')s (@include('_helpers.media_count_count'))</span></option>
+		                            	<option value="@{{count.type}}" ng-if="count.count > 0" ng-repeat="count in media_counts">@{{count.type}}s (@{{count.count}})</span></option>
 		                            </select>
 		                    	</div>
 		                        <?php /* select tags */ ?>
 		                        <div class="pull-left margin-right-1">
 		                            <select ng-model="search.$" id="tags" class="form-control">
 		                            	<option value="">All tags</option>
-		                            	<option value="{{'{'.'{tag.name}'.'}'}}" ng-if="tag.count > 0" ng-repeat="tag in tags">{{'{'.'{tag.name}'.'}'}} ({{'{'.'{tag.count}'.'}'}})</span></option>
+		                            	<option value="@{{tag.name}}" ng-if="tag.count > 0" ng-repeat="tag in tags">@{{tag.name}} (@{{tag.count}})</span></option>
 		                            </select>
 		                    	</div>
 		                        <?php /* filter and sort files */ ?>
@@ -154,7 +154,7 @@
 	            <div class="col col-md-12">
             		<div ng-hide="val">
 	            		<ul class="tiles">
-		                    <li ng-click="media.selected=!media.selected; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" dir-paginate-start="media in media | filter:search | filter:filter | orderBy: '-updated_at' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage">
+		                    <li ng-click="media.selected=!media.selected; hoverOn(media)" ng-mouseenter="hoverOn(media)" ng-mouseleave="hoverOff(media)" ng-class="{highlight: address.new == 1}" ng-repeat="media in (filteredMedia = (media | filter:search | filter:filter | orderBy: '-updated_at' | orderBy:orderByField:reverseSort ))">
 		                        <div ng-click="checkbox()">
 		                        	<div class="options" ng-click="$event.stopPropagation();" ng-show="media.showOptions" ng-mouseenter="hoverOn(media)">
 			                        	@if (Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor']) || (isset($user->id) && $user->id == Auth::user()->id))
@@ -195,15 +195,15 @@
 		                        	</div>
 		                        </div>
 		                    </li>
-		                    <li dir-paginate-end></li>
+		                    <!-- <li dir-paginate-end></li> -->
 	            		</ul>
 		                @include('_helpers.loading')
 		            </div>
-	                <div ng-controller="OtherController" class="other-controller">
+	                <!-- <div ng-controller="OtherController" class="other-controller">
 	                    <div class="text-center">
 	                        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
 	                    </div>
-	                </div>
+	                </div> -->
 	            </div><!-- col -->
 	        </div><!-- row -->
         {{ Form::close() }}
@@ -247,6 +247,13 @@
 		$http.get('{{ $media_url }}').success(function(media) {
 			
 			$scope.media = media;
+			$scope.filteredMedia = $scope.media;
+			
+			// get filter
+			@if (isset($filter))
+				$scope.filter = '{{ $filter }}';
+			@endif
+						
 			// hide if object empty
 			$scope.val = "";
 
@@ -286,12 +293,14 @@
 			}
 			
 			// view file
-			var showing_index;
+			$scope.showing_index = null;
 			$scope.viewFile = function(id, $index) {
+				
 				$http.get('/media/ajax/' + id).success(function(data) {
 					$('#modal #ajax-content').html(data);
 					$('#modal').modal('toggle');
-					showing_index = $index;
+					$scope.showing_index = $index;
+					console.log($scope.showing_index);
 				});
 			}
 			
@@ -316,21 +325,23 @@
 
 			// change file
 			$('body').on('click', '.changeFile', function() {
+				console.log($scope.filteredMedia);
+				$scope.length = $scope.filteredMedia.length - 1;
+				$('.changeFileButtons').after('<img src="/img/loading.gif">');
 				var direction = $(this).attr('data-direction');
 				if (direction == 'forward') {
-					console.log(showing_index);
-					if (showing_index + 1 <= $scope.media.length) showing_index ++;
-					else showing_index = 0;
+					if ($scope.showing_index + 1 <= $scope.length) $scope.showing_index ++;
+					else $scope.showing_index = 0;
 				}
 				else {
-					console.log(showing_index);
-					if (showing_index - 1 >= 0) showing_index --;
-					else showing_index = $scope.media.length;
+					if ($scope.showing_index - 1 >= 0) $scope.showing_index --;
+					else $scope.showing_index = $scope.length;
 				}
-				id = $scope.media[showing_index].id;
+				id = $scope.filteredMedia[$scope.showing_index].id;
 				$http.get('/media/ajax/' + id).success(function(data) {
-					$('#modal #ajax-content').html(data);
-					// $('#modal').modal('toggle');
+					$('#modal #ajax-content').fadeOut(function() {
+						$(this).html(data).fadeIn();
+					});	
 				});
 			});
 			
@@ -346,28 +357,66 @@
 					});
 				});
 				$scope.tags = media_tags;
+				
+				// filter results and tags for current category being viewed
+				@if (isset($filter))
+					if ($scope.filter != '') {
+						tags_of_filtered_files = [];
+						filtered_files = [];
+						angular.forEach($scope.media, function(file) {
+							angular.forEach(file.tags, function(tag) {
+								if (tag.name === $scope.filter) {
+									angular.forEach(file.tags, function(tag_to_add) {
+										tags_of_filtered_files.push(tag_to_add);
+									});
+									filtered_files.push(file);
+								}
+							});
+						});
+						$scope.tags = [];
+						angular.forEach(media_tags, function(tag) {
+							angular.forEach(tags_of_filtered_files, function(tag_of_filtered_file) {
+								if (tag_of_filtered_file.name === tag.name) $scope.tags.push(tag_of_filtered_file);
+							});
+						});
+						grouped_tags = [];
+						angular.forEach($scope.tags, function(tag) {
+							var in_array = false;
+							angular.forEach(grouped_tags, function(grouped_tag, key) {
+								if (grouped_tag.name == tag.name) {
+									in_array = true;
+									grouped_tags[key].count += 1;
+								}
+							});
+							if (in_array == false) {
+								tag.count = 1;
+								grouped_tags.push(tag);
+							}
+						});
+						$scope.tags = grouped_tags;
+						
+						// filter media counts for category being viewed
+						filtered_file_types = [];
+						angular.forEach(filtered_files, function(file) {
+							var in_array = false;
+							angular.forEach(filtered_file_types, function(filtered_file_type, key) {
+								if (file.name == filtered_file_type.name) {
+									in_array = true;
+									filtered_file_types[key].count += 1;
+								}
+							});
+							if (in_array == false) {
+								var filtered_file_type = {
+									type: file.type,
+									count: 1
+								};
+								filtered_file_types.push(filtered_file_type);
+							}
+						});
+						$scope.media_counts = filtered_file_types;
+					}
+				@endif
 			});
-
-			// get url filter
-			function getUrlParameter(sParam)
-			{
-			    var sPageURL = window.location.search.substring(1);
-			    var sURLVariables = sPageURL.split('&');
-			    for (var i = 0; i < sURLVariables.length; i++) 
-			    {
-			        var sParameterName = sURLVariables[i].split('=');
-			        if (sParameterName[0] == sParam) 
-			        {
-			            return sParameterName[1];
-			        }
-			    }
-			}
-			
-			var filter = getUrlParameter('filter');
-			if (typeof filter !== 'undefined') {
-				filter = filter.replace('-', ' ');
-			    $scope.filter = filter;
-			}
 
 			@include('_helpers.bulk_action_checkboxes')
 			
@@ -377,19 +426,19 @@
 			$scope.media_counts = data;
 		});
 		
-		$scope.currentPage = 1;
-		$scope.pageSize = 100;
+		// $scope.currentPage = 1;
+		// $scope.pageSize = 100;
 		
-		$scope.pageChangeHandler = function(num) {
-			
-		};
+		// $scope.pageChangeHandler = function(num) {
+// 			
+		// };
 		
 	}
 	
-	function OtherController($scope) {
-		$scope.pageChangeHandler = function(num) {
-		};
-	}
+	// function OtherController($scope) {
+		// $scope.pageChangeHandler = function(num) {
+		// };
+	// }
 
 	// toggle sort buttons
 	$('.btn-group .btn').click(function() {

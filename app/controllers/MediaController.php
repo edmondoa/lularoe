@@ -24,7 +24,11 @@ class mediaController extends \BaseController {
 	public function user($id)
 	{
 		$user = User::findOrFail($id);
-		return View::make('media.index', compact('user'));
+		if (isset($_GET['filter'])) {
+			$filter = $_GET['filter'];
+			$filter = str_replace('-', ' ', $filter);
+		}
+		return View::make('media.index', compact('user', 'filter'));
 	}
 	
 	/**

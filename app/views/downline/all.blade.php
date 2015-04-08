@@ -147,8 +147,8 @@
 	                    </thead>
 	                    <tbody>
 	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy: 'last_name' | orderBy: 'pivot.level' | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
-	                            <td ng-click="checkbox()">
-	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
+	                            <td>
+	                            	<input ng-if="user.block_email==0 || user.block_sms==0" ng-click="checkbox()" class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
 	                            
 	                            @if (Auth::user()->hasRole(['Rep']))

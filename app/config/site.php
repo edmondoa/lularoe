@@ -28,6 +28,7 @@
 
 		'default_from_email' => 'no-reply@mylularoe.com',
 		'contact_email' => 'info@lularoe.com',
+		'warehouse_email' => 'orders@lularoe.com',
 		'contact_first_name' => 'Support',
 		'contact_last_name'  => 'LuLaRoe',
 		'rep_title'			=> 'FC',
