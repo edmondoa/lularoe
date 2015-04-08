@@ -51,6 +51,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'hide_phone',
 		'hide_billing_address',
 		'hide_shipping_address',
+		'company_name'
 	];
 
 	use UserTrait, RemindableTrait;

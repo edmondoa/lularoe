@@ -75,6 +75,11 @@
 		        {{ Form::text('phone', null, array('class' => 'form-control')) }}
 		    </div>
 		    
+		    <div class="form-group">
+		        {{ Form::label('company_name', 'Company Name') }}
+		        {{ Form::text('company_name', Input::old('company_name'), array('class' => 'form-control')) }}
+		    </div>
+		    
 		    @if (Auth::user()->hasRole(['Superadmin', 'Admin']) && Auth::user()->id != $user->id)
 		    	<div class="form-group">
 		    		{{ Form::label('roled_id', 'Role') }}<br>
@@ -109,6 +114,7 @@
 			        {{ Form::text('min_commission', null, array('class' => 'form-control')) }}
 			    </div>
 			   -->
+			   
 			    <div class="form-group">
 			        {{ Form::label('disabled', 'Status') }}
 			        <br>
