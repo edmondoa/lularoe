@@ -6,6 +6,9 @@
 		Session::put('customdiscount',floatval(Input::get('discount')));
 	}
 
+	print Input::get('hasTax',0);
+	if (!Input::get('hasTax')) print Input::get('hasTax'); else print "NO TAXI";
+
 	// Bank info
 	if (Input::get('nuke')) {
 		Session::forget('discount');
@@ -145,7 +148,7 @@
 						<div class="row">
 							<div class="col-lg-12 col-sm-12 col-md-12">
 								<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
-								<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
+								<button type="button" ng-click="cancelCheckout()" class="pull-left btn btn-sm btn-danger">Cancel</button>
 							</div>
 						</div>
 						{{ Form::close() }}
@@ -185,7 +188,7 @@
 						<div class="row">
 							<div class="col-lg-7 col-sm-12 col-md-12">
 								<button type="submit" class="pull-right btn btn-sm btn-success">Send Invoice</button>
-								<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
+								<button type="button" ng-click="cancelCheckout()" class="pull-left btn btn-sm btn-danger">Cancel</button>
 							</div>
 						</div>
 						{{ Form::close() }}
@@ -229,7 +232,7 @@
 						<div class="row">
 							<div class="col-lg-12 col-sm-12 col-md-12">
 								<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
-								<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
+								<button type="button" ng-click="cancelCheckout()" class="pull-left btn btn-sm btn-danger">Cancel</button>
 							</div>
 						</div>
                     </div><!-- /CONSIGNMENT -->
@@ -272,7 +275,7 @@
 						<div class="row">
 							<div class="col-lg-12 col-sm-12 col-md-12">
 								<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
-								<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
+								<button type="button" ng-click="cancelCheckout()" class="pull-left btn btn-sm btn-danger">Cancel</button>
 							</div>
 						</div>
 						{{ Form::close() }}
@@ -333,7 +336,7 @@
 								<div class="row">
 									<div class="col-lg-12 col-sm-12 col-md-12">
 										<button type="submit" class="pull-right btn btn-sm btn-success">Place order</button>
-										<button type="button" ng-click="cancel()" class="pull-left btn btn-sm btn-danger">Cancel</button>
+										<button type="button" ng-click="cancelCheckout()" class="pull-left btn btn-sm btn-danger">Cancel</button>
 									</div>
 								</div>
 							</div>

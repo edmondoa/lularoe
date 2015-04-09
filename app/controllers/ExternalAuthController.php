@@ -1364,11 +1364,27 @@ class ExternalAuthController extends \BaseController {
         return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),($error) ? 401 : 200);
 
 	}
-	
+
 	// This is a SHIV .. I mean SHIM for angular to do its magic
     public function reorder(){
         $data = Input::all();
-        if(empty($data)){
+        if(empty($data) || empty($data['orderdata'])) {
+            $message = "No data posted";
+            $status = "fail";    
+        } else {
+			Session::put('orderdata',$data['orderdata']);
+			Session::put('cartdata',$data);
+
+            $message = "Successfully posted data";
+            $status = "success"; 
+        }
+        return Response::json(['message'=>$message,'status'=>$status,'data'=>$data], 200);
+    }
+	
+	// This is a SHIV .. I mean SHIM for angular to do its magic
+    public function reorderx(){
+        $data = Input::all();
+        if(empty($data)) {
             $message = "No data posted";
             $status = "fail";    
         }else{

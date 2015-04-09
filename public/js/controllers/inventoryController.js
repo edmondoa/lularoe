@@ -98,19 +98,21 @@ try {
         var path =  ctrlpad.inventoryCtrl.path;
         
         $scope.name = "InventoryController";
+		$scope.orderdata 		= [];
 		$scope.minQuantity		= 33;
 		$scope.totalQuantity	= 0;
-        $scope.params = $routeParams;
-        $scope.cart = [];
-        $scope.countItems = 0;
-        $scope.tax = 0;
-        $scope.discounts = [];
-        $scope.total = 0;
-        $scope.subtotalnum = 0;
-        $scope.orders = [];
-        $scope.inventories = [];
-        $scope.currentPage = 1;
-        $scope.pageSize = 10;
+        $scope.params 			= $routeParams;
+        $scope.cart 			= [];
+        $scope.countItems 		= 0;
+        $scope.tax 				= 0;
+		$scope.taxable 			= 1;
+        $scope.discounts 		= [];
+        $scope.total 			= 0;
+        $scope.subtotalnum 		= 0;
+        $scope.orders 			= [];
+        $scope.inventories 		= [];
+        $scope.currentPage 		= 1;
+        $scope.pageSize 		= 10;
         $scope.showCheckoutButton = true;
         
         $scope.isComplete = false;
@@ -687,10 +689,14 @@ try {
         $scope.checkout = function(){
 			if ($scope.orders.length > 0) 
 			{
-				$http.post('/llrapi/v1/reorder/',$scope.orders)
+				$scope.orderdata = {"orderdata": $scope.orders, 
+									"taxamt"   : $scope.tax,
+									"taxable"  : ($scope.taxable) ? true : false };
+
+				$http.post('/llrapi/v1/reorder/',$scope.orderdata)
 					.success(function(data, status,headers,config){
 						console.log(data.message);
-						$window.location.href = "/inv/checkout";
+						if (data.status == "success") $window.location.href = "/inv/checkout";
 					})
 					.error(function(data, status, headers, config){
 						console.log(data.message);
@@ -714,6 +720,20 @@ try {
 			else $('.applyAction').attr('disabled', 'disabled');
 		};
         
+		$scope.setTaxable = function() {
+			$scope.taxable = !$scope.taxable;
+			$scope.subtotalnum -= $scope.tax;
+			if (!$scope.taxable) $scope.tax = 0;
+			else {
+				shared.requestPromise = shared.requestData('/tax/'+$scope.subtotalnum);
+				shared.requestPromise.then(function(data){
+					$scope.tax = data.Tax; 
+					$scope.total = data.Tax + $scope.subtotalnum;
+					$scope.isComplete = true;
+				});    
+			}
+		};
+
         $scope.$watch('subtotalnum', function(n,o){
             if(n){
                     $scope.isComplete = false;
@@ -729,12 +749,20 @@ try {
                             if(shared.requestPromise && shared.getIsLoading()){
                                 shared.requestPromise.abort();    
                             }
-                            shared.requestPromise = shared.requestData('/tax/'+n);
-                            shared.requestPromise.then(function(data){
-                                $scope.tax = data.Tax; 
-                                $scope.total = data.Tax + n;
-                                $scope.isComplete = true;
-                            });    
+							console.log($scope.taxable);
+							if ($scope.taxable) { 
+								shared.requestPromise = shared.requestData('/tax/'+n);
+								shared.requestPromise.then(function(data){
+									$scope.tax = data.Tax; 
+									$scope.total = data.Tax + n;
+									$scope.isComplete = true;
+								});    
+							}
+							else {
+								$scope.tax = 0;
+								$scope.total = n;
+								$scope.isComplete = true;
+							}
                         });
             }
             else{
@@ -745,7 +773,7 @@ try {
         });
             
         $scope.cancelCheckout = function(){
-            $location.path('/'); 
+			$window.location.href=('/sales');
         };
         
         $scope.$watch('$location.path()',function(n,o){
