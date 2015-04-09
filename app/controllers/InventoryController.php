@@ -27,8 +27,7 @@ class InventoryController extends \BaseController {
 	
 	public function showInvoice($public_id, $id) {
 		$invoice	= Receipt::find($id);
-		$orderdata	= json_decode($invoice->data);
-
+		Session::flash('orderdata', $invoice);
         return View::make('inventory.invoiceCheckout',compact('invoice','orderdata'));
 	}
 
@@ -593,11 +592,16 @@ class InventoryController extends \BaseController {
 		$data['date'] = date('Y-m-d H:i:s');
 
 		\Log::info("Dispatching invoice to {$inv->to_email}");
-		Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
-			$message->to($inv->to_email, "{$inv->to_firstname} {$inv->to_lastname}");
-			$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
-			$message->from($user->email, $user->first_name.' '.$user->last_name);
-		});
+		try { 
+			Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
+				$message->to($inv->to_email, "{$inv->to_firstname} {$inv->to_lastname}");
+				$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
+				$message->from($user->email, $user->first_name.' '.$user->last_name);
+			});
+		} catch (Exception $e) {
+			die('Check your email address you are sending to: '.$e->getMessage());
+		}
+		
 
 		return View::make('inventory.invoicesent', compact('sessiondata','user','data','inv'));
 	}
@@ -674,8 +678,8 @@ class InventoryController extends \BaseController {
 		}
 	}
 
-
 	public function finalizePurchase($auth, $invitems, $currentuser = '') {
+		\Log::info('FINALIZING PURCHASE '.json_encode($currentuser));
 
 		if (empty($currentuser)) { 
 			// This means the superadmin can set a user to "order for someone" 
@@ -770,7 +774,11 @@ class InventoryController extends \BaseController {
 					$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
 					$message->from($user->email, $user->first_name.' '.$user->last_name);
 				});
+			} catch (Exception $e) {
+				\Log::error('Invoice did not get sent to order warehouseing.');	
+			}
 
+			try { 
 				\Log::info("Dispatching receipt email to {$user->email}");
 				Mail::send('emails.invoice', $data, function($message) use($user,$data, $inv) {
 					$message->to($user->email, "{$user->first_name} {$user->last_name}");
@@ -778,9 +786,8 @@ class InventoryController extends \BaseController {
 					$message->replyTo($data['email']);
 					$message->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
 				});
-
 			} catch (Exception $e) {
-				die('Sploded'. $e->getMessage());
+				\Log:: error("Receipt email did not get sent to {$user->email} ". $e->getMessage());
 			}
 		}
 		// If a REP sold this
@@ -835,19 +842,29 @@ class InventoryController extends \BaseController {
 			$data['to_firstname']	= $inv->to_firstname;
 			$data['to_lastname']	= $inv->to_lastname;
 
-			\Log::info("Dispatching original receipt to {$data['to_email']}");
-			Mail::send('emails.standard', $data, function($message) use($user,$data) {
-				$message->to($data['to_email'], "{$data['to_firstname']} {$data['to_lastname']}")
-				->subject("Purchase receipt from {$user->first_name} {$user->last_name}")
-				->from($user->email, "{$user->first_name} {$user->last_name}");
-			});
+			try { 
+				$data['to_email'] = preg_replace('/\s','',$data['to_email']);
+				\Log::info("Dispatching original receipt to {$data['to_email']}");
+				Mail::send('emails.standard', $data, function($message) use($user,$data) {
+					$message->to($data['to_email'], "{$data['to_firstname']} {$data['to_lastname']}")
+					->subject("Purchase receipt from {$user->first_name} {$user->last_name}")
+					->from($user->email, "{$user->first_name} {$user->last_name}");
+				});
+			} catch (Exception $e) {
+				\Log::error('Guess they decided against sending a receipt to their customer? '.$e->getMessage());
+			}
+			
 
-			\Log::info("Dispatching receipt copy to {$data['email']}");
-			Mail::send('emails.standard', $data, function($message) use($user,$data) {
-				$message->to($data['email'], "{$user->first_name} {$user->last_name}")
-				->subject('Purchase receipt from '.Config::get('site.company_name'))
-				->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
-			});
+			try { 
+				\Log::info("Dispatching receipt copy to {$data['email']}");
+				Mail::send('emails.standard', $data, function($message) use($user,$data) {
+					$message->to($data['email'], "{$user->first_name} {$user->last_name}")
+					->subject('Purchase receipt from '.Config::get('site.company_name'))
+					->from(Config::get('site.default_from_email'), Config::get('site.company_name'));
+				});
+			} catch (Exception $e) {
+				\Log::error("Woah, the rep  {$user->id} does not have an email address.. whoddathunk?: ".$e->getMessage());
+			}
 
 
 		}
@@ -874,6 +891,7 @@ class InventoryController extends \BaseController {
 		Session::forget('to_email');
 		Session::forget('to_firstname');
 		Session::forget('to_lastname');
+		Session::forget('invoice');
 		Session::put('previous_page_2','/dashboard');
 
 		return View::make('inventory.thankyoupage',compact('auth','invitems','sessiondata'));
@@ -1018,6 +1036,10 @@ class InventoryController extends \BaseController {
 	}
 
 	public function purchase(){
+
+		// Holds the key
+		$authinfo = new stdClass();
+
 		// If it IS a rep sale, 
 		// Deduct inventory, if not, ADD inventory
 		if (!Input::get('invoice')) {
@@ -1026,23 +1048,9 @@ class InventoryController extends \BaseController {
 			$absamount	= $this->totalCheck($absamount);
 			$invitems	= Session::get('orderdata');
 		}
-
-		Session::put('notes',Input::get('notes'));
-		Session::put('to_email',Input::get('to_email'));
-		Session::put('to_firstname',Input::get('to_firstname'));
-		Session::put('to_lastname',Input::get('to_lastname'));
-
-		$authinfo = new stdClass();
-		$oldInput = Input::all();
-
-		if (!Session::has('orderdata')) {
-			return Redirect::route('dashboard');
-		}
-
-		$user = '';
 		// Load up the invoice
-		if (Input::get('invoice')) {
-			$invoice	= Receipt::find(Input::get('invoice'));
+		else if (Session::has('invoice')) {
+			$invoice	= Receipt::find(Session::get('invoice'));
 			$invitems	= json_decode($invoice->data, true);
 			$absamount	= $invoice->balance;
 			$tax		= $invoice->tax;
@@ -1053,8 +1061,20 @@ class InventoryController extends \BaseController {
 
 			Session::put('repsale',true);
 			Session::put('orderdata', $invitems);
-		}	
+		}
 
+		Session::put('notes',Input::get('notes'));
+		Session::put('to_email',Input::get('to_email'));
+		Session::put('to_firstname',Input::get('to_firstname'));
+		Session::put('to_lastname',Input::get('to_lastname'));
+
+		$oldInput = Input::all();
+
+		if (!Session::has('orderdata')) {
+			return Redirect::route('dashboard');
+		}
+
+		$user = '';
 
 		// MATT HACKERY - 
 		// Watch for changes in mwl_password
@@ -1069,11 +1089,6 @@ class InventoryController extends \BaseController {
 			$authkey = Auth::user()->key;
 			@list($key,$exp) = explode('|',$authkey);
 			$authinfo->key = $key;
-		}
-
-		if ($oldInput['accountname'] == 'Ammon Bacar' || $oldInput['accountname'] == 'Matthew Frederico') {
-			$absamount	= .15;
-			$tax		= 0;
 		}
 
 		$purchaseInfo = array(
@@ -1100,18 +1115,30 @@ class InventoryController extends \BaseController {
 
 			// Update the invoice has been paid!
 			if (isset($invoice)) {
-				$address = new Address();
-				$address->address_1 = Input::get('shipping.address1');
-				$address->address_2 = Input::get('shipping.address2');
-				$address->city      = Input::get('shipping.city');
-				$address->state     = Input::get('shipping.state');
-				$address->zip       = Input::get('shipping.zip');
-				$address->save();
+				if (Input::get('shipping.address1')) { 
+					$address = new Address();
+					$address->address_1 = Input::get('shipping.address1');
+					$address->address_2 = Input::get('shipping.address2');
+					$address->city      = Input::get('shipping.city');
+					$address->state     = Input::get('shipping.state');
+					$address->zip       = Input::get('shipping.zip');
+					$address->save();
+					$invoice->address_id = $address->id;
+				}
 
-				$invoice->address_id = $address->id;
-				$invoice->balance = $invoice->balance - $absamount;
+
+				$user = User::find($invoice->user_id);
+				$invoice->balance	= $invoice->balance - $absamount;
 				$invoice->date_paid = date('Y-m-d H:i:s');
 				$invoice->save();
+
+				// Send this on to finalizationerizer
+				Session::put('repsale',true);
+				Session::put('tax',$invoice->tax);
+				Session::put('orderdata', json_decode($invoice->data,true));
+				Session::put('subtotal', $invoice->subtotal);
+				Session::put('paidout', $invoice->subtotal);
+
 			}
 			else { 
 				// Perhaps check if its an invoice and redirect there with a balance?

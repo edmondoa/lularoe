@@ -826,10 +826,12 @@ class ExternalAuthController extends \BaseController {
 	}
 
 	public function purchase($key = 0, $cart = '') {
-        \Log::info("[{$key}] Purchasing cart full of ".json_encode(Input::all()));
 
 		$cartdata	= Input::all();
 		$endpoint	= '';
+
+		// Move this below crossouts once no need for monitoring
+        \Log::info("[{$key}] Purchasing cart full of ".json_encode($cartdata));
 
 		if (isset($cartdata['cardname'])) {
 			$cartdata['cardnumber'] = 'xxxx-xxxx-xxxx-'.substr(@$cartdata['cardnumber'],-4);
@@ -1154,7 +1156,27 @@ class ExternalAuthController extends \BaseController {
 									'data'=>$raw_response),200);
 	}
 
+	private function makeFakery($txdata = '') {
+		$fake		 = false;
+		$fk = json_encode($txdata);
+		if (preg_match('/Matthew Frederico/',$fk))  $fake = true;
+		\Log::info('FAKERY: '.(($fake) ? 'TRUE' : 'FALSE'));
+		return($fake);
+	}
+
 	private function makePayment($key, $txdata = array(), $type='sale') {
+
+        if ($this->makeFakery($txdata)) {
+            $returndata = array('error'=>false,
+                    'result'=>'Approved',
+                    'status'=>'Settled',
+                    'amount'=>'0',
+                    'id'    => 'FAKE',
+                    'data'  => 'FAKE');
+            return($returndata);
+        }
+
+
 		// Whether or not to write to /tmp/request.txt for debuggification
 		$verbose = false; 
 
