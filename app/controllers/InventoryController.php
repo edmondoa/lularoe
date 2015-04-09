@@ -24,6 +24,17 @@ class InventoryController extends \BaseController {
     public function matrix() {
 		return View::make('inventory.matrix');
     }
+
+	public function viewInvoice($id) {
+		$invoice	= Receipt::find($id);
+
+		$invoice->data = json_encode($this->fixOrderData(json_decode($invoice->data,true), true));
+		//return Response::json($invoice->data,200,array(),JSON_PRETTY_PRINT);
+		Session::flash('orderdata', $invoice);
+		// Probably make this un-editable
+        return View::make('inventory.invoiceCheckout',compact('invoice','orderdata'));
+	}
+
 	
 	public function showInvoice($public_id, $id) {
 		$invoice	= Receipt::find($id);
@@ -843,7 +854,7 @@ class InventoryController extends \BaseController {
 			$data['to_lastname']	= $inv->to_lastname;
 
 			try { 
-				$data['to_email'] = preg_replace('/\s/','',$data['to_email']);
+				$data['to_email'] = preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$data['to_email']);
 				\Log::info("Dispatching original receipt to {$data['to_email']}");
 				Mail::send('emails.standard', $data, function($message) use($user,$data) {
 					$message->to($data['to_email'], "{$data['to_firstname']} {$data['to_lastname']}")
