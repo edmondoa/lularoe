@@ -581,6 +581,7 @@ class ExternalAuthController extends \BaseController {
 
 		if (!empty($data['email'])) {
 			try { 
+				$data['email'] = str_replace(' ','',preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$data['email']));
 				\Log::info('Dispatching final email receipt to: '.$data['email']);
 				// This one goes to the final user
 				Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {

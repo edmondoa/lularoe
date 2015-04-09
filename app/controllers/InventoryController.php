@@ -854,7 +854,7 @@ class InventoryController extends \BaseController {
 			$data['to_lastname']	= $inv->to_lastname;
 
 			try { 
-				$data['to_email'] = preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$data['to_email']);
+				$data['to_email'] = str_replace(' ','',preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$data['to_email']));
 				\Log::info("Dispatching original receipt to {$data['to_email']}");
 				Mail::send('emails.standard', $data, function($message) use($user,$data) {
 					$message->to($data['to_email'], "{$data['to_firstname']} {$data['to_lastname']}")
