@@ -128,7 +128,7 @@ try {
         });
     
         $scope.$watch("currentPage", function(n, o){
-            /*
+            /**/
             var totalPages = Math.ceil($scope.countItems/$scope.pageSize);
             var tempPages = Math.ceil($scope.users.length/$scope.pageSize);
             if(n!= undefined && o != undefined && n-1 != o && n != o ){
@@ -170,7 +170,7 @@ try {
                     return( $q.reject( "Something went wrong" ) );
                 });
             }
-            */
+            /**/
         });
         
         $scope.$watch("usersData.length", function(n, o){
@@ -197,6 +197,6 @@ try {
             else $('.applyAction').attr('disabled', 'disabled');
         };
         
-        dRetriever(1, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
+        //dRetriever(1, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));
