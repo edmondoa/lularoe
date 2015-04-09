@@ -876,7 +876,7 @@ class ExternalAuthController extends \BaseController {
 				'Card-Expiration'   => Input::get('cardexp'),
 				'Card-Address'      => Input::get('cardaddress'),
 				'Card-Zip'          => Input::get('cardzip'),
-				'Description'       => json_encode($cartdata)
+				'Description'       => 'SEE RECEIPT AND INVOICE'
 			);
 			$endpoint = 'sale';
 			foreach($txdata as $k=>$v) {
@@ -887,7 +887,7 @@ class ExternalAuthController extends \BaseController {
 			$txdata = array(
 				'Subtotal'          => floatval(Input::get('subtotal',0)),
 				'Tax'               => floatval(Input::get('tax',0)),
-				'Description'       => json_encode($cartdata)
+				'Description'       => 'SEE RECEIPT AND INVOICE'
 			);
 			$endpoint = 'cash';
 			foreach($txdata as $k=>$v) {
@@ -905,7 +905,7 @@ class ExternalAuthController extends \BaseController {
 				'Check-Number' 		=> Input::get('checknum'),
 				'Subtotal'          => floatval(Input::get('subtotal',0)),
 				'Tax'               => floatval(Input::get('tax',0)),
-				'Description'       => json_encode($cartdata)
+				'Description'       => 'SEE RECEIPT AND INVOICE'
 			);
 			$endpoint = 'checkSale';
 			foreach($txdata as $k=>$v) {
@@ -972,12 +972,16 @@ class ExternalAuthController extends \BaseController {
 
 		$server_output = curl_exec ($ch);
 
-
 		if ($errno = curl_errno($ch)) {
 			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 			return(Response::json($result,401));
 		}
 		curl_close ($ch);
+
+		if (is_array(json_decode($server_output,true))) {
+			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Account validaton required.','errno'=>$errno);
+			return(Response::json($result,401));
+		}
 
 		$returnthis = ($returnJson) ? json_encode(['key'=>$server_output]) : $server_output;
 
@@ -1184,7 +1188,6 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		$server_output = curl_exec ($ch);
-		\Log::info($server_output);
 		$response_obj = json_decode($server_output);
 
 		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
@@ -1193,6 +1196,8 @@ class ExternalAuthController extends \BaseController {
 		// card decline
 		*/
 		$raw_response = $response_obj;
+
+		\Log::info('SERVER OUTPUT TXN: '.print_r($server_output,true));
 
 		if (!isset($response_obj->TransactionResponse)) {
 			$response_obj = new stdClass();
