@@ -333,6 +333,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('api/all-downline/{id}', 'DataOnlyController@getAllDownline');
         Route::get('api/immediate-downline/{id}', 'DataOnlyController@getImmediateDownline');
         Route::get('api/all-users', 'DataOnlyController@getAllUsers');
+        Route::get('api/sanitize-users', 'DataOnlyController@sanitizeAllUsers');
         
         Route::get('api/all-bankinfos', 'BankinfoController@getAllBankInfos');
 		Route::get('api/all-addresses', 'AddressController@getAllAddresses');

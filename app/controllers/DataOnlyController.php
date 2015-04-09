@@ -680,6 +680,38 @@ class DataOnlyController extends \BaseController
 	/**********
 	 * Users
 	 **********/
+    public function sanitizeAllUsers(){
+        $p = Input::get('p');
+        $page = $p ? $p : 1;
+        $limit = 10;
+        $order = "last_name";
+        $sequence = "ASC";
+        $offset = ($page - 1) * $limit;
+        if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+            $data = User::orderBy($order, $sequence)
+                        ->skip($offset)
+                        ->take($limit)
+                        ->get(); 
+                        
+            foreach($data as $u)
+            {
+                $user = User::find($u->id);
+                $user->first_name = ucwords(trim($u->first_name));
+                $u->first_name = $user->first_name; 
+                $user->last_name = ucwords(trim($u->last_name));
+                $u->last_name = $user->last_name;
+                $user->save();
+            };
+            
+            return [
+                        'count'=>User::count(),
+                        'data' =>$data,
+                        'message' => 'Sanitation done on page '.$page
+                   ];   
+                
+        }
+     }
+     
 	public function getAllUsers(){
         $p = Input::get('p');
         $l = Input::get('l');
@@ -691,13 +723,11 @@ class DataOnlyController extends \BaseController
         $sequence = $s == "true" || !$s ? "ASC" : "DESC";
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
             $offset = ($page - 1) * $limit;
-            $data = User::orderBy("updated_at", "DESC")
-                        ->orderBy($order, $sequence)
-                        ->orderBy("last_name", "DESC")
-                        /*->orderBy("first_name", "DESC")
+            $data = User::orderBy($order, $sequence)
                         ->skip($offset)
-                        ->take($limit)*/
+                        ->take($limit)
                         ->get();
+                        
 			return [
                         'count'=>User::count(),
                         'data' =>$data
