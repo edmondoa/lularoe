@@ -974,12 +974,16 @@ class ExternalAuthController extends \BaseController {
 
 		$server_output = curl_exec ($ch);
 
-
 		if ($errno = curl_errno($ch)) {
 			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 			return(Response::json($result,401));
 		}
 		curl_close ($ch);
+
+		if (is_array(json_decode($server_output,true))) {
+			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Account validaton required.','errno'=>$errno);
+			return(Response::json($result,401));
+		}
 
 		$returnthis = ($returnJson) ? json_encode(['key'=>$server_output]) : $server_output;
 
@@ -1206,7 +1210,6 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		$server_output = curl_exec ($ch);
-		\Log::info($server_output);
 		$response_obj = json_decode($server_output);
 
 		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
@@ -1215,6 +1218,8 @@ class ExternalAuthController extends \BaseController {
 		// card decline
 		*/
 		$raw_response = $response_obj;
+
+		\Log::info('SERVER OUTPUT TXN: '.print_r($server_output,true));
 
 		if (!isset($response_obj->TransactionResponse)) {
 			$response_obj = new stdClass();
