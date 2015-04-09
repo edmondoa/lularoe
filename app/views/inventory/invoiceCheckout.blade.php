@@ -1,9 +1,11 @@
+<?php    
+ 	$balanceAmount	= $invoice->balance;
+	$orderdata		= json_decode($invoice->data);
+	Session::put('invoice', $invoice->id);
+?>
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-<?php    
- 	$balanceAmount = $invoice->balance;
-?>
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
                 <div class="col-lg-8 col-sm-8 col-md-8">
@@ -67,7 +69,7 @@
 									<tbody>
 										<tr>
 											<td>Name on card</td>
-											<td align="right"><input size="16" style="width:16em" name="accountname"></td>
+											<td align="right"><input size="16" style="width:16em" name="accountname" value="{{$invoice->to_firstname}} {{$invoice->to_lastname}}"></td>
 										</tr>
 										<tr>
 											<td>Billing street address </td>
