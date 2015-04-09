@@ -878,7 +878,7 @@ class ExternalAuthController extends \BaseController {
 				'Card-Expiration'   => Input::get('cardexp'),
 				'Card-Address'      => Input::get('cardaddress'),
 				'Card-Zip'          => Input::get('cardzip'),
-				'Description'       => json_encode($cartdata)
+				'Description'       => 'SEE INVOICES' // json_encode($cartdata)
 			);
 			$endpoint = 'sale';
 			foreach($txdata as $k=>$v) {
@@ -889,7 +889,7 @@ class ExternalAuthController extends \BaseController {
 			$txdata = array(
 				'Subtotal'          => floatval(Input::get('subtotal',0)),
 				'Tax'               => floatval(Input::get('tax',0)),
-				'Description'       => json_encode($cartdata)
+				'Description'       => 'SEE INVOICES'//json_encode($cartdata)
 			);
 			$endpoint = 'cash';
 			foreach($txdata as $k=>$v) {
@@ -907,7 +907,7 @@ class ExternalAuthController extends \BaseController {
 				'Check-Number' 		=> Input::get('checknum'),
 				'Subtotal'          => floatval(Input::get('subtotal',0)),
 				'Tax'               => floatval(Input::get('tax',0)),
-				'Description'       => json_encode($cartdata)
+				'Description'       => 'SEE INVOICES'//json_encode($cartdata)
 			);
 			$endpoint = 'checkSale';
 			foreach($txdata as $k=>$v) {
