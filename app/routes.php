@@ -264,7 +264,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('inventory/full', 'InventoryController@matrixFull');
 
         Route::post('inv/invoice', 'InventoryController@sendInvoice');
-		Route::get('invoice/pay/{id}', 'InventoryController@viewInvoice');
+		Route::get('invoice/view/{id}', 'InventoryController@viewInvoice');
 
         Route::post('inv/purchase', 'InventoryController@purchase');
 		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
@@ -647,15 +647,9 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 	};
 
 	# Make invoice payment
-	Route::post('invoice/pay/{id}', 'InventoryController@payInvoice');
 	Route::get('invoice/pay/{id}', 'InventoryController@showInvoice');
 	Route::post('inv/purchase', 'InventoryController@purchase');
-
-/*
-		$title = 'Invoice Payment';
-		$receipt = Receipt::find($id)->get();
-		return View::make('inventory.payinvoice',compact($receipt));
-*/
+	// Route::post('invoice/pay/{id}', 'InventoryController@payInvoice');
 
 	Route::get('/', function($subdomain) {
 		$user = User::where('public_id', $subdomain)->first();

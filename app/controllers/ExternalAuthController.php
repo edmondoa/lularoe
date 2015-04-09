@@ -581,6 +581,7 @@ class ExternalAuthController extends \BaseController {
 
 		if (!empty($data['email'])) {
 			try { 
+				$data['email'] = str_replace(' ','',preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$data['email']));
 				\Log::info('Dispatching final email receipt to: '.$data['email']);
 				// This one goes to the final user
 				Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
@@ -830,10 +831,12 @@ class ExternalAuthController extends \BaseController {
 	}
 
 	public function purchase($key = 0, $cart = '') {
-        \Log::info("[{$key}] Purchasing cart full of ".json_encode(Input::all()));
 
 		$cartdata	= Input::all();
 		$endpoint	= '';
+
+		// Move this below crossouts once no need for monitoring
+        \Log::info("[{$key}] Purchasing cart full of ".json_encode($cartdata));
 
 		if (isset($cartdata['cardname'])) {
 			$cartdata['cardnumber'] = 'xxxx-xxxx-xxxx-'.substr(@$cartdata['cardnumber'],-4);
@@ -876,7 +879,7 @@ class ExternalAuthController extends \BaseController {
 				'Card-Expiration'   => Input::get('cardexp'),
 				'Card-Address'      => Input::get('cardaddress'),
 				'Card-Zip'          => Input::get('cardzip'),
-				'Description'       => json_encode($cartdata)
+				'Description'       => 'SEE INVOICES' // json_encode($cartdata)
 			);
 			$endpoint = 'sale';
 			foreach($txdata as $k=>$v) {
@@ -887,7 +890,7 @@ class ExternalAuthController extends \BaseController {
 			$txdata = array(
 				'Subtotal'          => floatval(Input::get('subtotal',0)),
 				'Tax'               => floatval(Input::get('tax',0)),
-				'Description'       => json_encode($cartdata)
+				'Description'       => 'SEE INVOICES'//json_encode($cartdata)
 			);
 			$endpoint = 'cash';
 			foreach($txdata as $k=>$v) {
@@ -905,7 +908,7 @@ class ExternalAuthController extends \BaseController {
 				'Check-Number' 		=> Input::get('checknum'),
 				'Subtotal'          => floatval(Input::get('subtotal',0)),
 				'Tax'               => floatval(Input::get('tax',0)),
-				'Description'       => json_encode($cartdata)
+				'Description'       => 'SEE INVOICES'//json_encode($cartdata)
 			);
 			$endpoint = 'checkSale';
 			foreach($txdata as $k=>$v) {
@@ -972,12 +975,16 @@ class ExternalAuthController extends \BaseController {
 
 		$server_output = curl_exec ($ch);
 
-
 		if ($errno = curl_errno($ch)) {
 			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 			return(Response::json($result,401));
 		}
 		curl_close ($ch);
+
+		if (is_array(json_decode($server_output,true))) {
+			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Account validaton required.','errno'=>$errno);
+			return(Response::json($result,401));
+		}
 
 		$returnthis = ($returnJson) ? json_encode(['key'=>$server_output]) : $server_output;
 
@@ -1158,7 +1165,27 @@ class ExternalAuthController extends \BaseController {
 									'data'=>$raw_response),200);
 	}
 
+	private function makeFakery($txdata = '') {
+		$fake		 = false;
+		$fk = json_encode($txdata);
+		if (preg_match('/Matthew Frederico/',$fk))  $fake = true;
+		\Log::info('FAKERY: '.(($fake) ? 'TRUE' : 'FALSE'));
+		return($fake);
+	}
+
 	private function makePayment($key, $txdata = array(), $type='sale') {
+
+        if ($this->makeFakery($txdata)) {
+            $returndata = array('error'=>false,
+                    'result'=>'Approved',
+                    'status'=>'Settled',
+                    'amount'=>'0',
+                    'id'    => 'FAKE',
+                    'data'  => 'FAKE');
+            return($returndata);
+        }
+
+
 		// Whether or not to write to /tmp/request.txt for debuggification
 		$verbose = false; 
 
@@ -1184,7 +1211,6 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		$server_output = curl_exec ($ch);
-		\Log::info($server_output);
 		$response_obj = json_decode($server_output);
 
 		/* CREATE UNIFIED OBJECT FOR ALL RESPONSE PERMUTATIONS
@@ -1193,6 +1219,8 @@ class ExternalAuthController extends \BaseController {
 		// card decline
 		*/
 		$raw_response = $response_obj;
+
+		\Log::info('SERVER OUTPUT TXN: '.print_r($server_output,true));
 
 		if (!isset($response_obj->TransactionResponse)) {
 			$response_obj = new stdClass();
