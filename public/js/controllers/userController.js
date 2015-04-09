@@ -65,6 +65,7 @@ try {
             var promise = shared.requestPromise.then(function(v){
                 $scope.loadedPages.push(curPage);
                 $scope.countItems = v.count;
+                $scope.isComplete = true;
                 var totalPages = Math.ceil($scope.countItems/limit);
                 var tempPages = Math.ceil($scope.users.length/limit);
 
@@ -127,6 +128,7 @@ try {
         });
     
         $scope.$watch("currentPage", function(n, o){
+            /*
             var totalPages = Math.ceil($scope.countItems/$scope.pageSize);
             var tempPages = Math.ceil($scope.users.length/$scope.pageSize);
             if(n!= undefined && o != undefined && n-1 != o && n != o ){
@@ -163,11 +165,12 @@ try {
                         }
                         
                     }, 1);
-                    /**/
+                    
                 },function(r){
                     return( $q.reject( "Something went wrong" ) );
                 });
             }
+            */
         });
         
         $scope.$watch("usersData.length", function(n, o){
@@ -193,5 +196,7 @@ try {
             if (checked == true) $('.applyAction').removeAttr('disabled');
             else $('.applyAction').attr('disabled', 'disabled');
         };
+        
+        dRetriever(1, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));

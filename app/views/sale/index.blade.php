@@ -10,7 +10,7 @@
 	.toggleBg { background : #efefef }
 </style>
 <div ng-app="app" class="index">
-	<h1>Order Inventory</h1>
+	<h1>Your Sales Inventory</h1>
 	{{ Form::open(array('url' => 'inv/checkout', 'method' => 'POST','name'=>'inven')) }}
 		<div ng-controller="InventoryController" class="my-controller">
 			<div class="row">
@@ -117,7 +117,7 @@
 								</tr>
 								<tr>
 									<td>Subtotal</td>
-									<td align="right">$<span ng-bind="subtotal()|number:2">0.00</span></td>
+									<td align="right">$<span id="subtotalnum" ng-bind="subtotal()|number:2">0.00</span></td>
 								</tr>
 								<tr ng-repeat="(idx,discount) in discounts">
 									<td ng-if="discount.amount"><span ng-bind="discount.title"></span></td>
@@ -167,6 +167,8 @@
 @section('scripts')
 {{ HTML::script('js/controllers/inventoryController.js') }}
 <script>
+
+$(document).ready(function() {
     $('#disco').on('click',function(e) {
         e.preventDefault();
         $(this).toggle();
@@ -175,7 +177,12 @@
 
     $('#customdiscount').on('change',function(e) {
         $.get('/discounts/0?discount='+$('#customdiscount').val())
+		if ($(this).val() == 0 || $(this).val() == '') {
+			$(this).hide();
+			$('#disco').show();
+		}
     });
+});
 
     angular.extend(ControlPad, (function(){                
                 return {
