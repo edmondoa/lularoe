@@ -150,10 +150,12 @@ class InventoryController extends \BaseController {
      */
     public function checkout()
     {
-        $orders = Session::get('orderdata');
-        if(empty($orders)) $orders = array();
+        $orders		= Session::get('orderdata', array());
+		$cartdata	= Session::get('cartdata');
+
         $subtotal   = 0;
         $inittotal  = 0;
+
         array_map(function($order) use (&$inittotal){
             $inittotal += floatval($order['price']) * intval($order['numOrder']);    
         },$orders);
@@ -161,9 +163,17 @@ class InventoryController extends \BaseController {
 		$discounts	= $this->getDiscounts($inittotal,false,true);
 		if ($discounts['total'] > 0) $inittotal = $inittotal - $discounts['total'];
 
-		$tax = $this->getTax($inittotal);
+		// Is this item taxable?
+		if (isset($cartdata['taxable']) && $cartdata['taxable']) {
+			$tax = $this->getTax($inittotal);
+		}
+		// Set tax to flat amount or zero?
+		else { 
+			// Allow them to set the tax amount .. eventually
+			$tax = isset($cartdata['taxamt']) ? $cartdata['taxamt'] : 0; 
+		}
 
-        Session::put('emailto',Input::get('emailto'));
+        Session::put('emailto',!empty($cartdata['emailto']) ? $cartdata['emailto'] : '');
         Session::put('discounts',$discounts);
         Session::put('subtotal',$inittotal);
         Session::put('tax',$tax);
