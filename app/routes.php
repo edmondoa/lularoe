@@ -624,7 +624,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 
 	Route::get('populate-levels', function(){
-		$level_count = Level::all()->count();
+		$level_count = Level::count();
 		DB::connection()->disableQueryLog();
 
 		if ($level_count > 0) {
