@@ -30,7 +30,7 @@ class DashboardController extends \BaseController
 		// admin dashboard
 		if (Auth::user()->hasRole(['Superadmin', 'Admin'])) {
 			$user = User::findOrFail(Auth::user()->id);
-			$reps = User::all()->count();
+			$reps = User::count();
 			$beta_service_link = SiteConfig::where('key', 'beta-service-link')->first();
 			$new_downline = User::find(Auth::user()->id)->new_descendants()->orderBy('created_at', 'DESC')->get()->take(10);
 			$new_downline_count_30 = User::find($user->id)->new_descendants_count_30();
