@@ -955,7 +955,7 @@ class InventoryController extends \BaseController {
 		}
 
 		$purchaseInfo = array(
-					'subtotal'		=>$absamount,
+					'subtotal'		=>($absamount - $tax), 
 					'tax'			=>$tax,
 					'cash'			=>1,
 					'cart'			=>json_encode($invitems)
@@ -1027,7 +1027,7 @@ class InventoryController extends \BaseController {
 		}
 
 		$purchaseInfo = array(
-					'subtotal'		=>$absamount,
+					'subtotal'		=>($absamount - $tax), 
 					'tax'			=>$tax,
 					'accountname'	=>$checking->bank_name,
 					'routing'		=>$checking->bank_routing,
@@ -1113,7 +1113,7 @@ class InventoryController extends \BaseController {
 		}
 
 		$purchaseInfo = array(
-					'subtotal'		=>$absamount,
+					'subtotal'		=>($absamount - $tax),
 					'tax'			=>$tax,
 					'cardname'		=>$oldInput['accountname'],
 					'cardnumber'	=>$oldInput['cardno'],
