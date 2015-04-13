@@ -737,20 +737,22 @@ class DataOnlyController extends \BaseController
 
     //search users
     public function getSearchUsers($keyword){
+         $type = Input::get('type');
+         
          $limit = 10;
-         $count = User::where('first_name', 'LIKE', '%'.$keyword.'%')
+         $raw = User::where('first_name', 'LIKE', '%'.$keyword.'%')
                     ->orWhere('last_name','LIKE','%'.$keyword.'%')
-                    ->orWhere('id',$keyword)
-                    ->count();
-         $data = User::where('first_name', 'LIKE', '%'.$keyword.'%')
-                    ->orWhere('last_name','LIKE','%'.$keyword.'%')
-                    ->orWhere('id',$keyword)
-                    ->take($limit)
-                    ->get()
-                    ->map(function($user) use (&$temp){
-             $name = $user->id.' - '.$user->full_name;
-             return ["id"=>$user->id,"name"=>$name];
-         });
+                    ->orderBy("last_name", "ASC")
+                    ->orderBy("first_name", "ASC");
+         $count = $raw->count();
+         $data = $raw->take($limit)
+                    ->get();
+         if($type != 'all'){
+             $data = $data->map(function($user) use (&$temp){
+                 $name = $user->id.' - '.$user->full_name;
+                 return ["id"=>$user->id,"name"=>$name];
+             });
+         }
                     
          return [
             'count' => $count,

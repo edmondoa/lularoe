@@ -63,32 +63,9 @@ try {
             }
             shared.requestPromise = shared.requestData(path);
             var promise = shared.requestPromise.then(function(v){
-                $scope.loadedPages.push(curPage);
                 $scope.countItems = v.count;
                 $scope.isComplete = true;
-                var totalPages = Math.ceil($scope.countItems/limit);
-                var tempPages = Math.ceil($scope.users.length/limit);
-
-                var res = [];
-                var res = v.data.map(function(user, i){
-                    var a = [],offset = (curPage -1) * limit + i;
-                    a = $scope.users.filter(function(n){
-                        return n.id == user.id;
-                    });
-                    
-                    if(!a.length){
-                        var i= $scope.users.length;  
-                        for(;i <= offset; i++){
-                            $scope.users.splice(i,0,user);
-                        }    
-                        
-                        $scope.users.splice(offset,1,user);    
-                    }
-
-                    return user;    
-                });
-                
-                //$scope.usersData.push({'page':curPage,'data':res});
+                $scope.users = v.data;
                 
                 return v;
             },function(r){
@@ -128,49 +105,19 @@ try {
         });
     
         $scope.$watch("currentPage", function(n, o){
-            /**/
-            var totalPages = Math.ceil($scope.countItems/$scope.pageSize);
-            var tempPages = Math.ceil($scope.users.length/$scope.pageSize);
-            if(n!= undefined && o != undefined && n-1 != o && n != o ){
-                $scope.prevJump = true;
-            }
-        
-            if(!check($scope.loadedPages,n) && (!$scope.countItems || tempPages < totalPages))
-            {
-                var promise = dRetriever(n, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
-                promise.then(function(v){
-                    var totalPages = Math.ceil($scope.countItems/$scope.pageSize);
-                    var curPage = n; 
-                    
-                    if ( angular.isDefined($scope.stop) ) {
-                        return;   
-                    }
-                    
-                    $scope.stop = $interval(function() {
-                        if(!shared.getIsLoading()){
-                            curPage++;
-                            if($scope.prevJump){
-                                curPage = 1;
-                                $scope.prevJump = false;    
-                            }
-                            if (!check($scope.loadedPages,curPage) && curPage <= totalPages) {
-                                dRetriever(curPage, $scope.pageSize,$scope.orderByField,$scope.reverseSort, defaultPath);
-                            }else{
-                                $scope.isComplete = true;
-                            }
-                        }
-                        
-                        if($scope.loadedPages.length == totalPages){
-                            $scope.stopRequestPages();
-                        }
-                        
-                    }, 1);
-                    
-                },function(r){
-                    return( $q.reject( "Something went wrong" ) );
-                });
-            }
-            /**/
+            var promise = dRetriever(n, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
+            promise.then(function(v){
+                var curPage = n; 
+                
+                $scope.users = v.data;
+                
+                if ( angular.isDefined($scope.stop) ) {
+                    return;   
+                }
+                
+            },function(r){
+                return( $q.reject( "Something went wrong" ) );
+            });
         });
         
         $scope.$watch("usersData.length", function(n, o){
@@ -182,9 +129,32 @@ try {
         });
 
 		$scope.$watch('search.$', function (n,o) {
-			console.log('search changes');
-			console.log(n);
-			$scope.stopRequestPages();
+            if( n != undefined){
+			    console.log('search changes');
+			    console.log(n);
+			    $scope.stopRequestPages();
+                
+                var path = "/api/search-user/"+n+"?type=all";
+                
+                if(n == ""){
+                    dRetriever(n, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
+                }
+                else{
+                    if(shared.requestPromise && shared.getIsLoading()){
+                        shared.requestPromise.abort();    
+                    }
+                    shared.requestPromise = shared.requestData(path);
+                    var promise = shared.requestPromise.then(function(v){
+                        $scope.countItems = v.count;
+                        $scope.isComplete = true;
+                        $scope.users = v.data;
+                        
+                        return v;
+                    },function(r){
+                        return( $q.reject( "Something went wrong" ) );
+                    });
+                }
+            }
         });
         
         // bulk action checkboxes
