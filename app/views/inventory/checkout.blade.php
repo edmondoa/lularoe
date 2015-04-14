@@ -15,7 +15,7 @@
 		Session::forget('paidout');
         Session::forget('emailto');
         Session::forget('repsale');
-        //Session::forget('orderdata');
+        Session::forget('orderdata');
         Session::forget('subtotal');
         Session::forget('customdiscount');
         Session::forget('tax');

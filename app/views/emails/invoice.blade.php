@@ -1,7 +1,8 @@
 @extends('emails.layouts.basic')
 <?php 
-	$shipinfo = $user->addresses->filter(function($d) { return $d->label == 'Shipping'; })->first(); 
+	$shipinfo = $user->addresses->filter(function($d) { return $d->addressable_type == 'Shipping'; })->first(); 
 	if (!isset($shipinfo)) $shipinfo = $user->addresses->first();
+	if (isset($inv->balance) && !isset($payment_url)) $payment_url = '* ERROR *';
 ?>
 
 @section('body')
@@ -53,6 +54,7 @@
 					</table>
 				</td>
 				<td valign="top" width="50%">
+			@if (!$inv->balance)
 					<h2>Shipping Information</h2>
 					<table>
 						<tbody>
@@ -64,13 +66,13 @@
 							<tr><td>{{ $shipinfo->zip }}</td></tr>
 						</tbody>
 					</table>
+			@endif
 				</td>
 			</tr>
 		</tbody>
 	</table>
 </div>
-
-<h2>Shipping Manifest</h2>
+<hr>
 	<font size="+1">
 		{{ $body}}
 	</font>
