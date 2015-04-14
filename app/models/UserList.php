@@ -2,13 +2,7 @@
 
 class UserList extends \Eloquent 
 {
-
-    // Add your validation rules here
-    public static $rules = [
-    // 'title' => 'required'
-    ];
-
-    // Don't forget to fill this array    
+  
     protected $table = 'users';
     protected $hidden = [
         'password',
@@ -16,10 +10,7 @@ class UserList extends \Eloquent
         'created_at',
         'consignment',
         'hide_billing_address',
-        'hide_dob',
         'hide_email',
-        /*'hide_gender',*/
-        'hide_phone',
         'hide_shipping_address',
         'image',
         'key',
@@ -35,40 +26,7 @@ class UserList extends \Eloquent
         'hasSignUp'
     ];
     
-    /*protected $appends = [
-        'public_gender'
-    ];*/
-    // public $timestamps = false;
-
-
-    /*
-    protected $fillable = [
-        'sponsor_id',
-        'original_sponsor_id',
-        'email',
-        'password',
-        'first_name',
-        'last_name',
-        'phone',
-        'gender',
-        'dob',
-        'public_id',
-        'consignment',
-        'hasSignUp',
-        'role_id',
-        'key',
-        'image',
-        'disabled',
-        'created_at',
-        'updated_at',
-        'hide_email',
-        'hide_phone',
-        'hide_billing_address',
-        'hide_shipping_address',
-        'company_name'
-    ];
-    */
-
+    
     ##############################################################################################
     # append custom Attribs
     ##############################################################################################
@@ -83,124 +41,26 @@ class UserList extends \Eloquent
         'public_dob',
         'public_email',
         'public_phone',
-        
-        
-        /**/
-    /*    
-        'personally_sponsored_count',
-        
-        
-        ,
-        'new_record',
-        'formatted_phone',
-        //'volume',
-        //'account_balance',
-        
-        
-        'full_name',
-        
-        'formatted_created_at',
-         
-        'level',
-        //'public_billing_address',
-        //'public_shipping_address'
-        */
+        'formatted_phone'
     ];
     
     
     ##############################################################################################
     # Relationships
     ##############################################################################################
-    /**/
-    /*
-    public function addresses()
-    {
-        return $this->hasMany('Address', 'addressable_id', 'id');
-    }*/
-
-    /*
-    public function receipts()
-    {
-        return $this->hasMany('Receipt');
-    }*/
-
-    /*
-    public function products()
-    {
-        return $this->hasMany('Products');
-    }*/
-/*
-    public function bankinfo() {
-        return $this->hasMany('Bankinfo');
-    }*/
-
-    /*
-    public function getConsignment() {
-        return($this->consignment);
-    }
-
-    public function setConsignment($val) {
-        $this->consignment = $val;
-        return($val);
-    }
-    */
-    /*
-    public function sponsor() {
-        return $this -> belongsTo('User');
-    }*/
-    /**/
-    public function children() {
-        return $this -> belongsToMany('UserList', 'levels', 'ancestor_id','user_id');
-    }
     
     public function descendants() {
         return $this -> belongsToMany('UserList', 'levels', 'ancestor_id','user_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_descendants')->withPivot('level');
     }
-    /**/
-    public function descendants_sm() {
-        return $this -> belongsToMany('UserList', 'levels', 'ancestor_id','user_id')->select(['users.id'])->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_descendants_sm')->withPivot('level');
-    }
-
-    public function ancestors() {
-        return $this -> belongsToMany('UserList', 'levels', 'user_id','ancestor_id')->orderBy('level','desc')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_ancestors')->whereNotNull('sponsor_id')->withPivot('level');
-    }
-
-    /*
-    public function leads() {
-        return $this -> hasMany('Lead', 'sponsor_id', 'id');
-    }*/
 
     public function frontline() {
         return $this -> hasMany('UserList', 'sponsor_id', 'id');
     }
 
-    public function personally_sponsored() {
-        return $this -> hasMany('UserList', 'original_sponsor_id', 'id');
-    }
-
     public function role() {
         return $this->belongsTo('Role');
     }
-    
-    /*
-    public function plans() {
-        return $this->belongsToMany('Product','plans');
-    }
-    */
-    /*
-    public function orders() {
-        return $this->hasMany('Order');
-    }*/
-    
-    /*
-    public function stats() {
-        return $this->hasMany('Userstat');
-    }*/
-    
-    /*
-    public function stats_to_date() {
-        return $this->hasMany('Userstat')->where('commission_period',date('Y-m-00'))->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_stats')->first();
-    }*/
+  
     
     /*
     public function userSite() {
@@ -226,34 +86,6 @@ class UserList extends \Eloquent
         return $this->frontline()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_frontline_count')->first();
     }
 
-    public function personallySponsoredCountRelation()
-    {
-        return $this->personally_sponsored()->selectRaw('sponsor_id, count(*) as count')->groupBy('sponsor_id')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_personally_sponsored_count')->first();
-    }
-
-    /*
-    public function orgVolumeRelation()
-    {
-        return $this->payments()->whereRaw('MONTH(payments.created_at)=MONTH(CURRENT_DATE) and YEAR(payments.created_at)=YEAR(CURRENT_DATE)')->selectRaw('payments.user_id, SUM(payments.amount) as volume')->groupBy('payments.user_id' )->remember(5)->first();
-        }
-        */
-
-    public function new_descendants() {
-        return $this -> belongsToMany('UserList', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('30 days ago')));
-    }
-    
-    /*
-    public function new_descendants_count_30() {
-        return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('30 days ago')))->count();
-    }
-    
-    public function new_descendants_count_7() {
-        return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('7 days ago')))->count();
-    }
-
-    public function new_descendants_count_1() {
-        return $this -> belongsToMany('User', 'levels', 'ancestor_id','user_id')->where('users.created_at', '>=', date('Y-m-d H:i:s',strtotime('1 day ago')))->count();
-    }*/
     /**/
     
     ##############################################################################################
@@ -312,24 +144,6 @@ class UserList extends \Eloquent
         return (int) (isset($this->descendantsCountRelation()->count))?$this->descendantsCountRelation()->count:0;
     }
     
-    /*
-
-    
-public function getAccountBalanceAttribute()
-    {
-        return (double) $this->orders()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_balance')->sum('total_price');    
-    }
-
-    public function getPVAttribute()
-    {
-        return (double) $this->orders()->whereRaw('MONTH(created_at)=MONTH(CURDATE())')->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_balance')->sum('total_points');    
-    }
-
-    public function getVolumeAttribute() {
-        return false;
-        return (double) (isset($this->orgVolumeRelation()->volume))?$this->orgVolumeRelation()->remember(Config::get('site.cache_query_length'),'user_'.$this->id.'_volume')->volume:0;
-    }
-     */
     public function getRankNameAttribute() {
         if(isset($this->currentRank()->name))
         {
@@ -354,15 +168,11 @@ public function getAccountBalanceAttribute()
         }
         return false;
     }
-    /*
-
-    public function getNewRecordAttribute() {
-        return (strtotime($this->created_at) >= (time() - Config::get('site.new_time_frame') ))?true:false;
-    }
     
+    /*    
     public function getFullNameAttribute() {
         return $this->first_name . ' ' . $this->last_name;
-    }
+    }*/
     
     public function getFormattedPhoneAttribute($value)
     {
@@ -371,46 +181,16 @@ public function getAccountBalanceAttribute()
         }
     
     }
-    
-
-    public function getFormattedCreatedAtAttribute($value)
-    {
-        return date('M d Y, h:i a', strtotime($this->created_at));
-    }
 
     public function setPhoneAttribute($value)
     {
         $this->attributes['phone'] = preg_replace('/\D+/', '', $value);
     }
 
-    public function getLevelAttribute()
-    {
-        return (isset($this->pivot->level))?$this->pivot->level:null;
-    }
-
-    ##############################################################################################
-    # Password reminder methods
-    ##############################################################################################
-    
-    public function getRememberToken()
-    {
-        return $this->remember_token;
-    }
-
-    public function setRememberToken($value)
-    {
-        $this->remember_token = $value;
-    }
-
-    public function getRememberTokenName()
-    {
-        return 'remember_token';
-    }
-    
     ##############################################################################################
     # role and permissions
     ##############################################################################################
-    
+    /*
     public function hasRole($key) {
         if(!is_array($key)) return false;
         if(!isset($this->role->name)) return false;
@@ -428,16 +208,6 @@ public function getAccountBalanceAttribute()
         return ($descendency)?true:false;
     }
 
-    public function sumOrgOrders() {
-        if(!Auth::check()) return false;
-        $total = 0;
-        foreach($this->descendants as $descendant)
-        {
-            $total += $descendant->account_balance;
-        }
-        //exit;
-        return $total;
-    }
     */
     public function clearUserCache(){
         if(isset($this->id)){
@@ -477,5 +247,4 @@ public function getAccountBalanceAttribute()
             return "no id set";
         }
     }
-    /**/
 }
