@@ -886,7 +886,7 @@ class InventoryController extends \BaseController {
 			$data['to_lastname']	= $inv->to_lastname;
 			$data['shipinfo']		= $inv->address()->get()->first();
 
-			\Log::info('DATA FOR RECEIPT: '.print_r($data,true));
+			//\Log::info('DATA FOR RECEIPT: '.print_r($data,true));
 
 			try { 
 				$data['to_email'] = str_replace(' ','',preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$data['to_email']));

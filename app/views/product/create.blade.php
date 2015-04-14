@@ -39,6 +39,7 @@
 					<button type="button" class="btn btn-default margin-top-2" id="add-image"><i class="fa fa-plus"></i> Add Image</button>
 				</div>
 			    
+				<!--
 			    <div class="form-group">
 			        {{ Form::label('make', 'Make') }}
 			        {{ Form::text('make', null, array('class' => 'form-control')) }}
@@ -48,6 +49,7 @@
 			        {{ Form::label('model', 'Model') }}
 			        {{ Form::text('model', null, array('class' => 'form-control')) }}
 			    </div>
+				-->
 				
 			    <div class="form-group">
 					<span class="label label-xs">S,M,L,XL,XXL etc</span>
