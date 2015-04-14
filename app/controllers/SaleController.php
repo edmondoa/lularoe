@@ -14,6 +14,18 @@ class SaleController extends \BaseController {
 	 */
 	public function index()
 	{
+        Session::forget('discount');
+        Session::forget('paidout');
+        Session::forget('emailto');
+        Session::forget('repsale');
+        Session::forget('orderdata');
+        Session::forget('subtotal');
+        Session::forget('customdiscount');
+        Session::forget('tax');
+        Session::forget('paidout');
+        Session::forget('payments');
+        Session::forget('paymentdata');
+
 		Session::put('repsale',true);
 		//$sales = Sale::all();
 

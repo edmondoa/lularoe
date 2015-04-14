@@ -68,13 +68,16 @@ class ExternalAuthController extends \BaseController {
 		
 		$prod = Product::where('user_id','=',$mbr->id)->where('id','=',$id)->get()->first();
 
+
 		if (!empty($prod)) { 
 			if ($prod->quantity >= intval($quan)) {
 				$prod->quantity = $prod->quantity - intval($quan);
 				$prod->save();
+				\Log::info("\tRemoved item {$quan} / {$prod->quantity} of {$id} from user #{$mbr->id}");
 				return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
 			}
 			else {
+				\Log::info("\tFailed to remove item {$quan} / {$prod->quantity} of {$id} from user #{$mbr->id}");
 				return(Response::json(array('error'=>true,'message'=>'fail','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
 			}
 		}
