@@ -771,6 +771,17 @@ function addOrder($order, $key = 'orderdata') {
 
 Route::get('testfunction', function() {
 
+	$addys = Receipt::find(39)->address()->get()->first()->toArray();
+	print_r($addys);
+	die();
+		
+	$addys = User::find(11950)->addresses()->get();
+	foreach($addys as $a) {
+		print($a->address_1);
+		print($a->addressable_type);
+	}
+	die();
+
 	$invoice = Receipt::find(57);
 	$address = new Address();
 	$address->address_1 = 'Test1';
