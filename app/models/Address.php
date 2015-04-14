@@ -16,6 +16,13 @@ class Address extends \Eloquent
 	protected $table = 'addresses';
 	protected $fillable = array('address_1','address_2','city','state','addressable_id','zip','addressable_type','label','disabled');
 
+	// Need this for RECEIPTS TO WORK!
+	public function address()
+    {
+        return $this->belongsTo('Receipt', 'id', 'address_id');
+    }
+
+
 	public function addressable()
 	{
 		return $this->morphTo();

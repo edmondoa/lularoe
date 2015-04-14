@@ -624,7 +624,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 
 	Route::get('populate-levels', function(){
-		$level_count = Level::all()->count();
+		$level_count = Level::count();
 		DB::connection()->disableQueryLog();
 
 		if ($level_count > 0) {
@@ -770,6 +770,17 @@ function addOrder($order, $key = 'orderdata') {
 */
 
 Route::get('testfunction', function() {
+
+	$addys = Receipt::find(39)->address()->get()->first()->toArray();
+	print_r($addys);
+	die();
+		
+	$addys = User::find(11950)->addresses()->get();
+	foreach($addys as $a) {
+		print($a->address_1);
+		print($a->addressable_type);
+	}
+	die();
 
 	$invoice = Receipt::find(57);
 	$address = new Address();

@@ -134,8 +134,8 @@
                                     </td>
                                 </tr>
 
-								<tr ng-if="tax">
-									<td>Tax</td>
+								<tr>
+									<td><input type="checkbox" name="hasTax" value="1" id="taxable" ng-click="setTaxable()" checked="checked"> Tax</td>
 									<td align="right">$<span ng-bind="tax|number:2">0.00</span></td>
 								</tr>
 								<tr>

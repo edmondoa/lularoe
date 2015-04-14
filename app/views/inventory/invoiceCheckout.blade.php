@@ -49,7 +49,9 @@
 						</tbody>
 					</table>
 				</div>
-                <div class="col-lg-4 col-sm-4 col-md-4">
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-4 col-md-4">
 					<p>
 						<fieldset>
 							<legend><h3>Notes</h3></legend>
@@ -57,6 +59,8 @@
 						</fieldset>
 					</p>
 				</div>
+            </div>
+            <div class="row">
                 <div class="col-lg-12 col-sm-12 col-md-12">
                     <div class="well" id="creditcard">
 						{{ Form::open(array('url' => '/inv/purchase', 'method' => 'post','name'=>'inven')) }}
@@ -72,11 +76,25 @@
 											<td align="right"><input size="16" style="width:16em" name="accountname" value="{{$invoice->to_firstname}} {{$invoice->to_lastname}}"></td>
 										</tr>
 										<tr>
-											<td>Billing street address </td>
+											<td>Street address </td>
 											<td align="right"><input size="16" style="width:16em" name="address"></td>
 										</tr>
 										<tr>
-											<td>Billing zip </td>
+											<td>Address (cont)</td>
+											<td align="right"><input size="16" style="width:16em" name="address2"></td>
+										</tr>
+										<tr>
+											<td>City</td>
+											<td align="right"><input size="16" style="width:16em" name="city"></td>
+										</tr>
+										<tr>
+											<td>State</td>
+											<td align="right">
+											{{ Form::select('state',State::orderBy('full_name')->lists('full_name', 'abbr'), null, array('class' => 'form-control')) }}
+											</td>
+										</tr>
+										<tr>
+											<td>Zip </td>
 											<td align="right"><input size="16" style="width:10em" name="zip"></td>
 										</tr>
 										<tr>

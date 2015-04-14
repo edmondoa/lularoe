@@ -68,13 +68,16 @@ class ExternalAuthController extends \BaseController {
 		
 		$prod = Product::where('user_id','=',$mbr->id)->where('id','=',$id)->get()->first();
 
+
 		if (!empty($prod)) { 
 			if ($prod->quantity >= intval($quan)) {
 				$prod->quantity = $prod->quantity - intval($quan);
 				$prod->save();
+				\Log::info("\tRemoved item {$quan} / {$prod->quantity} of {$id} from user #{$mbr->id}");
 				return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
 			}
 			else {
+				\Log::info("\tFailed to remove item {$quan} / {$prod->quantity} of {$id} from user #{$mbr->id}");
 				return(Response::json(array('error'=>true,'message'=>'fail','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
 			}
 		}
@@ -1364,11 +1367,27 @@ class ExternalAuthController extends \BaseController {
         return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),($error) ? 401 : 200);
 
 	}
-	
+
 	// This is a SHIV .. I mean SHIM for angular to do its magic
     public function reorder(){
         $data = Input::all();
-        if(empty($data)){
+        if(empty($data) || empty($data['orderdata'])) {
+            $message = "No data posted";
+            $status = "fail";    
+        } else {
+			Session::put('orderdata',$data['orderdata']);
+			Session::put('cartdata',$data);
+
+            $message = "Successfully posted data";
+            $status = "success"; 
+        }
+        return Response::json(['message'=>$message,'status'=>$status,'data'=>$data], 200);
+    }
+	
+	// This is a SHIV .. I mean SHIM for angular to do its magic
+    public function reorderx(){
+        $data = Input::all();
+        if(empty($data)) {
             $message = "No data posted";
             $status = "fail";    
         }else{
