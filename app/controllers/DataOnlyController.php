@@ -723,14 +723,15 @@ class DataOnlyController extends \BaseController
         $sequence = $s == "true" || !$s ? "ASC" : "DESC";
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
             $offset = ($page - 1) * $limit;
-            $data = User::orderBy($order, $sequence)
+            $data = UserList::orderBy($order, $sequence)
                         ->skip($offset)
                         ->take($limit)
                         ->get();
                         
 			return [
-                        'count'=>User::count(),
-                        'data' =>$data
+                        'count'=>UserList::count(),
+                        'data' =>$data,
+                        'message' => 'UserList'
                    ];
 		}
 	}
@@ -740,7 +741,7 @@ class DataOnlyController extends \BaseController
          $type = Input::get('type');
          
          $limit = 10;
-         $raw = User::where('first_name', 'LIKE', '%'.$keyword.'%')
+         $raw = UserList::where('first_name', 'LIKE', '%'.$keyword.'%')
                     ->orWhere('last_name','LIKE','%'.$keyword.'%')
                     ->orderBy("last_name", "ASC")
                     ->orderBy("first_name", "ASC");
