@@ -1,6 +1,6 @@
 <?php
   return array(
-
+            'log' => true,
             'fetch' => PDO::FETCH_CLASS,
             'default' => 'mysql',
             'connections' => array(
