@@ -7,6 +7,7 @@
 @section('content')
 <style>
 	.shrinktext td { font-size:11px }
+	table.shrinktext { width:100% }
 </style>
 	<div class="row" style="padding-top:-50px;margin-top:-50px">
 		<div class="col-lg-12 col-sm-12 col-md-12">
@@ -47,7 +48,7 @@
 
 	<div class="row">
 		<div class="col-lg-12 col-sm-12 col-md-12">
-			<div class="panel well pull-left no-print" style="margin:3px;">
+			<div class="panel well" style="margin:3px;">
 				<fieldset>	
 					<legend><h4>Items in Order</h4></legend>
 					{{$orderTable}}
@@ -56,6 +57,7 @@
 		</div>
 	</div>
 
+<!--
 	<div class="row hidden-print">
 		<div class="col-lg-12 col-sm-12 col-md-12">
 			<div class="well" id="creditcard">
@@ -71,6 +73,7 @@
 			</div> 
 		</div>
 	</div>
+-->
 
 @stop
 @section('scripts')
