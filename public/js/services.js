@@ -16,14 +16,11 @@ angular.module('ControlPadServices', [])
     };
     
     sharedSrv.requestPromise = null;  
-    sharedSrv.requestData = function(url, d){
-        if(d == undefined){
-            d = {};
-        }
+    sharedSrv.requestData = function(url){
         isLoading = true;
         var canceller = $q.defer();
 
-        var request = $http.get(url, { params: d, timeout: canceller.promise});
+        var request = $http.get(url, { timeout: canceller.promise});
         
         var promise = request.then(
             function( response ) {

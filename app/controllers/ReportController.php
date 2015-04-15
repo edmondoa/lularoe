@@ -15,6 +15,22 @@ class ReportController extends \BaseController {
 		return View::make('reports.index');
 	}
 
+	public function orders($id = '')
+	{
+		if (Auth::user()->hasRole(['Superadmin','Admin'])) { 
+			Session::flash('ledgerUserId',$id);
+		}
+
+		$orderlist = Receipt::getReceipts($id);
+
+		$queries = DB::getQueryLog();
+		$last_query = end($queries);
+		\Log::info('LAST QUERY: '.print_r($last_query,true));
+
+		//return Response::json($orderlist);
+		return View::make('reports.orders', compact('orderlist'));
+	}
+
 	public function getReportReceipts() {
 		if (Session::has('ledgerUserId')) $user = User::find(Session::get('ledgerUserId'));
 		else $user = Auth::user();
@@ -24,6 +40,13 @@ class ReportController extends \BaseController {
 		return Response::json(array('data'=>$receipts,'count'=>count($receipts)),200,[], JSON_PRETTY_PRINT);
 	}
 
+	public function getOrderList() {
+		if (Session::has('ledgerUserId')) $id = Session::get('ledgerUserId');
+		else $id = 0; //Auth::user()->id;
+
+		$orderlist = App::make('ExternalAuthController')->getReceipts($id);
+		return Response::json(array('data'=>$sales,'count'=>count($sales)),200,[], JSON_PRETTY_PRINT);
+	}
 
 	public function getReportSales() {
 		if (Session::has('ledgerUserId')) $id = Session::get('ledgerUserId');

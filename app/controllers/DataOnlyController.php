@@ -717,8 +717,6 @@ class DataOnlyController extends \BaseController
         $l = Input::get('l');
         $o = Input::get('o');
         $s = Input::get('s');
-        $keyword = Input::get('$');
-             
         $page = $p ? $p : 1;
         $limit = $l ? $l : 10;
         $order = $o ? $o : "last_name";
@@ -753,8 +751,6 @@ class DataOnlyController extends \BaseController
     //search users
     public function getSearchUsers($keyword){
          $type = Input::get('type');
-         
-    
          
          $limit = 10;
          $raw = User::where('first_name', 'LIKE', '%'.$keyword.'%')
