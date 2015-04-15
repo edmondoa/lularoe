@@ -611,14 +611,16 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	});
 
 	Route::group(array(), function() {
-		Route::get('reports', 'ReportController@index');
+		Route::get('reports/orders/', 'ReportController@orders');
 		Route::get('api/report/sales/details/{id}', 'ReportController@saleDetails');
 		Route::get('api/report/sales', 'ReportController@getReportSales');
 		Route::get('api/report/inventory', 'ReportController@getReportInventory');
 		Route::get('api/report/receipts', 'ReportController@getReportReceipts');
+		Route::get('reports', 'ReportController@index');
 
 		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin'])) {
-			Route::get('reports/{id}', 'ReportController@index');
+			Route::get('reports/orders/{id}', 'ReportController@orders');
+			Route::get('reports/sales/{id}', 'ReportController@index');
 		}
 	});
 
