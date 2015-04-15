@@ -1,8 +1,8 @@
 @extends('layouts.default')
 @section('content')
-<div ng-app="app" class="index">
+<div class="index">
 	<h1>Reports</h1>
-	<div ng-controller="ReportsController" class="my-controller">
+	<div class="my-controller">
 
 		<div role="tabpanel">
 			<ul class="nav nav-tabs" role="tablist">
