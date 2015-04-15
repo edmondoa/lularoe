@@ -717,14 +717,24 @@ class DataOnlyController extends \BaseController
         $l = Input::get('l');
         $o = Input::get('o');
         $s = Input::get('s');
+        $keyword = Input::get('$');
+             
         $page = $p ? $p : 1;
         $limit = $l ? $l : 10;
         $order = $o ? $o : "last_name";
         $sequence = $s == "true" || !$s ? "ASC" : "DESC";
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
             $offset = ($page - 1) * $limit;
-            $data = UserList::orderBy($order, $sequence)
-                        ->skip($offset)
+            if(isset($keyword) && $keyword != ""){
+                $data = UserList::where('first_name', 'LIKE', '%'.$keyword.'%')
+                        ->orWhere('last_name','LIKE','%'.$keyword.'%')
+                        ->orderBy($order, $sequence);
+            }else{
+                $data = UserList::orderBy($order, $sequence);
+            }
+            
+            
+            $data = $data->skip($offset)
                         ->take($limit)
                         ->get();
                         
@@ -740,8 +750,7 @@ class DataOnlyController extends \BaseController
     public function getSearchUsers($keyword){
          $type = Input::get('type');
          
-         $all = Input::all();
-         error_log(print_r(compact("all"),true));
+    
          
          $limit = 10;
          $raw = User::where('first_name', 'LIKE', '%'.$keyword.'%')
