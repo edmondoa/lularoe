@@ -748,7 +748,7 @@ class DataOnlyController extends \BaseController
 			return [ 'count'=>count($results),'data'=>$results,'message'=>'UserList' ];
 
 
-/*
+/* ELOQUNT TOO SLOW
             $data = UserList::all();            
 
 
