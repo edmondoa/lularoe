@@ -1,6 +1,6 @@
 <?php $layout = 'default' ?>
 @include('layouts.header')
-<div id="header-menu" class="hidden-print navbar navbar-fixed-top navbar-inverse" role="navigation">
+<div id="header-menu" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
     @include('layouts.header-menu')
 </div><!-- /.navbar -->
 <div id="main">
@@ -33,7 +33,7 @@
                 else $pages = Page::where('back_office_footer', 1)->where('Public', 1)->get();
             ?>
             @if (isset($pages))
-                <ul class="footer-links hidden-print">
+                <ul class="footer-links">
                     @foreach ($pages as $page)
                         <li><a href="//{{ Config::get('site.domain') }}/pages/{{ $page->url }}">{{ $page->short_title }}</a></li>
                     @endforeach

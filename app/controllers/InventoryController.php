@@ -28,18 +28,11 @@ class InventoryController extends \BaseController {
 	public function viewInvoice($id) {
 		$invoice	= Receipt::find($id);
 
-		$olddata = json_decode($invoice->data,true);
 		$invoice->data = json_encode($this->fixOrderData(json_decode($invoice->data,true), true));
 		//return Response::json($invoice->data,200,array(),JSON_PRETTY_PRINT);
 		Session::flash('orderdata', $invoice);
-
-		$od = $this->mergeOrderData($olddata, true);
-
-		// Fix the weird shit that the JS gives me from orderdata
-		$orderTable = $this->buildOrderTable($od);
-
 		// Probably make this un-editable
-        return View::make('inventory.invoiceViewOnly',compact('invoice','orderdata','orderTable'));
+        return View::make('inventory.invoiceCheckout',compact('invoice','orderdata'));
 	}
 
 	
@@ -520,7 +513,7 @@ class InventoryController extends \BaseController {
 
 	private function mergeOrderData($orderdata = array(), $removeunusedsizes = false) {
 		// List of sizes in order
-        $sizelist	= array('XXS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0,'S/M'=>0,'S/M & L/XL'=>0,'L/XL'=>0,'2'=>0,'4'=>0,'6'=>0,'8'=>0,'10'=>0,'12'=>0,'14'=>0,'3/4'=>0,'5/6'=>0,'8/10'=>0,'One Size'=>0,'Tall & Curvy'=>0,'NA'=>0,'N/A'=>0);
+        $sizelist	= array('XXS'=>0,'XS'=>0,'S'=>0,'M'=>0,'L'=>0,'XL'=>0,'2XL'=>0,'3XL'=>0,'S/M'=>0,'S/M & L/XL'=>0,'L/XL'=>0,'2'=>0,'4'=>0,'6'=>0,'8'=>0,'10'=>0,'12'=>0,'14'=>0,'3/4'=>0,'5/6'=>0,'8/10'=>0,'One Size'=>0,'Tall & Curvy'=>0);
         $m			= array();
 		$hassizes	= array();
 
@@ -638,19 +631,14 @@ class InventoryController extends \BaseController {
 		$bgdark = '#EFEFEF';
 		$bglight = '#FFFFFF';
 		$bgc = 0;
-		$totalitems = 0;
-		$totalsizes = 0;
-
 		
 		$databody = "<table width='100%' cellpadding=\"0\" cellspacing=\"0\"><tr><th>Model</th>";
 		$heading = reset($od);
-		foreach($heading['quantities'] as $size=>$quan) {
-			$bg = ($bgc++ %2  ==0) ? $bgdark : $bglight;
-			$databody .= "<td style=\"border:1px dotted #CDCDCD;background:{$bg}\" align=\"center\"><b>{$size}</b></td>";
-			$totalsizes += 1;
-		}
+			foreach($heading['quantities'] as $size=>$quan) {
+				$bg = ($bgc++ %2  ==0) ? $bgdark : $bglight;
+				$databody .= "<th style=\"border:1px dotted #CDCDCD;background:{$bg}\">{$size}</th>";
+			}
 		$databody .= "</tr>";
-
 		foreach($od as $model=>$item) {
 			$databody .= "<tr><td>{$model}</td>";
 			foreach($item['quantities'] as $size=>$quan) {
@@ -660,31 +648,24 @@ class InventoryController extends \BaseController {
 					$hilight = "padding:5px;border:1px dotted #CDCDCD;background:{$bg}";
 					$quan = '';
 				}
-				$totalitems += $quan;
 				$databody .= "<td align=\"center\" style=\"{$hilight}\">{$quan}</td>";
 			}
 		}
-		$databody .= "</tr>";
-		$databody .= "<tr style=\"background:#CDCDCD;color:black\"><td colspan=\"".($totalsizes)."\" align=\"right\"><B>Total Items In This Order</b></td><td align=\"center\"><b>{$totalitems}</b></td></tr>";
-		$databody .="</table>";
+		$databody .= "</tr></table>";
 		return $databody;
 	}
 
 
 	// Until we get this fixed from the javascript submittal
 	public function fixOrderData($od) {
-
-		// This creates the correct array out of the order data in case the old flat way was used
+		// This creates the correct array out of the order data 
 		foreach($od as $items) {
-			if (!empty($items['numOrder'])) { 
-				$sod[] = array(
-					'id'		=> isset($items['id']) ? $items['id'] : '',
-					'model'		=> $items['model'],
-					'price'		=> $items['price'],
-					'quantities'=> array($items['size'] => $items['numOrder'])
-				);
-			}
-			else $sod[] = $items;
+			$sod[] = array(
+				'id'		=> isset($items['id']) ? $items['id'] : '',
+				'model'		=> $items['model'],
+				'price'		=> $items['price'],
+				'quantities'=> array($items['size'] => $items['numOrder'])
+			);
 		}
 		return $sod;
 		//----------- FIX THIS IN THE ORDER JSON GENERATION
