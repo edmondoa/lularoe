@@ -741,7 +741,7 @@ class DataOnlyController extends \BaseController
          $type = Input::get('type');
          
          $limit = 10;
-         $raw = UserList::where('first_name', 'LIKE', '%'.$keyword.'%')
+         $raw = User::where('first_name', 'LIKE', '%'.$keyword.'%')
                     ->orWhere('last_name','LIKE','%'.$keyword.'%')
                     ->orderBy("last_name", "ASC")
                     ->orderBy("first_name", "ASC");

@@ -131,6 +131,7 @@ try {
 		$scope.$watch('search.$', function (n,o) {
             if( n != undefined){
 			    console.log('search changes');
+                $scope.isComplete = false;
 			    console.log(n);
 			    $scope.stopRequestPages();
                 
