@@ -42,7 +42,7 @@
 			        </div>
 			        <div class="col-md-6 col-sm-6 col-xs-12">
 		                <div class="input-group pull-right no-pull-xs">
-		                    <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.$" onkeypress="return disableEnterKey(event)" type="text">
+		                    <input class="form-control ng-pristine ng-valid" placeholder="Search" name="new_tag" ng-model="search.full_name" onkeypress="return disableEnterKey(event)" type="text">
 		                    <span class="input-group-btn no-width">
 		                        <button class="btn btn-default" type="button">
 		                            <i class="fa fa-search"></i>
@@ -190,7 +190,7 @@
 	                        </tr>
 	                    </thead>
 	                    <tbody>
-	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
+	                        <tr ng-class="{highlight: address.new == 1}" dir-paginate-start="user in users | filter:search.full_name | orderBy:orderByField:reverseSort | itemsPerPage: pageSize" current-page="currentPage" total-items="countItems">
 	                            <td ng-click="checkbox()">
 	                            	<input class="bulk-check" type="checkbox" name="user_ids[]" value="@include('_helpers.user_id')">
 	                            </td>
@@ -254,8 +254,9 @@
 					@include('_helpers.loading')
 	                <div ng-controller="OtherController" class="other-controller">
 	                    <div class="text-center">
-	                        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
+	                        <dir-pagination-controls boundary-links="true"  template-url="/packages/dirpagination/dirPagination.tpl.html"></dir-pagination-controls>
 	                    </div>
+                        <!--on-page-change="pageChangeHandler(newPageNumber)"-->
 	                </div>
 	            </div><!-- col -->
 	        </div><!-- row -->

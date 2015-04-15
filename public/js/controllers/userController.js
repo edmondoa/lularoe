@@ -79,6 +79,7 @@ try {
             
 		};
         
+        /*
         $scope.stopRequestPages = function() {
           if (angular.isDefined($scope.stop)) {
             $interval.cancel($scope.stop);
@@ -86,6 +87,9 @@ try {
           }
         };
         
+        */
+        
+        /*
         $scope.checkLoadedPages = function(curPage){
             var beenLoaded = [];
             beenLoaded = $scope.loadedPages.filter(function(n){
@@ -94,8 +98,9 @@ try {
             
             return !beenLoaded.length; 
         };
+        */
         
-	     
+	    /* 
         $scope.$watch("pageSize", function(n, o){
             if(n != o){
                 $scope.stopRequestPages();
@@ -103,7 +108,8 @@ try {
                 //console.log("pagesize currentpage: "+$scope.currentPage);
             }
         });
-    
+        */
+        /*
         $scope.$watch("currentPage", function(n, o){
             var promise = dRetriever(n, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
             promise.then(function(v){
@@ -119,15 +125,19 @@ try {
                 return( $q.reject( "Something went wrong" ) );
             });
         });
+        */
         
         $scope.$watch("usersData.length", function(n, o){
             //console.log($scope.usersData);
         });
         
+        /*
         $scope.$on('$destroy', function() {
           $scope.stopRequestPages();
         });
+        */
 
+        /*
 		$scope.$watch('search.$', function (n,o) {
             if( n != undefined){
 			    console.log('search changes');
@@ -157,6 +167,8 @@ try {
             }
         });
         
+        */
+        
         // bulk action checkboxes
         $scope.checkbox = function() {
             var checked = false;
@@ -167,6 +179,6 @@ try {
             else $('.applyAction').attr('disabled', 'disabled');
         };
         
-        //dRetriever(1, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
+        dRetriever(1, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));

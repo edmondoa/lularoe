@@ -266,7 +266,8 @@
             if (collection instanceof Array) {
                 itemsPerPage = parseInt(itemsPerPage) || 9999999999;
                 if (paginationService.isAsyncMode(paginationId)) {
-                    start = 1;
+                    //start = 1;
+                    start = (paginationService.getCurrentPage(paginationId) - 1) * itemsPerPage;
                 } else {
                     start = (paginationService.getCurrentPage(paginationId) - 1) * itemsPerPage;
                 }

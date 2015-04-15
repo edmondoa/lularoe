@@ -723,11 +723,23 @@ class DataOnlyController extends \BaseController
         $sequence = $s == "true" || !$s ? "ASC" : "DESC";
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
             $offset = ($page - 1) * $limit;
-            $data = UserList::orderBy($order, $sequence)
-                        ->skip($offset)
+            
+            /*
+            if(isset($keyword) && $keyword != ""){
+                $data = UserList::where('first_name', 'LIKE', '%'.$keyword.'%')
+                        ->orWhere('last_name','LIKE','%'.$keyword.'%')
+                        ->orderBy($order, $sequence);
+            }else{
+                $data = UserList::orderBy($order, $sequence);
+            }
+            
+            
+            $data = $data->skip($offset)
                         ->take($limit)
                         ->get();
-                        
+            */
+            
+            $data = UserList::all();            
 			return [
                         'count'=>UserList::count(),
                         'data' =>$data,
@@ -741,7 +753,7 @@ class DataOnlyController extends \BaseController
          $type = Input::get('type');
          
          $limit = 10;
-         $raw = UserList::where('first_name', 'LIKE', '%'.$keyword.'%')
+         $raw = User::where('first_name', 'LIKE', '%'.$keyword.'%')
                     ->orWhere('last_name','LIKE','%'.$keyword.'%')
                     ->orderBy("last_name", "ASC")
                     ->orderBy("first_name", "ASC");
