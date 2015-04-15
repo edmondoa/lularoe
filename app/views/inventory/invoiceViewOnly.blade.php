@@ -25,10 +25,11 @@
 			</div>
 			<div class="panel well pull-right" style="margin:3px;">
 				<fieldset style="margin:0px">
-					<legend><h4>Order #{{$invoice->id}}</h4></legend>
-							<b>Tax</b> ${{ money_format($invoice->tax,2) }}
-							<b>SubTotal</b> ${{ number_format($invoice->subtotal,2) }}
-							<div class="{{ ($invoice->balance > 0) ? 'danger' : 'success' }}"><b>Balance</b>${{number_format($invoice->balance,2)}}</div>
+					<legend><h4>Order #{{$invoice->id}} @ {{$invoice->created_at}}</h4></legend>
+							<div><b>Tax</b> ${{ money_format($invoice->tax,2) }}</div>
+							<div><b>SubTotal</b> ${{ number_format($invoice->subtotal,2) }}</div>
+							<div class="{{ ($invoice->balance > 0) ? 'danger' : 'success' }}"><b>Balance</b> ${{number_format($invoice->balance,2)}}</div>
+							@if ($invoice->date_paid != '0000-00-00 00:00:00') <em>PAID: {{$invoice->date_paid}}</em>@endif
 				</fieldset>
 			</div>
 		</div>
@@ -36,7 +37,7 @@
 	@if ($invoice->note)
 	<div class="row">
 		<div class="col-lg-12 col-sm-12 col-md-12">
-			<div class="panel well pull-left" style="margin:3px;">
+			<div class="panel well" style="margin:3px;">
 				<fieldset>	
 					<legend><h5>Notes</h5></legend>
 					{{$invoice->note}}
