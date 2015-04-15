@@ -32,10 +32,10 @@
 			</div>
 		</div>
 	</div>
-
+	@if ($invoice->note)
 	<div class="row">
 		<div class="col-lg-12 col-sm-12 col-md-12">
-			<div class="panel well" style="margin:3px;">
+			<div class="panel well pull-left" style="margin:3px;">
 				<fieldset>	
 					<legend><h5>Notes</h5></legend>
 					{{$invoice->note}}
@@ -43,10 +43,11 @@
 			</div>
 		</div>
 	</div>
+	@endif
 
 	<div class="row">
 		<div class="col-lg-12 col-sm-12 col-md-12">
-			<div class="panel well" style="margin:3px;">
+			<div class="panel well pull-left no-print" style="margin:3px;">
 				<fieldset>	
 					<legend><h4>Items in Order</h4></legend>
 					{{$orderTable}}
@@ -67,9 +68,10 @@
 						<button type="submit" class="pull-right btn btn-sm btn-success">Mark as Shipped</button>
 					</div>
 				</div>
-			</div> <!-- creditcard -->
+			</div> 
 		</div>
 	</div>
+
 @stop
 @section('scripts')
 <script>
