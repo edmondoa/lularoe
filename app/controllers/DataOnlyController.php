@@ -739,12 +739,25 @@ class DataOnlyController extends \BaseController
                         ->get();
             */
             
+			$results = DB::select( DB::raw("SELECT * FROM users") );
+
+			$queries = DB::getQueryLog();
+			$last_query = end($queries);
+			\Log::info('USERLIST::ALL QUERY: '.print_r($last_query,true));
+
+			return [ 'count'=>count($results),'data'=>$results,'message'=>'UserList' ];
+
+
+/*
             $data = UserList::all();            
+
+
 			return [
                         'count'=>UserList::count(),
                         'data' =>$data,
                         'message' => 'UserList'
                    ];
+*/
 		}
 	}
 
@@ -754,9 +767,11 @@ class DataOnlyController extends \BaseController
          
          $limit = 10;
          $raw = User::where('first_name', 'LIKE', '%'.$keyword.'%')
-                    ->orWhere('last_name','LIKE','%'.$keyword.'%')
+                    ->orWhere('last_name','LIKE','%'.$keyword.'%');
+/*
                     ->orderBy("last_name", "ASC")
                     ->orderBy("first_name", "ASC");
+*/
          $count = $raw->count();
          $data = $raw->take($limit)
                     ->get();

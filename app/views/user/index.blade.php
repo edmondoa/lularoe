@@ -124,60 +124,6 @@
                             		</span>
                         		</th>
                         		
-                            	<th class="link" ng-click="orderByField='role_id'; reverseSort = !reverseSort">Role
-                            		<span>
-                            			<span ng-show="orderByField == 'role_name'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-                        		
-                            	<th class="link" ng-click="orderByField='rank_id'; reverseSort = !reverseSort">Rank
-                            		<span>
-                            			<span ng-show="orderByField == 'rank_id'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-                        		
-                            	<!-- <th class="link" ng-click="orderByField='mobile_plan_id'; reverseSort = !reverseSort">Mobile Plan Id
-                            		<span>
-                            			<span ng-show="orderByField == 'mobile_plan_id'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th> -->
-                        		
-                            	<!-- <th class="link" ng-click="orderByField='disabled'; reverseSort = !reverseSort">Disabled
-                            		<span>
-                            			<span ng-show="orderByField == 'disabled'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th> -->
-                        		
-                            	<th class="link" ng-click="orderByField='front_line_count'; reverseSort = !reverseSort">Immediate Downline
-                            		<span>
-                            			<span ng-show="orderByField == 'rank_id'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-                        		
-                            	<th class="link" ng-click="orderByField='descendant_count'; reverseSort = !reverseSort">Total Downline
-                            		<span>
-                            			<span ng-show="orderByField == 'rank_id'">
-	                            			<span ng-show="!reverseSort"><i class='fa fa-sort-asc'></i></span>
-	                            			<span ng-show="reverseSort"><i class='fa fa-sort-desc'></i></span>
-                            			</span>
-                            		</span>
-                        		</th>
-                        		
                             	<th class="link" ng-click="orderByField='updated_at'; reverseSort = !reverseSort">Modified
                             		<span>
                             			<span ng-show="orderByField == 'updated_at'">
@@ -208,39 +154,15 @@
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="user.public_gender"></span>
+					                <span ng-bind="user.gender"></span>
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="user.public_dob"></span>
+					                <span ng-bind="user.dob"></span>
 					            </td>
 					            
 					            <td>
-					                <span ng-bind="user.public_phone"></span>
-					            </td>
-					            
-					            <td>
-					                <span ng-bind="user.role_name"></span>
-					            </td>
-					            
-					            <td>
-					                <span ng-bind="user.rank_name"></span> (<span ng-bind="user.rank_id"></span>)
-					            </td>
-					            
-					            <!-- <td>
-					                <span ng-bind="user.mobile_plan_id"></span>
-					            </td> -->
-					            
-					            <!-- <td>
-					                <span ng-bind="user.disabled"></span>
-					            </td> -->
-					            
-					            <td>
-					            	<a href="/downline/immediate/@include('_helpers.user_id')" title="View Immediate Downline"><span ng-bind="user.front_line_count"></span></a>
-					            </td>
-					            
-					            <td>
-					            	<a href="/downline/all/@include('_helpers.user_id')" title="View All Downline"><span ng-bind="user.descendant_count"></span></a>
+					                <span ng-bind="user.phone"></span>
 					            </td>
 					            
 					            <td>
