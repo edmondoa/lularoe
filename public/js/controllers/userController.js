@@ -61,7 +61,7 @@ try {
             if(shared.requestPromise && shared.getIsLoading()){
                 shared.requestPromise.abort();    
             }
-            shared.requestPromise = shared.requestData(path, $scope.search);
+            shared.requestPromise = shared.requestData(path);
             var promise = shared.requestPromise.then(function(v){
                 $scope.countItems = v.count;
                 $scope.isComplete = true;
@@ -105,8 +105,6 @@ try {
         });
     
         $scope.$watch("currentPage", function(n, o){
-            console.log("scope.search");
-            console.log($scope.search);
             var promise = dRetriever(n, $scope.pageSize,$scope.orderByField, $scope.reverseSort, defaultPath);
             promise.then(function(v){
                 var curPage = n; 
@@ -133,7 +131,6 @@ try {
 		$scope.$watch('search.$', function (n,o) {
             if( n != undefined){
 			    console.log('search changes');
-                $scope.isComplete = false;
 			    console.log(n);
 			    $scope.stopRequestPages();
                 
@@ -151,7 +148,6 @@ try {
                         $scope.countItems = v.count;
                         $scope.isComplete = true;
                         $scope.users = v.data;
-                        $scope.currentPage = 1;
                         
                         return v;
                     },function(r){
