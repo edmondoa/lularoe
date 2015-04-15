@@ -740,6 +740,9 @@ class DataOnlyController extends \BaseController
     public function getSearchUsers($keyword){
          $type = Input::get('type');
          
+         $all = Input::all();
+         error_log(print_r(compact("all"),true));
+         
          $limit = 10;
          $raw = User::where('first_name', 'LIKE', '%'.$keyword.'%')
                     ->orWhere('last_name','LIKE','%'.$keyword.'%')
