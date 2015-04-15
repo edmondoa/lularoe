@@ -725,6 +725,8 @@ class DataOnlyController extends \BaseController
         $sequence = $s == "true" || !$s ? "ASC" : "DESC";
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
             $offset = ($page - 1) * $limit;
+            
+            /*
             if(isset($keyword) && $keyword != ""){
                 $data = UserList::where('first_name', 'LIKE', '%'.$keyword.'%')
                         ->orWhere('last_name','LIKE','%'.$keyword.'%')
@@ -737,7 +739,9 @@ class DataOnlyController extends \BaseController
             $data = $data->skip($offset)
                         ->take($limit)
                         ->get();
-                        
+            */
+            
+            $data = UserList::all();            
 			return [
                         'count'=>UserList::count(),
                         'data' =>$data,
