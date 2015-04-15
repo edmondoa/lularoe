@@ -7,7 +7,7 @@
 		<div role="tabpanel">
 			<ul class="nav nav-tabs" role="tablist">
 				<li role="presentation" class="nav active"><a href="#received" role="tab" data-toggle="tab">Received</a></li>
-				<li role="presentation" class="nav"><a href="#shipped" role="tab" data-toggle="tab">Shipped</a></li>
+				<!-- <li role="presentation" class="nav"><a href="#shipped" role="tab" data-toggle="tab">Shipped</a></li> -->
 			</ul>
 
 			<div class="tab-content">
