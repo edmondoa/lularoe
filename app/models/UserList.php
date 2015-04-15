@@ -41,7 +41,8 @@ class UserList extends \Eloquent
         'public_dob',
         'public_email',
         'public_phone',
-        'formatted_phone'
+        'formatted_phone',
+        'full_name'
     ];
     
     
@@ -167,6 +168,10 @@ class UserList extends \Eloquent
             return $this->role->name;
         }
         return false;
+    }
+    
+    public function getFullNameAttribute() {
+        return $this->first_name . ' ' . $this->last_name;
     }
     
     /*    
