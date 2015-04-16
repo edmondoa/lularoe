@@ -1135,6 +1135,9 @@ class InventoryController extends \BaseController {
 
 		$oldInput = Input::all();
 
+		// If this is coming from the new way of doing expiration dates
+		if (Input::has('ccmonth')) $oldInput['cardexp'] = Input::get('ccmonth').Input::get('ccyear');
+
 		if (!Session::has('orderdata')) {
 			return Redirect::route('dashboard');
 		}
