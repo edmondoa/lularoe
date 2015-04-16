@@ -2,6 +2,16 @@
  	$balanceAmount	= $invoice->balance;
 	$orderdata		= json_decode($invoice->data);
 	Session::put('invoice', $invoice->id);
+	if (empty($invoice->address)) {
+		$user			= User::where('email',$invoice->to_email)->first();
+		foreach($user->addresses as $a) {
+			if ($a->label == 'Shipping') $invoice->address = $a;
+		}
+		if (empty($invoice->address)) {
+			$invoice->address = $user->addresses[0];
+			$invoice->label	  = 'VERIFY';
+		}
+	}
 ?>
 @extends('layouts.default')
 @section('content')
@@ -14,13 +24,20 @@
 			<div class="panel well pull-left" style="margin:3px;">
 				<fieldset style="margin:0px">
 					<legend><h4>{{$invoice->label}} {{$invoice->to_firstname}} {{$invoice->to_lastname}} / {{$invoice->to_email}}</h4></legend>
-					<div>{{$invoice->address->address_1}}</div>
-				@if (!empty($invoice->address->address_2))
-					<div>{{$invoice->address->address_2}}</div>
+				@if (!empty($invoice->address)) 
+						<div>{{$invoice->address->address_1}}</div>
+					@if (!empty($invoice->address->address_2))
+						<div>{{$invoice->address->address_2}}</div>
+					@endif
+						<div>{{$invoice->address->city}}</div>
+						<div>{{$invoice->address->state}}</div>
+						<div>{{$invoice->address->zip}}</div>
+					@if ($invoice->label == 'VERIFY')
+						<b>Please call and verify this shipping address: {{$user->phone}}</b>
+					@endif
+				@else 
+					<div>Call for shipping address: {{$user->phone}}</div>
 				@endif
-					<div>{{$invoice->address->city}}</div>
-					<div>{{$invoice->address->state}}</div>
-					<div>{{$invoice->address->zip}}</div>
 				</fieldset>
 			</div>
 			<div class="panel well pull-right" style="margin:3px;">
