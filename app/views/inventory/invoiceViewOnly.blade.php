@@ -6,12 +6,14 @@
 	// IF we dont' have address data, then grab it from the user addressables
 	if (empty($invoice->address->address_1)) {
 		$user			= User::where('email',$invoice->to_email)->first();
-		foreach($user->addresses as $a) {
-			if ($a->label == 'Shipping') $invoice->address = $a;
-		}
-		if (empty($invoice->address)) {
-			$invoice->address = $user->addresses[0];
-			$invoice->label	  = 'VERIFY';
+		if (!empty($user->addresses)) {
+			foreach($user->addresses as $a) {
+				if ($a->label == 'Shipping') $invoice->address = $a;
+			}
+			if (empty($invoice->address)) {
+				$invoice->address = $user->addresses[0];
+				$invoice->label	  = 'VERIFY';
+			}
 		}
 	}
 
@@ -39,7 +41,7 @@
 						<b>Please call and verify this shipping address: {{$user->phone}}</b>
 					@endif
 				@else 
-					<div>Call for shipping address: {{$user->phone}}</div>
+					<div>Call or email for shipping address: {{@$user->phone}}</div>
 				@endif
 				</fieldset>
 			</div>
