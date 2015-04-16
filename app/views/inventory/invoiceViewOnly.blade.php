@@ -2,7 +2,9 @@
  	$balanceAmount	= $invoice->balance;
 	$orderdata		= json_decode($invoice->data);
 	Session::put('invoice', $invoice->id);
-	if (empty($invoice->address)) {
+
+	// IF we dont' have address data, then grab it from the user addressables
+	if (empty($invoice->address->address_1)) {
 		$user			= User::where('email',$invoice->to_email)->first();
 		foreach($user->addresses as $a) {
 			if ($a->label == 'Shipping') $invoice->address = $a;
@@ -12,6 +14,7 @@
 			$invoice->label	  = 'VERIFY';
 		}
 	}
+
 ?>
 @extends('layouts.default')
 @section('content')
@@ -24,7 +27,7 @@
 			<div class="panel well pull-left" style="margin:3px;">
 				<fieldset style="margin:0px">
 					<legend><h4>{{$invoice->label}} {{$invoice->to_firstname}} {{$invoice->to_lastname}} / {{$invoice->to_email}}</h4></legend>
-				@if (!empty($invoice->address)) 
+				@if (!empty($invoice->address->address_1)) 
 						<div>{{$invoice->address->address_1}}</div>
 					@if (!empty($invoice->address->address_2))
 						<div>{{$invoice->address->address_2}}</div>
