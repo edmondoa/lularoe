@@ -9,6 +9,7 @@
 <div class="row">
     <div class="col col-md-8">
 		
+	<!--
 		@if (Auth::user())
 		<fieldset>
 			<form id="cyberteknix">
@@ -28,6 +29,7 @@
 			<blockquote>Every little bit helps, we appreciate your support!</blockquote>
 		</div>
 		@endif
+		-->
 	</div>
 </div>
 <script>
