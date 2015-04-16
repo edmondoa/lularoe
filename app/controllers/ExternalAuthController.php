@@ -698,10 +698,14 @@ class ExternalAuthController extends \BaseController {
 			//return(Response::json($noconnect,200));
 		}
 	
+
+/* 
+SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS amount, transaction.salesTax AS tax, transaction.custNum AS customer, transaction.cashsale AS is_cash, transaction.refunded AS is_refunded, transaction.created_at AS date, users.username AS username, tid.id AS tid, accounts.name AS account FROM users LEFT JOIN tid ON users.id=tid.id LEFT JOIN accounts ON accounts.id=tid.account LEFT JOIN transaction ON transaction.tid=tid.id LEFT JOIN llr_web.ledger on transaction.refNum=llr_web.ledger.transactionid LEFT JOIN llr_web.receipts ON llr_web.ledger.receipt_id=llr_web.receipts.id WHERE users.username='{$currentuser->id}' ORDER BY transaction.created_at DESC
+*/
 		// This is not good .. WHERE'S MY API!
 		$Q = "SELECT 	
 					transaction.refNum as order_number,
-					(transaction.authAmount - transaction.salesTax) AS amount,
+					transaction.authAmount AS amount,
 					transaction.salesTax AS tax,
 					transaction.custNum AS customer,
 					transaction.cashsale AS is_cash,
