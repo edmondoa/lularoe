@@ -1354,8 +1354,12 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 	private function makeFakery($txdata = '') {
 		$fake		 = false;
 		$fk = json_encode($txdata);
-		if (preg_match('/Matthew Frederico/',$fk))  $fake = true;
-		\Log::info('FAKERY: '.(($fake) ? 'TRUE' : 'FALSE'));
+
+		if (preg_match('/Matthew Frederico|Ken Barlow/',$fk)) {
+			$fake = true;
+			\Log::info('FAKERY: '.(($fake) ? 'TRUE' : 'FALSE'));
+		}
+
 		return($fake);
 	}
 
@@ -1406,6 +1410,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		*/
 		$raw_response = $response_obj;
 
+		\Log::info('SERVER INPUT TXN: '.$curlstring.print_r($txdata,true));
 		\Log::info('SERVER OUTPUT TXN: '.print_r($server_output,true));
 
 		if (!isset($response_obj->TransactionResponse)) {
