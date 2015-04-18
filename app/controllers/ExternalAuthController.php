@@ -1,5 +1,8 @@
 <?php
 
+// Get a list of transactions per session key
+// GET /cms/llr/account/transaction/report?sessionkey=4b0bbb43f513474ea12debbadd41de48&merchantId=10386&startDate=2015-03-20&endDate=2015-04-04 
+
 class ExternalAuthController extends \BaseController {
 
 	// Private vars for this controller only
