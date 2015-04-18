@@ -1361,7 +1361,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		$fake		 = false;
 		$fk = json_encode($txdata);
 		if (preg_match('/Matthew Frederico|Ken Barlow/',$fk)) {
-			 $fake = true;
+			$fake = true;
 			\Log::info('FAKERY: '.(($fake) ? 'TRUE' : 'FALSE'));
 		}
 		return($fake);
