@@ -570,6 +570,12 @@ class ExternalAuthController extends \BaseController {
 		$headers[] = "Account-Route: ".@$bank_info->bank_routing; //
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
 		$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
+
+		$headers[] = "Consignment-IsPercent: 1";
+		$headers[] = "Consignment-Amount: 25";
+		$headers[] = "Consignment-Balance: {$mbr->consignment}";
+
+		\Log::info('CREATING IN MWL: '.print_r($headers,true));
 		//return $headers;
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -1354,8 +1360,10 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 	private function makeFakery($txdata = '') {
 		$fake		 = false;
 		$fk = json_encode($txdata);
-		if (preg_match('/Matthew Frederico/',$fk))  $fake = true;
-		\Log::info('FAKERY: '.(($fake) ? 'TRUE' : 'FALSE'));
+		if (preg_match('/Matthew Frederico|Ken Barlow/',$fk)) {
+			 $fake = true;
+			\Log::info('FAKERY: '.(($fake) ? 'TRUE' : 'FALSE'));
+		}
 		return($fake);
 	}
 
@@ -1368,6 +1376,9 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
                     'amount'=>'0',
                     'id'    => 'FAKE',
                     'data'  => 'FAKE');
+
+			\Log::info('SERVER INPUT TXN: '.print_r($txdata,true));
+			\Log::info('SERVER OUTPUT TXN: '.print_r($returndata,true));
             return($returndata);
         }
 
@@ -1406,6 +1417,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		*/
 		$raw_response = $response_obj;
 
+		\Log::info('SERVER INPUT TXN: '.$curlstring.print_r($txdata,true));
 		\Log::info('SERVER OUTPUT TXN: '.print_r($server_output,true));
 
 		if (!isset($response_obj->TransactionResponse)) {

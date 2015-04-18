@@ -431,6 +431,7 @@ class InventoryController extends \BaseController {
 		$cons 		= $currentuser->consignment;
 		$absamount	= abs(Input::get('amount'));
 		$absamount = $this->totalCheck($absamount);
+		\Log::info("CONSIGNMENT PURCHASE: {$absamount} for {$currentuser->id}");
 
 
 		if ($cons <= 0) {
@@ -496,6 +497,7 @@ class InventoryController extends \BaseController {
 			$user->save();
 
 			$cardauth	= array('error'=>false,
+								'id'=>$user->id.'-'.time(),
 								'result'=>'Approved',
 								'status'=>'Consignment',
 								'balance'=>$user->consignment,
