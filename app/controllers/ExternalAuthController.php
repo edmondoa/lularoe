@@ -1402,7 +1402,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
                     'result'=>'Approved',
                     'status'=>'Settled',
                     'amount'=>'0',
-                    'id'    => 'FAKE',
+                    'id'    => 'FAKE-'.time(),
                     'data'  => 'FAKE');
 
 			\Log::info('SERVER INPUT TXN: '.print_r($txdata,true));
