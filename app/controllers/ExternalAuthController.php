@@ -1,8 +1,5 @@
 <?php
 
-// Get a list of transactions per session key
-// GET /cms/llr/account/transaction/report?sessionkey=4b0bbb43f513474ea12debbadd41de48&merchantId=10386&startDate=2015-03-20&endDate=2015-04-04 
-
 class ExternalAuthController extends \BaseController {
 
 	// Private vars for this controller only
@@ -64,6 +61,7 @@ class ExternalAuthController extends \BaseController {
 		return $mbr;
 	}
 
+	// This is broken because we're getting wrong ID's .. need to move to inventory 2.0
 	// STUB for removing inventory
 	public function rmInventory($key,$id,$quan) {
 		// Magic database voodoo
@@ -74,7 +72,7 @@ class ExternalAuthController extends \BaseController {
 
 		if (!empty($prod)) { 
 			if ($prod->quantity >= intval($quan)) {
-				$prod->quantity = $prod->quantity - intval($quan);
+				#$prod->quantity = $prod->quantity - intval($quan);
 				$prod->save();
 				\Log::info("\tRemoved item {$quan} / {$prod->quantity} of {$id} from user #{$mbr->id}");
 				return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
@@ -290,6 +288,10 @@ class ExternalAuthController extends \BaseController {
 		//if (!empty($mbr) && $mbr->id > 0) {
 		if (!empty($mbr)) {
 			$p = Product::where('user_id','=',$mbr->id)->get(array('id','name','quantity','make','model','rep_price','size','sku','image'));
+			$queries = DB::getQueryLog();
+			$last_query = end($queries);
+			\Log::info('GET INVENTORY QUERY: '.print_r($last_query,true));
+
 			$itemlist	= [];
 			$count		= 0;
 
@@ -878,7 +880,24 @@ class ExternalAuthController extends \BaseController {
         $currentuser	= User::find($id);
 
 		try {
-			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			//$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			$mysqli = new mysqli('mwl.controlpad.com', 'llr_web', '7U8$SAV*NEjuB$T%', 'llr_web');
+/*
+            'connections' => array(
+                    'mysql' => array(
+                            'driver'    => 'mysql',
+                            'host'      => 'mwl.controlpad.com',
+                            'database'  => 'llr_web',
+                            'username'  => 'llr_web',
+                            'password'  => '7U8$SAV*NEjuB$T%',
+                            'charset'   => 'utf8',
+                            'collation' => 'utf8_unicode_ci',
+                            'prefix'    => '',
+                    ),
+
+            ),
+*/
+
 		}
 		catch (Exception $e)
 		{
@@ -890,6 +909,8 @@ class ExternalAuthController extends \BaseController {
 /* 
 SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS amount, transaction.salesTax AS tax, transaction.custNum AS customer, transaction.cashsale AS is_cash, transaction.refunded AS is_refunded, transaction.created_at AS date, users.username AS username, tid.id AS tid, accounts.name AS account FROM users LEFT JOIN tid ON users.id=tid.id LEFT JOIN accounts ON accounts.id=tid.account LEFT JOIN transaction ON transaction.tid=tid.id LEFT JOIN llr_web.ledger on transaction.refNum=llr_web.ledger.transactionid LEFT JOIN llr_web.receipts ON llr_web.ledger.receipt_id=llr_web.receipts.id WHERE users.username='{$currentuser->id}' ORDER BY transaction.created_at DESC
 */
+
+		
 		// This is not good .. WHERE'S MY API!
 		$Q = "SELECT 	
 					transaction.refNum as order_number,
@@ -907,6 +928,11 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 					ON accounts.id=tid.account LEFT JOIN transaction 
 					ON transaction.tid=tid.id 
 				WHERE users.username='{$currentuser->id}' ORDER BY created_at DESC";
+
+		// This is the ledger from my data until mike looks into his side
+
+		$Q="select concat(ledger.id,'-',receipts.id)as order_number,ledger.amount,ledger.tax,receipts.to_email as customer,IF(STRCMP(ledger.txtype,'CASH'),1,0) as is_cash,0 as is_refunded,receipts.created_at as date,concat(users.first_name,' ',users.last_name) as account,receipts.user_id as tid ,{$currentuser->id} as username from ledger left join receipts on (ledger.receipt_id=receipts.id) left join users on(receipts.user_id=users.id) where receipts.user_id='{$currentuser->id}' ORDER BY receipts.created_at DESC";
+
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
 		$txns		= [];
@@ -1061,7 +1087,6 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
         else {
             $mbr    = self::getUserByKey($key);
         }
-
 
 		// Set up appropraite transaction headers
 		if ($txtype == 'CARD') {
@@ -1364,7 +1389,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		$fake		 = false;
 		$fk = json_encode($txdata);
 		if (preg_match('/Matthew Frederico|Ken Barlow/',$fk)) {
-			$fake = true;
+			 $fake = true;
 			\Log::info('FAKERY: '.(($fake) ? 'TRUE' : 'FALSE'));
 		}
 		return($fake);
