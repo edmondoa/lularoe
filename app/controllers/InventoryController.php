@@ -500,8 +500,8 @@ class InventoryController extends \BaseController {
 			$lg = new Ledger();
 			$lg->user_id        = 0;
 			$lg->account        = '';
-			$lg->amount         = $absamount,
-			$lg->tax            = $tax,
+			$lg->amount         = $absamount;
+			$lg->tax            = $tax;
 			$lg->txtype         = 'CONS';
 			$lg->transactionid  = $cardauth->id;
 			$lg->data           = json_encode($purchaseInfo);
