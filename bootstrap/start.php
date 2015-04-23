@@ -46,7 +46,7 @@ $env = $app->detectEnvironment(function(){
         'linux-rocks'=>'jake_local',
 		'vhyeinouondz'=>'randy_local',
 		'ip-172-31-23-154'=>'production',
-		'ip-172-31-23-215'=>'beta'
+		'ip-172-31-31-100'=>'beta'
 	];
 	$default = 'local';
 	$hostname = gethostname();
@@ -55,7 +55,7 @@ $env = $app->detectEnvironment(function(){
 		return $environments[$hostname];
 	}
 	//if that cannot be found return local
-	return 'production';
+	return '';
 });
 
 /*
