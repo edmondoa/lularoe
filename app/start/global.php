@@ -86,6 +86,8 @@ App::error(function(Exception $exception, $code)
         Log::error('NotFoundHttpException Route: ' . Request::url() );
     }
 
+	$data['rdata'] = json_encode(Request::server());
+	$data['uri'] = $uri;
 	$message = $exception->getMessage();
 
 
@@ -100,7 +102,7 @@ App::error(function(Exception $exception, $code)
     }
     Log::error($exception);
 
-    return Response::view('errors.missing', compact("exception"), 404);
+    return Response::view('errors.missing', compact("exception",'data'), 404);
 });
 
 App::missing(function(Exception $exception)

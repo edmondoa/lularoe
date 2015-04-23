@@ -46,11 +46,24 @@ class addressController extends \BaseController {
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
+
 		if (Auth::user()->hasRole(['Rep'])) {
 			$data['addressable_id'] = Auth::user()->id;
 			$data['addressable_type'] = 'User';
 		}
-		Address::create($data);
+
+		$aid = new Address();
+		$aid->create($data);
+
+		// Why the eff do I have to do this eloquent??
+		unset($data['_token']);
+		foreach($data as $k=>$v) {
+			$aid->$k = $v;
+		}
+		$aid->save();
+
+		\Log::info('Attempting to create address:',$data);
+
 		if (Auth::user()->hasRole(['Rep'])) return Redirect::route('settings');
 		else return Redirect::back()->with('message', 'Address created.');
 	}

@@ -1,7 +1,7 @@
 @if ((Auth::check()))
  			<div class="list-group hidden-print" id="main-menu">
  					<a title="Dashboard" href="/dashboard" class="list-group-item"><i class="fa fa-dashboard"></i> <span class="text">Dashboard</span></a>
- 				@if ((Auth::user()->hasRole(['Superadmin','Admin','Rep'])))
+ 				@if ((Auth::user()->hasRole(['Superadmin','Admin'])))
  					<a href="javascript:void(0)" data-href="/reports" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/reports/sales'><i class='fa fa-file'></i> Sales</a>
  						<a href='/reports/orders'><i class='fa fa-plus'></i> Orders</a>

@@ -61,6 +61,7 @@ class ExternalAuthController extends \BaseController {
 		return $mbr;
 	}
 
+	// This is broken because we're getting wrong ID's .. need to move to inventory 2.0
 	// STUB for removing inventory
 	public function rmInventory($key,$id,$quan) {
 		// Magic database voodoo
@@ -71,7 +72,7 @@ class ExternalAuthController extends \BaseController {
 
 		if (!empty($prod)) { 
 			if ($prod->quantity >= intval($quan)) {
-				$prod->quantity = $prod->quantity - intval($quan);
+				#$prod->quantity = $prod->quantity - intval($quan);
 				$prod->save();
 				\Log::info("\tRemoved item {$quan} / {$prod->quantity} of {$id} from user #{$mbr->id}");
 				return(Response::json(array('error'=>false,'message'=>'success','remaining'=>intval($prod->quantity),'attempted'=>$quan),200));
@@ -85,6 +86,185 @@ class ExternalAuthController extends \BaseController {
 			return(Response::json(array('error'=>true,'message'=>'Item not found'),200));
 		}
 
+	}
+
+	/* Inventory 2.0 */
+	public function getInventory20($key = '', $location='')
+	{
+		// Magic database voodoo
+        $mbr	= self::getUserByKey($key);
+		if ($mbr) $location = $mbr->first_name.' '.$mbr->last_name;
+
+		// Get MAIN inventory as default
+		if (empty($location) || (isset($mbr) && $mbr->id == 0)) // $key == 0 || $key == null)
+		{
+			$location = 'Main';
+
+			// Return the user is able to log in, but shut out of MWL
+			$key = Self::midauth(Config::get('site.mwl_username'), Config::get('site.mwl_password')); 
+		}
+
+		$server_output = '';
+
+		// Generates the list of items from the product table per user
+		//if (!empty($mbr) && $mbr->id > 0) {
+		if (!empty($mbr)) {
+			$p = Product::where('user_id','=',$mbr->id)->get(array('id','name','quantity','make','model','rep_price','size','sku','image'));
+			$itemlist	= [];
+			$count		= 0;
+
+			foreach($p as $item) 
+			{
+                // get product images
+                $model      		= $this->escapemodelname($item->name);
+                $dbImage            = '';
+                $attachment_images  = [];
+
+                $attachments = Attachment::where('attachable_type', 'Product')->where('attachable_id', $item->id)->where('featured', 1)->get();
+                foreach ($attachments as $attachment) {
+                    $dbImage = Media::find($attachment->media_id);
+					$dbImage->url = explode('.', $dbImage->url);
+					//if (isset($dbImage->url[1])) $dbImage->url = '/uploads/' . $dbImage->url[0] . '-sm.' . $dbImage->url[1];
+                }
+
+				// Please keep the full https path in here it is for IOS
+                $image      = (!empty($dbImage) && isset($dbImage->url)) ? $dbImage->url : 'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg';
+				$item->image = $image;
+				$itemlist[$model][] = $item;
+			}
+
+/*
+			// Reorder this with numerical indeces
+			if (isset($items)) {
+				foreach($items as $k=>$v)
+				{
+					$itemlist[$count++] = $v;
+				}
+			}
+			else $itemlist = null;
+*/
+
+			return(Response::json($itemlist, 200, [], JSON_PRETTY_PRINT));
+		}
+
+
+		// Simple caching - probably a better way to do this
+		if (!is_dir($this->mwl_cache)) @mkdir($this->mwl_cache);
+		$mwlcachefile = $this->mwl_cache.urlencode($location).'.json';
+		if (file_exists($mwlcachefile)) {
+			$fs = stat($mwlcachefile);
+			if (time() - $fs['ctime'] > $this->mwl_cachetime || filesize($mwlcachefile) < 500) {
+				@unlink($mwlcachefile);
+			}
+			else {
+				$server_output = file_get_contents($mwlcachefile);
+			}
+		}
+
+		// Only pull from the inventory server 
+		// if we don't have any output
+		if (empty($server_output)) {
+			// Pull this out into an actual class for MWL php api
+			$location = rawurlencode($location);
+			$ch = curl_init();
+
+			// Set this to HTTPS TLS / SSL
+			$curlstring = Config::get('site.mwl_api').'/llr/'.htmlentities($location,ENT_QUOTES,'UTF-8').'/inventorylist?sessionkey='.$key;
+			curl_setopt($ch, CURLOPT_URL, $curlstring);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+			$server_output = curl_exec ($ch);
+
+			if ($errno = curl_errno($ch)) {
+				$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
+				return(Response::json($result,401));
+			}
+			curl_close ($ch);
+			file_put_contents($mwlcachefile, $server_output);
+		}
+
+		// Start transforming the server output data
+		$output		= json_decode($server_output, true); // true = array
+		$model		= '';
+		$lastmodel	= '';
+		$count		= 0;
+		$itemlist	= [];
+
+		if (empty($output)) { 
+			// Last resort!
+			$output = json_decode(file_get_contents($mwlcachefile));
+			\Log::info('Nothing returned from inventory system!');
+			//return Response::json(array('errors'=>true,'message'=>'Nothing returned from inventory system.'),500);
+		}
+
+        if(array_key_exists('Code',$output) && $output['Code'] == '400'){
+			unlink($mwlcachefile);
+            return Response::json(array('errors'=>true,'message'=> $output['Message'],'errno'=>'400'), 500);
+        }
+
+		// Transform the output to the appropriate IOS format
+		foreach($output['Inventory'] as $item) 
+		{
+
+			$itemnumber = $item['Item']['Part']['Number'];
+			$quantity	= $item['Item']['Quantity']['OnHand'];
+
+			ltrim(rtrim($itemnumber));
+
+			$model = preg_replace('/ -.*$/','',$item['Item']['Part']['Number']);
+
+			// May want to ignore some inventory items here
+			if (in_array(strtoupper($model), $this->ignore_inv)) {
+				continue;
+			}
+
+			$itemList[$model] = '';
+			
+			// Delimiting sizes with hyphen and spaces
+			if (strpos($itemnumber,' -') === false) 
+			{
+				$size  = 'NA';	
+			}
+			else list($model, $size) = explode(' -',$itemnumber);
+
+			$model		= $this->escapemodelname($model);
+			
+			// Initialize this set of item data
+			if (!isset($items[$model]))
+			{
+				$items[$model] = array(
+				'model'			=>$model,
+				'UPC'			=>$item['Item']['UPC'],
+				'SKU'			=>$item['Item']['Sku'],
+				'price'			=>floatval($item['Item']['Price']),
+				'image'			=>'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
+				'quantities'	=> array()); 
+			}
+
+			// Cut useless spaces
+			$size = str_replace('/^ /','_',ltrim($size));
+
+			// Set up the quantities of each size
+			if (!isset($items[$model]['quantities'][$size])) 
+			{
+				$items[$model]['quantities'][$size] = $quantity;
+			}			
+		}
+
+		if (!isset($items)) $items = [];
+
+		// Sort alpha by model name
+		usort($items, function($a, $b) {
+				return strcmp($a["model"], $b["model"]);
+			}
+		);
+
+		// Reorder this with numerical indeces
+		foreach($items as $k=>$v) {
+			$itemlist[$count++] = $this->arrangeByGirth($v);
+		}
+
+		return(Response::json($itemlist,200, array(), JSON_PRETTY_PRINT));
 	}
 
 	public function getInventory($key = '', $location='')
@@ -108,6 +288,10 @@ class ExternalAuthController extends \BaseController {
 		//if (!empty($mbr) && $mbr->id > 0) {
 		if (!empty($mbr)) {
 			$p = Product::where('user_id','=',$mbr->id)->get(array('id','name','quantity','make','model','rep_price','size','sku','image'));
+			$queries = DB::getQueryLog();
+			$last_query = end($queries);
+			\Log::info('GET INVENTORY QUERY: '.print_r($last_query,true));
+
 			$itemlist	= [];
 			$count		= 0;
 
@@ -391,6 +575,12 @@ class ExternalAuthController extends \BaseController {
 		$headers[] = "Account-Route: ".@$bank_info->bank_routing; //
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
 		$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
+
+		$headers[] = "Consignment-IsPercent: 1";
+		$headers[] = "Consignment-Amount: 25";
+		$headers[] = "Consignment-Balance: {$mbr->consignment}";
+
+		\Log::info('CREATING IN MWL: '.print_r($headers,true));
 		//return $headers;
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -690,7 +880,24 @@ class ExternalAuthController extends \BaseController {
         $currentuser	= User::find($id);
 
 		try {
-			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			//$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			$mysqli = new mysqli('mwl.controlpad.com', 'llr_web', '7U8$SAV*NEjuB$T%', 'llr_web');
+/*
+            'connections' => array(
+                    'mysql' => array(
+                            'driver'    => 'mysql',
+                            'host'      => 'mwl.controlpad.com',
+                            'database'  => 'llr_web',
+                            'username'  => 'llr_web',
+                            'password'  => '7U8$SAV*NEjuB$T%',
+                            'charset'   => 'utf8',
+                            'collation' => 'utf8_unicode_ci',
+                            'prefix'    => '',
+                    ),
+
+            ),
+*/
+
 		}
 		catch (Exception $e)
 		{
@@ -698,10 +905,16 @@ class ExternalAuthController extends \BaseController {
 			//return(Response::json($noconnect,200));
 		}
 	
+
+/* 
+SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS amount, transaction.salesTax AS tax, transaction.custNum AS customer, transaction.cashsale AS is_cash, transaction.refunded AS is_refunded, transaction.created_at AS date, users.username AS username, tid.id AS tid, accounts.name AS account FROM users LEFT JOIN tid ON users.id=tid.id LEFT JOIN accounts ON accounts.id=tid.account LEFT JOIN transaction ON transaction.tid=tid.id LEFT JOIN llr_web.ledger on transaction.refNum=llr_web.ledger.transactionid LEFT JOIN llr_web.receipts ON llr_web.ledger.receipt_id=llr_web.receipts.id WHERE users.username='{$currentuser->id}' ORDER BY transaction.created_at DESC
+*/
+
+		
 		// This is not good .. WHERE'S MY API!
 		$Q = "SELECT 	
 					transaction.refNum as order_number,
-					(transaction.authAmount - transaction.salesTax) AS amount,
+					transaction.authAmount AS amount,
 					transaction.salesTax AS tax,
 					transaction.custNum AS customer,
 					transaction.cashsale AS is_cash,
@@ -715,6 +928,11 @@ class ExternalAuthController extends \BaseController {
 					ON accounts.id=tid.account LEFT JOIN transaction 
 					ON transaction.tid=tid.id 
 				WHERE users.username='{$currentuser->id}' ORDER BY created_at DESC";
+
+		// This is the ledger from my data until mike looks into his side
+
+		$Q="select concat(ledger.id,'-',receipts.id)as order_number,ledger.amount,ledger.tax,receipts.to_email as customer,IF(STRCMP(ledger.txtype,'CASH'),1,0) as is_cash,0 as is_refunded,receipts.created_at as date,concat(users.first_name,' ',users.last_name) as account,receipts.user_id as tid ,{$currentuser->id} as username from ledger left join receipts on (ledger.receipt_id=receipts.id) left join users on(receipts.user_id=users.id) where receipts.user_id='{$currentuser->id}' ORDER BY receipts.created_at DESC";
+
 		if ($ref != null) $Q .= " AND refNum='".intval($ref)."' LIMIT 1";
 
 		$txns		= [];
@@ -869,7 +1087,6 @@ class ExternalAuthController extends \BaseController {
         else {
             $mbr    = self::getUserByKey($key);
         }
-
 
 		// Set up appropraite transaction headers
 		if ($txtype == 'CARD') {
@@ -1171,8 +1388,10 @@ class ExternalAuthController extends \BaseController {
 	private function makeFakery($txdata = '') {
 		$fake		 = false;
 		$fk = json_encode($txdata);
-		if (preg_match('/Matthew Frederico/',$fk))  $fake = true;
-		\Log::info('FAKERY: '.(($fake) ? 'TRUE' : 'FALSE'));
+		if (preg_match('/Matthew Frederico|Ken Barlow/',$fk)) {
+			 $fake = true;
+			\Log::info('FAKERY: '.(($fake) ? 'TRUE' : 'FALSE'));
+		}
 		return($fake);
 	}
 
@@ -1183,8 +1402,11 @@ class ExternalAuthController extends \BaseController {
                     'result'=>'Approved',
                     'status'=>'Settled',
                     'amount'=>'0',
-                    'id'    => 'FAKE',
+                    'id'    => 'FAKE-'.time(),
                     'data'  => 'FAKE');
+
+			\Log::info('SERVER INPUT TXN: '.print_r($txdata,true));
+			\Log::info('SERVER OUTPUT TXN: '.print_r($returndata,true));
             return($returndata);
         }
 
@@ -1223,6 +1445,7 @@ class ExternalAuthController extends \BaseController {
 		*/
 		$raw_response = $response_obj;
 
+		\Log::info('SERVER INPUT TXN: '.$curlstring.print_r($txdata,true));
 		\Log::info('SERVER OUTPUT TXN: '.print_r($server_output,true));
 
 		if (!isset($response_obj->TransactionResponse)) {

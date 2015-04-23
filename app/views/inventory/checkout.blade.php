@@ -46,6 +46,14 @@
 	$totalItems = 0;
 
 	foreach ($orders as $order): $totalItems += $order['numOrder']; endforeach;
+
+    // So we can do dates as dropdowns
+    $y = date('Y');
+    for ($x = 0; $x < 8;$x++) {
+        $yd = substr("".$y+$x,-2);
+        $years[$yd] = $y + $x;
+    }
+    $months = array('01'=>'01','02'=>'02','03'=>'03','04'=>'04','05'=>'05','06'=>'06','07'=>'07','08'=>'08','09'=>'09','10'=>'10','11'=>'11','12'=>'12');
 ?>
         <div ng-controller="InventoryController" class="my-controller">
             <div class="row">
@@ -315,8 +323,13 @@
 										<td align="right"><input size="16" style="width:16em" name="cardno"></td>
 									</tr>
 									<tr>
+
 										<td>Card expiration</td>
-										<td align="right"><input size="16" placeholder="mmyy" style="width:4em" name="cardexp"></td>
+										<td align="right">
+											{{ Form::select('ccmonth',$months, null, array('class' => 'form-control pull-left','style'=>'width:5em')) }}
+											{{ Form::select('ccyear',$years, null, array('class' => 'pull-right form-control','style'=>'width:7em')) }}
+											<!-- <input size="16" placeholder="mmyy" style="width:4em" name="cardexp"> -->
+										</td>
 									</tr>
 									<tr>
 										<td>Security code (# on back of card)</td>
