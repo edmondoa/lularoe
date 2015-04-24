@@ -15,11 +15,22 @@ class ReportController extends \BaseController {
 		return View::make('reports.index');
 	}
 
+	public function sales($id = '')
+	{
+		if (Auth::user()->hasRole(['Superadmin','Admin'])) { 
+			Session::flash('ledgerUserId',$id);
+		}
+		else $id = Auth::user()->id;
+
+		return View::make('reports.sales', compact('orderlist'));
+	}
+
 	public function orders($id = '')
 	{
 		if (Auth::user()->hasRole(['Superadmin','Admin'])) { 
 			Session::flash('ledgerUserId',$id);
 		}
+		else $id = Auth::user()->id;
 
 		$orderlist = Receipt::getReceipts($id);
 
