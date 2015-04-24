@@ -61,8 +61,6 @@ foreach($modelrollup as $item=>$quan)  {
 
 fclose($rcf);
 fclose($ruf);
-`echo "See attached report" | mailx -A $rollupfile -A $receiptfile -s "End of day orders: $report_date" mfrederico@gmail.com`;
-
 
 function addData($receipt) {
 	global $userreceiptlist, $modelrollup, $pricerollup;
