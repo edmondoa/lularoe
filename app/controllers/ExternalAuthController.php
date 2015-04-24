@@ -532,7 +532,7 @@ class ExternalAuthController extends \BaseController {
 		}
 	}
 
-	public function createMwlUser($user_id,$password = null) {
+	public function createMwlUser($user_id, $password = null, $setConsignment) {
 
 		\Log::info("CreateMwlUser for [{$user_id} / {$password}]");
 
@@ -571,12 +571,16 @@ class ExternalAuthController extends \BaseController {
 		$headers[] = "Account-Name: ".$mbr->first_name." ".$mbr->last_name;
 		$headers[] = "Account-Number:".@$bank_info->bank_account;
 		$headers[] = "Account-Route: ".@$bank_info->bank_routing; //
+
+
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
 		$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 
-		$headers[] = "Consignment-IsPercent: 1";
-		$headers[] = "Consignment-Amount: 25";
-		$headers[] = "Consignment-Balance: {$mbr->consignment}";
+		if (!empty($setConsignment)) { 
+			$headers[] = "Consignment-IsPercent: 1";
+			$headers[] = "Consignment-Amount: 25";
+			$headers[] = "Consignment-Balance: {$setConsignment}";
+		}
 
 		\Log::info('CREATING IN MWL: '.print_r($headers,true));
 		//return $headers;
@@ -602,12 +606,12 @@ class ExternalAuthController extends \BaseController {
 		}
 	}
 
-	public function updateMwlUser($user_id,$password = null) {
+	public function updateMwlUser($user_id, $password = null, $setConsignment = null) {
 
         $mbr = User::find($user_id);
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
-		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id,$password);
+		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id, $password, $setConsignment);
 		$merchant_id = $mwl_user->Merchant->ID;
 
 		$address = Address::where('addressable_id',$mbr->id)->first();
@@ -653,7 +657,21 @@ class ExternalAuthController extends \BaseController {
 			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		}
 
+		$constotal = 0;
+		if ($setConsignment != null) { 
+			if ($setConsignment > 0) { $constotal = $setConsignment + $mbr->consginment; }  // ADD consignment
+			if ($setConsignment < 0) { $constotal = $setConsignment - $mbr->consginment; }  // SUB consginment
+			if ($setConsignment == 0) { $constotal = $mbr->consginment; } 					// SET Consignment
+		}
+
+		if ($constotal) {
+			$headers[] = "Consignment-IsPercent: 1";
+			$headers[] = "Consignment-Amount: 25";
+			$headers[] = "Consignment-Balance: ".floatval($constotal);
+		}
+
 		\Log::info('Output: '.print_r($headers, true));
+
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 		//curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -1534,6 +1552,10 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 				// If we use the 'key' parameter, we could feasibly have 
 				// Multiple acconts using 1 TID .. Feature?
 				$sessionkey = Self::midauth($mbr->id, $pass);
+				if (preg_match('/^HTTP/',$sessionkey)) { 
+					\Log::error("User {$mbr->id} needs to have account activated.");
+					$sessionkey = false; 
+				}
 
 				//return $sessionkey;
 				$tstamp		= time();
