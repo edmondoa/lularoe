@@ -378,9 +378,9 @@ class InventoryController extends \BaseController {
 
 		// Discounts are previously calculated and store in subtotal
 		$grandTotal = floatVal($tax) + floatVal($sub);
+		\Log::info("TOTALCHECK: ({$absamount} / {$grandTotal}) PAIDOUT: ".Session::get('paidout'));
 
-		if ($absamount > ($grandTotal - Session::get('paidout'))) 
-			$absamount = $grandTotal - Session::get('paidout');
+		if ($absamount > ($grandTotal - Session::get('paidout'))) $absamount = $grandTotal - Session::get('paidout');
 
 		return($absamount);
 	}
@@ -482,26 +482,37 @@ class InventoryController extends \BaseController {
 				);
 
 		
-		//$ia = Input::all();
-		//Input::replace($purchaseInfo);
-		//$request	= Request::create('llrapi/v1/purchase/'.$authinfo->key,'GET', array());
-		//$cardauth	= json_decode(Route::dispatch($request)->getContent());
-		//Input::replace($ia);
-
 		// Always no error on consignment with positive balance
-		$cardauth	= json_decode('{ "error":false }');
-
-		if (!$cardauth->error) {
-			$user = $currentuser;
-			$user->consignment = $user->consignment - floatval($absamount);
-			$user->save();
-
-			$cardauth	= array('error'=>false,
+		$user = $currentuser;
+		if ($user->consignment < floatval($absamount)) { 
+			$cardauth	= (object)array('error'=>true,'message'=>'Insufficient credit to complete purchase','Code'=>'D');
+		}
+		else { 
+			$cardauth	= (object)array('error'=>false,
 								'id'=>$user->id.'-'.time(),
 								'result'=>'Approved',
 								'status'=>'Consignment',
 								'balance'=>$user->consignment,
 								'amount'=>$absamount);
+
+			\Log::info("Dropping into consignment ledger");
+
+			$lg = new Ledger();
+			$lg->user_id        = 0;
+			$lg->account        = '';
+			$lg->amount         = $absamount;
+			$lg->tax            = $tax;
+			$lg->txtype         = 'CONS';
+			$lg->transactionid  = $cardauth->id;
+			$lg->data           = json_encode($purchaseInfo);
+			$lg->save();
+
+		}
+
+		if (!$cardauth->error) {
+			$user->consignment = $user->consignment - floatval($absamount);
+			$user->save();
+
 
 			$this->addPayment($cardauth);
 
@@ -732,6 +743,7 @@ class InventoryController extends \BaseController {
 			}
 		}
 
+
 		$user = $currentuser;
 
 		\Log::info("FINALIZING PURCHASE ".json_encode($currentuser));
@@ -805,6 +817,12 @@ class InventoryController extends \BaseController {
 			$inv->address_id	= $address_id;
 			$inv->data			= json_encode($sessiondata['orderdata']);
 			$inv->save();
+
+			\Log::info('Assigning ledger items to this receipt');
+			foreach($sessiondata['paymentdata'] as $txn) {
+				\Log::info("\t TXN:".$txn->id.' GOES INTO RECEIPT '.$inv->id);
+				$l = Ledger::where('transactionid', '=', $txn->id)->update(array('receipt_id'=>$inv->id));
+			}
 			
 			$data['receipt_id'] = $inv->id;
 
@@ -883,7 +901,6 @@ class InventoryController extends \BaseController {
 			$inv->data			= json_encode($sessiondata['orderdata']);
 			$inv->save();
 			
-
 			\Log::info('Assigning ledger items to this receipt');
 			foreach($sessiondata['paymentdata'] as $txn) {
 				\Log::info("\t TXN:".$txn->id.' GOES INTO RECEIPT '.$inv->id);
@@ -1044,6 +1061,7 @@ class InventoryController extends \BaseController {
 
 		$absamount	= abs(Input::get('amount'));
 		$tax		= $this->getTax($absamount);
+		\Log::info("Absamount: {$absamount} Tax:: {$tax}");
 		$absamount	= $this->totalCheck($absamount);
 
 		// If it IS a rep sale, 
