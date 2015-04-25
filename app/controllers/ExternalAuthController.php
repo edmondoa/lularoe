@@ -4,8 +4,8 @@ class ExternalAuthController extends \BaseController {
 
 	// Private vars for this controller only
 	const MWL_SERVER	= 'mwl.controlpad.com';
-	const MWL_UN		= 'llr_txn';
-	const MWL_PASS		= 'ilovetexas';
+	const MWL_UN		= 'llr_web';//'llr_txn';
+	const MWL_PASS		= '7U8$SAV*NEjuB$T%';//'ilovetexas';
  	const MWL_DB 		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
@@ -524,12 +524,12 @@ class ExternalAuthController extends \BaseController {
 		else 
 		{
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401')
-			{
-				\Log::info('server out put is 401');
+			if (isset($so->Code) && intval($so->Code) >= 400) {
+				Session::flash('message',$so->Message);
+				\Log::info('server output is 400 level');
 				return null;
 			}
-			\Log::info('server output exists');
+			\Log::info('server output exists: '.print_r($server_output,true));
 			return $so;
 		}
 	}
@@ -603,7 +603,10 @@ class ExternalAuthController extends \BaseController {
 		else {
 			\Log::info('MWL Responded with: '.$server_output);
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') return null;
+			if (isset($so->Code) && intval($so->Code) >= 400) {
+				Session::flash('message',$so->Message);
+				return null;
+			}
 			return($server_output);
 		}
 	}
@@ -613,8 +616,9 @@ class ExternalAuthController extends \BaseController {
         $mbr = User::find($user_id);
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
-		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id, $password, $setConsignment);
+		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id,$password);
 		$merchant_id = $mwl_user->Merchant->ID;
+		\Log::info('Merchant ID: '.$mwl_user->Merchant->ID);
 
 		$address = Address::where('addressable_id',$mbr->id)->first();
 		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
@@ -692,7 +696,10 @@ class ExternalAuthController extends \BaseController {
 		if (!$server_output) return(false);
 		else {
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') return null;
+			if (isset($so->Code) && intval($so->Code) >= 400) {
+				Session::flash('message',$so->Message);
+				return null;
+			}
 			\Log::info('Result: '.print_r($server_output, true));
 			return($server_output);
 		}
@@ -1232,7 +1239,10 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		else {
 			if ($returnJson) 
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') $returnthis = ($returnJson) ? json_encode(['key'=>null]) : null;
+			if (isset($so->Code) && intval($so->Code) >= 400) {
+				Session::flash('message',$so->Message);
+				$returnthis = ($returnJson) ? json_encode(['key'=>null]) : null;
+			}
 		}
 		return $returnthis;
 	}
@@ -1609,7 +1619,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		// Set session key to null 
 		if (empty($sessionkey)) $sessionkey = null;
 		
-        return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),($error) ? 401 : 200);
+        return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),($error) ? 401 : 200, [] , JSON_PRETTY_PRINT);
 
 	}
 
