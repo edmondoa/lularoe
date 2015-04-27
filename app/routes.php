@@ -268,6 +268,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
         Route::post('inv/invoice', 'InventoryController@sendInvoice');
 		Route::get('invoice/view/{id}', 'InventoryController@viewInvoice');
+		Route::get('invoice/mark/{id}', 'InventoryController@markInvoice');
 
         Route::post('inv/purchase', 'InventoryController@purchase');
 		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
