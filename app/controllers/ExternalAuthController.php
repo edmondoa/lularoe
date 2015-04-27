@@ -1084,6 +1084,17 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		// Move this below crossouts once no need for monitoring
         \Log::info("[{$key}] Purchasing cart full of ".json_encode($cartdata));
 
+		if (isset($cartdata['cash']) && $cartdata['cash'] == '{cash}') {
+			\Log::info("[{$key}] Invalid cash type! ".json_encode($cartdata));
+			$returndata = array('error'=>true,
+								'result'=>'Cash type temporary disabled',
+								'status'=>'Invalid cash flag amount',
+								'amount'=>0,
+								'data'=>Input::get('cash'));
+			return Response::json($returndata,401);
+		}
+
+
 		if (isset($cartdata['cardname'])) {
 			$cartdata['cardnumber'] = 'xxxx-xxxx-xxxx-'.substr(@$cartdata['cardnumber'],-4);
 			unset($cartdata['cardcvv']);
@@ -1100,6 +1111,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		if (empty(Input::get('tax')) || Session::has('notax')) {
 			Input::merge(array('tax'=>0));
 		}
+
 
 		if 		(Input::get('cash')) 	$txtype = 'CASH';
 		elseif	(Input::get('check'))	$txtype = 'ACH';
