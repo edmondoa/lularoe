@@ -35,12 +35,12 @@
 					<div id="invoice-{{$invoice->id}}">
 						<div class="pull-left">
 							<button type="button" id="printme" class="btn btn-sm btn-warning">Mark as Printed</button>
-							@if ($invoice->printed != '0000-00-00 00:00:00') <br /><small id="printed">{{$invoice->printed}}</small> @endif
+							<br /><small id="printed">{{$invoice->printed}}</small>
 						</div>
 
 						<div class="pull-right">
 							<button type="button" id="shipme" class="btn btn-sm btn-success">Mark as Shipped</button>
-							@if ($invoice->shipped != '0000-00-00 00:00:00') <Br/><small id="shipped">{{$invoice->shipped}}</small>@endif
+							<Br/><small id="shipped">{{$invoice->shipped}}</small>
 						</div>
 					</div>
 				</div>
