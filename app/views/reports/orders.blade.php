@@ -1,5 +1,6 @@
 @extends('layouts.default')
 @section('content')
+
 <div class="index">
 	<h1>Reports</h1>
 	<div class="my-controller">
