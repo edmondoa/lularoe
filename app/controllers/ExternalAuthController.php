@@ -534,7 +534,7 @@ class ExternalAuthController extends \BaseController {
 		}
 	}
 
-	public function createMwlUser($user_id, $password = null, $setConsignment) {
+	public function createMwlUser($user_id, $password = null, $setConsignment = null) {
 
 		\Log::info("CreateMwlUser for [{$user_id} / {$password}]");
 
@@ -616,7 +616,7 @@ class ExternalAuthController extends \BaseController {
         $mbr = User::find($user_id);
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
-		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id,$password);
+		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id,$password,$setConsignment);
 		$merchant_id = $mwl_user->Merchant->ID;
 		\Log::info('Merchant ID: '.$mwl_user->Merchant->ID);
 

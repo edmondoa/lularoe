@@ -114,6 +114,7 @@
 			  url: "/invoice/mark/{{$invoice->id}}?as=printed",
 				context: document.body
 			}).done(function(d) {
+				window.print();
 				$('#printed').html(d.date);
 				console.log('Printed');
 			});

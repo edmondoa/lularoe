@@ -24,7 +24,10 @@
 							@foreach ($orderlist as $receipt) 
 							@if ($receipt->shipped != '0000-00-00 00:00:00')
 							<tr class="media">
-								<td><div>{{$receipt->shipped}}</div></td>
+									
+								<td>
+									@if ($receipt->printed != '0000-00-00 00:00:00') <a href="#" data-toggle="tooltip" class="pull-left fa fa-print" title="{{$receipt->printed}}"></a> @endif
+								<div>{{$receipt->shipped}}</div></td>
 								<td><div>{{$receipt->id}}</div></td>
 								<td><div>{{$receipt->to_firstname}} {{$receipt->to_lastname}}</div></td>
 								<td>
@@ -56,7 +59,9 @@
 							@foreach ($orderlist as $receipt) 
 							@if ($receipt->shipped == '0000-00-00 00:00:00')
 							<tr class="media">
-								<td><div>{{$receipt->created_at}}</div></td>
+								<td>
+									@if ($receipt->printed != '0000-00-00 00:00:00') <a href="#" data-toggle="tooltip" class="pull-left fa fa-print" title="Printed: {{$receipt->printed}}"></a> @endif
+									<div>{{$receipt->created_at}}</div></td>
 								<td><div>{{$receipt->id}}</div></td>
 								<td><div>{{$receipt->to_firstname}} {{$receipt->to_lastname}}</div></td>
 								<td>
@@ -81,4 +86,11 @@
 </div><!-- app -->
 @stop
 @section('scripts')
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip({
+        placement : 'top'
+    });
+});
+</script>
 @stop
