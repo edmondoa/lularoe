@@ -616,7 +616,7 @@ class ExternalAuthController extends \BaseController {
         $mbr = User::find($user_id);
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
-		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id,$password,$setConsignment);
+		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id,$password);
 		$merchant_id = $mwl_user->Merchant->ID;
 		\Log::info('Merchant ID: '.$mwl_user->Merchant->ID);
 
@@ -1498,13 +1498,13 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		if (isset($response_obj->Status)) { 
 			if ($response_obj->Status == 'Failed'){
 				$response_obj->TransactionResponse->Result		= 'Declined';
-				$response_obj->TransactionResponse->ResultCode	= 'F';
+				$response_obj->TransactionResponse->ResultCode	= 'E';
 				$response_obj->TransactionResponse->Status		= 'Attempt Failed';
 				$response_obj->TransactionResponse->AuthAmount	= 0;
 			}
 			if ($response_obj->Status == 'Error'){
 				$response_obj->TransactionResponse->Result		= 'Declined';
-				$response_obj->TransactionResponse->ResultCode	= $response_obj->Error->Code;
+				$response_obj->TransactionResponse->ResultCode	= (string)$response_obj->Error->Code;
 				$response_obj->TransactionResponse->Status		= $response_obj->Error->Description;
 				$response_obj->TransactionResponse->AuthAmount	= 0;
 			}
@@ -1519,7 +1519,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 
 		if (isset($response_obj->Error)) {
 			$response_obj->TransactionResponse->Result = 'Declined';
-			$response_obj->TransactionResponse->ResultCode	= $response_obj->Error->Code;
+			$response_obj->TransactionResponse->ResultCode	= (string)$response_obj->Error->Code;
 			$response_obj->TransactionResponse->Status		= $response_obj->Error->Description;
 			$response_obj->TransactionResponse->AuthAmount	= 0;
 		}
@@ -1536,6 +1536,11 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		// We're authorized!
 		if ($response_obj->TransactionResponse->ResultCode == 'A') {
 			$response_obj->TransactionResponse->Error = false;
+		}
+
+		// Temp fix for payliance
+		if ($response_obj->TransactionResponse->Status == 'Payliance: Exceeds Max Daily Amount') { 
+			file_put_contents('/tmp/payliance.barfed.txt',date('Y-m-d H:i:s'));	
 		}
 
         $returndata = array('error'=>$response_obj->TransactionResponse->Error,
