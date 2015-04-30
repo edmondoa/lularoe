@@ -22,6 +22,23 @@ try {
 		$interpolateProvider.startSymbol('<$');
 		$interpolateProvider.endSymbol('>');
 	});
+    
+    app.directive('dateonlypicker2', function() {
+        return {
+            restrict: 'C',
+            require: 'ngModel',
+            link: function(scope, element, attrs, ctrl) {
+                $(element).datepicker({
+                    dateFormat: 'yy-mm-dd',
+                    onSelect: function(date) {
+                        ctrl.$setViewValue(date);
+                        ctrl.$render();
+                        scope.$apply();
+                    }
+                });
+            }
+        };
+    });
 
     app.controller('ReportsController',
         ['$scope','$http','shared','$q','$interval',
@@ -50,7 +67,7 @@ try {
 			console.log(v.data);
             $scope.isComplete = true;
         });
-
+        
 		// Get inventory reports
         $http.get(reportReceiptPath).success(function(v) {
             $scope.countItems = v.count;
@@ -64,6 +81,7 @@ try {
             $scope.reportInventory = v.data;
             $scope.isComplete = true;
         });
+        
         
         $scope.pageChangeHandler = function(num) {
             

@@ -21,5 +21,18 @@ class Receipt extends \Eloquent {
     public function receipt() {
         return $this->belongsTo('User');
     }
+    
+    public static function countReceiptsForDate($user_id, $start_date, $end_date){
+        $sql = 'select count(*) as num_receipts from receipts where user_id = :user_id and ';
+        $sql .= "created_at between :start_date and :end_date";
+        return DB::select(
+                DB::raw($sql),
+                [
+                    'user_id' => $user_id,
+                    'start_date' => $start_date,
+                    'end_date' => $end_date
+                ]
+            );
+    }
 
 }

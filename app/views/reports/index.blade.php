@@ -1,9 +1,29 @@
 @extends('layouts.default')
 @section('content')
 <div ng-app="app" class="index">
-	<h1>Reports</h1>
+	<h1>Sales Report</h1>
 	<div ng-controller="ReportsController" class="my-controller">
-
+       {{ Form::open(array('url' => 'levels')) }}
+       <div class="form-group">
+            {{ Form::select('view', [
+                'ytd' => 'Year-To-Date',
+                'monthly' => 'Monthly',
+                'weekly' => 'Weekly',
+                'daily' => 'Daily'
+            ], 'monthly', ['id'=>'view_selector','class' => 'selectpicker']) }}
+            
+        </div>
+        <div id="select_month" class="pull-right form-group">
+            {{ Form::label('month', 'Select Month') }}
+            {{ Form::select('month', $ytd, date('Y-m-d'), ['class' => 'selectpicker']) }}
+        </div>
+        <div id="select_date" class="pull-right form-group" style="display:none;">
+            {{ Form::label('day', 'Select Date') }}
+            {{ Form::text('day', null, ['ng-model'=>'day','class' => 'selectpicker dateonlypicker2']) }}
+        </div>
+        <div class="row">
+            <div id="container" class="col-sm-11" ></div>
+        </div>
 		<div role="tabpanel">
 			<ul class="nav nav-tabs" role="tablist">
 				<li role="presentation" class="nav active"><a href="#sales" role="tab" data-toggle="tab">Sales</a></li>
@@ -70,23 +90,31 @@
 			</div><!-- tabcontent -->
 		</div><!-- tabpanel -->
 	</div>
+    {{Form::close()}}
 </div><!-- app -->
 @stop
 @section('scripts')
 <script>
     angular.extend(ControlPad, (function(){                
                 return {
-                    reportSalesCtrl : {
-                        path : '/api/report/sales/'
+                    reportsCtrl : {
+                        title : 'Sales',
+                        path: '/api/getSalesMetrics/'
+                        
                     },
-                    reportInventoryCtrl : {
-                        path : '/api/report/inventory/'
+                    reportSalesCtrl:{
+                        path: '/api/report/sales'
                     },
-                    reportReceiptCtrl : {
-                        path : '/api/report/receipts/'
+                    reportInventoryCtrl:{
+                        path: '/api/report/inventory'
+                    },
+                    reportReceiptCtrl:{
+                        path: '/api/report/receipts'
                     }
                 };
             }()));    
 </script>
 {{ HTML::script('js/controllers/reportsController.js') }}
+{{ HTML::script('bower_components/highcharts-release/highcharts.js') }}
+{{ HTML::script('js/displaychart.js') }}
 @stop
