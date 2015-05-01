@@ -39,8 +39,51 @@ class Ledger extends \Eloquent
 	}
     
     public static function countLedgerForDate($user_id, $start_date, $end_date){
-        $sql = 'select count(*) as num_ledger from ledger where user_id = :user_id and ';
-        $sql .= "created_at between :start_date and :end_date";
+        $sql = "select count(*) as num_ledger from ledger where user_id = :user_id and ";
+        $sql .= ($start_date == $end_date) ? "date_format(created_at,'%Y-%m-%d')" : "created_at";
+        $sql .= " between :start_date and :end_date";
+        return DB::select(
+                DB::raw($sql),
+                [
+                    'user_id' => $user_id,
+                    'start_date' => $start_date,
+                    'end_date' => $end_date
+                ]
+            );
+    }
+    
+    public static function sumAmountForDate($user_id, $start_date, $end_date){
+        $sql = "select sum(amount) as sum_amount, sum(tax) as sum_tax from ledger where user_id = :user_id and ";
+        $sql .= ($start_date == $end_date) ? "date_format(created_at,'%Y-%m-%d')" : "created_at";
+        $sql .= " between :start_date and :end_date";
+        return DB::select(
+                DB::raw($sql),
+                [
+                    'user_id' => $user_id,
+                    'start_date' => $start_date,
+                    'end_date' => $end_date
+                ]
+            );
+    }
+    
+    public static function getDatesWithRecord($user_id, $start_date, $end_date){
+        $sql = "select created_at from ledger where user_id = :user_id and ";
+        $sql .= "created_at between :start_date and :end_date group by date_format(created_at,'%Y-%m-%d')";
+        return DB::select(
+                DB::raw($sql),
+                [
+                    'user_id' => $user_id,
+                    'start_date' => $start_date,
+                    'end_date' => $end_date
+                ]
+            );
+    }
+    
+    public static function getLedgerWithDate($user_id, $start_date, $end_date){
+        $sql = "select *";
+        $sql .=" from ledger where user_id = :user_id and ";
+        $sql .= ($start_date == $end_date) ? "date_format(created_at,'%Y-%m-%d')" : "created_at";
+        $sql .= " between :start_date and :end_date";
         return DB::select(
                 DB::raw($sql),
                 [

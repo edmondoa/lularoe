@@ -1,15 +1,13 @@
 (function(app, push, check, ctrlpad){
 $(function () {
-    var ordersReport = function(title, subtitle, data, categories, tilt){
+    var ordersReport = function(title, subtitle, ytitle, data, categories, tilt){
         var rotate = (tilt) ? -45 : 0;
         $('#container').highcharts({
             title: {
-                text: title,
-                x: -20 //center
+                text: title
             },
             subtitle: {
-                text: subtitle,
-                x: -20
+                text: subtitle
             },
             xAxis: {
                 categories: categories,
@@ -23,21 +21,21 @@ $(function () {
                     width: 1,
                     color: '#808080'
                 }],
-                min: 0
+                min: 0,
+                title: ytitle
             },
             legend: {
                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'middle',
-                borderWidth: 0,
-                enabled: false
+                borderWidth: 0
             },
             tooltip: {
                 formatter: function() {
                     var name = this.series.name;
 
                     var txt = '<b>'+ this.x +'</b> <br/>';
-                        txt += name +' Count: <b>';
+                        txt += name +': <b>';
                         txt += this.y+'</b><br/>';
                         txt += "Payment Method: <b>"+"Cash"+"</b><br/>";
                         txt += "Total Amount"+": <b>"+this.total+"</b>";
@@ -48,14 +46,17 @@ $(function () {
         });
      };
     
-     var loadchart = function(option){
-         $.get(ctrlpad.reportsCtrl.path + option,function(data){
+     var loadchart = function(option, m, d){
+         var path = ctrlpad.reportsCtrl.path + option;
+         path += (m != false) ? "?m="+m : "";
+         path += (d != false) ? "?d="+d : "";
+         $.get(path,function(data){
              var rotatexlabel = (data.xorientation == "rotate") ? true : false;
-             ordersReport(ctrlpad.reportsCtrl.title, data.subtitle, data.data, data.categories, rotatexlabel);
+             ordersReport(ctrlpad.reportsCtrl.title, data.subtitle, ctrlpad.reportsCtrl.ytitle, data.data, data.categories, rotatexlabel);
          });
      };
      
-     loadchart('monthly');
+     loadchart('monthly', false, false);
      
      $('body').delegate('#view_selector', 'change', function(){
          var $_selector = $(this);
@@ -72,21 +73,23 @@ $(function () {
          }else{
              $_selectDate.hide();   
          }
-         loadchart(selected);
+         loadchart(selected, false, false);
     });
     
-    $('body').delegate('#select_month', 'change', function(){
+    $('body').delegate('#month_selector', 'change', function(){
          var $_selector = $(this);
-         var $_selectMonth = $('#select_month');
+         var view_selector = $('#view_selector');
          var selected = $_selector.val();
-         if(selected == "ytd" || selected == "daily"){
-             $_selectMonth.hide();
-         }else{
-             $_selectMonth.show();
-         }
-         loadchart(selected);
+         console.log('selected');
+         console.log(selected);
+         console.log($_selector);
+         loadchart(view_selector.val(), selected, false);
     });
-     
+        
+    $('body').delegate('.collapse', 'shown.bs.collapse', function(){
+        var target = '#'+$(this).attr('data-parent');
+        $(target).addClass('collapse-open');   
+    });
      
 });
 

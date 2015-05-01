@@ -4,7 +4,7 @@
 	<h1>Orders Report</h1>
 	<div ng-controller="ReportsController" class="my-controller">
         {{ Form::open(array('url' => 'levels')) }}
-        <div class="form-group">
+        <div class="pull-left form-group">
             {{ Form::select('view', [
                 'ytd' => 'Year-To-Date',
                 'monthly' => 'Monthly',
@@ -84,6 +84,7 @@
                 return {
                     reportsCtrl : {
                         title : 'Orders Received',
+                        ytitle : 'Number of Transactions',
                         path: '/api/getMetrics/'
                     }
                 };
