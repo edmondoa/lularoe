@@ -153,7 +153,7 @@
         <li class="two"><a>Date</a></li>
         <li class="two"><a>Amount</a></li>
         <li class="four"><a>Tax</a></li>
-        <li class="five"><a>Items</a></li>
+        <li class="five"><a>&nbsp;</a></li>
       </ul>
     </div>
   </nav>
@@ -199,7 +199,7 @@
 
 
 <!--------------------end----------------->
-                    
+   <br/><br/>                 
                     
 					<table ng-model='reportSales' class="table table-striped table-hover">
 						<thead>
