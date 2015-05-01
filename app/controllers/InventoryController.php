@@ -29,6 +29,19 @@ class InventoryController extends \BaseController {
 		return View::make('inventory.matrix20');
     }
 
+	public function markInvoice($id) {
+		$invoice	= Receipt::find($id);
+
+		$markdate = date('Y-m-d H:i:s');
+		if (Input::get('as') == 'printed') $invoice->printed = $markdate;
+		if (Input::get('as') == 'shipped') $invoice->shipped = $markdate;
+		$invoice->save();
+
+		$response = array('error'=>false,'message'=>'Invoice marked as: '.Input::get('as'),'date'=>$markdate);
+
+		return Response::json($response,200,[],JSON_PRETTY_PRINT);
+	}
+
 	public function viewInvoice($id) {
 		$invoice	= Receipt::find($id);
 
@@ -63,7 +76,6 @@ class InventoryController extends \BaseController {
             'data' => Inventory::all()
         ];
     }
-
 
 	public function getDiscounts($subt, $viaRequest=true,$doTemplate=false){
 		// Init my vars

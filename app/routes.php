@@ -272,6 +272,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
         Route::post('inv/invoice', 'InventoryController@sendInvoice');
 		Route::get('invoice/view/{id}', 'InventoryController@viewInvoice');
+		Route::get('invoice/mark/{id}', 'InventoryController@markInvoice');
 
         Route::post('inv/purchase', 'InventoryController@purchase');
 		Route::post('inv/achpurchase', 'InventoryController@achpurchase');
@@ -618,6 +619,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	});
 
 	Route::group(array(), function() {
+<<<<<<< HEAD
 
 		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin'])) {
 			Route::get('reports/orders/{id}', 'ReportController@orders');
@@ -626,10 +628,19 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('reports/sales/', 'ReportController@sales');
 		Route::get('reports/orders/', 'ReportController@orders');
 
+=======
+        Route::get('reports/orders/', 'ReportController@orders');
+		Route::get('reports/sales/', 'ReportController@index');
+>>>>>>> f4681991c935f4f5554353a5c747ebed7c556da7
 		Route::get('api/report/sales/details/{id}', 'ReportController@saleDetails');
 		Route::get('api/report/sales', 'ReportController@getReportSales');
 		Route::get('api/report/inventory', 'ReportController@getReportInventory');
-		Route::get('api/report/receipts', 'ReportController@getReportReceipts');
+        Route::get('api/report/receipts', 'ReportController@getReportReceipts');
+		Route::get('api/report/dailyreceipts', 'ReportController@getDailyReportReceipts');
+        Route::get('api/getMetrics/{options}','ReportController@getMetrics');
+        Route::get('api/getSalesMetrics/{options}','ReportController@getSalesMetrics');
+        Route::get('api/getDatesWithRecord/{date}','ReportController@getLedgerDatesWithRecord');
+        Route::get('api/getLedgerWithDate/{date}','ReportController@getLedgerWithDate');
 		Route::get('reports/user/{id}','ReportController@index');
 		//Route::get('reports', 'ReportController@index');
 

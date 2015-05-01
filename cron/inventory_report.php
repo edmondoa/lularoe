@@ -65,7 +65,6 @@ foreach($modelrollup as $item=>$quan)  {
 fclose($rcf);
 fclose($ruf);
 
-
 function addData($receipt) {
 	global $userreceiptlist, $modelrollup, $pricerollup;
 	$items = json_decode($receipt['data'], true);
