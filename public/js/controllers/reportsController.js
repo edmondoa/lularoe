@@ -105,6 +105,36 @@ try {
             if (checked == true) $('.applyAction').removeAttr('disabled');
             else $('.applyAction').attr('disabled', 'disabled');
         };
+        
+        $scope.$watch('month',function(n,o){
+            if(n != undefined){
+                console.log('month change');
+                console.log("n: "+n);
+                console.log("o: "+o);
+                $scope.isComplete = false;
+                $http.get('/api/getDatesWithRecord/'+n).success(function(v) {
+                    $scope.countDateItems = v.count;
+                    $scope.reportSalesDates = v.data;
+                    console.log(v.data);
+                    $scope.isComplete = true;
+                });
+                    
+            }
+        });
+        
+        $scope.details = function(d){
+            console.log('details');
+            console.log(d);
+            
+            $scope.isComplete = false;
+            $http.get('/api/getLedgerWithDate/'+d.date).success(function(v) {
+                $scope.countLedgerItems = v.count;
+                d.details = v.data;
+                console.log(v.data);
+                $scope.isComplete = true;
+            });
+            
+        };
 
     }]);
 }(module, pushIfNotFound, checkExists, ControlPad));

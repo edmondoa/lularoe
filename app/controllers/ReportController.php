@@ -19,7 +19,8 @@ class ReportController extends \BaseController {
         $temp = $ytd;
         $ytd = array();
         foreach($temp as $day){
-            $ytd[$day] = date('M Y',strtotime($day));
+            $query_month = strtotime('+1 month',strtotime($day));
+            $ytd[date('Y-m-d',$query_month)] = date('M Y',strtotime($day));
         }
         
 		return View::make('reports.index',compact('ledgerlist','ytd'));
@@ -42,7 +43,8 @@ class ReportController extends \BaseController {
         $temp = $ytd;
         $ytd = array();
         foreach($temp as $day){
-            $ytd[$day] = date('M Y',strtotime($day));
+            $query_month = strtotime('+1 month',strtotime($day));
+            $ytd[date('Y-m-d',$query_month)] = date('M Y',strtotime($day));
         }
         $daily = $this->getDailyDatesFromRange("2015-03-24","2015-04-09");
 
@@ -54,7 +56,61 @@ class ReportController extends \BaseController {
 		return View::make('reports.orders', compact('orderlist','dates','rdb','ytd','daily'));
 	}
     
+    public function getLedgerDatesWithRecord($month){
+        $id = '0';
+        if (Auth::user()->hasRole(['Superadmin','Admin'])) { 
+            Session::flash('ledgerUserId',$id);
+            $id = Auth::user()->id;
+        }
+        
+        $end_date = $month;
+        $start_date = strtotime('-1 month', strtotime($end_date));
+        $start_date = date('Y-m-d',$start_date);
+        
+        $res = Ledger::getDatesWithRecord($id, $start_date, $end_date);
+        
+        $dates = array();
+        
+        foreach($res as $d){
+            $dd = date('Y-m-d',strtotime($d->created_at));
+            $amount = Ledger::sumAmountForDate($id, $dd, $dd);
+            $amount = current($amount);
+            $num_count = Ledger::countLedgerForDate($id,$dd,$dd);
+            $num_count = current($num_count);
+            $dates[] = array(
+                        'date'=> $dd,
+                        'amount' => $amount->sum_amount,
+                        'tax' => $amount->sum_tax,
+                        'items' => $num_count->num_ledger
+                    );
+        }
+        
+        $output = array(
+            'count' => count($dates),
+            'data' => $dates
+        );
+        return Response::json($output);
+    }
+    
+    public function getLedgerWithDate($month){
+        $id = '0';
+        if (Auth::user()->hasRole(['Superadmin','Admin'])) { 
+            Session::flash('ledgerUserId',$id);
+            $id = Auth::user()->id;
+        }
+        
+        $res = Ledger::getLedgerWithDate($id, $month, $month);
+        
+        $output = array(
+            'count' => count($res),
+            'data' => $res
+        );
+        
+        return Response::json($output,200,[], JSON_PRETTY_PRINT);
+    }
+    
     public function getSalesMetrics($option){
+        $month = Input::get('m');
         $data = array();
         $categories = array();
         $volume = array();
@@ -78,9 +134,16 @@ class ReportController extends \BaseController {
                 
                 break;
             case 'monthly':
-                $start_date = date('Y-m-'.'01');
-                $end_date = strtotime('+1 month',strtotime($start_date));
-                $end_date = date('Y-m-d',$end_date);
+                if(empty($month)){
+                    $start_date = date('Y-m-'.'01');
+                    $end_date = strtotime('+1 month',strtotime($start_date));
+                    $end_date = date('Y-m-d',$end_date);
+                }else{
+                    $end_date = $month;
+                    $start_date = strtotime('-1 month', strtotime($end_date));
+                    $start_date = date('Y-m-d',$start_date);
+                }
+
                 $categories = $this->getDailyDatesFromRange($start_date,$end_date);
                 @reset($categories);
                 $curd = current($categories);
@@ -91,7 +154,8 @@ class ReportController extends \BaseController {
                     $curd = $n;     
                 }
                 
-                $subtitle = "Month of ".date('F, Y');
+                $subtitle = "Month of ";
+                $subtitle .= empty($month) ? date('F, Y') : date('F, Y',strtotime($start_date));
                 break;
                 
             case 'weekly':
@@ -143,7 +207,7 @@ class ReportController extends \BaseController {
                 
         }
         
-        $data['name'] = "Sales Count";
+        $data['name'] = "Count";
         $data['data'] = $volume;
         
         $output[] = $data;
