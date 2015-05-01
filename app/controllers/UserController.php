@@ -89,6 +89,7 @@ class userController extends \BaseController {
 	public function show($id)
 	{
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id || Auth::user()->hasRepInDownline($id) || Auth::user()->sponsor_id == $id) {
+			$mwl_user = App::make('ExternalAuthController')->getMwlUserInfo($id);
 			$user = User::findOrFail($id);
 			$user->role_name == 'Rep' ? $user->formatted_role_name = Config::get('site.rep_title') : $user->formatted_role_name = $user->role_name;
 			
@@ -110,7 +111,7 @@ class userController extends \BaseController {
 			$addresses = [];
 			if (Address::where('addressable_id', $id)->where('label', 'Billing')->first() != NULL && ($user->hide_billing_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Billing')->first();
 			if (Address::where('addressable_id', $id)->where('label', 'Shipping')->first() != NULL && ($user->hide_shipping_address != true || Auth::user()->hasRole(['Superadmin', 'Admin']))) $addresses[] = Address::where('addressable_id', $id)->where('label', 'Shipping')->first();
-			return View::make('user.show', compact('user', 'addresses'));
+			return View::make('user.show', compact('user', 'addresses','mwl_user'));
 		}
 		else {
 			if (Auth::user()->hasRepInDownline($id)) echo 'true';
@@ -131,10 +132,11 @@ class userController extends \BaseController {
 			return Redirect::back()->with('message', 'Unable to edit this user.');
 		}
 		if (Auth::user()->hasRole(['Admin', 'Superadmin']) || Auth::user()->id == $id) {
+			$mwl_user = App::make('ExternalAuthController')->getMwlUserInfo($id);
 			$user = User::find($id);
 			$sponsor = User::find($user->sponsor_id);
             $sponsor_name = !empty($sponsor) ? $sponsor->first_name.' '.$sponsor->last_name : '';
-			return View::make('user.edit', compact('user','sponsor_name'));
+			return View::make('user.edit', compact('user','sponsor_name','mwl_user'));
 		}
 	}
 

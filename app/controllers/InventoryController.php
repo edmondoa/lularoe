@@ -25,6 +25,10 @@ class InventoryController extends \BaseController {
 		return View::make('inventory.matrix');
     }
 
+    public function matrix20() {
+		return View::make('inventory.matrix20');
+    }
+
 	public function viewInvoice($id) {
 		$invoice	= Receipt::find($id);
 
@@ -217,6 +221,23 @@ class InventoryController extends \BaseController {
 		}
 
 		return View::make('inventory.index', compact('inventories', 'by_group'));
+    }
+
+	/**
+	 * Display a listing of inventories (after initial onboarding)
+	 *
+	 * @return Response
+	 */
+    public function matrixFull20($by_group = false) {
+		Session::put('repsale', false);
+		$inventories = Inventory::all();
+
+		// Hackery - get this users bank info if ordering from onboarding
+		if (Auth::user()->hasRole(array('Superadmin','Admin')) && $by_group) {
+			session::put('userbypass',$by_group);
+		}
+
+		return View::make('inventory.index20', compact('inventories', 'by_group'));
     }
 
 	/**

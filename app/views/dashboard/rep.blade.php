@@ -26,10 +26,10 @@
 					<h2 class="panel-title">Overview</h2>
 				</div>
 				<table class="table table-striped">
-					@if ($user->consignment > 0)
+                	@if ($mwl_user->Merchant->{'Consignment-Balance'} > 0)
 					<tr>
 						<th>Your remaining consignment balance:</th>
-						<td>{{ $user->consignment }}</td>
+						<td>{{ $mwl_user->Merchant->{'Consignment-Balance'} }}</td>
 					</tr>
 					@endif
 					<tr>

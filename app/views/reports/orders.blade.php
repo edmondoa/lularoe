@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 <div class="index">
-	<h1>Reports</h1>
+	<h1>Invoices</h1>
 	<div class="my-controller">
 
 		<div role="tabpanel">
@@ -12,11 +12,11 @@
 
 			<div class="tab-content">
 				<div role="tabpanel" class="well tab-pane fade col col-md-12" id="shipped">
-					<h3>Orders - Shipped</h3>
+					<h3>Invoces - Shipped</h3>
 				</div>
 
 				 <div role="tabpanel" class="well tab-pane fade in active col col-md-12" id="received">
-					<h3>Orders - Received</h3>
+					<h3>Invoces - Received</h3>
 					<table class="table table-striped table-hover">
 						<thead>
 							<tr>
@@ -28,7 +28,7 @@
 							<tr class="media">
 								<td><div>{{$receipt->created_at}}</div></td>
 								<td><div>{{$receipt->id}}</div></td>
-								<td><div>{{$receipt->to_firstname}} {{$receipt->to_lastname}}</div></td>
+								<td><div>@if ($receipt->to_firstname != 'n/a' && $receipt->to_lastname != 'n/a'){{$receipt->to_firstname}} {{$receipt->to_lastname}} @endif {{$receipt->to_email}}</div></td>
 								<td>
 									@if ($receipt->tax > 0) <div>{{$receipt->tax}}</div> @endif
 									<div>{{$receipt->subtotal}}</div>

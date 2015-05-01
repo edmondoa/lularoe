@@ -1,7 +1,8 @@
 <?php
 include('lib/rb.php');
 
-R::setup('mysql:host=mwl.controlpad.com;dbname=llr_web','llr_web','7U8$SAV*NEjuB$T%');
+#R::setup('mysql:host=mwl.controlpad.com;dbname=llr_web','llr_web','7U8$SAV*NEjuB$T%');
+R::setup('mysql:host=localhost;dbname=llr_dev','root','build4n0w');
 R::freeze();
 
 $days_ago		= (isset($argv[1])) ? $argv[1] : 1;
@@ -25,7 +26,9 @@ fputs($ruf, "\"REPORTING DATE\",\"ITEM\",\"COUNT\", \"SALES\"\n");
 $user = array();
 
 try{ 
+	R::debug();
 	$receipts = R::find('receipts','user_id=? AND created_at BETWEEN ? AND ?',[0, $start_date, $end_date ]);
+	print_r($receipts);
 }
 catch (Exception $e) {
 	die($e->getMessage());
@@ -61,7 +64,6 @@ foreach($modelrollup as $item=>$quan)  {
 
 fclose($rcf);
 fclose($ruf);
-`echo "See attached report" | mailx -A $rollupfile -A $receiptfile -s "End of day orders: $report_date" mfrederico@gmail.com`;
 
 
 function addData($receipt) {

@@ -29,10 +29,11 @@ Route::pattern('id', '[0-9]+');
 		Route::get('llrapi/v1/remove-inventory/{key}',			'ExternalAuthController@rmInventory');
 		Route::get('llrapi/v1/remove-inventory/{key}/{id}/{quantity}',			'ExternalAuthController@rmInventory');
 
-		Route::get('llrapi/v1/get-inventory/',					'ExternalAuthController@getInventory');
+		Route::get('llrapi/v2/get-inventory/',					'ExternalAuthController@getInventory20');
 		Route::get('llrapi/v2/get-inventory/{key}',				'ExternalAuthController@getInventory20');
-		Route::get('llrapi/v2/get-inventory/{key}/{location}',				'ExternalAuthController@getInventory20');
+		Route::get('llrapi/v2/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory20');
 
+		Route::get('llrapi/v1/get-inventory/',					'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/get-inventory/{key}',				'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/inventory/{location}',			'ExternalAuthController@getInventory');
@@ -264,6 +265,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('inventories/', 'InventoryController@index');
         Route::get('inv/checkout', 'InventoryController@checkout');
         Route::get('inv/sales', 'InventoryController@sales');
+
+		Route::get('inventory/full20', 'InventoryController@matrixFull20');
+
 		Route::get('inventory/full', 'InventoryController@matrixFull');
 
         Route::post('inv/invoice', 'InventoryController@sendInvoice');

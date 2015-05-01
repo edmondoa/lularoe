@@ -8,6 +8,7 @@ class DashboardController extends \BaseController
 		// rep dashboard
 		if (Auth::user()->hasRole(['Editor', 'Rep'])) {
 			$user = User::findOrFail(Auth::user()->id);
+			$mwl_user = App::make('ExternalAuthController')->getMwlUserInfo($user->id);
 			$sponsor = User::find($user->id)->sponsor;
 			$children = User::find($user->id)->children;
 			$ranks = User::find($user->id)->ranks;
@@ -24,7 +25,7 @@ class DashboardController extends \BaseController
 				if ($recent_post->description != '') $recent_post->content = $recent_post->description;
 				else $recent_post->content = limit_words($recent_post->body,25) . ' ...';
 			}
-			return View::make('dashboard.rep', compact('user', 'sponsor', 'children', 'ranks', 'beta_service_link', 'new_downline', 'new_downline_count_30', 'recent_post'));
+			return View::make('dashboard.rep', compact('user', 'sponsor', 'children', 'ranks', 'beta_service_link', 'new_downline', 'new_downline_count_30', 'recent_post','mwl_user'));
 		}
 		
 		// admin dashboard

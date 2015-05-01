@@ -17,8 +17,12 @@
 
 			@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
 		    <div class="form-group">
-		        {{ Form::label('consignment', 'Consignment Amount') }}
+		        {{ Form::label('consignment', 'Credit / Adjust Consignment Amount') }}
 		        {{ Form::text('consignment', null, array('class' => 'form-control')) }}
+		    </div>
+		    <div class="form-group">
+		        {{ Form::label('consignment_balance', 'Current Consignment Balance') }}
+				{{ $mwl_user->Merchant->{'Consignment-Balance'} }}
 		    </div>
 			@endif
 		

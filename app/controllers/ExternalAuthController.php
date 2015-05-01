@@ -150,7 +150,8 @@ class ExternalAuthController extends \BaseController {
 
 		// Simple caching - probably a better way to do this
 		if (!is_dir($this->mwl_cache)) @mkdir($this->mwl_cache);
-		$mwlcachefile = $this->mwl_cache.urlencode($location).'.json';
+		$mwlcachefile = $this->mwl_cache.urlencode($location).'.20.json';
+
 		if (file_exists($mwlcachefile)) {
 			$fs = stat($mwlcachefile);
 			if (time() - $fs['ctime'] > $this->mwl_cachetime || filesize($mwlcachefile) < 500) {
@@ -206,10 +207,11 @@ class ExternalAuthController extends \BaseController {
 		foreach($output['Inventory'] as $item) 
 		{
 
-			$itemnumber = $item['Item']['Part']['Number'];
+			$itemnumber = $item['Item']['Part']['ID'];
+			$itempartnum = $item['Item']['Part']['Number'];
 			$quantity	= $item['Item']['Quantity']['OnHand'];
 
-			ltrim(rtrim($itemnumber));
+			ltrim(rtrim($itempartnum));
 
 			$model = preg_replace('/ -.*$/','',$item['Item']['Part']['Number']);
 
@@ -218,50 +220,64 @@ class ExternalAuthController extends \BaseController {
 				continue;
 			}
 
-			$itemList[$model] = '';
-			
 			// Delimiting sizes with hyphen and spaces
-			if (strpos($itemnumber,' -') === false) 
+			if (strpos($itempartnum,' -') === false) 
 			{
 				$size  = 'NA';	
 			}
-			else list($model, $size) = explode(' -',$itemnumber);
+			else {
+/*
+				$mch = '';
+				preg_match('/(.*?)\s+-\s+(.*?)$/',$itempartnum,$mch);
+				\Log::info('MCH: '.print_r($mch,true));
+				if (!empty($mch)) { 
+					$model	= $mch[1];
+					$size	= $mch[2];
+				}
+*/
+				list($model, $size) = explode(' -',$itempartnum);
+			}
 
 			$model		= $this->escapemodelname($model);
 			
 			// Initialize this set of item data
-			if (!isset($items[$model]))
-			{
-				$items[$model] = array(
-				'model'			=>$model,
-				'UPC'			=>$item['Item']['UPC'],
-				'SKU'			=>$item['Item']['Sku'],
-				'price'			=>floatval($item['Item']['Price']),
-				'image'			=>'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
-				'quantities'	=> array()); 
-			}
+//			if (!isset($items[$model]))
+			$items[$model][] = array(
+			'id'			=>$itemnumber,
+			'UPC'			=>$item['Item']['UPC'],
+			'SKU'			=>$item['Item']['Sku'],
+			'price'			=>floatval($item['Item']['Price']),
+			'image'			=>'https://mylularoe.com/img/media/'.rawurlencode($model).'.jpg',
+			'size'			=>trim($size),
+			'model'			=>trim($model),
+			'count'			=>$quantity);
 
 			// Cut useless spaces
 			$size = str_replace('/^ /','_',ltrim($size));
 
+/*
 			// Set up the quantities of each size
 			if (!isset($items[$model]['quantities'][$size])) 
 			{
 				$items[$model]['quantities'][$size] = $quantity;
 			}			
+*/
 		}
 
 		if (!isset($items)) $items = [];
 
+		ksort($items);
 		// Sort alpha by model name
+		/*
 		usort($items, function($a, $b) {
 				return strcmp($a["model"], $b["model"]);
 			}
 		);
+		*/
 
 		// Reorder this with numerical indeces
 		foreach($items as $k=>$v) {
-			$itemlist[$count++] = $this->arrangeByGirth($v);
+			$itemlist[$k] = $this->arrangeByGirth20($items[$k]);
 		}
 
 		return(Response::json($itemlist,200, array(), JSON_PRETTY_PRINT));
@@ -406,10 +422,10 @@ class ExternalAuthController extends \BaseController {
 		foreach($output['Inventory'] as $item) 
 		{
 
-			$itemnumber = $item['Item']['Part']['Number'];
+			$itempartnum = $item['Item']['Part']['Number'];
 			$quantity	= $item['Item']['Quantity']['OnHand'];
 
-			ltrim(rtrim($itemnumber));
+			ltrim(rtrim($itempartnum));
 
 			$model = preg_replace('/ -.*$/','',$item['Item']['Part']['Number']);
 
@@ -418,14 +434,12 @@ class ExternalAuthController extends \BaseController {
 				continue;
 			}
 
-			$itemList[$model] = '';
-			
 			// Delimiting sizes with hyphen and spaces
-			if (strpos($itemnumber,' -') === false) 
+			if (strpos($itempartnum,' -') === false) 
 			{
 				$size  = 'NA';	
 			}
-			else list($model, $size) = explode(' -',$itemnumber);
+			else list($model, $size) = explode(' -',$itempartnum);
 
 			$model		= $this->escapemodelname($model);
 			
@@ -465,6 +479,22 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		return(Response::json($itemlist,200, array(), JSON_PRETTY_PRINT));
+	}
+
+	// Lovely Large Ladies Lambasted in Luxurious Linens now with 2.0 power
+	public function arrangeByGirth20($items) {
+		
+		$magnitude 		= array('XXS','XS','S','M','L','XL','XXL','XXXL','2XL','3XL','2','4','6','8','10','12','14','16','3/4','5/6','8/10','12/14');
+		$orderedGirth	= array();
+
+		usort($items, function($a, $b) use ($magnitude) { 
+			$as = array_search(trim($a['size']), $magnitude);
+			$bs = array_search(trim($b['size']), $magnitude);
+			// \Log::info("{$as} {$a['size']} vs {$bs} {$b['size']}");
+			return ($as < $bs) ? -1 : 1;
+		});
+
+		return($items);
 	}
 
 	// Lovely Large Ladies Lambasted in Luxurious Linens
@@ -608,11 +638,12 @@ class ExternalAuthController extends \BaseController {
 		}
 	}
 
-	public function updateMwlUser($user_id, $password = null, $setConsignment = null) {
+	public function updateMwlUser($user_id, $password = null, $setConsignment = 0) {
 
         $mbr = User::find($user_id);
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
+		\Log::info(print_r($mwl_user,true));
 		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id, $password, $setConsignment);
 		$merchant_id = $mwl_user->Merchant->ID;
 
@@ -660,10 +691,22 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		$constotal = 0;
-		if ($setConsignment != null) { 
-			if ($setConsignment > 0) { $constotal = $setConsignment + $mbr->consginment; }  // ADD consignment
-			if ($setConsignment < 0) { $constotal = $setConsignment - $mbr->consginment; }  // SUB consginment
-			if ($setConsignment == 0) { $constotal = $mbr->consginment; } 					// SET Consignment
+		if (!is_null($setConsignment)) { 
+			// ADD consignment
+			if ($setConsignment > 0) { 
+				$constotal = $setConsignment + $mbr->consignment; 
+				\Log::info("Adding consignment {$mbr->id}: {$constotal}");
+			} 
+			// SUB consginment
+			if ($setConsignment < 0) { 
+				$constotal = $setConsignment - $mbr->consignment; 
+				\Log::info("Subtracting consignment {$mbr->id}: {$constotal}");
+			} 
+			// SET Consignment
+			if ($setConsignment == 0) { 
+				$constotal = $mbr->consignment; 
+				\Log::info("Setting consignment {$mbr->id}: {$constotal}");
+			} 
 		}
 
 		if ($constotal) {

@@ -6,7 +6,6 @@
 		Session::put('customdiscount',floatval(Input::get('discount')));
 	}
 
-	print Input::get('hasTax',0);
 	if (!Input::get('hasTax')) print Input::get('hasTax'); else print "NO TAXI";
 
 	// Bank info
@@ -119,7 +118,7 @@
                 <div class="col-lg-12 col-sm-12 col-md-12">
 				<h3>Payment Information @if (!Session::get('repsale')) for #{{$currentuser->id}} ({{$currentuser->first_name}} {{$currentuser->last_name}})@endif</h3>
 				<ul class="nav nav-tabs">
-@if ($has_bank && !Session::get('repsale'))
+@if ($has_bank && !Session::get('repsale') && !file_exists('/tmp/payliance.barfed.txt'))
 					<li class="nav"><a href="#bankinfo" data-toggle="tab">Pay With ACH / Bank Account</a></li>
 @endif
 					<li class="nav"><a href="#creditcard" data-toggle="tab">Pay With Credit Card</a></li>
