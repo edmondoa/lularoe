@@ -615,11 +615,17 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	});
 
 	Route::group(array(), function() {
-		Route::get('reports/orders/', 'ReportController@orders');
+        Route::get('reports/orders/', 'ReportController@orders');
+		Route::get('reports/sales/', 'ReportController@index');
 		Route::get('api/report/sales/details/{id}', 'ReportController@saleDetails');
 		Route::get('api/report/sales', 'ReportController@getReportSales');
 		Route::get('api/report/inventory', 'ReportController@getReportInventory');
-		Route::get('api/report/receipts', 'ReportController@getReportReceipts');
+        Route::get('api/report/receipts', 'ReportController@getReportReceipts');
+		Route::get('api/report/dailyreceipts', 'ReportController@getDailyReportReceipts');
+        Route::get('api/getMetrics/{options}','ReportController@getMetrics');
+        Route::get('api/getSalesMetrics/{options}','ReportController@getSalesMetrics');
+        Route::get('api/getDatesWithRecord/{date}','ReportController@getLedgerDatesWithRecord');
+        Route::get('api/getLedgerWithDate/{date}','ReportController@getLedgerWithDate');
 		Route::get('reports/user/{id}','ReportController@index');
 		//Route::get('reports', 'ReportController@index');
 
