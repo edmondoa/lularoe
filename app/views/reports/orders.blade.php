@@ -1,96 +1,90 @@
 @extends('layouts.default')
 @section('content')
+
 <div class="index">
-	<h1>Orders Report</h1>
-	<div ng-controller="ReportsController" class="my-controller">
-        {{ Form::open(array('url' => 'levels')) }}
-        <div class="pull-left form-group">
-            {{ Form::select('view', [
-                'ytd' => 'Year-To-Date',
-                'monthly' => 'Monthly',
-                'weekly' => 'Weekly',
-                'daily' => 'Daily'
-            ], 'monthly', ['id'=>'view_selector','class' => 'selectpicker']) }}
-            
-        </div>
-        <div id="select_month" class="pull-right form-group">
-            {{ Form::label('month', 'Select Month') }}
-            {{ Form::select('month', $ytd, date('Y-m-d'), ['class' => 'selectpicker']) }}
-        </div>
-        <div id="select_date" class="pull-right form-group" style="display:none;">
-            {{ Form::label('day', 'Select Date') }}
-            {{ Form::text('day', null, ['ng-model'=>'day','class' => 'selectpicker dateonlypicker2']) }}
-        </div>
-        <div class="row">
-            <div id="container" class="col-sm-11" ></div>
-        </div>
+	<h1>Reports</h1>
+	<div class="my-controller">
+
 		<div role="tabpanel">
 			<ul class="nav nav-tabs" role="tablist">
 				<li role="presentation" class="nav active"><a href="#received" role="tab" data-toggle="tab">Received</a></li>
-				<!-- <li role="presentation" class="nav"><a href="#shipped" role="tab" data-toggle="tab">Shipped</a></li> -->
+				<li role="presentation" class="nav"><a href="#shipped" role="tab" data-toggle="tab">Shipped</a></li>
 			</ul>
 
 			<div class="tab-content">
 				<div role="tabpanel" class="well tab-pane fade col col-md-12" id="shipped">
-					<h3>Invoces - Shipped</h3>
-				</div>
-
-				 <div role="tabpanel" class="well tab-pane fade in active col col-md-12" id="received">
-					<h3>Invoces - Received</h3>
+					<h3>Orders - Shipped</h3>
 					<table class="table table-striped table-hover">
 						<thead>
 							<tr>
-								<th class="header">#</th>
-                                <th>User ID</th>
-                                <th>Date</th>
-                                <th>Num</th><th>Person</th><th>Amount</th><th>Items</th>
+								<th class="header">Date Shipped</th><th>Num</th><th>Person</th><th>Tax</th><th>Subtotal</th><th></th>
 							</tr>
 						</thead>
 						<tbody>
-                        <?php $i=0;?>
 							@foreach ($orderlist as $receipt) 
-                            <?php $i++; ?>
+							@if ($receipt->shipped != '0000-00-00 00:00:00')
 							<tr class="media">
-                                <td>{{$i}}</td>
-                                <td>{{$receipt->user_id}}</td>
-                                <!--<td><pre>{{print_r($receipt)}}></pre></td>-->
-								<td><div>{{$receipt->created_at}}</div></td>
+									
+								<td>
+									@if ($receipt->printed != '0000-00-00 00:00:00') <a href="#" data-toggle="tooltip" class="pull-left fa fa-print" title="{{$receipt->printed}}"></a> @endif
+								<div>{{$receipt->shipped}}</div></td>
 								<td><div>{{$receipt->id}}</div></td>
-								<td><div>@if ($receipt->to_firstname != 'n/a' && $receipt->to_lastname != 'n/a'){{$receipt->to_firstname}} {{$receipt->to_lastname}} @endif {{$receipt->to_email}}</div></td>
+								<td><div>{{$receipt->to_firstname}} {{$receipt->to_lastname}}</div></td>
+								<td><div>{{$receipt->tax}}</div></td>
+								<td><div>{{$receipt->subtotal}}</div></td>
+								<td><a href="/invoice/view/{{$receipt->id}}" TARGET="_BLANK" class="btn btn-sm btn-default">View</a></td>
+							</tr>
+							<tr>
+								<td colspan="100">{{$receipt->note}}</td>
+							</tr>
+							@endif 
+							@endforeach
+						</tbody>
+					</table>
+				</div>
+
+				 <div role="tabpanel" class="well tab-pane fade in active col col-md-12" id="received">
+					<h3>Orders - Received</h3>
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th class="header">Date</th><th>Num</th><th>Person</th><th>Tax</th><th>Subtotal</th><th></th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach ($orderlist as $receipt) 
+							@if ($receipt->shipped == '0000-00-00 00:00:00')
+							<tr class="media">
 								<td>
-									@if ($receipt->tax > 0) <div>{{$receipt->tax}}</div> @endif
-									<div>{{$receipt->subtotal}}</div>
-								</td>
+									@if ($receipt->printed != '0000-00-00 00:00:00') <a href="#" data-toggle="tooltip" class="pull-left fa fa-print" title="Printed: {{$receipt->printed}}"></a> @endif
+									<div>{{$receipt->created_at}}</div></td>
+								<td><div>{{$receipt->id}}</div></td>
+								<td><div>{{$receipt->to_firstname}} {{$receipt->to_lastname}}</div></td>
+								<td><div>{{$receipt->tax}}</div>
+								<td><div>{{$receipt->subtotal}}</div></td>
 								<td>
-										<a href="/invoice/view/{{$receipt->id}}" TARGET="_BLANK" class="btn btn-smi btn-default">Show Invoice</a>
+									<a href="/invoice/view/{{$receipt->id}}" TARGET="_BLANK" class="btn btn-smi btn-default">View</a>
 								</td>
 							</tr>
 							<tr>
 								<td colspan="100">{{$receipt->note}}</td>
 							</tr>
+							@endif 
 							@endforeach
 						</tbody>
 					</table>
 				</div>
 			</div><!-- tabcontent -->
 		</div><!-- tabpanel -->
-        {{Form::close()}}
 	</div>
 </div><!-- app -->
 @stop
 @section('scripts')
 <script>
-    angular.extend(ControlPad, (function(){                
-                return {
-                    reportsCtrl : {
-                        title : 'Orders Received',
-                        ytitle : 'Number of Transactions',
-                        path: '/api/getMetrics/'
-                    }
-                };
-            }()));    
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip({
+        placement : 'top'
+    });
+});
 </script>
-{{ HTML::script('js/controllers/reportsController.js') }}
-{{ HTML::script('bower_components/highcharts-release/highcharts.js') }}
-{{ HTML::script('js/displaychart.js') }}
 @stop
