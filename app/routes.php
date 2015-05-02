@@ -619,24 +619,25 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	});
 
 	Route::group(array(), function() {
-<<<<<<< HEAD
 
 		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin'])) {
 			Route::get('reports/orders/{id}', 'ReportController@orders');
-			Route::get('reports/sales/{id}', 'ReportController@index');
+		//	Route::get('reports/sales/{id}', 'ReportController@index');
+			Route::get('reports/sales/{id}', 'ReportController@sales');
 		}
 		Route::get('reports/sales/', 'ReportController@sales');
 		Route::get('reports/orders/', 'ReportController@orders');
 
-=======
         Route::get('reports/orders/', 'ReportController@orders');
-		Route::get('reports/sales/', 'ReportController@index');
->>>>>>> f4681991c935f4f5554353a5c747ebed7c556da7
+		//Route::get('reports/sales/', 'ReportController@index');
+
 		Route::get('api/report/sales/details/{id}', 'ReportController@saleDetails');
 		Route::get('api/report/sales', 'ReportController@getReportSales');
 		Route::get('api/report/inventory', 'ReportController@getReportInventory');
         Route::get('api/report/receipts', 'ReportController@getReportReceipts');
 		Route::get('api/report/dailyreceipts', 'ReportController@getDailyReportReceipts');
+		Route::get('api/report/chartable',	'ReportController@getChartable');
+
         Route::get('api/getMetrics/{options}','ReportController@getMetrics');
         Route::get('api/getSalesMetrics/{options}','ReportController@getSalesMetrics');
         Route::get('api/getDatesWithRecord/{date}','ReportController@getLedgerDatesWithRecord');
