@@ -26,19 +26,29 @@ class ReportController extends \BaseController {
 		return View::make('reports.index',compact('ledgerlist','ytd'));
 	}
 
+	public function sales($id = '')
+	{
+		if (Auth::user()->hasRole(['Superadmin','Admin'])) { 
+			Session::flash('ledgerUserId',$id);
+		}
+		else $id = Auth::user()->id;
+
+		return View::make('reports.sales', compact('orderlist'));
+	}
+
 	public function orders($id = '')
 	{
 		if (Auth::user()->hasRole(['Superadmin','Admin'])) { 
 			Session::flash('ledgerUserId',$id);
-            $id = Auth::user()->id;
 		}
-        
+		else $id = Auth::user()->id;
 		$orderlist = Receipt::getReceipts($id);
-        
+
+/*     
         $dates = $this->getMondaysEveryWeek(date('Y-m-d'),date('Y-m-d'));
         
         $rdb = Receipt::countReceiptsForDate($id,$dates[0],$dates[1]);
-        
+
         $ytd = $this->getDatesYTD();
         $temp = $ytd;
         $ytd = array();
@@ -46,14 +56,20 @@ class ReportController extends \BaseController {
             $query_month = strtotime('+1 month',strtotime($day));
             $ytd[date('Y-m-d',$query_month)] = date('M Y',strtotime($day));
         }
-        $daily = $this->getDailyDatesFromRange("2015-03-24","2015-04-09");
-
+        $daily = $this->getDailyDatesFromRange("2015-04-07",date('Y-m-d'));
+*/
 		$queries = DB::getQueryLog();
 		$last_query = end($queries);
 		\Log::info('LAST QUERY: '.print_r($last_query,true));
 
 		//return Response::json($orderlist);
-		return View::make('reports.orders', compact('orderlist','dates','rdb','ytd','daily'));
+		//return View::make('reports.orders', compact('orderlist','dates','rdb','ytd','daily'));
+		return View::make('reports.orders', compact('orderlist'));
+	}
+
+	public function getChartable($id = '') {
+        $user_id = Session::has('ledgerUserId') ? Session::get('ledgerUserId') : Auth::user()->id;
+		return Response::json(Receipt::chartable($user_id),200,[],JSON_PRETTY_PRINT);
 	}
     
     public function getLedgerDatesWithRecord($month){
@@ -222,7 +238,7 @@ class ReportController extends \BaseController {
         $output = array();
         $subtitle = "";
         $xorientation = "rotate";
-        $user_id = Session::has('ledgerUserId') ? Session::get('ledgerUserId'): 0;
+        $user_id = Session::has('ledgerUserId') ? Session::get('ledgerUserId'): Auth::user()->id;
         switch($option){
             case 'ytd':
                 $subtitle = "Year-To-Date";
@@ -363,7 +379,7 @@ class ReportController extends \BaseController {
 
 	public function getOrderList() {
 		if (Session::has('ledgerUserId')) $id = Session::get('ledgerUserId');
-		else $id = 0; //Auth::user()->id;
+		else $id = Auth::user()->id;
 
 		$orderlist = App::make('ExternalAuthController')->getReceipts($id);
 		return Response::json(array('data'=>$sales,'count'=>count($sales)),200,[], JSON_PRETTY_PRINT);

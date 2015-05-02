@@ -29,10 +29,11 @@ Route::pattern('id', '[0-9]+');
 		Route::get('llrapi/v1/remove-inventory/{key}',			'ExternalAuthController@rmInventory');
 		Route::get('llrapi/v1/remove-inventory/{key}/{id}/{quantity}',			'ExternalAuthController@rmInventory');
 
-		Route::get('llrapi/v1/get-inventory/',					'ExternalAuthController@getInventory');
+		Route::get('llrapi/v2/get-inventory/',					'ExternalAuthController@getInventory20');
 		Route::get('llrapi/v2/get-inventory/{key}',				'ExternalAuthController@getInventory20');
-		Route::get('llrapi/v2/get-inventory/{key}/{location}',				'ExternalAuthController@getInventory20');
+		Route::get('llrapi/v2/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory20');
 
+		Route::get('llrapi/v1/get-inventory/',					'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/get-inventory/{key}',				'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/get-inventory/{key}/{location}',	'ExternalAuthController@getInventory');
 		Route::get('llrapi/v1/inventory/{location}',			'ExternalAuthController@getInventory');
@@ -264,6 +265,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
         Route::get('inventories/', 'InventoryController@index');
         Route::get('inv/checkout', 'InventoryController@checkout');
         Route::get('inv/sales', 'InventoryController@sales');
+
+		Route::get('inventory/full20', 'InventoryController@matrixFull20');
+
 		Route::get('inventory/full', 'InventoryController@matrixFull');
 
         Route::post('inv/invoice', 'InventoryController@sendInvoice');
@@ -615,13 +619,25 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	});
 
 	Route::group(array(), function() {
+
+		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin'])) {
+			Route::get('reports/orders/{id}', 'ReportController@orders');
+		//	Route::get('reports/sales/{id}', 'ReportController@index');
+			Route::get('reports/sales/{id}', 'ReportController@sales');
+		}
+		Route::get('reports/sales/', 'ReportController@sales');
+		Route::get('reports/orders/', 'ReportController@orders');
+
         Route::get('reports/orders/', 'ReportController@orders');
-		Route::get('reports/sales/', 'ReportController@index');
+		//Route::get('reports/sales/', 'ReportController@index');
+
 		Route::get('api/report/sales/details/{id}', 'ReportController@saleDetails');
 		Route::get('api/report/sales', 'ReportController@getReportSales');
 		Route::get('api/report/inventory', 'ReportController@getReportInventory');
         Route::get('api/report/receipts', 'ReportController@getReportReceipts');
 		Route::get('api/report/dailyreceipts', 'ReportController@getDailyReportReceipts');
+		Route::get('api/report/chartable',	'ReportController@getChartable');
+
         Route::get('api/getMetrics/{options}','ReportController@getMetrics');
         Route::get('api/getSalesMetrics/{options}','ReportController@getSalesMetrics');
         Route::get('api/getDatesWithRecord/{date}','ReportController@getLedgerDatesWithRecord');
@@ -629,10 +645,6 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		Route::get('reports/user/{id}','ReportController@index');
 		//Route::get('reports', 'ReportController@index');
 
-		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin'])) {
-			Route::get('reports/orders/{id}', 'ReportController@orders');
-			Route::get('reports/sales/{id}', 'ReportController@index');
-		}
 	});
 
 
