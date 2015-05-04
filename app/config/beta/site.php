@@ -11,13 +11,13 @@
 		|
 		*/
 
-		'domain' 		=> 'beta.mylularoe.com',
+		'domain' 		=> 'beta-llr.controlpad.com',
 		'mwl_api'		=> 'http://mwl-beta.controlpad.com:8080/cms/',
 		'mwl_db'		=> 'llr',
 		'mwl_username'	=> '0',
 		'mwl_password'	=> 'controlpad1',
 		'admin_uid'		=> 0,
-		'base_domain' 	=> 'beta.mylularoe.com',
+		'base_domain' 	=> 'beta-llr.controlpad.com',
 		'preregistration_fee' => 2000.00,
 		'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
 
