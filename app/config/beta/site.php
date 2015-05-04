@@ -17,7 +17,7 @@
 		'mwl_username'	=> '0',
 		'mwl_password'	=> 'controlpad1',
 		'admin_uid'		=> 0,
-		'base_domain' 	=> 'mylularoe.com',
+		'base_domain' 	=> 'beta.mylularoe.com',
 		'preregistration_fee' => 2000.00,
 		'new_time_frame' => 86400, // 1 day, /*604800*/ // 1 week
 
