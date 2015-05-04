@@ -15,7 +15,7 @@ class AddTransactionidtovarchar extends Migration {
         Schema::table('ledger', function(Blueprint $table)
         {
             DB::update("alter table ledger change transactionid transactionid varchar(16) not null");
-            DB::update("alter table ledger add receipt_id int unsigned not null");
+            //DB::update("alter table ledger add receipt_id int unsigned not null");
         });
 	}
 
@@ -30,7 +30,7 @@ class AddTransactionidtovarchar extends Migration {
 		Schema::table('ledger', function(Blueprint $table)
 		{
             DB::update("alter table ledger change transactionid transactionid int unsigned not null");
-            DB::update("alter table ledger drop receipt_id");
+            //DB::update("alter table ledger drop receipt_id");
 		});
 	}
 
