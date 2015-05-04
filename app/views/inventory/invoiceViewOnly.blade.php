@@ -24,6 +24,29 @@
 	.shrinktext td { font-size:11px }
 	table.shrinktext { width:100% }
 </style>
+	<div class="row hidden-print">
+		<div class="col-lg-12 col-sm-12 col-md-12">
+			<div class="well" id="creditcard">
+				<div class="row">
+					<div class="col-lg-5 col-sm-5 col-md-5">
+					</div>
+				</div>
+				<div class="row">
+					<div id="invoice-{{$invoice->id}}">
+						<div class="pull-left">
+							<button type="button" id="printme" class="btn btn-sm btn-warning">Mark as Printed</button>
+							<br /><small id="printed">{{$invoice->printed}}</small>
+						</div>
+
+						<div class="pull-right">
+							<button type="button" id="shipme" class="btn btn-sm btn-success">Mark as Shipped</button>
+							<Br/><small id="shipped">{{$invoice->shipped}}</small>
+						</div>
+					</div>
+				</div>
+			</div> 
+		</div>
+	</div>
 	<div class="row" style="padding-top:-50px;margin-top:-50px">
 		<div class="col-lg-12 col-sm-12 col-md-12">
 			<div class="panel well pull-left" style="margin:3px;">
@@ -80,26 +103,32 @@
 		</div>
 	</div>
 
-<!--
-	<div class="row hidden-print">
-		<div class="col-lg-12 col-sm-12 col-md-12">
-			<div class="well" id="creditcard">
-				<div class="row">
-					<div class="col-lg-5 col-sm-5 col-md-5">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-5 col-sm-5 col-md-5">
-						<button type="submit" class="pull-right btn btn-sm btn-success">Mark as Shipped</button>
-					</div>
-				</div>
-			</div> 
-		</div>
-	</div>
--->
 
 @stop
 @section('scripts')
 <script>
+	$('document').ready(function() {
+		$('#printme').on('click',function() {
+			// Make ajax call to update printed date
+			$.ajax({
+			  url: "/invoice/mark/{{$invoice->id}}?as=printed",
+				context: document.body
+			}).done(function(d) {
+				window.print();
+				$('#printed').html(d.date);
+				console.log('Printed');
+			});
+		});
+		$('#shipme').on('click',function() {
+			// make ajax call to update shipped date
+			$.ajax({
+			  url: "/invoice/mark/{{$invoice->id}}?as=shipped",
+				context: document.body
+			}).done(function(d) {
+				$('#shipped').html(d.date);
+				console.log('Shipped');
+			});
+		});
+	});
 </script>
 @stop

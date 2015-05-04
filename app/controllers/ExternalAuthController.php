@@ -4,8 +4,8 @@ class ExternalAuthController extends \BaseController {
 
 	// Private vars for this controller only
 	const MWL_SERVER	= 'mwl.controlpad.com';
-	const MWL_UN		= 'llr_txn';
-	const MWL_PASS		= 'ilovetexas';
+	const MWL_UN		= 'llr_web';//'llr_txn';
+	const MWL_PASS		= '7U8$SAV*NEjuB$T%';//'ilovetexas';
  	const MWL_DB 		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
@@ -524,17 +524,17 @@ class ExternalAuthController extends \BaseController {
 		else 
 		{
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401')
-			{
-				\Log::info('server out put is 401');
+			if (isset($so->Code) && intval($so->Code) >= 400) {
+				Session::flash('message',$so->Message);
+				\Log::info('server output is 400 level');
 				return null;
 			}
-			\Log::info('server output exists');
+			\Log::info('server output exists: '.print_r($server_output,true));
 			return $so;
 		}
 	}
 
-	public function createMwlUser($user_id,$password = null) {
+	public function createMwlUser($user_id, $password = null, $setConsignment = null) {
 
 		\Log::info("CreateMwlUser for [{$user_id} / {$password}]");
 
@@ -573,12 +573,16 @@ class ExternalAuthController extends \BaseController {
 		$headers[] = "Account-Name: ".$mbr->first_name." ".$mbr->last_name;
 		$headers[] = "Account-Number:".@$bank_info->bank_account;
 		$headers[] = "Account-Route: ".@$bank_info->bank_routing; //
+
+
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
 		$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 
-		$headers[] = "Consignment-IsPercent: 1";
-		$headers[] = "Consignment-Amount: 25";
-		$headers[] = "Consignment-Balance: {$mbr->consignment}";
+		if (!empty($setConsignment)) { 
+			$headers[] = "Consignment-IsPercent: 1";
+			$headers[] = "Consignment-Amount: 25";
+			$headers[] = "Consignment-Balance: {$setConsignment}";
+		}
 
 		\Log::info('CREATING IN MWL: '.print_r($headers,true));
 		//return $headers;
@@ -599,18 +603,22 @@ class ExternalAuthController extends \BaseController {
 		else {
 			\Log::info('MWL Responded with: '.$server_output);
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') return null;
+			if (isset($so->Code) && intval($so->Code) >= 400) {
+				Session::flash('message',$so->Message);
+				return null;
+			}
 			return($server_output);
 		}
 	}
 
-	public function updateMwlUser($user_id,$password = null) {
+	public function updateMwlUser($user_id, $password = null, $setConsignment = null) {
 
         $mbr = User::find($user_id);
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
 		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id,$password);
 		$merchant_id = $mwl_user->Merchant->ID;
+		\Log::info('Merchant ID: '.$mwl_user->Merchant->ID);
 
 		$address = Address::where('addressable_id',$mbr->id)->first();
 		$bank_info = Bankinfo::where('user_id',$mbr->id)->first();
@@ -655,7 +663,21 @@ class ExternalAuthController extends \BaseController {
 			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		}
 
+		$constotal = 0;
+		if ($setConsignment != null) { 
+			if ($setConsignment > 0) { $constotal = $setConsignment + $mbr->consginment; }  // ADD consignment
+			if ($setConsignment < 0) { $constotal = $setConsignment - $mbr->consginment; }  // SUB consginment
+			if ($setConsignment == 0) { $constotal = $mbr->consginment; } 					// SET Consignment
+		}
+
+		if ($constotal) {
+			$headers[] = "Consignment-IsPercent: 1";
+			$headers[] = "Consignment-Amount: 25";
+			$headers[] = "Consignment-Balance: ".floatval($constotal);
+		}
+
 		\Log::info('Output: '.print_r($headers, true));
+
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 		//curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -674,7 +696,10 @@ class ExternalAuthController extends \BaseController {
 		if (!$server_output) return(false);
 		else {
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') return null;
+			if (isset($so->Code) && intval($so->Code) >= 400) {
+				Session::flash('message',$so->Message);
+				return null;
+			}
 			\Log::info('Result: '.print_r($server_output, true));
 			return($server_output);
 		}
@@ -1059,6 +1084,17 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		// Move this below crossouts once no need for monitoring
         \Log::info("[{$key}] Purchasing cart full of ".json_encode($cartdata));
 
+		if (isset($cartdata['cash']) && $cartdata['cash'] == '{cash}') {
+			\Log::info("[{$key}] Invalid cash type! ".json_encode($cartdata));
+			$returndata = array('error'=>true,
+								'result'=>'Cash type temporary disabled',
+								'status'=>'Invalid cash flag amount',
+								'amount'=>0,
+								'data'=>Input::get('cash'));
+			return Response::json($returndata,401);
+		}
+
+
 		if (isset($cartdata['cardname'])) {
 			$cartdata['cardnumber'] = 'xxxx-xxxx-xxxx-'.substr(@$cartdata['cardnumber'],-4);
 			unset($cartdata['cardcvv']);
@@ -1075,6 +1111,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		if (empty(Input::get('tax')) || Session::has('notax')) {
 			Input::merge(array('tax'=>0));
 		}
+
 
 		if 		(Input::get('cash')) 	$txtype = 'CASH';
 		elseif	(Input::get('check'))	$txtype = 'ACH';
@@ -1214,7 +1251,10 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		else {
 			if ($returnJson) 
 			$so = json_decode($server_output);
-			if (isset($so->Code) && $so->Code == '401') $returnthis = ($returnJson) ? json_encode(['key'=>null]) : null;
+			if (isset($so->Code) && intval($so->Code) >= 400) {
+				Session::flash('message',$so->Message);
+				$returnthis = ($returnJson) ? json_encode(['key'=>null]) : null;
+			}
 		}
 		return $returnthis;
 	}
@@ -1458,13 +1498,13 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		if (isset($response_obj->Status)) { 
 			if ($response_obj->Status == 'Failed'){
 				$response_obj->TransactionResponse->Result		= 'Declined';
-				$response_obj->TransactionResponse->ResultCode	= 'F';
+				$response_obj->TransactionResponse->ResultCode	= 'E';
 				$response_obj->TransactionResponse->Status		= 'Attempt Failed';
 				$response_obj->TransactionResponse->AuthAmount	= 0;
 			}
 			if ($response_obj->Status == 'Error'){
 				$response_obj->TransactionResponse->Result		= 'Declined';
-				$response_obj->TransactionResponse->ResultCode	= $response_obj->Error->Code;
+				$response_obj->TransactionResponse->ResultCode	= (string)$response_obj->Error->Code;
 				$response_obj->TransactionResponse->Status		= $response_obj->Error->Description;
 				$response_obj->TransactionResponse->AuthAmount	= 0;
 			}
@@ -1479,7 +1519,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 
 		if (isset($response_obj->Error)) {
 			$response_obj->TransactionResponse->Result = 'Declined';
-			$response_obj->TransactionResponse->ResultCode	= $response_obj->Error->Code;
+			$response_obj->TransactionResponse->ResultCode	= (string)$response_obj->Error->Code;
 			$response_obj->TransactionResponse->Status		= $response_obj->Error->Description;
 			$response_obj->TransactionResponse->AuthAmount	= 0;
 		}
@@ -1496,6 +1536,11 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		// We're authorized!
 		if ($response_obj->TransactionResponse->ResultCode == 'A') {
 			$response_obj->TransactionResponse->Error = false;
+		}
+
+		// Temp fix for payliance
+		if ($response_obj->TransactionResponse->Status == 'Payliance: Exceeds Max Daily Amount') { 
+			file_put_contents('/tmp/payliance.barfed.txt',date('Y-m-d H:i:s'));	
 		}
 
         $returndata = array('error'=>$response_obj->TransactionResponse->Error,
@@ -1559,6 +1604,10 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 				// If we use the 'key' parameter, we could feasibly have 
 				// Multiple acconts using 1 TID .. Feature?
 				$sessionkey = Self::midauth($mbr->id, $pass);
+				if (preg_match('/^HTTP/',$sessionkey)) { 
+					\Log::error("User {$mbr->id} needs to have account activated.");
+					$sessionkey = false; 
+				}
 
 				//return $sessionkey;
 				$tstamp		= time();
@@ -1587,7 +1636,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		// Set session key to null 
 		if (empty($sessionkey)) $sessionkey = null;
 		
-        return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),($error) ? 401 : 200);
+        return Response::json(array('error'=>$error,'status'=>$status,'data'=>$data,'mwl'=>$sessionkey),($error) ? 401 : 200, [] , JSON_PRETTY_PRINT);
 
 	}
 

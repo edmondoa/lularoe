@@ -1,0 +1,22 @@
+{
+  "name": "Lularoe",
+  "version": "0.0.0",
+  "authors": [
+    "Randy Binondo <randyb@zylun.com>"
+  ],
+  "moduleType": [
+    "es6",
+    "globals",
+    "node",
+    "yui"
+  ],
+  "license": "Proprietary",
+  "homepage": "lularoe.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
