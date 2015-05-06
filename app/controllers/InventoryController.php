@@ -1062,9 +1062,11 @@ class InventoryController extends \BaseController {
 		if (Auth::user()->hasRole(array('Superadmin','Admin')) && Session::has('userbypass')) {
 			Session::put('repsale',false);
 			$checking = User::find(Session::get('userbypass'))->bankinfo->find($acct);
+			$checking_name = Auth::user()->id.'-'.Auth::user()->first_name.' '.Auth::user()->last_name;
 		}
 		else {
 			$checking =  Auth::user()->bankinfo->find($acct);
+			$checking_name = Auth::user()->id.'-'.Auth::user()->first_name.' '.Auth::user()->last_name;
 		}
 
 		Session::put('notes',Input::get('notes'));
@@ -1106,7 +1108,7 @@ class InventoryController extends \BaseController {
 		$purchaseInfo = array(
 					'subtotal'		=>($absamount - $tax), 
 					'tax'			=>$tax,
-					'accountname'	=>$checking->bank_name,
+					'accountname'	=>$checking_name,
 					'routing'		=>$checking->bank_routing,
 					'account'		=>$checking->bank_account,
 					'dlstate'		=>$checking->license_state,
