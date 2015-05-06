@@ -91,7 +91,9 @@
 			            	Consignment:
 			            </th>
 			            <td>
+							@if (!empty($mwl_user))
 							{{ $mwl_user->Merchant->{'Consignment-Balance'} }}
+							@endif
 
 			            	@if (Auth::user()->hasRole(['Superadmin','Admin'])) <a href="/inventory/matrix/{{ $user->id }}">Purchase Initial Order</a> @endif
 			            </td>
