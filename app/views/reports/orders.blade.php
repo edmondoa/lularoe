@@ -2,7 +2,7 @@
 @section('content')
 
 <div class="index">
-	<h1>Reports</h1>
+	<h1>Receipts and Invoices</h1>
 	<div class="my-controller">
 
 		<div role="tabpanel">

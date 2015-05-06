@@ -5,7 +5,7 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
 <div class="index">
-	<h1>Reports</h1>
+	<h1>Sales Reports</h1>
 
 	<div class="panel well" id="dashboard">
 		<div id="filter_div"></div>
