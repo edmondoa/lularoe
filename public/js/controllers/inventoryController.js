@@ -143,7 +143,6 @@ try {
             $scope.pageSize = $scope.inventories.length;
             $scope.isComplete = true;
 
-			/* OLD SCHOOL
             angular.forEach($scope.inventories, function(inventory){
                  inventory.sizes = [];   
                  inventory.doNag = false;   
@@ -163,21 +162,6 @@ try {
                          }
                      });
                  }
-            });
-			*/
-
-            angular.forEach($scope.inventories, function(inventory_items){
-				var inventory  = { sizes: [], numOrder : 0};
-
-				 angular.forEach(inventory_items, function(item){
-					console.log('Item: ',item.id,item.name,item.size,item);
-
-					 if(!inventory.sizes.length){
-						 inventory.sizes.push({checked:false,key:item.size,value:item.quantity});    
-					 }else{
-						 inventory.sizes.unshift({checked:false,key:item.size,value:item.quantity});
-					 }
-				 });
             });
 
             console.log($scope.inventories);
