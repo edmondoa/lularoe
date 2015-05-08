@@ -56,12 +56,15 @@
 			</div>
 		@endif
 		<a class="btn btn-primary" href="//{{ $user->public_id }}.{{ Config::get('site.base_domain') }}" target="_blank"><i class="fa fa-globe"></i> View Site</a>
+		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+			<a class="btn btn-primary" href="/login-as/{{$user->id}}" target="_blank"><i class="fa fa-globe"></i> Login as Rep</a>
+		@endif
 	</div><!-- row -->
 	<div class="row">
 		<div class="col col-md-6 col-sm-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h2 div class="panel-title">Information xyz
+					<h2 div class="panel-title">Information:
 						@if (Auth::user()->hasRole(['Superadmin', 'Admin']) || Auth::user()->id == $user->id)
 							<a class="pull-right" href="{{ url('users/'.$user->id .'/edit') }}" title="Edit"><i class="fa fa-pencil"></i></a>
 						@endif
@@ -91,7 +94,7 @@
 			            	Consignment:
 			            </th>
 			            <td>
-							{{ $mwl_user->Merchant->{'Consignment-Balance'} }}
+							{{ $mwl_user->Merchant->{'Consignment-Balance'} or ''}}
 
 			            	@if (Auth::user()->hasRole(['Superadmin','Admin'])) <a href="/inventory/matrix/{{ $user->id }}">Purchase Initial Order</a> @endif
 			            </td>

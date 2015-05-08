@@ -102,7 +102,7 @@ App::error(function(Exception $exception, $code)
     }
     Log::error($exception);
 
-    return Response::view('errors.missing', compact("exception",'data'), 404);
+    //return Response::view('errors.missing', compact("exception",'data'), 404);
 });
 
 App::missing(function(Exception $exception)
