@@ -3,13 +3,13 @@
 class ExternalAuthController extends \BaseController {
 
 	// Private vars for this controller only
-	const MWL_SERVER	= 'mwl.controlpad.com';
+	const MWL_SERVER	= 'localhost'; //'mwl.controlpad.com';
 	const MWL_UN		= 'llr_web';//'llr_txn';
 	const MWL_PASS		= '7U8$SAV*NEjuB$T%';//'ilovetexas';
  	const MWL_DB 		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
-	private	$SESSIONKEY_TIMEOUT = 3600;
+	private	$SESSIONKEY_TIMEOUT = 1;
 
 	// These items are to be ignored and not shown
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
@@ -527,7 +527,6 @@ class ExternalAuthController extends \BaseController {
         $mbr	= User::find($user_id);
 
 		$key = Self::midauth();
-		//return $key;
 		$ch = curl_init();
 
 		// Set to general auth for pulling inventory		// Set this to HTTPS TLS / SSL
@@ -540,7 +539,7 @@ class ExternalAuthController extends \BaseController {
 		$server_output = curl_exec ($ch);
 
 		if ($errno = curl_errno($ch)) {
-			\Log::info('error in curl call');
+			\Log::error('error in curl call');
 			$result = array('errors'=>true,'url'=>$curlstring,'message'=> 'Something went wrong connecting to mwl system.','errno'=>$errno);
 			return(Response::json($result,401));
 		}
@@ -647,6 +646,7 @@ class ExternalAuthController extends \BaseController {
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
 
+		\Log::info('Found User from MWL:');
 		\Log::info(print_r($mwl_user,true));
 		if (!isset($mwl_user->Merchant->ID)) return $this->createMwlUser($user_id, $password, $setConsignment);
 
@@ -1617,8 +1617,10 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		else {
 			$mbr = User::where('id', '=', $login)->where('disabled', '=', '0')->get(array('id', 'email', 'key', 'password', 'first_name', 'last_name', 'image','public_id'))->first();
 		}
+
 		//$mbr->password_entered = $pass;
 		//return $mbr;
+
         // Can't find them?
         if (!isset($mbr)) {
 			$error = true;
@@ -1662,6 +1664,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 					\Log::info("Cannot get key from MWL {$mbr->id} / {$pass} ".date('Y-m-d H:i:s',$tstamp)." MWL - need them to change password?");
 					$status .= '; cannot retrieve key from payment system';
 					$data['key'] = null;
+					$this->updateMwlUser($mbr->id, $pass);
 
 					// Also perform a logging notify here in papertrail or syslog?
 				}
