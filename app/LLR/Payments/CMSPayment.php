@@ -1,12 +1,13 @@
 <?php namespace LLR\Payments;
+
 /*
 CLASS to interface with the USAEpay webservice
 ControlPad
 */
+use Merchant;
 use SoapClient;
-use Config;
 
-class CMSPayment extends SoapClient { 
+class CMSpayment extends SoapClient { 
 	
 	//Declare all the variables that we will need
 	public $success;
@@ -48,13 +49,24 @@ class CMSPayment extends SoapClient {
 
 // generate random seed value
 	
-	public function __construct() {
+	public function __construct($merchant) {
 		$seed = microtime(true) . rand();
-		$this->sourcekey = Config::get('usaepay.sourcekey');
-		$this->pin = Config::get('usaepay.pin');
-		$this->test_mode = Config::get('usaepay.test_mode');
-		$this->wsdl = ($this->test_mode)?"https://sandbox.usaepay.com/soap/gate/0AE595C1/usaepay.wsdl":"https://www.usaepay.com/soap/gate/0AE595C1/usaepay.wsdl";
-	
+		//$merchant = Merchant::find(Auth::user()->merchant_id);
+		if((empty($merchant->usaepay_sourcekey))||(empty($merchant->usaepay_pin))||($merchant->usaepay_sourcekey = '_e1m15CW0C92015X7v8055v1gOtyV28q'))
+		{
+			// if we don't have valid credentials return the test environment
+			$this->sourcekey = '_e1m15CW0C92015X7v8055v1gOtyV28q';
+			$this->pin = '123456';
+			$this->wsdl = "https://sandbox.usaepay.com/soap/gate/0AE595C1/usaepay.wsdl";
+			$this->test_mode = true;
+		}
+		else
+		{
+			$this->sourcekey = $merchant->usaepay_sourcekey;
+			$this->pin = $merchant->usaepay_pin;
+			$this->wsdl = 'https://www.usaepay.com/soap/gate/0AE595C1/usaepay.wsdl';
+			$this->test_mode = false;
+		}
 		// make hash value using sha1 function
 		$hash=sha1($this->sourcekey . $seed . $this->pin);
 
@@ -70,7 +82,20 @@ class CMSPayment extends SoapClient {
 		);
 		$this->SoapClient($this->wsdl);
 		$this->request_params  = array();
+		/*
+		if($payment_type == 'CreditCard')
+		{
+			$this->request_params['Command'] = 'sale';
+		}
+		elseif($payment_type == 'Echeck')
+		{
+			$this->request_params['Command'] = 'ACH';
+		}
+		else
+		{
 
+		}
+		*/
 	}
 	private function get_ip_address(){
 		if(getenv('HTTP_CLIENT_IP'))
@@ -119,7 +144,7 @@ class CMSPayment extends SoapClient {
 			"ClientIP" => $this->get_ip_address(),
 			"CustomerID" => (isset($params['customer_id']))?$params['customer_id']:"",
 			"CustReceipt" => (isset($params['send_customer_receipt']))?$params['send_customer_receipt']:false,
-			"Software" => "BOX.EVENTS",
+			"Software" => "Duezee",
 		);
 		//add a billing address if there is one
 		if((isset($params['billing_address']))&&(is_array($params['billing_address'])))
