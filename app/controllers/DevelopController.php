@@ -39,37 +39,8 @@ class DevelopController extends \BaseController {
 	 */
 	public function getJake()
 	{
-		/*
-		{
-		    "Merchant" : {
-		        "ID" : "10373",
-		        "Name" : "Jake Barlow",
-		        "Address" : "1234 N Main St.",
-		        "City" : "Springville",
-		        "State" : "UT",
-		        "Zip" : "84663",
-		        "Consignment-Balance" : 0.0,
-		        "Reseller-ID" : "1",
-		        "Reserve-Account" : {
-		            "Balance" : 0.00,
-		            "Percentage" : ,
-		            "Amount" : 0.0
-		        }
-		    }
-		}
-		*/
-/*		return User::create([
-			'id' => 1234,
-			'first_name' => 'Jake',
-			'last_name' => 'barlow',
-			'email' => 'jakus1',
-			'password' => Hash::make('password2')
-		]);
-*/		
-//return Hash::make('controlpad1');
-		//return Auth::user();
-		//$bank_info = Bankinfo::where('user_id',Auth::user()->id)->first();
-		//return $bank_info;
+		return App::make('ExternalAuthController')->getMwlUserInfo(Auth::user()->id);
+		return "done";
 		return App::make('ExternalAuthController')->updateMwlUser(1234);
 		exit('something');
 		return App::make('ExternalAuthController')->createMwlUser(10095);

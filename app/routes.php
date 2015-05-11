@@ -424,10 +424,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		});
 
 		##############################################################################################
-		# Superadmin only routes
+		# Superadmin, Admin, Editor routes
 		##############################################################################################
-		Route::group(array('before' => 'superadmin'), function() {
-			Route::controller('sa','SuperAdminTasksController');
+		Route::group(array('before' => ['superadmin','admin']), function() {
 			Route::get('login-as/{id}',function($id){
 				//first log out the admin
 				if (!Auth::user() -> hasRole(['Superadmin']))
@@ -437,6 +436,13 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 				Auth::loginUsingId($id);
 				return Redirect::to('/dashboard');
 			});
+		});
+
+		##############################################################################################
+		# Superadmin only routes
+		##############################################################################################
+		Route::group(array('before' => 'superadmin'), function() {
+			Route::controller('sa','SuperAdminTasksController');
 			Route::get('clear-all-cache', function() {
 				$users = DB::table('users')->get(['id']);
 				$count = 0;

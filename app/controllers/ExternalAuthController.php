@@ -554,8 +554,8 @@ class ExternalAuthController extends \BaseController {
 		{
 			$so = json_decode($server_output);
 			if (isset($so->Code) && intval($so->Code) >= 400) {
-				Session::flash('message',$so->Message);
-				\Log::info('server output is 400 level');
+				//Session::flash('message',$so->Message);
+				\Log::info('server output is 400 level:'.$so->Message);
 				return null;
 			}
 			\Log::info('server output exists: '.print_r($server_output,true));
@@ -633,7 +633,7 @@ class ExternalAuthController extends \BaseController {
 			\Log::info('MWL Responded with: '.$server_output);
 			$so = json_decode($server_output);
 			if (isset($so->Code) && intval($so->Code) >= 400) {
-				Session::flash('message',$so->Message);
+				//Session::flash('message',$so->Message);
 				return null;
 			}
 			return($server_output);
@@ -742,7 +742,7 @@ class ExternalAuthController extends \BaseController {
 		else {
 			$so = json_decode($server_output);
 			if (isset($so->Code) && intval($so->Code) >= 400) {
-				Session::flash('message',$so->Message);
+				//Session::flash('message',$so->Message);
 				return null;
 			}
 			\Log::info('Result: '.print_r($server_output, true));
@@ -1297,7 +1297,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 			if ($returnJson) 
 			$so = json_decode($server_output);
 			if (isset($so->Code) && intval($so->Code) >= 400) {
-				Session::flash('message',$so->Message);
+				//Session::flash('message',$so->Message);
 				$returnthis = ($returnJson) ? json_encode(['key'=>null]) : null;
 			}
 		}
