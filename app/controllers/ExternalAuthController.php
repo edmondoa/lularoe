@@ -1745,7 +1745,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 			'endDate'=>$end_date, // required
 		];
 		// set our endpoint
-		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account/transaction/batch";
+		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account/batch/report";
 
 		$response = $this->consume($endpoint,'GET',$params);
 		echo"<pre>"; print_r($response); echo"</pre>";
