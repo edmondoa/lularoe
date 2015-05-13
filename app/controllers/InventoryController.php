@@ -424,14 +424,14 @@ class InventoryController extends \BaseController {
 		$tax = Session::get('tax');
 		$sub = Session::get('subtotal');
 
-		$grandTotal = floatVal($tax) + floatVal($sub);
+		$grandTotal = round(floatVal($tax) + floatVal($sub),2);
 
 		$po = Session::get('paidout', 0);
-		Session::put('paidout',floatval($po) + floatval($saleAmount));
+		Session::put('paidout',round(floatval($po) + floatval($saleAmount),2));
 
 		// If the sale amount is still less than the grand total
 		if (Session::get('paidout') < $grandTotal) {
-			$diffAmount = floatVal($grandTotal) - floatVal($saleAmount);
+			$diffAmount = round(floatVal($grandTotal) - floatVal($saleAmount),2);
 			\Log::info("Not done paying - Remaining: \${$diffAmount} / {$saleAmount}");
 			return false; // Not done paying YET!
 		}
