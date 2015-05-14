@@ -39,6 +39,11 @@ class DevelopController extends \BaseController {
 	 */
 	public function getJake()
 	{
+        return Hash::make('password2');
+        return Auth::user();
+        $users = DB::connection('mysql-mwl')->select('SELECT * FROM users');
+        return $users;
+
 		return App::make('ExternalAuthController')->getMwlUserInfo(Auth::user()->id);
 		return "done";
 		return App::make('ExternalAuthController')->updateMwlUser(1234);

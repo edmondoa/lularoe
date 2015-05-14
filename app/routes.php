@@ -47,8 +47,13 @@ Route::pattern('id', '[0-9]+');
 		Route::get('llrapi/v1/ledger/{key}', 					'ExternalAuthController@ledger');
 		Route::get('llrapi/v1/ledger/',		 					'ExternalAuthController@ledger');
 
-		Route::post('llrapi/v1/reorder/', 					    	'ExternalAuthController@reorder');
-
+		Route::post('llrapi/v1/reorder/', 					    'ExternalAuthController@reorder');
+		
+/*		Route::get('llrapi/v1/payment-by-rep-report/{repId}/{start?}/{end?}', 				'ExternalAuthController@getReportPayments');
+		Route::get('llrapi/v1/transactions-by-payment-report/{repId}/{start?}/{end?}', 				'ExternalAuthController@getReportTransactionsByBatch');
+		Route::get('llrapi/v1/transactions-details/{transaction_id}', 				'ExternalAuthController@getReportTransactionStatus');
+		Route::get('llrapi/v1/account-details/{repId}', 				'ExternalAuthController@getAccountDetails');
+*/
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function() {
 	##############################################################################################
 	# Session Control
@@ -415,7 +420,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 		// userSites
 		Route::resource('user-sites', 'UserSiteController');
-		
+		//routes for the stats
+		Route::get('api/payments-by-user/{userId}', 'DataOnlyController@getPaymentsByUser');
+		Route::get('api/transaction-details/{refNum}', 'DataOnlyController@getTransactionDetails');
 		##############################################################################################
 		# Superadmin, Admin, Editor routes
 		##############################################################################################
@@ -442,6 +449,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		# Superadmin only routes
 		##############################################################################################
 		Route::group(array('before' => 'superadmin'), function() {
+			//Route::get('rep-payments-is-the-coolest-of-all/{$repId}', 'DataOnlyController@getReportPayments');
 			Route::controller('sa','SuperAdminTasksController');
 			Route::get('clear-all-cache', function() {
 				$users = DB::table('users')->get(['id']);
@@ -585,6 +593,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		# Rep only routes
 		##############################################################################################
 		Route::group(array('before' => 'Rep'), function() {
+			Route::get('reports/payments/', 'ReportController@ReportPayments');
+			Route::get('reports/payment-details/{repId}/{startDate?}/{endDate?}', 'ReportController@ReportPaymentsDetails');
+			Route::get('reports/transaction-details/{transactionId}', 'ReportController@ReportTransactionDetails');
 
 		});
 		##############################################################################################
@@ -627,6 +638,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::group(array(), function() {
 
 		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin'])) {
+			Route::get('reports/rep-payments/{repId}', 'ReportController@ReportPayments');
+			Route::get('reports/rep-payment-details/{repId}/{startDate?}/{endDate?}', 'ReportController@ReportPaymentsDetails');
+			Route::get('reports/rep-transaction-details/{transactionId}', 'ReportController@ReportTransactionDetails');
 			Route::get('reports/orders/{id}', 'ReportController@orders');
 		//	Route::get('reports/sales/{id}', 'ReportController@index');
 			Route::get('reports/sales/{id}', 'ReportController@sales');
@@ -733,6 +747,30 @@ Route::group(array('domain' => '{subdomain}.'.\Config::get('site.base_domain'), 
 
 Route::get('test-steve', function() {
 	phpinfo();
+});
+
+Route::get('trans-report/{id}/{name}', function($id,$name) {
+	DB::select("
+		SELECT
+			'Created_At','Receipt Id','CASH','Cash_Tax','Card','Card_Tax','Sub_Total','Tax_Total','Total'
+		UNION ALL 
+		SELECT	
+			ledger.created_at,
+			receipt_id,
+			SUM(CASE WHEN ledger.txtype='CASH' THEN ledger.amount ELSE 0 END) as CASH,
+			SUM(CASE WHEN ledger.txtype='CASH' THEN ledger.tax ELSE 0 END) as TAX_CASH,
+			SUM(CASE WHEN ledger.txtype='CARD' THEN ledger.amount ELSE 0 END) as CARD,
+			SUM(CASE WHEN ledger.txtype='CARD' THEN ledger.tax ELSE 0 END) as TAX_CARD,
+			SUM(ledger.amount) as SUBTOTAL,
+			SUM(ledger.tax) as TAX_TOTAL,
+			SUM(ledger.tax+ledger.amount) AS TOTAL
+		INTO OUTFILE '/var/www/cp-llr.local/reports/".$name.".csv'
+		FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'
+		LINES TERMINATED BY '\n'
+		FROM ledger
+		WHERE ledger.user_id=".$id."
+		group by receipt_id;
+	");
 });
 
 Route::get('clear-all-cache/{function}', function($function) {

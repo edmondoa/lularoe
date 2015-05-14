@@ -5,6 +5,12 @@
  					<a href="javascript:void(0)" data-href="/reports" class='list-group-item' data-toggle="popover" data-content="
  						<a href='/reports/sales'><i class='fa fa-file'></i> Sales</a>
  						<a href='/reports/orders'><i class='fa fa-plus'></i> Orders</a>
+ 						<?php /*
+ 						if((Auth::user()->hasRole(['Rep'])))
+ 						{
+ 							echo"<a href='reports/payments/'><i class='fa fa-file'></i> Payments</a>";
+ 						}
+ 						 */?>
  					">
 	 					<i class="fa fa-bar-chart"></i> <span class="text">Reports</span>
  					</a>
