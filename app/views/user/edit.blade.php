@@ -20,11 +20,11 @@
 		        {{ Form::label('consignment', 'Credit / Adjust Consignment Amount') }}
 		        {{ Form::text('consignment', null, array('class' => 'form-control')) }}
 		    </div>
-		    <div class="form-group">
-		        {{ Form::label('consignment_balance', 'Current Consignment Balance') }}
-				{{ $mwl_user->Merchant->{'Consignment-Balance'} or '' }}
-		    </div>
 			@endif
+
+		    <div class="form-group">
+				<h4>Consignment Balance: <b>${{ $mwl_user->Merchant->{'Consignment-Balance'} or '0.00' }}</b></h4>
+		    </div>
 		
 		    <div class="form-group">
 		        {{ Form::label('first_name', 'First Name') }}
