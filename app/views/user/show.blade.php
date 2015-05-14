@@ -131,10 +131,12 @@
 								@endif
 							</td>
 						</tr>	
+
 						<tr>
 							<th>Gender:</th>
 							<td>{{ $user->gender }}</td>
 						</tr>
+
 						<tr>
 							<th>DOB:</th>
 							<td>{{ $user->dob }}</td>
