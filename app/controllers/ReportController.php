@@ -394,8 +394,15 @@ class ReportController extends \BaseController {
 		return Response::json(array('data'=>$sales,'count'=>count($sales)),200,[], JSON_PRETTY_PRINT);
 	}
 
-	public function getReportInventory($id = '') {
-		return Response::json(null,200);
+    public function getReportInventory($id = '') {
+        return Response::json(null,200);
+    }
+
+	public function ReportPayments($repId) {
+        return "found it";
+		$consultant = User::find($repId);
+        return View::make('reports.payments',compact('consultant'));
 	}
+
 
 }

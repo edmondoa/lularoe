@@ -18,6 +18,10 @@
 	}
 	*/
 //if((Auth::check())&&(Auth::user()->hasRole(['Rep']))) Auth::logout();
+Route::get('rep_payments/{$repId}', function(){
+	return "biteme";
+});
+return;
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
@@ -48,9 +52,12 @@ Route::pattern('id', '[0-9]+');
 		Route::get('llrapi/v1/ledger/',		 					'ExternalAuthController@ledger');
 
 		Route::post('llrapi/v1/reorder/', 					    'ExternalAuthController@reorder');
-		Route::get('llrapi/v1/payment-by-rep-report/{repId}/{start?}/{end?}', 				'ExternalAuthController@getReportPayments');
+		
+/*		Route::get('llrapi/v1/payment-by-rep-report/{repId}/{start?}/{end?}', 				'ExternalAuthController@getReportPayments');
 		Route::get('llrapi/v1/transactions-by-payment-report/{repId}/{start?}/{end?}', 				'ExternalAuthController@getReportTransactionsByBatch');
-
+		Route::get('llrapi/v1/transactions-details/{transaction_id}', 				'ExternalAuthController@getReportTransactionStatus');
+		Route::get('llrapi/v1/account-details/{repId}', 				'ExternalAuthController@getAccountDetails');
+*/
 Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site'), function() {
 	##############################################################################################
 	# Session Control
@@ -417,7 +424,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 
 		// userSites
 		Route::resource('user-sites', 'UserSiteController');
-		
+		//routes for the stats
+		Route::get('api/payments-by-user/{userId}', 'DataOnlyController@getPaymentsByUser');
+		Route::get('api/transaction-details/{refNum}', 'DataOnlyController@getTransactionDetails');
 		##############################################################################################
 		# Superadmin, Admin, Editor routes
 		##############################################################################################
@@ -444,6 +453,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		# Superadmin only routes
 		##############################################################################################
 		Route::group(array('before' => 'superadmin'), function() {
+			//Route::get('rep-payments-is-the-coolest-of-all/{$repId}', 'DataOnlyController@getReportPayments');
 			Route::controller('sa','SuperAdminTasksController');
 			Route::get('clear-all-cache', function() {
 				$users = DB::table('users')->get(['id']);
@@ -629,6 +639,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::group(array(), function() {
 
 		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin'])) {
+			//Route::get('reports/rep-payments/{$repId}', 'ReportController@ReportPayments');
 			Route::get('reports/orders/{id}', 'ReportController@orders');
 		//	Route::get('reports/sales/{id}', 'ReportController@index');
 			Route::get('reports/sales/{id}', 'ReportController@sales');

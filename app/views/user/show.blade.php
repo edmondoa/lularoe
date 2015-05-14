@@ -57,7 +57,7 @@
 		@endif
 		<a class="btn btn-primary" href="//{{ $user->public_id }}.{{ Config::get('site.base_domain') }}" target="_blank"><i class="fa fa-globe"></i> View Site</a>
 		@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
-			<a class="btn btn-primary" href="/login-as/{{$user->id}}" target="_blank"><i class="fa fa-globe"></i> Login as Rep</a>
+			<a class="btn btn-primary" href="/login-as/{{$user->id}}" target="_blank"><i class="fa fa-globe"></i> Rep View</a>
 		@endif
 	</div><!-- row -->
 	<div class="row">
@@ -161,6 +161,23 @@
 			    </table>
 			</div><!-- panel -->
 		</div><!-- col -->
+	@if (Auth::user()->hasRole(['Superadmin', 'Admin']))
+	<div class="row">
+		<div class="col col-md-6 col-sm-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2 div class="panel-title">Reports:</h2>
+				</div>
+			    <table class="table table-striped">
+					<tr>
+						<td>
+							<a class="" href="/rep-payments/{{$user->id}}" target="_blank"> Payments</a>
+						</td>
+					</tr>
+			    </table>
+			</div><!-- panel -->
+		</div><!-- col -->
+		@endif
 		<div class="col col-md-6 col-sm-12">
 			@foreach ($addresses as $address)
 				<div class="panel panel-default">

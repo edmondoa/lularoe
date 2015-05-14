@@ -1748,8 +1748,10 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account/batch/report";
 
 		$response = $this->consume($endpoint,'GET',$params);
-		echo"<pre>"; print_r($response); echo"</pre>";
-		exit;
+		//echo"<pre>"; print_r($response); echo"</pre>";
+		//exit;
+		//header('Content-Type: application/json');
+		return Response::json(readfile ('temp/transactions.json'));
 		return Response::json($response);
 	}
 
@@ -1778,28 +1780,54 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 			'endDate'=>$end_date, // required
 		];
 		// set our endpoint
-		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account/batch/report";
+		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account/transaction/report";
 
 		$response = $this->consume($endpoint,'GET',$params);
-
-		echo"<pre>"; print_r($response); echo"</pre>";
-		exit;
+		//echo"<pre>"; print_r($response); echo"</pre>";
+		//exit;
+		//return Response::json(read);
 		return Response::json($response);
 	}
 	// report for transaction status
-	public function getReportTransactionStatus($params) {
-		/*##############################################################################################
+	public function getReportTransactionStatus($transaction_id) {
+
 		$params = [
-			transaction_id // required
-		]
-		##############################################################################################*/
-		//validation
-		if(empty($params['transaction_id'])) return false;
-		if(empty($params['rep_id'])) return false;
-		if(empty($params['rep_id'])) return false;
-		if(empty($params['rep_id'])) return false;
-		if(empty($params['rep_id'])) return false;
-		
+			//'username'=>$rep->id, // username is the rep id...required
+			//'startDate'=>$start_date, // required
+			//'endDate'=>$end_date, // required
+		];
+		// set our endpoint
+		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/".$transaction_id."/status";
+
+		$response = $this->consume($endpoint,'GET',$params);
+		//echo"<pre>"; print_r($response); echo"</pre>";
+		//exit;
+		//return Response::json(read);
+		return Response::json($response);
+	}
+
+	// report for transaction status
+	public function getAccountDetails($repId) {
+
+		$rep = User::find($repId);
+		if(!$rep)
+		{
+			$response = [];
+			$response['success'] = false;
+			$response['message'] = 'The requested consultant was not found';
+			return Response::json($response);
+		}
+		$params = [
+			'username'=>$rep->id, // username is the rep id...required
+		];
+		// set our endpoint
+		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account";
+
+		$response = $this->consume($endpoint,'GET',$params);
+		//echo"<pre>"; print_r($response); echo"</pre>";
+		//exit;
+		//return Response::json(read);
+		return Response::json($response);
 	}
 
 	public function consume($url_base,$verb,$params){
