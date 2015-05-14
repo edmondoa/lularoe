@@ -43,7 +43,7 @@
 			
 		var itemsales = new google.visualization.DataTable();
 
-		itemsales.addColumn('date','Date');
+		itemsales.addColumn('datetime','Date');
 		itemsales.addColumn('string','Item');
 		itemsales.addColumn('number','# Sold');
 		itemsales.addColumn('number','Total');
@@ -69,12 +69,20 @@
 //		var table = new google.visualization.Table(document.getElementById('dailysales_table'));
 
 		var dateSlider = new google.visualization.ControlWrapper({
-			'controlType': 'DateRangeFilter',
-			'containerId': 'filter_div',
+	   'controlType': 'ChartRangeFilter',
+		'containerId': 'filter_div',
 			'options': {
-			  'filterColumnLabel': 'Date'
+				'filterColumnIndex': 0,
+				'ui': {
+					'chartOptions' : {
+						'height':'80',
+						'chartArea': { 'height' : 60 },
+						'hAxis' : { 'textPosition' : 'out' },
+					},
+					'chartView': { 'columns': [0, 2] }
+				}
 			}
-		  });
+		});
 
 		var categoryFilter = new google.visualization.ControlWrapper({
 			'controlType': 'CategoryFilter',
@@ -83,6 +91,7 @@
 			  'filterColumnLabel': 'Item'
 			}
 		  });
+
 
 		var dailySalesChart  = new google.visualization.ChartWrapper({
 				'chartType': 'Table',
@@ -96,9 +105,23 @@
 				}
 			  });
 
+		google.visualization.events.addListener(dateSlider, 'statechange', function() {
+			console.log('NUM: '+getSum(itemsales,2));
+			console.log('AMT: '+getSum(itemsales,3));	
+		});
+
 		dashboard.bind(dateSlider, dailySalesChart);
-		dashboard.bind(categoryFilter, dailySalesChart);
+//		dashboard.bind(categoryFilter, dailySalesChart);
 		dashboard.draw(itemsales);
+	}
+
+	function getSum(data, column) {
+		var total = 0;
+		for (i = 0; i < data.getNumberOfRows(); i++) {
+			console.log(data);
+		  total = total + data.getValue(i, column);
+		}
+		return total;
 	}
 
 	$(document).ready(function() { 

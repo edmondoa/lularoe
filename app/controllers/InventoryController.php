@@ -48,7 +48,6 @@ class InventoryController extends \BaseController {
         if (count($invoice)) $invoice = $invoice[0];
         else App::abort(404);
 
-
 		$olddata = json_decode($invoice->data,true);
 		$invoice->data = json_encode($this->fixOrderData(json_decode($invoice->data,true), true));
 		//return Response::json($invoice->data,200,array(),JSON_PRETTY_PRINT);

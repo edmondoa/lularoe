@@ -1,8 +1,8 @@
 <?php
 include('lib/rb.php');
 
-#R::setup('mysql:host=mwl.controlpad.com;dbname=llr_web','llr_web','7U8$SAV*NEjuB$T%');
-R::setup('mysql:host=localhost;dbname=llr_dev','root','build4n0w');
+R::setup('mysql:host=mwl.controlpad.com;dbname=llr_web','llr_web','7U8$SAV*NEjuB$T%');
+#R::setup('mysql:host=localhost;dbname=llr_dev','root','build4n0w');
 R::freeze();
 
 $days_ago		= (isset($argv[1])) ? $argv[1] : 1;
