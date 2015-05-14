@@ -2,6 +2,78 @@
 
 class DataOnlyController extends \BaseController
 {
+	/*##############################################################################################
+	Report datapoints
+	##############################################################################################*/
+	public function getPaymentsByUser($userId)
+	{
+		$sql = "
+			SELECT
+				accounts.id,
+				transaction,
+				payments.id as payment_id,
+				(CASE WHEN paid=1 THEN SUM(amount) ELSE null END) as 'paidout',
+				(CASE WHEN paid=0 THEN SUM(amount) ELSE null END) as unpaid,
+				cashtransaction,
+				payments.consignment,
+				batchedIn,
+				LEFT(payments.created_at,10) as payment_date
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$userId." 
+			GROUP BY batchedIn
+			ORDER BY payment_date
+		";
+		//echo"<pre>"; print_r($sql); echo"</pre>";
+		//exit;
+		$payments = DB::connection('mysql-mwl')->select($sql);
+		return $payments;
+	}
+
+	public function getTransactionsByPayment()
+	{
+		$sql = "
+			SELECT
+				accounts.id,
+				transaction,
+				payments.id as payment_id,
+				(CASE WHEN paid=1 THEN SUM(amount) ELSE null END) as 'paidout',
+				(CASE WHEN paid=0 THEN SUM(amount) ELSE null END) as unpaid,
+				cashtransaction,
+				payments.consignment,
+				batchedIn,
+				LEFT(payments.created_at,10) as payment_date
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$userId." 
+			GROUP BY payment_date
+			ORDER BY payment_date
+		";
+		//echo"<pre>"; print_r($sql); echo"</pre>";
+		//exit;
+		$payments = DB::connection('mysql-mwl')->select($sql);
+		return $payments;
+
+	}
+
+	public function getTransactionDetails($refNum)
+	{
+		$sql = "
+			SELECT
+				*
+			FROM transaction 
+			WHERE refNum=".$refNum." 
+		";
+		//echo"<pre>"; print_r($sql); echo"</pre>";
+		//exit;
+		$payments = DB::connection('mysql-mwl')->select($sql);
+		return $payments;
+
+	}
 
 	/************
 	 * Cart
@@ -171,9 +243,9 @@ class DataOnlyController extends \BaseController
 	
 	public function getAllConfig(){
 		return [
-            'count'=>SiteConfig::count(),
-            'data'=>SiteConfig::all()
-        ];
+			'count'=>SiteConfig::count(),
+			'data'=>SiteConfig::all()
+		];
 	}	 
 
 	/*
@@ -182,27 +254,27 @@ class DataOnlyController extends \BaseController
 	 
 	// immediate downline
 	public function getNewDownline($id) {
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "last_name";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
+		$p = Input::get('p');
+		$l = Input::get('l');
+		$o = Input::get('o');
+		$s = Input::get('s');
+		$page = $p ? $p : 1;
+		$limit = $l ? $l : 10;
+		$order = $o ? $o : "last_name";
+		$sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		$offset = ($page - 1) * $limit;
 		return [
-            'count' => User::find($id)
-                        ->new_descendants()
-                        ->count(),
-            'data' =>User::find($id)
-                        ->new_descendants()
-                        ->orderBy("updated_at", "DESC")
-                        ->orderBy($order, $sequence)
-                        ->skip($offset)
-                        ->limit($limit)
-                        ->get()
-        ];
+			'count' => User::find($id)
+						->new_descendants()
+						->count(),
+			'data' =>User::find($id)
+						->new_descendants()
+						->orderBy("updated_at", "DESC")
+						->orderBy($order, $sequence)
+						->skip($offset)
+						->limit($limit)
+						->get()
+		];
 	}
 	 
 	// immediate downline
@@ -232,152 +304,152 @@ class DataOnlyController extends \BaseController
 	// immediate downline
 	public function getImmediateDownline($id) {
 		if (!Auth::check()) return;
-        $data = [];
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "last_name";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
-        $count = User::find($id)
-                    ->frontline()
-                    ->count();
+		$data = [];
+		$p = Input::get('p');
+		$l = Input::get('l');
+		$o = Input::get('o');
+		$s = Input::get('s');
+		$page = $p ? $p : 1;
+		$limit = $l ? $l : 10;
+		$order = $o ? $o : "last_name";
+		$sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		$offset = ($page - 1) * $limit;
+		$count = User::find($id)
+					->frontline()
+					->count();
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
 			$data = User::find($id)
-                        ->frontline()
-                        ->orderBy("updated_at", "DESC")
-                        ->orderBy($order, $sequence)
-                        ->skip($offset)
-                        ->limit($limit)
-                        ->get();
+						->frontline()
+						->orderBy("updated_at", "DESC")
+						->orderBy($order, $sequence)
+						->skip($offset)
+						->limit($limit)
+						->get();
 		}
 		elseif(Auth::user()->hasRole(['Rep']) && (Auth::user()->hasRepInDownline($id)) || Auth::user()->id == $id) {
 			$data = User::find($id)
-                        ->frontline()
-                        ->orderBy("updated_at", "DESC")
-                        ->orderBy($order, $sequence)
-                        ->skip($offset)
-                        ->limit($limit)
-                        ->get();
+						->frontline()
+						->orderBy("updated_at", "DESC")
+						->orderBy($order, $sequence)
+						->skip($offset)
+						->limit($limit)
+						->get();
 		}
-        
-        return [
-                    'count'=>$count,
-                    'data' =>$data
-               ];
+		
+		return [
+					'count'=>$count,
+					'data' =>$data
+			   ];
 	}
 	
 	// all downline
 	public function getAllDownline($id) {
 		DB::connection()->disableQueryLog();
 		set_time_limit (120);
-        
-        $data = [];
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "last_name";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
-        $count = User::find($id)
-                    ->descendants()
-                    ->count();
-        
+		
+		$data = [];
+		$p = Input::get('p');
+		$l = Input::get('l');
+		$o = Input::get('o');
+		$s = Input::get('s');
+		$page = $p ? $p : 1;
+		$limit = $l ? $l : 10;
+		$order = $o ? $o : "last_name";
+		$sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		$offset = ($page - 1) * $limit;
+		$count = User::find($id)
+					->descendants()
+					->count();
+		
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-            $data = User::find($id)
-                        ->descendants()
-                        ->orderBy("updated_at", "DESC")
-                        ->orderBy($order, $sequence)
-                        ->skip($offset)
-                        ->limit($limit)
-                        ->get();
+			$data = User::find($id)
+						->descendants()
+						->orderBy("updated_at", "DESC")
+						->orderBy($order, $sequence)
+						->skip($offset)
+						->limit($limit)
+						->get();
 		}
 		elseif(Auth::user()->hasRole(['Rep']) && (Auth::user()->hasRepInDownline($id)) || Auth::user()->id == $id) {
-            $data = User::find($id)
-                        ->descendants()
-                        ->orderBy("updated_at", "DESC")
-                        ->orderBy($order, $sequence)
-                        ->skip($offset)
-                        ->limit($limit)
-                        ->get();
+			$data = User::find($id)
+						->descendants()
+						->orderBy("updated_at", "DESC")
+						->orderBy($order, $sequence)
+						->skip($offset)
+						->limit($limit)
+						->get();
 		}
 		return [
-            'count' => $count,
-            'data' => $data 
-        ];
+			'count' => $count,
+			'data' => $data 
+		];
 	}
 
 	/********
 	 * Events
 	 ********/
 
-    public function getAllUvents(){
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "date_start";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
-        return [
-            'count'=>Uvent::count(),
-            'data' =>Uvent::orderBy($order, $sequence)
-                        ->skip($offset)
-                        ->limit($limit)
-                        ->get() 
-        ];
-    }
+	public function getAllUvents(){
+		$p = Input::get('p');
+		$l = Input::get('l');
+		$o = Input::get('o');
+		$s = Input::get('s');
+		$page = $p ? $p : 1;
+		$limit = $l ? $l : 10;
+		$order = $o ? $o : "date_start";
+		$sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		$offset = ($page - 1) * $limit;
+		return [
+			'count'=>Uvent::count(),
+			'data' =>Uvent::orderBy($order, $sequence)
+						->skip($offset)
+						->limit($limit)
+						->get() 
+		];
+	}
 
 	// all upcoming events
 	public function getAllUpcomingEvents() {
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "date_start";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
+		$p = Input::get('p');
+		$l = Input::get('l');
+		$o = Input::get('o');
+		$s = Input::get('s');
+		$page = $p ? $p : 1;
+		$limit = $l ? $l : 10;
+		$order = $o ? $o : "date_start";
+		$sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		$offset = ($page - 1) * $limit;
 		return [
-            'count' => Uvent::where('date_start', '>', time())
-                            ->count(),
-            'data' => Uvent::where('date_start', '>', time())
-                            ->orderBy($order, $sequence)
-                            ->skip($offset)
-                            ->limit($limit)
-                            ->get()
-        ];
+			'count' => Uvent::where('date_start', '>', time())
+							->count(),
+			'data' => Uvent::where('date_start', '>', time())
+							->orderBy($order, $sequence)
+							->skip($offset)
+							->limit($limit)
+							->get()
+		];
 	}
 	
 	// all past events
 	public function getAllPastEvents() {
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "date_start";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
+		$p = Input::get('p');
+		$l = Input::get('l');
+		$o = Input::get('o');
+		$s = Input::get('s');
+		$page = $p ? $p : 1;
+		$limit = $l ? $l : 10;
+		$order = $o ? $o : "date_start";
+		$sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		$offset = ($page - 1) * $limit;
 		return [
-            'count' => Uvent::where('date_start', '<', time())
-                            ->count(),
-            'data' => Uvent::where('date_start', '<', time())
-                            ->orderBy($order, $sequence)
-                            ->skip($offset)
-                            ->limit($limit)
-                            ->get()
-        ];
+			'count' => Uvent::where('date_start', '<', time())
+							->count(),
+			'data' => Uvent::where('date_start', '<', time())
+							->orderBy($order, $sequence)
+							->skip($offset)
+							->limit($limit)
+							->get()
+		];
 	}
 	
 	// all upcoming events by role
@@ -459,23 +531,23 @@ class DataOnlyController extends \BaseController
 	
 	// opportunities
 	public function getAllOpportunities(){
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "title";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
-        return [
-            'count' =>Opportunity::count(),
-            'data' => Opportunity::orderBy("title", "DESC")
-                                ->orderBy($order, $sequence)
-                                ->skip($offset)
-                                ->limit($limit)
-                                ->get()
-        ];
+		$p = Input::get('p');
+		$l = Input::get('l');
+		$o = Input::get('o');
+		$s = Input::get('s');
+		$page = $p ? $p : 1;
+		$limit = $l ? $l : 10;
+		$order = $o ? $o : "title";
+		$sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		$offset = ($page - 1) * $limit;
+		return [
+			'count' =>Opportunity::count(),
+			'data' => Opportunity::orderBy("title", "DESC")
+								->orderBy($order, $sequence)
+								->skip($offset)
+								->limit($limit)
+								->get()
+		];
 	}
 	
 	// items
@@ -493,147 +565,147 @@ class DataOnlyController extends \BaseController
 		return User::find($id)->leads;
 	}
 	// public function getAllLeads() {
-        // $p = Input::get('p');
-        // $l = Input::get('l');
-        // $o = Input::get('o');
-        // $s = Input::get('s');
-        // $page = $p ? $p : 1;
-        // $limit = $l ? $l : 10;
-        // $order = $o ? $o : "last_name";
-        // $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        // $offset = ($page - 1) * $limit;
+		// $p = Input::get('p');
+		// $l = Input::get('l');
+		// $o = Input::get('o');
+		// $s = Input::get('s');
+		// $page = $p ? $p : 1;
+		// $limit = $l ? $l : 10;
+		// $order = $o ? $o : "last_name";
+		// $sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		// $offset = ($page - 1) * $limit;
 		// return [
-            // 'count' =>Lead::count(),
-            // 'data' => Lead::orderBy("updated_at", "DESC")
-                            // ->orderBy($order, $sequence)
-                            // ->skip($offset)
-                            // ->limit($limit)
-                            // ->get()
-        // ];
+			// 'count' =>Lead::count(),
+			// 'data' => Lead::orderBy("updated_at", "DESC")
+							// ->orderBy($order, $sequence)
+							// ->skip($offset)
+							// ->limit($limit)
+							// ->get()
+		// ];
 	// }
 	// public function getAllLeadsByRep($id) {
-        // $p = Input::get('p');
-        // $l = Input::get('l');
-        // $o = Input::get('o');
-        // $s = Input::get('s');
-        // $page = $p ? $p : 1;
-        // $limit = $l ? $l : 10;
-        // $order = $o ? $o : "last_name";
-        // $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        // $offset = ($page - 1) * $limit;
+		// $p = Input::get('p');
+		// $l = Input::get('l');
+		// $o = Input::get('o');
+		// $s = Input::get('s');
+		// $page = $p ? $p : 1;
+		// $limit = $l ? $l : 10;
+		// $order = $o ? $o : "last_name";
+		// $sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		// $offset = ($page - 1) * $limit;
 		// return [
-            // 'count' => User::find($id)->leads()->count(),
-            // 'data' =>  User::find($id)
-                            // ->leads()
-                            // ->orderBy("updated_at", "DESC")
-                            // ->orderBy($order, $sequence)
-                            // ->skip($offset)
-                            // ->limit($limit)
-                            // ->get()
-        // ];
+			// 'count' => User::find($id)->leads()->count(),
+			// 'data' =>  User::find($id)
+							// ->leads()
+							// ->orderBy("updated_at", "DESC")
+							// ->orderBy($order, $sequence)
+							// ->skip($offset)
+							// ->limit($limit)
+							// ->get()
+		// ];
 	// }
 	
 	// pages
 	public function getAllPages(){
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "title";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
-        return [
-            'count' => Page::count(),
-            'data' =>  Page::orderBy("title", "DESC")
-                            ->orderBy($order, $sequence)
-                            ->skip($offset)
-                            ->limit($limit)
-                            ->get()
-        ];
+		$p = Input::get('p');
+		$l = Input::get('l');
+		$o = Input::get('o');
+		$s = Input::get('s');
+		$page = $p ? $p : 1;
+		$limit = $l ? $l : 10;
+		$order = $o ? $o : "title";
+		$sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		$offset = ($page - 1) * $limit;
+		return [
+			'count' => Page::count(),
+			'data' =>  Page::orderBy("title", "DESC")
+							->orderBy($order, $sequence)
+							->skip($offset)
+							->limit($limit)
+							->get()
+		];
 	}
 	
 	// posts
 	public function getAllPosts(){
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "created_at";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
-        $offset = ($page - 1) * $limit;
-        
+		$p = Input::get('p');
+		$l = Input::get('l');
+		$o = Input::get('o');
+		$s = Input::get('s');
+		$page = $p ? $p : 1;
+		$limit = $l ? $l : 10;
+		$order = $o ? $o : "created_at";
+		$sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		$offset = ($page - 1) * $limit;
+		
 		if (Auth::user() && Auth::user()->hasRole(['Superadmin', 'Admin', 'Editor'])) {
-            $count = Post::count();
+			$count = Post::count();
 			$data = Post::orderBy("created_at", "DESC")
-                    ->orderBy($order, $sequence)
-                    ->skip($offset)
-                    ->limit($limit)
-                    ->get();
+					->orderBy($order, $sequence)
+					->skip($offset)
+					->limit($limit)
+					->get();
 		}
 		elseif (Auth::user() && Auth::user()->hasRole(['Rep'])) {
-            $count = Post::where('Reps', 1)
-                        ->where('publish_date', '<', date('Y-m-d h:i:s'))
-                        ->orWhere('created_at', '<', date('Y-m-d h:i:s'))
-                        ->count();
+			$count = Post::where('Reps', 1)
+						->where('publish_date', '<', date('Y-m-d h:i:s'))
+						->orWhere('created_at', '<', date('Y-m-d h:i:s'))
+						->count();
 			$data = Post::where('Reps', 1)
-                        ->where('publish_date', '<', date('Y-m-d h:i:s'))
-                        ->orWhere('created_at', '<', date('Y-m-d h:i:s'))
-                        ->orderBy('publish_date')
-                        ->orderBy('created_at')
-                        ->orderBy($order, $sequence)
-                        ->skip($offset)
-                        ->limit($limit)
-                        ->get();
+						->where('publish_date', '<', date('Y-m-d h:i:s'))
+						->orWhere('created_at', '<', date('Y-m-d h:i:s'))
+						->orderBy('publish_date')
+						->orderBy('created_at')
+						->orderBy($order, $sequence)
+						->skip($offset)
+						->limit($limit)
+						->get();
 		}
 		elseif (Auth::user() && Auth::user()->hasRole(['Customer'])) {
-            $count = Post::where('Customers', 1)
-                        ->where('publish_date', '<', date('Y-m-d h:i:s'))
-                        ->orWhere('created_at', '<', date('Y-m-d h:i:s'))
-                        ->count();
+			$count = Post::where('Customers', 1)
+						->where('publish_date', '<', date('Y-m-d h:i:s'))
+						->orWhere('created_at', '<', date('Y-m-d h:i:s'))
+						->count();
 			$data = Post::where('Customers', 1)
-                        ->where('publish_date', '<', date('Y-m-d h:i:s'))
-                        ->orWhere('created_at', '<', date('Y-m-d h:i:s'))
-                        ->orderBy('publish_date')
-                        ->orderBy('created_at')
-                        ->orderBy($order, $sequence)
-                        ->skip($offset)
-                        ->limit($limit)
-                        ->get();
+						->where('publish_date', '<', date('Y-m-d h:i:s'))
+						->orWhere('created_at', '<', date('Y-m-d h:i:s'))
+						->orderBy('publish_date')
+						->orderBy('created_at')
+						->orderBy($order, $sequence)
+						->skip($offset)
+						->limit($limit)
+						->get();
 		}
 		else {
-            $count = Post::where('Public', 1)
-                        ->where('publish_date', '<', date('Y-m-d h:i:s'))
-                        ->orWhere('created_at', '<', date('Y-m-d h:i:s'))
-                        ->count(); 
+			$count = Post::where('Public', 1)
+						->where('publish_date', '<', date('Y-m-d h:i:s'))
+						->orWhere('created_at', '<', date('Y-m-d h:i:s'))
+						->count(); 
 			$data = Post::where('Public', 1)
-                        ->where('publish_date', '<', date('Y-m-d h:i:s'))
-                        ->orWhere('created_at', '<', date('Y-m-d h:i:s'))
-                        ->orderBy('publish_date')
-                        ->orderBy('created_at')
-                        ->orderBy($order, $sequence)
-                        ->skip($offset)
-                        ->limit($limit)
-                        ->get();
+						->where('publish_date', '<', date('Y-m-d h:i:s'))
+						->orWhere('created_at', '<', date('Y-m-d h:i:s'))
+						->orderBy('publish_date')
+						->orderBy('created_at')
+						->orderBy($order, $sequence)
+						->skip($offset)
+						->limit($limit)
+						->get();
 		}
-        
-        return [
-            'count' => $count,
-            'data' =>  $data
-        ]; 
+		
+		return [
+			'count' => $count,
+			'data' =>  $data
+		]; 
 	}
 	
 	// public posts
 	public function getPublicPosts() {
 		return Post::where('Public', 1)
-                    ->where('publish_date', '<', date('Y-m-d h:i:s'))
-                    ->orWhere('created_at', '<', date('Y-m-d h:i:s'))
-                    ->orderBy('publish_date')
-                    ->orderBy('created_at')
-                    ->get();
+					->where('publish_date', '<', date('Y-m-d h:i:s'))
+					->orWhere('created_at', '<', date('Y-m-d h:i:s'))
+					->orderBy('publish_date')
+					->orderBy('created_at')
+					->get();
 	}
 	
 	/**********
@@ -659,17 +731,17 @@ class DataOnlyController extends \BaseController
 		}
 
 		return ['count'=>$products
-                        ->count(),'data'=>$products];
+						->count(),'data'=>$products];
 
 	}
 
 	// productCateogires
 	public function getAllProductCategories() {
 		$raw = ProductCategory::with('tags');
-        return [
-            'count' => $raw->count(),
-            'data' => $raw->get()
-        ];
+		return [
+			'count' => $raw->count(),
+			'data' => $raw->get()
+		];
 	}
 
 	// productTags
@@ -680,65 +752,65 @@ class DataOnlyController extends \BaseController
 	/**********
 	 * Users
 	 **********/
-    public function sanitizeAllUsers(){
-        $p = Input::get('p');
-        $page = $p ? $p : 1;
-        $limit = 10;
-        $order = "last_name";
-        $sequence = "ASC";
-        $offset = ($page - 1) * $limit;
-        if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-            $data = User::orderBy($order, $sequence)
-                        ->skip($offset)
-                        ->take($limit)
-                        ->get(); 
-                        
-            foreach($data as $u)
-            {
-                $user = User::find($u->id);
-                $user->first_name = ucwords(trim($u->first_name));
-                $u->first_name = $user->first_name; 
-                $user->last_name = ucwords(trim($u->last_name));
-                $u->last_name = $user->last_name;
-                $user->save();
-            };
-            
-            return [
-                        'count'=>User::count(),
-                        'data' =>$data,
-                        'message' => 'Sanitation done on page '.$page
-                   ];   
-                
-        }
-     }
-     
-	public function getAllUsers(){
-        $p = Input::get('p');
-        $l = Input::get('l');
-        $o = Input::get('o');
-        $s = Input::get('s');
-        $page = $p ? $p : 1;
-        $limit = $l ? $l : 10;
-        $order = $o ? $o : "last_name";
-        $sequence = $s == "true" || !$s ? "ASC" : "DESC";
+	public function sanitizeAllUsers(){
+		$p = Input::get('p');
+		$page = $p ? $p : 1;
+		$limit = 10;
+		$order = "last_name";
+		$sequence = "ASC";
+		$offset = ($page - 1) * $limit;
 		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
-            $offset = ($page - 1) * $limit;
-            
-            /*
-            if(isset($keyword) && $keyword != ""){
-                $data = UserList::where('first_name', 'LIKE', '%'.$keyword.'%')
-                        ->orWhere('last_name','LIKE','%'.$keyword.'%')
-                        ->orderBy($order, $sequence);
-            }else{
-                $data = UserList::orderBy($order, $sequence);
-            }
-            
-            
-            $data = $data->skip($offset)
-                        ->take($limit)
-                        ->get();
-            */
-            
+			$data = User::orderBy($order, $sequence)
+						->skip($offset)
+						->take($limit)
+						->get(); 
+						
+			foreach($data as $u)
+			{
+				$user = User::find($u->id);
+				$user->first_name = ucwords(trim($u->first_name));
+				$u->first_name = $user->first_name; 
+				$user->last_name = ucwords(trim($u->last_name));
+				$u->last_name = $user->last_name;
+				$user->save();
+			};
+			
+			return [
+						'count'=>User::count(),
+						'data' =>$data,
+						'message' => 'Sanitation done on page '.$page
+				   ];   
+				
+		}
+	 }
+	 
+	public function getAllUsers(){
+		$p = Input::get('p');
+		$l = Input::get('l');
+		$o = Input::get('o');
+		$s = Input::get('s');
+		$page = $p ? $p : 1;
+		$limit = $l ? $l : 10;
+		$order = $o ? $o : "last_name";
+		$sequence = $s == "true" || !$s ? "ASC" : "DESC";
+		if (Auth::user()->hasRole(['Admin', 'Superadmin'])) {
+			$offset = ($page - 1) * $limit;
+			
+			/*
+			if(isset($keyword) && $keyword != ""){
+				$data = UserList::where('first_name', 'LIKE', '%'.$keyword.'%')
+						->orWhere('last_name','LIKE','%'.$keyword.'%')
+						->orderBy($order, $sequence);
+			}else{
+				$data = UserList::orderBy($order, $sequence);
+			}
+			
+			
+			$data = $data->skip($offset)
+						->take($limit)
+						->get();
+			*/
+			
 			$results = DB::select( DB::raw("SELECT * FROM users") );
 
 			$queries = DB::getQueryLog();
@@ -749,53 +821,53 @@ class DataOnlyController extends \BaseController
 
 
 /* ELOQUNT TOO SLOW
-            $data = UserList::all();            
+			$data = UserList::all();            
 
 
 			return [
-                        'count'=>UserList::count(),
-                        'data' =>$data,
-                        'message' => 'UserList'
-                   ];
+						'count'=>UserList::count(),
+						'data' =>$data,
+						'message' => 'UserList'
+				   ];
 */
 		}
 	}
 
-    //search users
-    public function getSearchUsers($keyword){
-         $type = Input::get('type');
-         
-         $limit = 10;
-         $raw = User::where('first_name', 'LIKE', '%'.$keyword.'%')
-                    ->orWhere('last_name','LIKE','%'.$keyword.'%');
+	//search users
+	public function getSearchUsers($keyword){
+		 $type = Input::get('type');
+		 
+		 $limit = 10;
+		 $raw = User::where('first_name', 'LIKE', '%'.$keyword.'%')
+					->orWhere('last_name','LIKE','%'.$keyword.'%');
 /*
-                    ->orderBy("last_name", "ASC")
-                    ->orderBy("first_name", "ASC");
+					->orderBy("last_name", "ASC")
+					->orderBy("first_name", "ASC");
 */
-         $count = $raw->count();
-         $data = $raw->take($limit)
-                    ->get();
-         if($type != 'all'){
-             $data = $data->map(function($user) use (&$temp){
-                 $name = $user->id.' - '.$user->full_name;
-                 return ["id"=>$user->id,"name"=>$name];
-             });
-         }
-                    
-         return [
-            'count' => $count,
-            'data' => $data
-         ];
-    }
-    
-    public function getAllUserSites(){
-        $count = UserSite::count();
-        $data = UserSite::all();
-        
-        return [
-            'count' => $count,
-            'data' => $data
-        ];
-    }
+		 $count = $raw->count();
+		 $data = $raw->take($limit)
+					->get();
+		 if($type != 'all'){
+			 $data = $data->map(function($user) use (&$temp){
+				 $name = $user->id.' - '.$user->full_name;
+				 return ["id"=>$user->id,"name"=>$name];
+			 });
+		 }
+					
+		 return [
+			'count' => $count,
+			'data' => $data
+		 ];
+	}
+	
+	public function getAllUserSites(){
+		$count = UserSite::count();
+		$data = UserSite::all();
+		
+		return [
+			'count' => $count,
+			'data' => $data
+		];
+	}
 
 }
