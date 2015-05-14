@@ -22,9 +22,7 @@
 		    </div>
 		    <div class="form-group">
 		        {{ Form::label('consignment_balance', 'Current Consignment Balance') }}
-				@if (!empty($mwl_user))
-				{{ $mwl_user->Merchant->{'Consignment-Balance'} }}
-				@endif
+				{{ $mwl_user->Merchant->{'Consignment-Balance'} or '' }}
 		    </div>
 			@endif
 		

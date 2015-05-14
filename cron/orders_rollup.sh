@@ -1,10 +1,10 @@
 # MySQL settings
 mysql_user="root"
 mysql_password="53eqRpYtQPP94apf"
-database="llr"
+database="llr_web"
 launchdate="2015-04-07"
 
-mailing_list="mfrederico@gmail.com,ammon@lularoe.com,jeff@lularoe.com"
+mailing_list="m.fred@cyberteknix.com,ammon@lularoe.com,jeff@lularoe.com"
 mailing_list="mfrederico@gmail.com"
 
 report_date=$(date "+%Y-%m-%d" -d "-1 days")
@@ -16,11 +16,11 @@ mysqlcmd="mysql -u root -p$mysql_password $database"
  
 # Create backup directory and set permissions
 # report_date=`date +%Y_%m_%d`
-report_filename="rep_rollup-$report_date.tsv"
+report_filename="reports/orders_rollup-$report_date.tsv"
 
 
 function query {
-	query="SELECT CONCAT(user_id,'-',id) as 'Order ID#',tax,subtotal,CONCAT(to_firstname,' ',to_lastname) 'Rep Name',date_paid as 'Paid Date',CASE shipped WHEN shipped != '0000-00-00 00:00:00' THEN 'shipped' ELSE 'warehouse' END 'Shipped Status',note from receipts where date_paid != '0000-00-00 00:00:00' order by created_at DESC"
+	query="SELECT txtype as 'Payment Type',CONCAT(receipts.id) as 'Order ID#',receipts.tax,subtotal,CONCAT(to_firstname,' ',to_lastname) 'Rep Name',date_paid as 'Paid Date',CASE shipped WHEN shipped != '0000-00-00 00:00:00' THEN 'shipped' ELSE 'warehouse' END 'Shipped Status',transactionid as 'Gateway TXID' from receipts left join ledger ON (ledger.receipt_id=receipts.id) where date_paid >= '$startdate' AND receipts.user_id=0 order by receipts.created_at DESC"
 	echo $query	
 }
 

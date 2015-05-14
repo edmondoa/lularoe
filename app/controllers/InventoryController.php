@@ -43,11 +43,10 @@ class InventoryController extends \BaseController {
 	}
 
 	public function viewInvoice($id) {
-
-		// There has GOT to be a better way to do this
-		$invoice	= Receipt::where('id','=',$id)->where('user_id','=',Auth::user()->id)->get();
-		if (count($invoice)) $invoice = $invoice[0];
-		else App::abort(404);
+        // There has GOT to be a better way to do this
+        $invoice    = Receipt::where('id','=',$id)->where('user_id','=',Auth::user()->id)->get();
+        if (count($invoice)) $invoice = $invoice[0];
+        else App::abort(404);
 
 		$olddata = json_decode($invoice->data,true);
 		$invoice->data = json_encode($this->fixOrderData(json_decode($invoice->data,true), true));
@@ -428,14 +427,14 @@ class InventoryController extends \BaseController {
 		$tax = Session::get('tax');
 		$sub = Session::get('subtotal');
 
-		$grandTotal = floatVal($tax) + floatVal($sub);
+		$grandTotal = round(floatVal($tax) + floatVal($sub),2);
 
 		$po = Session::get('paidout', 0);
-		Session::put('paidout',floatval($po) + floatval($saleAmount));
+		Session::put('paidout',round(floatval($po) + floatval($saleAmount),2));
 
 		// If the sale amount is still less than the grand total
 		if (Session::get('paidout') < $grandTotal) {
-			$diffAmount = floatVal($grandTotal) - floatVal($saleAmount);
+			$diffAmount = round(floatVal($grandTotal) - floatVal($saleAmount),2);
 			\Log::info("Not done paying - Remaining: \${$diffAmount} / {$saleAmount}");
 			return false; // Not done paying YET!
 		}
