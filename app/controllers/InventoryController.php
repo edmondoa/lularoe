@@ -43,7 +43,11 @@ class InventoryController extends \BaseController {
 	}
 
 	public function viewInvoice($id) {
-		$invoice	= Receipt::find($id);
+        // There has GOT to be a better way to do this
+        $invoice    = Receipt::where('id','=',$id)->where('user_id','=',Auth::user()->id)->get();
+        if (count($invoice)) $invoice = $invoice[0];
+        else App::abort(404);
+
 
 		$olddata = json_decode($invoice->data,true);
 		$invoice->data = json_encode($this->fixOrderData(json_decode($invoice->data,true), true));
