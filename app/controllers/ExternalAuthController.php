@@ -532,6 +532,7 @@ class ExternalAuthController extends \BaseController {
 
 		// Set to general auth for pulling inventory		// Set this to HTTPS TLS / SSL
 		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account?sessionkey=".$key."&username=".$mbr->id;
+		\Log::info("LOOKING UP MWL USER via ID: {$user_id} {$curlstring}");
 
 		curl_setopt($ch, CURLOPT_URL, $curlstring);
 
@@ -606,7 +607,9 @@ class ExternalAuthController extends \BaseController {
 
 
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
-		$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
+		if (!empty($password)) {
+			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
+		}
 
 		if (!empty($setConsignment)) { 
 			$headers[] = "Consignment-IsPercent: 1";
@@ -691,8 +694,8 @@ class ExternalAuthController extends \BaseController {
 			$headers[] = "Account-Route: ".$bank_info->bank_routing; //
 		}
 		$headers[] = "Username: ".$mbr->id; //use the user->id for this
-		if(!empty($password))
-		{
+
+		if(!empty($password)) { 
 			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		}
 

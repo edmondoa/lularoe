@@ -26,10 +26,10 @@
 					<h2 class="panel-title">Overview</h2>
 				</div>
 				<table class="table table-striped">
-                	@if ((isset($mwl_user))&&($mwl_user->Merchant->{'Consignment-Balance'} > 0))
+                	@if ((isset($mwl_user->Merchant))&&($mwl_user->Merchant->{'Consignment-Balance'} > 0))
 					<tr>
 						<th>Your remaining consignment balance:</th>
-						<td>{{ $mwl_user->Merchant->{'Consignment-Balance'} }}</td>
+						<td>{{ $mwl_user->Merchant->{'Consignment-Balance'} or '0.00'}}</td>
 					</tr>
 					@endif
 					<tr>
