@@ -647,6 +647,7 @@ class ExternalAuthController extends \BaseController {
 	public function updateMwlUser($user_id, $password = null, $setConsignment = 0) {
 
         $mbr = User::find($user_id);
+		\Log::info(print_r($mbr,true));
 
 		$mwl_user = Self::getMwlUserInfo($mbr->id);
 
@@ -719,7 +720,7 @@ class ExternalAuthController extends \BaseController {
 		}
 
 		if ($constotal) {
-			$headers[] = "Consignment-IsPercent: 1";
+			$headers[] = "Consignment-IsPercent: true";
 			$headers[] = "Consignment-Amount: 25";
 			$headers[] = "Consignment-Balance: ".floatval($constotal);
 		}
