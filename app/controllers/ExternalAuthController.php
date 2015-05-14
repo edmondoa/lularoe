@@ -1623,14 +1623,8 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 
 		//$mbr->password_entered = $pass;
 		//return $mbr;
-<<<<<<< HEAD
-		// Can't find them?
-		if (!isset($mbr)) {
-=======
-
         // Can't find them?
         if (!isset($mbr)) {
->>>>>>> matt
 			$error = true;
 			$mbr	= null;
 			$status = 'User '.strip_tags($login).' not found';
