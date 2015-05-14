@@ -1748,11 +1748,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account/batch/report";
 
 		$response = $this->consume($endpoint,'GET',$params);
-		//echo"<pre>"; print_r($response); echo"</pre>";
-		//exit;
-		//header('Content-Type: application/json');
-		return Response::json(readfile ('temp/transactions.json'));
-		return Response::json($response);
+		return $response;
 	}
 
 
@@ -1783,27 +1779,18 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account/transaction/report";
 
 		$response = $this->consume($endpoint,'GET',$params);
-		//echo"<pre>"; print_r($response); echo"</pre>";
-		//exit;
-		//return Response::json(read);
-		return Response::json($response);
+		return $response;
 	}
 	// report for transaction status
 	public function getReportTransactionStatus($transaction_id) {
 
 		$params = [
-			//'username'=>$rep->id, // username is the rep id...required
-			//'startDate'=>$start_date, // required
-			//'endDate'=>$end_date, // required
 		];
 		// set our endpoint
 		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/".$transaction_id."/status";
 
 		$response = $this->consume($endpoint,'GET',$params);
-		//echo"<pre>"; print_r($response); echo"</pre>";
-		//exit;
-		//return Response::json(read);
-		return Response::json($response);
+		return $response;
 	}
 
 	// report for transaction status
@@ -1824,9 +1811,6 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		$endpoint = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account";
 
 		$response = $this->consume($endpoint,'GET',$params);
-		//echo"<pre>"; print_r($response); echo"</pre>";
-		//exit;
-		//return Response::json(read);
 		return Response::json($response);
 	}
 
@@ -1880,7 +1864,7 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		else 
 		{
 			$so = json_decode($server_output);
-			if(strlen($so) == 0)
+			if((is_string ($so))&&(strlen($so) == 0))
 			{
 				switch (json_last_error()) {
 					case JSON_ERROR_NONE:
@@ -1909,13 +1893,15 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 				exit('it failed');
 			}
 			if (isset($so->Code) && intval($so->Code) >= 400) {
-				//Session::flash('message',$so->Message);
+				Session::flash('message',$so->Message);
 				\Log::info('server output is 400 level:'.$so->Message);
 				return null;
 			}
 			//\Log::info('server output exists: '.print_r($server_output,true));
-			echo $server_output;
-			exit;
+			//echo $server_output;
+			//exit;
+			//echo"<pre>"; print_r($so); echo"</pre>";
+			//exit;
 			return $so;
 		}
 	}

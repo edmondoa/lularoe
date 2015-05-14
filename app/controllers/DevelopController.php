@@ -39,6 +39,7 @@ class DevelopController extends \BaseController {
 	 */
 	public function getJake()
 	{
+        return Hash::make('password2');
         return Auth::user();
         $users = DB::connection('mysql-mwl')->select('SELECT * FROM users');
         return $users;

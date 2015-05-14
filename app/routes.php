@@ -18,10 +18,6 @@
 	}
 	*/
 //if((Auth::check())&&(Auth::user()->hasRole(['Rep']))) Auth::logout();
-Route::get('rep_payments/{$repId}', function(){
-	return "biteme";
-});
-
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
@@ -597,6 +593,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		# Rep only routes
 		##############################################################################################
 		Route::group(array('before' => 'Rep'), function() {
+			Route::get('reports/payments/', 'ReportController@ReportPayments');
+			Route::get('reports/payment-details/{repId}/{startDate?}/{endDate?}', 'ReportController@ReportPaymentsDetails');
+			Route::get('reports/transaction-details/{transactionId}', 'ReportController@ReportTransactionDetails');
 
 		});
 		##############################################################################################
@@ -639,7 +638,9 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::group(array(), function() {
 
 		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin'])) {
-			//Route::get('reports/rep-payments/{$repId}', 'ReportController@ReportPayments');
+			Route::get('reports/rep-payments/{repId}', 'ReportController@ReportPayments');
+			Route::get('reports/rep-payment-details/{repId}/{startDate?}/{endDate?}', 'ReportController@ReportPaymentsDetails');
+			Route::get('reports/rep-transaction-details/{transactionId}', 'ReportController@ReportTransactionDetails');
 			Route::get('reports/orders/{id}', 'ReportController@orders');
 		//	Route::get('reports/sales/{id}', 'ReportController@index');
 			Route::get('reports/sales/{id}', 'ReportController@sales');
