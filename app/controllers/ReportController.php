@@ -421,7 +421,15 @@ class ReportController extends \BaseController {
 		$endDate = date('Y-m-d');
 		$consultant = User::find($repId);
 		$result = App::make('ExternalAuthController')->getReportTransactionsByBatch($consultant->id,$startDate,$endDate);
-		$transactions = $result->Transactions;
+		if(is_null($result))
+		{
+			$transactions = [];
+		}
+		else
+		{
+			$transactions = $result->Transactions;
+		}
+		//$transactions = $result->Transactions;
 		return View::make('reports.payment-details',compact('transactions','consultant'));
 	}
 
