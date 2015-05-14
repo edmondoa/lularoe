@@ -410,7 +410,7 @@ class ExternalAuthController extends \BaseController {
 			// Last resort!
 			$output = json_decode(file_get_contents($mwlcachefile));
 			\Log::info('Nothing returned from inventory system!');
-			//return Response::json(array('errors'=>true,'message'=>'Nothing returned from inventory system.'),500);
+			return Response::json(array('errors'=>true,'message'=>'Nothing returned from inventory system.'),500);
 		}
 
         if(array_key_exists('Code',$output) && $output['Code'] == '400'){
