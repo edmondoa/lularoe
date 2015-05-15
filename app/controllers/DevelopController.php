@@ -39,10 +39,41 @@ class DevelopController extends \BaseController {
 	 */
 	public function getJake()
 	{
-        return Hash::make('password2');
-        return Auth::user();
-        $users = DB::connection('mysql-mwl')->select('SELECT * FROM users');
-        return $users;
+        //return Hash::make('password2');
+        //return Auth::user();
+        $userId = 9934;
+		//query to get payments
+		$sql = "
+			SELECT 
+				payments.id,
+				ROUND(SUM(payments.amount), 2) as amount,
+				payments.created_at
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$userId." AND batchedIn = -1 
+			GROUP BY payments.id
+			ORDER BY payments.created_at
+		";
+		//query to get transactions in payment
+		$payment_id = 84058;
+		$sql = "
+			SELECT 
+				transaction,
+				payments.id,
+				ROUND(payments.amount, 2) as amount,
+				payments.created_at
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$userId." AND batchedIn = ".$payment_id."
+			ORDER BY payments.created_at
+		";
+		// /AND created_at >= '{Start_Date}' AND created_at <= '{End_Date}'
+        $data = DB::connection('mysql-mwl')->select($sql);
+        return $data;
 
 		return App::make('ExternalAuthController')->getMwlUserInfo(Auth::user()->id);
 		return "done";
