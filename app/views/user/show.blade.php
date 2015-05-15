@@ -70,30 +70,30 @@
 						@endif
 					</h2>
 				</div>
-				<table class="table table-striped">
-					<tr>
-						<th>
-							@if ($user->role_name == 'Rep')
-								ID:
-							@else
-								User ID:
-							@endif
-						</th>
-						<td>{{ $user->id }}</td>
-					</tr>
-					<tr>
-						<th>
-							Public ID / Site:
-						</th>
-						<td>
-							<A href="//{{ $user->public_id }}.{{ Config::get('site.base_domain') }}">{{ $user->public_id }}</a>
-						</td>
-					</tr>
-					<tr>
-						<th>
-							Consignment:
-						</th>
-						<td>
+			    <table class="table table-striped">
+			        <tr>
+			            <th>
+			            	@if ($user->role_name == 'Rep')
+			            		ID:
+			            	@else
+			            		User ID:
+			            	@endif
+			            </th>
+			            <td>{{ $user->id }}</td>
+			        </tr>
+			        <tr>
+			            <th>
+			            	Public ID / Site:
+			            </th>
+			            <td>
+			            	<A href="//{{ $user->public_id }}.{{ Config::get('site.base_domain') }}">{{ $user->public_id }}</a>
+			            </td>
+			        </tr>
+			        <tr>
+			            <th>
+			            	Consignment:
+			            </th>
+			            <td>
 							{{ $mwl_user->Merchant->{'Consignment-Balance'} or ''}}
 
 							@if (Auth::user()->hasRole(['Superadmin','Admin'])) <a href="/inventory/matrix/{{ $user->id }}">Purchase Initial Order</a> @endif

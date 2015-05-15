@@ -187,7 +187,7 @@ $(document).ready(function() {
     angular.extend(ControlPad, (function(){                
                 return {
                     inventoryCtrl : {
-                        path : '/llrapi/v2/get-inventory/<?=$key?>/'
+                        path : '/llrapi/v1/get-inventory/<?=$key?>/'
                     }
                 };
             }()));    
