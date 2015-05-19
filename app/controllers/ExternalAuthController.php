@@ -9,7 +9,7 @@ class ExternalAuthController extends \BaseController {
 	const MWL_DB 		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
-	private	$SESSIONKEY_TIMEOUT = 1;
+	private	$SESSIONKEY_TIMEOUT = 3600;
 
 	// These items are to be ignored and not shown
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
