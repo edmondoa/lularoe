@@ -535,13 +535,16 @@ class InventoryController extends \BaseController {
 
 			$lg = new Ledger();
 			$lg->user_id        = 0;
-			$lg->account        = '';
+			$lg->account        = $user->id;//'';
 			$lg->amount         = $absamount;
 			$lg->tax            = $tax;
 			$lg->txtype         = 'CONS';
 			$lg->transactionid  = $cardauth->id;
 			$lg->data           = json_encode($purchaseInfo);
 			$lg->save();
+
+			// This will continue to ADD consignment value (negative amount deducts it)
+			App::make('ExternalAuthController')->setConsignment($user->id, round($absamount+$tax,2));
 
 		}
 

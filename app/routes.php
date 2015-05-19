@@ -838,6 +838,12 @@ function addOrder($order, $key = 'orderdata') {
 }
 */
 
+Route::get('testcons',function() {
+	// print App::make('ExternalAuthController')->setConsignment(Input::get('id'), Input::get('amt'));
+
+	die();
+});
+
 Route::get('testfunction', function() {
 
 	$addys = Receipt::find(39)->address()->get()->first()->toArray();

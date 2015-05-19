@@ -3,13 +3,13 @@
 class ExternalAuthController extends \BaseController {
 
 	// Private vars for this controller only
-	const MWL_SERVER	= 'localhost'; //'mwl.controlpad.com';
+	const MWL_SERVER	= 'mwl.controlpad.com';
 	const MWL_UN		= 'llr_web';//'llr_txn';
 	const MWL_PASS		= '7U8$SAV*NEjuB$T%';//'ilovetexas';
 	const MWL_DB 		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
-	private	$SESSIONKEY_TIMEOUT = 1;
+	private	$SESSIONKEY_TIMEOUT = 3600;
 
 	// These items are to be ignored and not shown
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
@@ -704,18 +704,20 @@ class ExternalAuthController extends \BaseController {
 			// ADD consignment
 			if ($setConsignment > 0) { 
 				$constotal = $setConsignment + $mbr->consignment; 
-				\Log::info("Adding consignment {$mbr->id}: {$constotal}");
+				\Log::info("Adding consignment {$mbr->id}:  {$setConsignment} + {$mbr->consignment} = {$constotal}");
 			} 
 			// SUB consginment
 			if ($setConsignment < 0) { 
 				$constotal = $setConsignment - $mbr->consignment; 
-				\Log::info("Subtracting consignment {$mbr->id}: {$constotal}");
+				\Log::info("Subtracting consignment {$mbr->id}: {$setConsignment} - {$mbr->consignment} = {$constotal}");
 			} 
+/*
 			// SET Consignment
 			if ($setConsignment == 0) { 
 				$constotal = $mbr->consignment; 
 				\Log::info("Setting consignment {$mbr->id}: {$constotal}");
 			} 
+*/
 		}
 
 		if ($constotal) {
@@ -1241,6 +1243,32 @@ SELECT to_email,transaction.refNum as order_number, transaction.authAmount AS am
 		}
 
 		return Response::json($purchase, 200);
+	}
+
+	public function setConsignment($user_id, $amount, $ispercent=1,$pctamt=25)
+	{
+		$mwl_user = Self::getMwlUserInfo($user_id);
+		$key		= Self::midauth();
+
+		$merchant_id = $mwl_user->Merchant->ID;
+
+		// Set this to HTTPS TLS / SSL
+		// [/{customerId}/account/{merchantId}/consignment
+		$curlstring = Config::get('site.mwl_api').''.Config::get('site.mwl_db')."/account/{$merchant_id}/consignment/?sessionkey={$key}";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $curlstring);
+
+		curl_setopt($ch, CURLOPT_POST, 1);
+		$headers[] = "Consignment-IsPercent: {$ispercent}";
+		$headers[] = "Consignment-Amount: {$pctamt}";
+		$headers[] = "Consignment-Balance: {$amount}";
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$server_output = curl_exec ($ch);
+		curl_close($ch);
+
+		\Log::info('OUTPUT: '.$server_output);
 	}
 
 	private static function midcrypt($pass, $cid = 'llr', $level = 1)
