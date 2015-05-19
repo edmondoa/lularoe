@@ -543,6 +543,9 @@ class InventoryController extends \BaseController {
 			$lg->data           = json_encode($purchaseInfo);
 			$lg->save();
 
+			$user->consignment = 0;
+			$user->save();
+
 			// This will continue to ADD consignment value (negative amount deducts it)
 			App::make('ExternalAuthController')->setConsignment($user->id, round($absamount+$tax,2));
 
