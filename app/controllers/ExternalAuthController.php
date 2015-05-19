@@ -610,14 +610,15 @@ class ExternalAuthController extends \BaseController {
 			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		}
 
+/*
 		if (!empty($setConsignment)) { 
 			$headers[] = "Consignment-IsPercent: 1";
 			$headers[] = "Consignment-Amount: 25";
 			$headers[] = "Consignment-Balance: {$setConsignment}";
 		}
-
+*/
 		\Log::info('CREATING IN MWL: '.print_r($headers,true));
-		//return $headers;
+
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -699,6 +700,7 @@ class ExternalAuthController extends \BaseController {
 			$headers[] = "Password: ".self::midcrypt($password); //base 64 encoded password
 		}
 
+/*
 		$constotal = 0;
 		if (!is_null($setConsignment)) { 
 			// ADD consignment
@@ -711,13 +713,11 @@ class ExternalAuthController extends \BaseController {
 				$constotal = $setConsignment - $mbr->consignment; 
 				\Log::info("Subtracting consignment {$mbr->id}: {$setConsignment} - {$mbr->consignment} = {$constotal}");
 			} 
-/*
 			// SET Consignment
 			if ($setConsignment == 0) { 
 				$constotal = $mbr->consignment; 
 				\Log::info("Setting consignment {$mbr->id}: {$constotal}");
 			} 
-*/
 		}
 
 		if ($constotal) {
@@ -725,6 +725,7 @@ class ExternalAuthController extends \BaseController {
 			$headers[] = "Consignment-Amount: 25";
 			$headers[] = "Consignment-Balance: ".floatval($constotal);
 		}
+*/
 
 		\Log::info('Output: '.print_r($headers, true));
 

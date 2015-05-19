@@ -95,7 +95,6 @@
 			            </th>
 			            <td>
 							{{ $mwl_user->Merchant->{'Consignment-Balance'} or ''}}
-
 							@if (Auth::user()->hasRole(['Superadmin','Admin'])) <a href="/inventory/matrix/{{ $user->id }}">Purchase Initial Order</a> @endif
 						</td>
 					</tr>
@@ -132,11 +131,12 @@
 								@endif
 							</td>
 						</tr>	
+
 						<tr>
 							<th>Gender:</th>
 							<td>{{ $user->gender }}</td>
 						</tr>
-						
+
 						<tr>
 							<th>DOB:</th>
 							<td>{{ $user->dob }}</td>
