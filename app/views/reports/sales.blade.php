@@ -11,7 +11,7 @@
 		<div id="filter_div"></div>
 		<div id="category_div"></div>
 		<div id="sales"></div>
-		<div id="taxliability"></div>
+		<div id="financials_chart"></div>
 		<div id="itemsales_daily"></div>
 		<div id="dailysales_table"></div>
 		<div id="dailysales_bar"></div>
@@ -38,18 +38,56 @@
 		//chart.draw(chartinfo);
 	}
 
-	function bestSellers(chartable) {
-		var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard'));
+	function financials(dashboard, controller, chartable) {
 			
 		var itemsales = new google.visualization.DataTable();
+		var money = new google.visualization.NumberFormat({prefix: '$'});
+		var numeric = new google.visualization.NumberFormat({fractionDigits : 0});
 
+		// Set up the columns
+		itemsales.addColumn('datetime','Date');
+		itemsales.addColumn('number','Tax');
+		itemsales.addColumn('number','Subtotal');
+		itemsales.addColumn('number','Total');
+
+		// Instantiate and draw our chart, passing in some options.
+		$.each(chartable.sales,function(datesold,itemdata) {
+			itemsales.addRows([[new Date(datesold),itemdata.tax,itemdata.subtotal,itemdata.total]]);
+		});
+
+		itemsales.sort([{column: 0, desc: true}]);
+
+		money.format(itemsales, 3); // Apply formatter to second column
+		money.format(itemsales, 2); // Apply formatter to second column
+		money.format(itemsales, 1); // Apply formatter to second column
+
+		var dailySalesChart  = new google.visualization.ChartWrapper({
+				'chartType': 'Table',
+				'containerId': 'financials_chart',
+				'options': {
+				  'width': 900,
+				  'height': 700,
+				  'legend': 'none',
+				  'chartArea': {'left': 15, 'top': 15, 'right': 0, 'bottom': 0},
+				  'pieSliceText': 'value'
+				}
+			  });
+
+		dashboard.bind(controller, dailySalesChart);
+		dashboard.draw(itemsales);
+	}
+
+	function bestSellers(dashboard, controller, chartable) {
+			
+		var itemsales = new google.visualization.DataTable();
+		var money = new google.visualization.NumberFormat({prefix: '$'});
+		var numeric = new google.visualization.NumberFormat({fractionDigits : 0});
+
+		// Set up the columns
 		itemsales.addColumn('datetime','Date');
 		itemsales.addColumn('string','Item');
 		itemsales.addColumn('number','# Sold');
 		itemsales.addColumn('number','Total');
-
-		// Set chart options
-		var options = {'title':'Best Sellers', 'isStacked':true, 'width':900, 'height':700};
 
 		// Instantiate and draw our chart, passing in some options.
 		$.each(chartable.sellers,function(datesold,itemdata) {
@@ -60,14 +98,36 @@
 
 		itemsales.sort([{column: 0, desc: true}]);
 
-		var money = new google.visualization.NumberFormat({prefix: '$'});
-		var numeric = new google.visualization.NumberFormat({fractionDigits : 0});
-
 		money.format(itemsales, 3); // Apply formatter to second column
 		numeric.format(itemsales, 2); // Apply formatter to second column
 
-//		var table = new google.visualization.Table(document.getElementById('dailysales_table'));
+		var dailySalesChart  = new google.visualization.ChartWrapper({
+				'chartType': 'Table',
+				'containerId': 'dailysales_table',
+				'options': {
+				  'width': 900,
+				  'height': 700,
+				  'legend': 'none',
+				  'chartArea': {'left': 15, 'top': 15, 'right': 0, 'bottom': 0},
+				  'pieSliceText': 'value'
+				}
+			  });
 
+		dashboard.bind(controller, dailySalesChart);
+		dashboard.draw(itemsales);
+	}
+
+	function getSum(data, column) {
+		var total = 0;
+		for (i = 0; i < data.getNumberOfRows(); i++) {
+			console.log(data);
+		  total = total + data.getValue(i, column);
+		}
+		return total;
+	}
+
+	$(document).ready(function() { 
+		var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard'));
 		var dateSlider = new google.visualization.ControlWrapper({
 	   'controlType': 'ChartRangeFilter',
 		'containerId': 'filter_div',
@@ -83,51 +143,9 @@
 				}
 			}
 		});
-
-		var categoryFilter = new google.visualization.ControlWrapper({
-			'controlType': 'CategoryFilter',
-			'containerId': 'category_div',
-			'options': {
-			  'filterColumnLabel': 'Item'
-			}
-		  });
-
-
-		var dailySalesChart  = new google.visualization.ChartWrapper({
-				'chartType': 'Table',
-				'containerId': 'dailysales_table',
-				'options': {
-				  'width': 900,
-				  'height': 700,
-				  'legend': 'none',
-				  'chartArea': {'left': 15, 'top': 15, 'right': 0, 'bottom': 0},
-				  'pieSliceText': 'value'
-				}
-			  });
-
-		google.visualization.events.addListener(dateSlider, 'statechange', function() {
-			console.log('NUM: '+getSum(itemsales,2));
-			console.log('AMT: '+getSum(itemsales,3));	
-		});
-
-		dashboard.bind(dateSlider, dailySalesChart);
-//		dashboard.bind(categoryFilter, dailySalesChart);
-		dashboard.draw(itemsales);
-	}
-
-	function getSum(data, column) {
-		var total = 0;
-		for (i = 0; i < data.getNumberOfRows(); i++) {
-			console.log(data);
-		  total = total + data.getValue(i, column);
-		}
-		return total;
-	}
-
-	$(document).ready(function() { 
 		jQuery.get('/api/report/chartable',function(chartable) {
-			itemSalesByDay(chartable);
-			bestSellers(chartable);
+			financials(dashboard,dateSlider,chartable);
+	//		bestSellers(dashboard,dateSlider,chartable);
 		});
 	});
 
