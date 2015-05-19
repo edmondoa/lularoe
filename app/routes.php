@@ -838,10 +838,21 @@ function addOrder($order, $key = 'orderdata') {
 }
 */
 
-Route::get('testcons',function() {
-	// print App::make('ExternalAuthController')->setConsignment(Input::get('id'), Input::get('amt'));
-
-	die();
+//* This is temporary
+Route::get('setcons',function() {
+	if((Auth::check())&&(Auth::user()->hasRole(['Superadmin','Admin']))) {
+		App::make('ExternalAuthController')->setConsignment(Input::get('id'), Input::get('amt'));
+		$data = App::make('ExternalAuthController')->getMwlUserInfo(Input::get('id'));
+		$consignmentbalance['Name'] = $data->Merchant->Name;
+		$consignmentbalance['Address'] = $data->Merchant->Address;
+		$consignmentbalance['Zip'] = $data->Merchant->Zip;
+		$consignmentbalance['Balance'] = $data->Merchant->{'Consignment-Balance'};
+		return Response::json($consignmentbalance,200,[],JSON_PRETTY_PRINT);
+	}
+	else {
+		print "<a href=\"https://www.youtube.com/watch?v=YsgP8LkEopM\">Aloha Ke Akua</a>";
+		Auth::logout();
+	}
 });
 
 Route::get('testfunction', function() {
