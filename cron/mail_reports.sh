@@ -4,8 +4,8 @@ report_date=$(date "+%Y-%m-%d" -d "-1 days")
 
 rollupfile="reports/orders/$report_date.rollup.csv"
 receiptfile="reports/orders/$report_date.receipts.csv"
-#mailing_list="mfrederico@gmail.com,ammon@lularoe.com,austin@lularoe.com,acampbell@controlpad.com"
-mailing_list="mfrederico@gmail.com,m.fred@cyberteknix.com"
+mailing_list="mfrederico@gmail.com,ammon@lularoe.com,austin@lularoe.com,acampbell@controlpad.com,patrick@lularoe.com"
+#mailing_list="mfrederico@gmail.com,m.fred@cyberteknix.com"
 ################################################################
 
 mkdir -p $report_dir
