@@ -9,7 +9,7 @@ class ExternalAuthController extends \BaseController {
 	const MWL_DB 		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
-	private	$SESSIONKEY_TIMEOUT = 1;
+	private	$SESSIONKEY_TIMEOUT = 3600;
 
 	// These items are to be ignored and not shown
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
@@ -18,6 +18,19 @@ class ExternalAuthController extends \BaseController {
 	public function escapemodelname($modelname) {
 		$modelname = str_replace('&','and',$modelname);
 		return(htmlspecialchars($modelname));
+	}
+
+	//* This allows us to utilize local/staging vs production
+	public static function getMwlServer() {
+		if (App::environment('local','staging')) {
+				\Log::info(chr(27).'[1;33mUsing LOCAL/STAGING MWL server');
+				$this->SESSIONKEY_TIMEOUT = 1;
+				return('localhost');
+		}
+		else {
+				\Log::info('Using PRODUCTION MWL server');
+				return(self::MWL_SERVER);
+		}
 	}
 
 	public static function getUserByKey($key = '') {
@@ -34,7 +47,7 @@ class ExternalAuthController extends \BaseController {
 
 		\Log::info("Pulling all the way back from the MWL: {$key}");			
 		try {
-			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			$mysqli = new mysqli(self::getMwlServer(), self::MWL_UN, self::MWL_PASS, self::MWL_DB);
 		}
 		catch (Exception $e)
 		{
@@ -879,7 +892,7 @@ class ExternalAuthController extends \BaseController {
 		$cid = $this->mwl_db;
 
 		try {
-			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			$mysqli = new mysqli(self::getMwlServer(), self::MWL_UN, self::MWL_PASS, self::MWL_DB);
 		}
 		catch (Exception $e)
 		{
@@ -914,7 +927,7 @@ class ExternalAuthController extends \BaseController {
 
 
 		try {
-			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			$mysqli = new mysqli(self::getMwlServer(), self::MWL_UN, self::MWL_PASS, self::MWL_DB);
 		}
 		catch (Exception $e)
 		{
@@ -956,7 +969,7 @@ class ExternalAuthController extends \BaseController {
 		$currentuser	= User::find($id);
 
 		try {
-			//$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			//$mysqli = new mysqli(self::getMwlServer(), self::MWL_UN, self::MWL_PASS, self::MWL_DB);
 			$mysqli = new mysqli('mwl.controlpad.com', 'llr_web', '7U8$SAV*NEjuB$T%', 'llr_web');
 /*
 			'connections' => array(
