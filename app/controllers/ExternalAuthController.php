@@ -3,13 +3,13 @@
 class ExternalAuthController extends \BaseController {
 
 	// Private vars for this controller only
-	const MWL_SERVER	= 'localhost'; //'mwl.controlpad.com';
+	const MWL_SERVER	= 'mwl.controlpad.com';
 	const MWL_UN		= 'llr_web';//'llr_txn';
 	const MWL_PASS		= '7U8$SAV*NEjuB$T%';//'ilovetexas';
 	const MWL_DB 		= 'llr';
 	private $mwl_cachetime	= 3600;
 	private	$mwl_cache	= '../app/storage/cache/mwl/';
-	private	$SESSIONKEY_TIMEOUT = 1;
+	private	$SESSIONKEY_TIMEOUT = 3600;
 
 	// These items are to be ignored and not shown
 	private $ignore_inv	= ['OLIVIA', 'NENA & CO.', 'DDM SLEEVE', 'DDM SLEEVELESS'];
