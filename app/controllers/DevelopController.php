@@ -40,9 +40,12 @@ class DevelopController extends \BaseController {
 	public function getJake()
 	{
 		// /User::find(9934)->update(['email'=>'rep@controlpad.com','password'=>Hash::make('password2')]);
-		return Hash::make('password2');
+		//return Hash::make('password2');
 		//return Auth::user();
-
+		return Ledger::where('txtype','CONS')->get();
+		return Ledger::find(518);
+		return Ledger::where('receipt_id',0)->where('user_id',0)->get();
+		//return Ledger::where('name', 'LIKE', "%$name%")->get();
 		$userId = 9934;
 		//query to get payments
 		$sql = "

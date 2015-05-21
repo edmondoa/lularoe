@@ -904,7 +904,7 @@ if(App::environment('jake_local'))
 	Route::controller('import','ImportController');
 	Route::get('trans-report/{id}', function($id) {
 		$rep = User::findOrFail($id);
-		$name = $rep->first_name."_".$rep->last_name;
+		$name = $rep->first_name."_".$rep->last_name."_".$rep->id;
 		DB::select("
 			SELECT
 				'Created_At','Receipt Id','CASH','Cash_Tax','Card','Card_Tax','Sub_Total','Tax_Total','Total'

@@ -268,33 +268,33 @@ $colors =
 		TRUNCATE users; 
 		SET FOREIGN_KEY_CHECKS=1;
 
-    [0] => ID
-    [1] => Created
-    [2] => FirstName
-    [3] => Surname
-    [4] => Email
-    [5] => Address
-    [6] => AddressLine2
-    [7] => City
-    [8] => State
-    [9] => Zip
-    [10] => Country
-    [11] => Phone
-    [12] => MemberStatus
-    [13] => SponsorID
-        [0] => ID
-	    [1] => Created
-	    [2] => FirstName
-	    [3] => Surname
-	    [4] => Email
-	    [5] => Address
-	    [6] => AddressLine2
-	    [7] => City
-	    [8] => Country
-	    [9] => Phone
-	    [10] => SkypeID
-	    [11] => MemberStatus
-	    [12] => SponsorID
+	[0] => ID
+	[1] => Created
+	[2] => FirstName
+	[3] => Surname
+	[4] => Email
+	[5] => Address
+	[6] => AddressLine2
+	[7] => City
+	[8] => State
+	[9] => Zip
+	[10] => Country
+	[11] => Phone
+	[12] => MemberStatus
+	[13] => SponsorID
+		[0] => ID
+		[1] => Created
+		[2] => FirstName
+		[3] => Surname
+		[4] => Email
+		[5] => Address
+		[6] => AddressLine2
+		[7] => City
+		[8] => Country
+		[9] => Phone
+		[10] => SkypeID
+		[11] => MemberStatus
+		[12] => SponsorID
 		##############################################################################################*/
 	
 		$reader->setOffset(1);
@@ -348,44 +348,121 @@ $colors =
 	{
 		$reader = Reader::createFromPath(app_path().'/storage/temp/receipt_fixes.csv');
 		/*##############################################################################################
-		SET FOREIGN_KEY_CHECKS=0;
-		TRUNCATE users; 
-		SET FOREIGN_KEY_CHECKS=1;
 
-    [0] => ID
-    [1] => Created
-    [2] => FirstName
-    [3] => Surname
-    [4] => Email
-    [5] => Address
-    [6] => AddressLine2
-    [7] => City
-    [8] => State
-    [9] => Zip
-    [10] => Country
-    [11] => Phone
-    [12] => MemberStatus
-    [13] => SponsorID
-        [0] => ID
-	    [1] => Created
-	    [2] => FirstName
-	    [3] => Surname
-	    [4] => Email
-	    [5] => Address
-	    [6] => AddressLine2
-	    [7] => City
-	    [8] => Country
-	    [9] => Phone
-	    [10] => SkypeID
-	    [11] => MemberStatus
-	    [12] => SponsorID
+		[0] => receipt_id
+		[1] => date
+		[2] => original_amount
+		[3] => tax
+		[4] => first_name
+		[5] => last_name
+		[6] => notes
+		[7] => original_payment_info
+		[8] => refNum
+		[9] => payment_amount
+		[10] => user_id
+		[11] => tpe
+		[12] => Existing_ledger_id
+		[13] => 
+
 		##############################################################################################*/
 	
-		//$reader->setOffset(1);
+		$reader->setOffset(1);
 		//$data = $reader->fetchOne();
 		//return dd($data);
 		$reader->each(function ($row, $index, $iterator) {
-			echo"<pre>"; print_r($row); echo"</pre>";
+			$receipt = Receipt::findOrFail($row[0]);
+			$user = User::where('email',$receipt->to_email)->first();
+			if(!is_null($user))
+			{
+				//echo"<pre>"; print_r($user->toArray()); echo"</pre>";
+			}
+			else
+			{
+				$user = User::where('last_name',$receipt->to_lastname)->where('first_name',$receipt->to_firstname)->first();
+				if(!is_null($user))
+				{
+					//echo"<pre>"; print_r($user->toArray()); echo"</pre>";
+				}
+				else
+				{
+					echo "<p>-- User not found for ".$receipt->to_lastname." ".$receipt->to_firstname."</p>";
+					$user = new stdClass;
+					$user->id= "unknown";
+					//echo"<pre>"; print_r($receipt->toArray()); echo"</pre>";
+					//echo"<pre>"; print_r($row); echo"</pre>";
+					return true;
+				}
+			}
+			//echo"<pre>"; print_r($receipt->toArray()); echo"</pre>";
+			//echo"<pre>"; print_r($row); echo"</pre>";
+			// /exit;
+			//return true;
+
+			if((!empty($row[12]))&&(is_numeric($row[12])))
+			{
+				echo "UPDATE ledger SET receipt_id=".$row[12]." WHERE id = ".$row[0].";<br />";
+				//$ledger = Ledger::findOrFail($row[12]);
+			}
+			elseif(is_numeric($row[8]))
+			{
+				$countem = Ledger::where('transactionid',$row[8])->count();
+				if($countem == 1)
+				{
+					$ledger = Ledger::where('transactionid',$row[8])->first();
+					echo "UPDATE ledger SET receipt_id=".$receipt->id." WHERE id = ".$ledger->id.";<br />";
+				}
+				else
+				{
+					//$receipt_date = substr($receipt->created_at,0,10);
+					//echo"<pre>"; print_r($receipt_date); echo"</pre>";
+					$ledger_by_date_and_amount = Ledger::where('amount',$receipt->subtotal)->whereRaw('LEFT(created_at,10) = ?', ["$row[1]"])->get();
+					if(count($ledger_by_date_and_amount->toArray()) > 0)
+					{
+						$ledger1 = $ledger_by_date_and_amount[0];
+						echo "UPDATE ledger SET receipt_id=".$receipt->id." WHERE id = ".$ledger1->id.";<br />";
+						//echo "<p>Ledger was found</p>";
+						//echo"<pre>"; print_r($ledger1->toArray()); echo"</pre>";
+					}
+					else
+					{
+						//echo "<p>It seems we can't find any matching records, so let's create a new one like this</p>";
+						$new_ledger = new Ledger;
+						$new_ledger->timestamps = false;
+						$new_ledger->receipt_id = $receipt->id;
+						$new_ledger->amount = $row[9];
+						$new_ledger->txtype = $row[11];
+						$new_ledger->created_at = $receipt->created_at;
+						$new_ledger->updated_at = date('Y-m-d H:i:s');
+						$new_ledger->transactionid = $user->id.'-'.strtotime($receipt->created_at);
+						echo "INSERT INTO ledger (`amount`,`txtype`,`receipt_id`,`created_at`,`updated_at`,`transactionid`) VALUES 
+						('".$row[9]."','".$row[11]."','".$receipt->id."','".$receipt->created_at."','".date('Y-m-d H:i:s')."','".$user->id.'-'.strtotime($receipt->created_at)."');<br />";
+						//$new_ledger->save();
+
+						//echo"<pre>"; print_r($new_ledger->toArray()); echo"</pre>";
+					}
+				}
+				//echo"<pre>"; print_r($ledger->toArray()); echo"</pre>";
+				//echo "UPDATE ledger SET receipt_id=".$ledger->id." WHERE id = ".$row[0].";<br />";
+			}
+			else
+			{
+				//echo "<p>This is a consignment record</p>";
+				$new_ledger = new Ledger;
+				$new_ledger->timestamps = false;
+				$new_ledger->receipt_id = $receipt->id;
+				$new_ledger->amount = $row[9];
+				$new_ledger->txtype = $row[11];
+				$new_ledger->created_at = $receipt->created_at;
+				$new_ledger->updated_at = date('Y-m-d H:i:s');
+				$new_ledger->transactionid = $user->id.'-'.strtotime($receipt->created_at);
+				//$new_ledger->save();
+				echo "INSERT INTO ledger (`amount`,`txtype`,`receipt_id`,`created_at`,`updated_at`,`transactionid`) VALUES 
+				('".$row[9]."','".$row[11]."','".$receipt->id."','".$receipt->created_at."','".date('Y-m-d H:i:s')."','".$user->id.'-'.strtotime($receipt->created_at)."');<br />";
+
+				//echo"<pre>"; print_r($new_ledger->toArray()); echo"</pre>";
+
+			}
+			// /echo"<pre>"; print_r($row); echo"</pre>";
 			return true;
 			echo"<pre>"; print_r($row); echo"</pre>";
 		});
