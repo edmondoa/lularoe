@@ -7,15 +7,19 @@
 			<table class="table table-striped table-hover">
 				<thead>
 					<tr>
-						<th></th><th class="header">Date</th><th>Amount</th><th></th><th></th><th></th>
+						<th></th><th class="header">Date</th><th></th><th>Amount</th><th></th><th></th><th></th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
 						@foreach($payments as $payment)
-							<td><a href="{{URL::action('ReportController@ReportPaymentsDetails',$consultant->id)}}">Details</a></td><td>{{$payment->date or ''}}</td><td>{{$payment->Total or ''}}</td><td></td><td></td><td></td><td></td>
+							<tr>
+							<?php 
+								//echo"<pre>"; print_r($payment); echo"</pre>"; 
+								//continue;
+							?>
+								<td><a href="{{URL::action('ReportController@ReportPaymentsDetails',$payment->id)}}">Details</a></td><td>{{$payment->created_at or ''}}</td><td>$</td><td class="text-right">${{ number_format($payment->amount,2)}}</td><td></td><td></td><td></td><td></td>
+							</tr>
 						@endforeach
-					</tr>
 				</tbody>
 			</table>
 	</div><!-- tabpanel -->

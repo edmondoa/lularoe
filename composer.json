@@ -11,6 +11,7 @@
         "camroncade/timezone": "dev-master",
         "doctrine/dbal": "~2.3",
 		"beelab/bowerphp": "0.1.*@alpha",
+		"league/csv": "~6.3",
 		"dinesh/barcode": "dev-master"
 	},
 	"autoload": {

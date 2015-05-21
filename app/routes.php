@@ -21,7 +21,6 @@
 ##############################################################################################
 # Non-Replicated Site Routes
 ##############################################################################################
-Route::controller('dev','DevelopController');
 Route::pattern('id', '[0-9]+');
 
 		// API for IOS App
@@ -749,30 +748,6 @@ Route::get('test-steve', function() {
 	phpinfo();
 });
 
-Route::get('trans-report/{id}/{name}', function($id,$name) {
-	DB::select("
-		SELECT
-			'Created_At','Receipt Id','CASH','Cash_Tax','Card','Card_Tax','Sub_Total','Tax_Total','Total'
-		UNION ALL 
-		SELECT	
-			ledger.created_at,
-			receipt_id,
-			SUM(CASE WHEN ledger.txtype='CASH' THEN ledger.amount ELSE 0 END) as CASH,
-			SUM(CASE WHEN ledger.txtype='CASH' THEN ledger.tax ELSE 0 END) as TAX_CASH,
-			SUM(CASE WHEN ledger.txtype='CARD' THEN ledger.amount ELSE 0 END) as CARD,
-			SUM(CASE WHEN ledger.txtype='CARD' THEN ledger.tax ELSE 0 END) as TAX_CARD,
-			SUM(ledger.amount) as SUBTOTAL,
-			SUM(ledger.tax) as TAX_TOTAL,
-			SUM(ledger.tax+ledger.amount) AS TOTAL
-		INTO OUTFILE '/var/www/cp-llr.local/reports/".$name.".csv'
-		FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'
-		LINES TERMINATED BY '\n'
-		FROM ledger
-		WHERE ledger.user_id=".$id."
-		group by receipt_id;
-	");
-});
-
 Route::get('clear-all-cache/{function}', function($function) {
 	Cache::forget('route_'.Str::slug(action('DataOnlyController@' . $function)));
 });
@@ -923,3 +898,34 @@ Route::get('sendonboardmail/{id}', function($id) {
 
 	die('Sent!');
 });
+if(App::environment('jake_local'))
+{
+	Route::controller('dev','DevelopController');
+	Route::controller('import','ImportController');
+	Route::get('trans-report/{id}', function($id) {
+		$rep = User::findOrFail($id);
+		$name = $rep->first_name."_".$rep->last_name;
+		DB::select("
+			SELECT
+				'Created_At','Receipt Id','CASH','Cash_Tax','Card','Card_Tax','Sub_Total','Tax_Total','Total'
+			UNION ALL 
+			SELECT	
+				ledger.created_at,
+				receipt_id,
+				SUM(CASE WHEN ledger.txtype='CASH' THEN ledger.amount ELSE 0 END) as CASH,
+				SUM(CASE WHEN ledger.txtype='CASH' THEN ledger.tax ELSE 0 END) as TAX_CASH,
+				SUM(CASE WHEN ledger.txtype='CARD' THEN ledger.amount ELSE 0 END) as CARD,
+				SUM(CASE WHEN ledger.txtype='CARD' THEN ledger.tax ELSE 0 END) as TAX_CARD,
+				SUM(ledger.amount) as SUBTOTAL,
+				SUM(ledger.tax) as TAX_TOTAL,
+				SUM(ledger.tax+ledger.amount) AS TOTAL
+			INTO OUTFILE '/tmp/".$name.".csv'
+			FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'
+			LINES TERMINATED BY '\n'
+			FROM ledger
+			WHERE ledger.user_id=".$id."
+			group by receipt_id;
+		");
+	});
+
+}

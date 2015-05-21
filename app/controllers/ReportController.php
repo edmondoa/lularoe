@@ -400,7 +400,56 @@ class ReportController extends \BaseController {
 
 	public function ReportPayments($repId = null) {
 		if(is_null($repId)) $repId = Auth::user()->id;
-		$startDate = date('Y-m-d',strtotime(date('Y-01-01')));
+		$consultant = User::find($repId);
+		$sql = "
+			SELECT 
+				payments.id,
+				ROUND(SUM(payments.amount), 2) as amount,
+				payments.updated_at as created_at
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$repId." AND batchedIn = -1 
+			GROUP BY payments.id
+			ORDER BY payments.updated_at
+		";
+		$payments = DB::connection('mysql-mwl')->select($sql);
+		foreach($payments as $payment)
+		{
+			$payment_fees = [];
+			$fees = [];
+			$sql = "
+				SELECT
+					ROUND(SUM(amount),2) as amount,
+					description
+				FROM payments
+				WHERE transaction in (SELECT transaction FROM payments WHERE batchedIn = ".$payment->id.")
+				GROUP BY account
+			";
+			$fees = DB::connection('mysql-mwl')->select($sql);
+			foreach($fees as $fee)
+			{
+				if($fee->description == 'Merchant Payment') continue;
+				$fee_description = (in_array($fee->description,['Controlpad Processing Fee','LLR Processing Fee','CMS Gateway Fee']))?"Processing Fees":$fee->description;
+				if(isset($payment_fees[$fee_description]))
+				{
+					$payment_fees[$fee_description] += $fee->amount;
+				}
+				else
+				{
+					$payment_fees[$fee_description] = $fee->amount;
+				}
+				//echo"<pre>"; print_r($fee); echo"</pre>";
+			}
+			$payment->fees = $payment_fees;
+			//echo"<pre>"; print_r($payment_fes); echo"</pre>";
+		}
+		//return $payments;
+
+
+/*		
+$startDate = date('Y-m-d',strtotime(date('Y-01-01')));
 		$endDate = date('Y-m-d');
 		$consultant = User::find($repId);
 		$result = App::make('ExternalAuthController')->getReportPayments($consultant->id,$startDate,$endDate);
@@ -412,11 +461,28 @@ class ReportController extends \BaseController {
 		{
 			$payments = $result->Batches;
 		}
+*/		
 		return View::make('reports.payments',compact('consultant','payments'));
 	}
 
-	public function ReportPaymentsDetails($repId = null) {
+	public function ReportPaymentsDetails($payment_id,$userId = null) {
 		if(is_null($repId)) $repId = Auth::user()->id;
+		$sql = "
+			SELECT 
+				transaction,
+				payments.*,
+				ROUND(payments.amount, 2) as amount,
+				payments.created_at
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$userId." AND batchedIn = ".$payment_id."
+			ORDER BY payments.created_at
+		";
+		$payment = DB::connection('mysql-mwl')->select($sql);
+
+/*		if(is_null($repId)) $repId = Auth::user()->id;
 		$startDate = date('Y-m-d',strtotime(date('Y-01-01')));
 		$endDate = date('Y-m-d');
 		$consultant = User::find($repId);
@@ -430,6 +496,7 @@ class ReportController extends \BaseController {
 			$transactions = $result->Transactions;
 		}
 		//$transactions = $result->Transactions;
+*/		
 		return View::make('reports.payment-details',compact('transactions','consultant'));
 	}
 

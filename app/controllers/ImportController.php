@@ -344,6 +344,53 @@ $colors =
 		$admin->save();
 		return 'thats that';
 	}
+	public function getFixLedger()
+	{
+		$reader = Reader::createFromPath(app_path().'/storage/temp/receipt_fixes.csv');
+		/*##############################################################################################
+		SET FOREIGN_KEY_CHECKS=0;
+		TRUNCATE users; 
+		SET FOREIGN_KEY_CHECKS=1;
+
+    [0] => ID
+    [1] => Created
+    [2] => FirstName
+    [3] => Surname
+    [4] => Email
+    [5] => Address
+    [6] => AddressLine2
+    [7] => City
+    [8] => State
+    [9] => Zip
+    [10] => Country
+    [11] => Phone
+    [12] => MemberStatus
+    [13] => SponsorID
+        [0] => ID
+	    [1] => Created
+	    [2] => FirstName
+	    [3] => Surname
+	    [4] => Email
+	    [5] => Address
+	    [6] => AddressLine2
+	    [7] => City
+	    [8] => Country
+	    [9] => Phone
+	    [10] => SkypeID
+	    [11] => MemberStatus
+	    [12] => SponsorID
+		##############################################################################################*/
+	
+		//$reader->setOffset(1);
+		//$data = $reader->fetchOne();
+		//return dd($data);
+		$reader->each(function ($row, $index, $iterator) {
+			echo"<pre>"; print_r($row); echo"</pre>";
+			return true;
+			echo"<pre>"; print_r($row); echo"</pre>";
+		});
+		return 'Fixed Ledger';
+	}
 
 
 }
