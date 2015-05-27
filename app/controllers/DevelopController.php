@@ -39,7 +39,10 @@ class DevelopController extends \BaseController {
 	 */
 	public function getJake()
 	{
-		// /User::find(9934)->update(['email'=>'rep@controlpad.com','password'=>Hash::make('password2')]);
+		return Hash::make('password2');
+		return Config::get('usaepay.sourcekeys.test');
+		User::find(9934)->update(['email'=>'rep@controlpad.com','password'=>Hash::make('password2')]);
+		return "update password";
 		//return Hash::make('password2');
 		//return Auth::user();
 		return Ledger::where('txtype','CONS')->get();
@@ -61,54 +64,6 @@ class DevelopController extends \BaseController {
 			GROUP BY payments.id
 			ORDER BY payments.created_at
 		";
-		/*##############################################################################################
-		[
-
-		{
-
-			"id": 88640,
-			"amount": 29.81,
-			"created_at": "0000-00-00 00:00:00"
-
-		},
-		{
-
-			"id": 95350,
-			"amount": 151.09,
-			"created_at": "0000-00-00 00:00:00"
-
-		},
-		{
-
-			"id": 98263,
-			"amount": 153.93,
-			"created_at": "0000-00-00 00:00:00"
-
-		},
-		{
-
-			"id": 101606,
-			"amount": 237.72,
-			"created_at": "0000-00-00 00:00:00"
-
-		},
-		{
-
-			"id": 31254,
-			"amount": 39.75,
-			"created_at": "2015-04-14 22:08:09"
-
-		},
-
-			{
-				"id": 84058,
-				"amount": 3075.76,
-				"created_at": "2015-05-09 03:21:12"
-			}
-
-		]
-		##############################################################################################*/
-
 
 		//query to get transactions in payment
 		$payment_id = 84058;
@@ -341,13 +296,44 @@ class DevelopController extends \BaseController {
 
 	/**
 	 * Method for active development.
-	 * GET /dev/start
+	 * GET /dev/payments
 	 *
 	 * @return Response
 	 */
-	public function getStart()
+	public function getPayments($batchId)
 	{
-		//
+		$transactions = [];
+		$sql = "
+			SELECT
+				id,
+				transaction,
+				amount
+			FROM payments
+			WHERE batchedIn = ".$batchId."
+		";
+		$payments = DB::connection('mysql-mwl')->select($sql);
+		foreach($payments as $payment)
+		{
+			//echo"<pre>"; print_r($payment); echo"</pre>";
+			if(substr($payment->transaction,0,1) == 'b')
+			{
+				//echo"<p>This is a batch</p>";
+				$upstream = $this->getPayments($payment->id);
+				if((is_array($upstream))&&(count($upstream)>0))
+				{
+					foreach($upstream as $transaction)
+					{
+						$transactions[] = $transaction;
+					}
+				}
+				//echo"<pre>"; print_r($payment); echo"</pre>";
+			}
+			else // it is a transaction
+			{
+				$transactions[] = $payment->transaction;
+			}
+		}
+		return $transactions;
 	}
 
 }

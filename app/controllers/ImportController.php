@@ -370,7 +370,13 @@ $colors =
 		//$data = $reader->fetchOne();
 		//return dd($data);
 		$reader->each(function ($row, $index, $iterator) {
-			$receipt = Receipt::findOrFail($row[0]);
+			$receipt = Receipt::find($row[0]);
+			if(is_null($receipt))
+			{
+				echo "<p>-- Missing receipt</p>";
+				echo"<pre>"; print_r($row); echo"</pre>";
+				return true;
+			}
 			$user = User::where('email',$receipt->to_email)->first();
 			if(!is_null($user))
 			{
@@ -387,10 +393,10 @@ $colors =
 				{
 					echo "<p>-- User not found for ".$receipt->to_lastname." ".$receipt->to_firstname."</p>";
 					$user = new stdClass;
-					$user->id= "unknown";
+					$user->id = "unknown";
 					//echo"<pre>"; print_r($receipt->toArray()); echo"</pre>";
 					//echo"<pre>"; print_r($row); echo"</pre>";
-					return true;
+					//return true;
 				}
 			}
 			//echo"<pre>"; print_r($receipt->toArray()); echo"</pre>";

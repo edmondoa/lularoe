@@ -51,6 +51,7 @@ class CMSpayment extends SoapClient {
 	
 	public function __construct($merchant) {
 		$seed = microtime(true) . rand();
+		$this->test_mode = Config::get('usaepay.test_mode',false);
 		//$merchant = Merchant::find(Auth::user()->merchant_id);
 		if((empty($merchant->usaepay_sourcekey))||(empty($merchant->usaepay_pin))||($merchant->usaepay_sourcekey = '_e1m15CW0C92015X7v8055v1gOtyV28q'))
 		{

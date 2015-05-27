@@ -637,6 +637,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 	Route::group(array(), function() {
 
 		if (Auth::check() && Auth::user() -> hasRole(['Superadmin', 'Admin'])) {
+			Route::get('reports/rep-transactions/{repId}', 'ReportController@TransactionsByUser');
 			Route::get('reports/rep-payments/{repId}', 'ReportController@ReportPayments');
 			Route::get('reports/rep-payment-details/{repId}/{startDate?}/{endDate?}', 'ReportController@ReportPaymentsDetails');
 			Route::get('reports/rep-transaction-details/{transactionId}', 'ReportController@ReportTransactionDetails');
