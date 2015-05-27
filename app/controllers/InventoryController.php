@@ -679,7 +679,8 @@ class InventoryController extends \BaseController {
 			Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
 				$message->to($inv->to_email, "{$inv->to_firstname} {$inv->to_lastname}");
 				$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
-				$message->from($user->email, $user->first_name.' '.$user->last_name);
+				$message->from('invoices@'.Config::get('site.domain'), $user->first_name.' '.$user->last_name);
+				$message->replyTo($user->email, $user->first_name.' '.$user->last_name);
 			});
 		} catch (Exception $e) {
 			die('Check your email address you are sending to: '.$e->getMessage());
@@ -888,7 +889,8 @@ class InventoryController extends \BaseController {
 				Mail::send('emails.invoice', $data, function($message) use($user, $data, $inv) {
 					$message->to($data['email'], "Order Warehousing");
 					$message->subject('Invoice From: '."{$user->first_name} {$user->last_name}");
-					$message->from($user->email, $user->first_name.' '.$user->last_name);
+					$message->from('invoices@'.Config::get('site.domain'), $user->first_name.' '.$user->last_name);
+					$message->replyTo($user->email, $user->first_name.' '.$user->last_name);
 				});
 			} catch (Exception $e) {
 				\Log::error('Invoice did not get sent to order warehouseing.');	
@@ -974,7 +976,8 @@ class InventoryController extends \BaseController {
 				Mail::send('emails.standard', $data, function($message) use($user, $data, $inv) {
 					$message->to($data['to_email'], "{$data['to_firstname']} {$data['to_lastname']}")
 					->subject("Purchase receipt from {$user->first_name} {$user->last_name}")
-					->from($user->email, "{$user->first_name} {$user->last_name}");
+					->replyTo($user->email, "{$user->first_name} {$user->last_name}")
+					->from('receipts@'.Config::get('site.domain'), "{$user->first_name} {$user->last_name}");
 				});
 			} catch (Exception $e) {
 				\Log::error('Sending customer receipt: '.$e->getMessage());

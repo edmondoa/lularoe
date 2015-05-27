@@ -869,7 +869,8 @@ class ExternalAuthController extends \BaseController {
 				Mail::send('emails.standard', array('data'=>$data,'user'=>$user,'message'=>$data['body'],'body'=>$data['body']), function($message) use($user, $data) {
 					$message->to($data['email'])
 					->subject('Order receipt from '.$user->first_name.' '.$user->last_name)
-					->from($user->email, $user->first_name.' '.$user->last_name);
+					->replyTo($user->email, $user->first_name.' '.$user->last_name)
+					->from('receipts@'.Config::get('domain', $user->first_name.' '.$user->last_name));
 				});
 			}
 			catch (Exception $e) {

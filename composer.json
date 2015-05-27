@@ -11,7 +11,8 @@
         "camroncade/timezone": "dev-master",
         "doctrine/dbal": "~2.3",
 		"beelab/bowerphp": "0.1.*@alpha",
-		"dinesh/barcode": "dev-master"
+		"league/csv": "~6.3",
+		"dinesh/barcode": "V3.0"
 	},
 	"autoload": {
 		"classmap": [
