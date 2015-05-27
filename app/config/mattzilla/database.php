@@ -18,9 +18,9 @@
 					'mysql-mwl' => array(
 						'driver'    => 'mysql',
 						'host'      => 'localhost',
-						'database'  => 'llr_dev',
-						'username'  => 'llr_dev',
-						'password'  => '7U8$SAV*NEjuB$T%',
+						'database'  => 'llr',
+						'username'  => 'authUser',
+                        'password'  => 'C0ntr01p@d',
 						'charset'   => 'utf8',
 						'collation' => 'utf8_unicode_ci',
 						'prefix'    => '',
