@@ -211,8 +211,21 @@ class BlastController extends \BaseController {
 		}
 		else
 		{
-			if ($count == 1) return Redirect::back()->with('message','The email message was sent.');
-			else return Redirect::route('dashboard')->with('message','The email message was sent to '. $count .' users');
+			if ($count == 1) {
+				\Log::info("Email \"{$form_data['subject_line']}\" From: ".Auth::user()->first_name.' '.Auth::user()->last_name." To ({$count}) people.");
+				\Log::info(URL::previous());
+				if (preg_match('/users\/email/',URL::previous())) {
+					return Redirect::route('leads')->with('message',"The email message was sent to {$count} recipients.");;
+				}
+				else { // Default return to dashboard
+					return Redirect::route('dashboard')->with('message','The email message was sent to '. $count .' users');
+				}
+			//	return Redirect::back()->with('message','The email message was sent.');
+			}
+			else {
+				\Log::info("Email \"{$form_data['subject_line']}\" From: ".Auth::user()->first_name.' '.Auth::user()->last_name." To ({$count}) people.");
+				return Redirect::route('dashboard')->with('message','The email message was sent to '. $count .' users');
+			}
 		}
 		//return Redirect::back()->with('message','The email message was sent successfully to '. $count .' users');
 
