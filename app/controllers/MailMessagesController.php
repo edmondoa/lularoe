@@ -66,7 +66,7 @@ class MailMessagesController extends \BaseController {
 			}
 			else
 			{
-				$message->from('no-reply@llr.controlpad.com', $merchant->name);
+				$message->from('no-reply@'.Config::get('domain'), $merchant->name);
 			}
 		});
 		//exit;
