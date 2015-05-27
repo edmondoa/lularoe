@@ -174,6 +174,11 @@
 							<a class="" href="/reports/rep-payments/{{$user->id}}" > Payments</a>
 						</td>
 					</tr>
+					<tr>
+						<td>
+							<a class="" href="/reports/rep-transactions/{{$user->id}}" > Sales</a>
+						</td>
+					</tr>
 				</table>
 			</div><!-- panel -->
 		</div><!-- col -->

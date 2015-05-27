@@ -51,14 +51,14 @@ class CMSpayment extends SoapClient {
 	
 	public function __construct($merchant) {
 		$seed = microtime(true) . rand();
+		$this->test_mode = Config::get('usaepay.test_mode',false);
 		//$merchant = Merchant::find(Auth::user()->merchant_id);
-		if((empty($merchant->usaepay_sourcekey))||(empty($merchant->usaepay_pin))||($merchant->usaepay_sourcekey = '_e1m15CW0C92015X7v8055v1gOtyV28q'))
+		if($this->test_mode)
 		{
 			// if we don't have valid credentials return the test environment
-			$this->sourcekey = '_e1m15CW0C92015X7v8055v1gOtyV28q';
-			$this->pin = '123456';
+			$this->sourcekey = Config::get('usaepay.sourcekeys.test.sourcekey');
+			$this->pin = Config::get('usaepay.sourcekeys.test.pin');
 			$this->wsdl = "https://sandbox.usaepay.com/soap/gate/0AE595C1/usaepay.wsdl";
-			$this->test_mode = true;
 		}
 		else
 		{

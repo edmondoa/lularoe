@@ -398,8 +398,165 @@ class ReportController extends \BaseController {
 		return Response::json(null,200);
 	}
 
+	public function TransactionsByUser($repId)
+	{
+		if(is_null($repId)) $repId = Auth::user()->id;
+		$consultant = User::find($repId);
+		$transactions = [];
+		$sql = "
+			SELECT	
+				ledger.created_at,
+				receipt_id,
+				SUM(CASE WHEN ledger.txtype='CASH' THEN ledger.amount ELSE 0 END) as CASH,
+				SUM(CASE WHEN ledger.txtype='CASH' THEN ledger.tax ELSE 0 END) as TAX_CASH,
+				SUM(CASE WHEN ledger.txtype='CARD' THEN ledger.amount ELSE 0 END) as CARD,
+				SUM(CASE WHEN ledger.txtype='CARD' THEN ledger.tax ELSE 0 END) as TAX_CARD,
+				SUM(ledger.amount) as SUBTOTAL,
+				SUM(ledger.tax) as TAX_TOTAL,
+				SUM(ledger.tax+ledger.amount) AS TOTAL
+			FROM ledger
+			WHERE ledger.user_id=".$repId."
+			group by receipt_id
+			ORDER BY created_at DESC
+
+		";
+		$transactions = DB::select($sql);
+		return View::make('reports.transactions',compact('consultant','transactions'));
+	}
+
+	public function TransactionsByBatch($batchId)
+	{
+		$transactions = [];
+		$sql = "
+			SELECT
+				id,
+				transaction,
+				amount
+			FROM payments
+			WHERE batchedIn = ".$batchId."
+		";
+		$payments = DB::connection('mysql-mwl')->select($sql);
+		foreach($payments as $payment)
+		{
+			//echo"<pre>"; print_r($payment); echo"</pre>";
+			if(substr($payment->transaction,0,1) == 'b')
+			{
+				//echo"<p>This is a batch</p>";
+				$upstream = $this->TransactionsByBatch($payment->id);
+				if((is_array($upstream))&&(count($upstream)>0))
+				{
+					foreach($upstream as $transaction)
+					{
+						$transactions[] = $transaction;
+					}
+				}
+				//echo"<pre>"; print_r($payment); echo"</pre>";
+			}
+			else // it is a transaction
+			{
+				$transactions[] = $payment->transaction;
+			}
+		}
+		return $transactions;
+	}
+
 	public function ReportPayments($repId = null) {
 		if(is_null($repId)) $repId = Auth::user()->id;
+		$ledger_entries = [];
+
+		$consultant = User::find($repId);
+		$sql = "
+			SELECT 
+				payments.id,
+				ROUND(SUM(payments.amount), 2) as amount,
+				CASE 
+					WHEN (payments.created_at != '0000-00-00 00:00:00') THEN payments.created_at 
+					WHEN ((payments.updated_at != '0000-00-00 00:00:00') AND (payments.created_at = '0000-00-00 00:00:00')) THEN payments.updated_at 
+					ELSE '2015-01-01' END as created_at,
+				DATE_FORMAT(payments.updated_at,'%m/%d/%Y') as created_at
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$repId." AND batchedIn = -1 
+			GROUP BY payments.id
+			ORDER BY created_at DESC
+		";
+		$payments = DB::connection('mysql-mwl')->select($sql);
+		//the only way right now to do this correctly, is to loop through each of the transactions and check to see if it is a batch itself
+		foreach($payments as $payment)
+		{
+			$payment_transactions = $this->TransactionsByBatch($payment->id);
+			$payment_fees = [];
+			$fees = [];
+			$sql = "
+				SELECT
+					ROUND(SUM(amount),2) as amount,
+					description
+				FROM payments
+				WHERE transaction in ('".implode("','",$payment_transactions )."')
+				GROUP BY account
+			";
+			$fees = DB::connection('mysql-mwl')->select($sql);
+			foreach($fees as $fee)
+			{
+				if($fee->description == 'Merchant Payment') continue;
+				$fee_description = (in_array($fee->description,['Controlpad Processing Fee','LLR Processing Fee','CMS Gateway Fee']))?"Processing_Fees":str_replace(" ","_",$fee->description);
+				if(isset($payment_fees[$fee_description]))
+				{
+					$payment_fees[$fee_description] += $fee->amount;
+				}
+				else
+				{
+					$payment_fees[$fee_description] = $fee->amount;
+				}
+				//echo"<pre>"; print_r($fee); echo"</pre>";
+			}
+			$payment->fees = $payment_fees;
+			
+			//$payment_transactions = [];
+			$sql = "
+				SELECT
+					transaction.*,
+					payments.transaction as refNum,
+					SUM(payments.amount) as paid,
+					CASE WHEN customer IS NULL THEN 'N/A' ELSE customer END as customer,
+					CASE 
+						WHEN (transaction.created_at != '0000-00-00 00:00:00') THEN transaction.created_at 
+						WHEN ((transaction.updated_at != '0000-00-00 00:00:00') AND (transaction.created_at = '0000-00-00 00:00:00')) THEN transaction.updated_at 
+						ELSE '1972-08-28' END as created_at,
+					CASE cashsale WHEN 1 THEN 'Cash' ELSE 'Credit' END as txtype
+				FROM payments
+				LEFT JOIN transaction ON transaction.refNum=payments.transaction
+				WHERE payments.transaction in ('".implode("','",$payment_transactions )."')
+				GROUP BY payments.transaction
+			";
+			$transactions = DB::connection('mysql-mwl')->select($sql);
+			$sql = "
+				SELECT
+					ledger.transactionid,
+					ledger.amount,
+					ledger.tax,
+					ledger.txtype,
+					ledger.created_at,
+					ledger.receipt_id
+				FROM ledger
+				WHERE ledger.transactionid in ('".implode("','",$payment_transactions )."')
+				GROUP BY ledger.transactionid
+			";
+			$ledgers = DB::select($sql);
+			foreach($ledgers as $ledger)
+			{
+				$ledger_entries[$ledger->transactionid] = (array) $ledger;
+			}
+
+			$payment->transactions = $transactions;
+			//echo"<pre>"; print_r($payment_fes); echo"</pre>";
+		}
+		// /return $payments;
+
+
+		/*		
 		$startDate = date('Y-m-d',strtotime(date('Y-01-01')));
 		$endDate = date('Y-m-d');
 		$consultant = User::find($repId);
@@ -412,11 +569,28 @@ class ReportController extends \BaseController {
 		{
 			$payments = $result->Batches;
 		}
-		return View::make('reports.payments',compact('consultant','payments'));
+		*/		
+		return View::make('reports.payments',compact('consultant','payments','ledger_entries'));
 	}
 
-	public function ReportPaymentsDetails($repId = null) {
+	public function ReportPaymentsDetails($payment_id,$userId = null) {
 		if(is_null($repId)) $repId = Auth::user()->id;
+		$sql = "
+			SELECT 
+				transaction,
+				payments.*,
+				ROUND(payments.amount, 2) as amount,
+				payments.created_at
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$userId." AND batchedIn = ".$payment_id."
+			ORDER BY payments.created_at
+		";
+		$payment = DB::connection('mysql-mwl')->select($sql);
+
+/*		if(is_null($repId)) $repId = Auth::user()->id;
 		$startDate = date('Y-m-d',strtotime(date('Y-01-01')));
 		$endDate = date('Y-m-d');
 		$consultant = User::find($repId);
@@ -430,6 +604,7 @@ class ReportController extends \BaseController {
 			$transactions = $result->Transactions;
 		}
 		//$transactions = $result->Transactions;
+*/		
 		return View::make('reports.payment-details',compact('transactions','consultant'));
 	}
 
