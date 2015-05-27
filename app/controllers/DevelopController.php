@@ -39,10 +39,132 @@ class DevelopController extends \BaseController {
 	 */
 	public function getJake()
 	{
-        return Hash::make('password2');
-        return Auth::user();
-        $users = DB::connection('mysql-mwl')->select('SELECT * FROM users');
-        return $users;
+		//return Hash::make('password2');
+		//return Config::get('usaepay.sourcekeys.test');
+		User::find(9934)->update(['email'=>'rep@controlpad.com','password'=>Hash::make('password2')]);
+		return "update password";
+		//return Hash::make('password2');
+		//return Auth::user();
+		return Ledger::where('txtype','CONS')->get();
+		return Ledger::find(518);
+		return Ledger::where('receipt_id',0)->where('user_id',0)->get();
+		//return Ledger::where('name', 'LIKE', "%$name%")->get();
+		$userId = 9934;
+		//query to get payments
+		$sql = "
+			SELECT 
+				payments.id,
+				ROUND(SUM(payments.amount), 2) as amount,
+				payments.created_at
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$userId." AND batchedIn = -1 
+			GROUP BY payments.id
+			ORDER BY payments.created_at
+		";
+
+		//query to get transactions in payment
+		$payment_id = 84058;
+		$payment_id = 101606;
+/*
+		$sql = "
+			SELECT 
+				transaction,
+				payments.id,
+				ROUND(payments.amount, 2) as amount,
+				payments.created_at
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$userId." AND batchedIn = ".$payment_id."
+			ORDER BY payments.created_at
+		";
+
+		$sql = "
+			SELECT 
+				transaction,
+				payments.*,
+				ROUND(payments.amount, 2) as amount,
+				payments.created_at
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$userId." AND batchedIn = ".$payment_id."
+			ORDER BY payments.created_at
+		";
+		*//*
+		$sql = "
+			SELECT
+				ROUND(SUM(amount),2) as amount,
+				description
+			FROM payments
+			WHERE transaction = ".$transactionId."
+			GROUP BY account
+		";
+		*/
+		// fees per payment
+		$sql = "
+			SELECT 
+				payments.id,
+				ROUND(SUM(payments.amount), 2) as amount,
+				payments.updated_at as created_at
+			FROM users 
+			INNER JOIN tid ON (tid.id=users.id) 
+			INNER JOIN accounts ON (accounts.id=tid.account) 
+			LEFT JOIN payments ON (payments.account=accounts.id) 
+			WHERE users.username=".$userId." AND batchedIn = -1 
+			GROUP BY payments.id
+			ORDER BY payments.updated_at
+		";
+		$payments = DB::connection('mysql-mwl')->select($sql);
+		foreach($payments as $payment)
+		{
+			$payment_fees = [];
+			$fees = [];
+			$sql = "
+				SELECT
+					ROUND(SUM(amount),2) as amount,
+					description
+				FROM payments
+				WHERE transaction in (SELECT transaction FROM payments WHERE batchedIn = ".$payment->id.")
+				GROUP BY account
+			";
+			$fees = DB::connection('mysql-mwl')->select($sql);
+			foreach($fees as $fee)
+			{
+				if($fee->description == 'Merchant Payment') continue;
+				$fee_description = (in_array($fee->description,['Controlpad Processing Fee','LLR Processing Fee','CMS Gateway Fee']))?"Processing Fees":$fee->description;
+				if(isset($payment_fees[$fee_description]))
+				{
+					$payment_fees[$fee_description] += $fee->amount;
+				}
+				else
+				{
+					$payment_fees[$fee_description] = $fee->amount;
+				}
+				//echo"<pre>"; print_r($fee); echo"</pre>";
+			}
+			$payment->fees = $payment_fees;
+			//echo"<pre>"; print_r($payment_fes); echo"</pre>";
+		}
+		return $payments;
+		exit;
+		$sql = "
+			SELECT
+				ROUND(SUM(amount),2) as amount,
+				description
+			FROM payments
+			WHERE transaction in (SELECT transaction FROM payments WHERE batchedIn = ".$payment_id.")
+			GROUP BY account
+		";
+
+		// /AND created_at >= '{Start_Date}' AND created_at <= '{End_Date}'
+		$data = DB::connection('mysql-mwl')->select($sql);
+		return $data;
 
 		return App::make('ExternalAuthController')->getMwlUserInfo(Auth::user()->id);
 		return "done";
@@ -174,13 +296,44 @@ class DevelopController extends \BaseController {
 
 	/**
 	 * Method for active development.
-	 * GET /dev/start
+	 * GET /dev/payments
 	 *
 	 * @return Response
 	 */
-	public function getStart()
+	public function getPayments($batchId)
 	{
-		//
+		$transactions = [];
+		$sql = "
+			SELECT
+				id,
+				transaction,
+				amount
+			FROM payments
+			WHERE batchedIn = ".$batchId."
+		";
+		$payments = DB::connection('mysql-mwl')->select($sql);
+		foreach($payments as $payment)
+		{
+			//echo"<pre>"; print_r($payment); echo"</pre>";
+			if(substr($payment->transaction,0,1) == 'b')
+			{
+				//echo"<p>This is a batch</p>";
+				$upstream = $this->getPayments($payment->id);
+				if((is_array($upstream))&&(count($upstream)>0))
+				{
+					foreach($upstream as $transaction)
+					{
+						$transactions[] = $transaction;
+					}
+				}
+				//echo"<pre>"; print_r($payment); echo"</pre>";
+			}
+			else // it is a transaction
+			{
+				$transactions[] = $payment->transaction;
+			}
+		}
+		return $transactions;
 	}
 
 }

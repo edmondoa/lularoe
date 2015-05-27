@@ -58,15 +58,16 @@ class MailMessagesController extends \BaseController {
 
 		$result = Mail::send('emails.merchant.standard', $data , function($message) use($person,$merchant,$form_data)
 		{
-		    $message->to($person->email, $person->first.' '.$person->last)->subject($form_data['subject_line']);
-		    if(!empty($merchant->email_address))
-		    {
-		    	$message->from($merchant->email_address, $merchant->name);
-		    }
-		    else
-		    {
-		    	$message->from('no-reply@llr.controlpad.com', $merchant->name);
-		    }
+			$message->to($person->email, $person->first.' '.$person->last)->subject($form_data['subject_line']);
+			if(!empty($merchant->email_address))
+			{
+				$message->from('notifications@'.Config::get('domain'), $merchant->name);
+				$message->replyTo($merchant->email_address, $merchant->name);
+			}
+			else
+			{
+				$message->from('no-reply@'.Config::get('domain'), $merchant->name);
+			}
 		});
 		//exit;
 		//Mailmessage::create($data);
