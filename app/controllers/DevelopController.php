@@ -39,8 +39,8 @@ class DevelopController extends \BaseController {
 	 */
 	public function getJake()
 	{
-		return Hash::make('password2');
-		return Config::get('usaepay.sourcekeys.test');
+		//return Hash::make('password2');
+		//return Config::get('usaepay.sourcekeys.test');
 		User::find(9934)->update(['email'=>'rep@controlpad.com','password'=>Hash::make('password2')]);
 		return "update password";
 		//return Hash::make('password2');

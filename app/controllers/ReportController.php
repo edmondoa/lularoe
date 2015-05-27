@@ -462,12 +462,7 @@ class ReportController extends \BaseController {
 
 	public function ReportPayments($repId = null) {
 		if(is_null($repId)) $repId = Auth::user()->id;
-		/*##############################################################################################
-		Function to recurse through
-		##############################################################################################*/
-		
-
-
+		$ledger_entries = [];
 
 		$consultant = User::find($repId);
 		$sql = "
@@ -487,7 +482,7 @@ class ReportController extends \BaseController {
 		//the only way right now to do this correctly, is to loop through each of the transactions and check to see if it is a batch itself
 		foreach($payments as $payment)
 		{
-			$transactions = $this->TransactionsByBatch($payment->id);
+			$payment_transactions = $this->TransactionsByBatch($payment->id);
 			$payment_fees = [];
 			$fees = [];
 			$sql = "
@@ -495,7 +490,7 @@ class ReportController extends \BaseController {
 					ROUND(SUM(amount),2) as amount,
 					description
 				FROM payments
-				WHERE transaction in ('".implode("','",$transactions)."')
+				WHERE transaction in ('".implode("','",$payment_transactions )."')
 				GROUP BY account
 			";
 			$fees = DB::connection('mysql-mwl')->select($sql);
@@ -515,7 +510,7 @@ class ReportController extends \BaseController {
 			}
 			$payment->fees = $payment_fees;
 			
-			$payment_transactions = [];
+			//$payment_transactions = [];
 			$sql = "
 				SELECT
 					transaction.*,
@@ -529,10 +524,28 @@ class ReportController extends \BaseController {
 					CASE cashsale WHEN 1 THEN 'Cash' ELSE 'Credit' END as txtype
 				FROM payments
 				LEFT JOIN transaction ON transaction.refNum=payments.transaction
-				WHERE payments.transaction in ('".implode("','",$transactions)."')
+				WHERE payments.transaction in ('".implode("','",$payment_transactions )."')
 				GROUP BY payments.transaction
 			";
 			$transactions = DB::connection('mysql-mwl')->select($sql);
+			$sql = "
+				SELECT
+					ledger.transactionid,
+					ledger.amount,
+					ledger.tax,
+					ledger.txtype,
+					ledger.created_at,
+					ledger.receipt_id
+				FROM ledger
+				WHERE ledger.transactionid in ('".implode("','",$payment_transactions )."')
+				GROUP BY ledger.transactionid
+			";
+			$ledgers = DB::select($sql);
+			foreach($ledgers as $ledger)
+			{
+				$ledger_entries[$ledger->transactionid] = (array) $ledger;
+			}
+
 			$payment->transactions = $transactions;
 			//echo"<pre>"; print_r($payment_fes); echo"</pre>";
 		}
@@ -553,7 +566,7 @@ class ReportController extends \BaseController {
 			$payments = $result->Batches;
 		}
 		*/		
-		return View::make('reports.payments',compact('consultant','payments'));
+		return View::make('reports.payments',compact('consultant','payments','ledger_entries'));
 	}
 
 	public function ReportPaymentsDetails($payment_id,$userId = null) {

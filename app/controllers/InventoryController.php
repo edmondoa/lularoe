@@ -970,7 +970,7 @@ class InventoryController extends \BaseController {
 				Mail::send('emails.standard', $data, function($message) use($user, $data, $inv) {
 					$message->to($data['to_email'], "{$data['to_firstname']} {$data['to_lastname']}")
 					->subject("Purchase receipt from {$user->first_name} {$user->last_name}")
-					->replyTo($user->email, "{$user->first_name} {$user->last_name}");
+					->replyTo($user->email, "{$user->first_name} {$user->last_name}")
 					->from('receipts@'.Config::get('domain'), "{$user->first_name} {$user->last_name}");
 				});
 			} catch (Exception $e) {
