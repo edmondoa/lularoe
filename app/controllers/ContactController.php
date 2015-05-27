@@ -43,7 +43,7 @@ class ContactController extends BaseController {
 				$user->first_name	= Config::get('site.contact_first_name');
 				$user->last_name	= Config::get('site.contact_last_name');
 				$message->replyTo($data_object->email, $data_object->name);
-				$message->from('webcontact@'.Config::get('domain'), Auth::user()->first_name . ' ' . Auth::user()->last_name);
+				$message->from('webcontact@'.Config::get('site.domain'), Auth::user()->first_name . ' ' . Auth::user()->last_name);
 				//email 'To' field: cahnge this to emails that you want to be notified.
 				$message->to($user->email, $user->first_name . ' ' . $user->last_name)->subject(Config::get('site.company_name') . ' contact form: ' . $data_object->subject_line);
 
