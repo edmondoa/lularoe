@@ -593,6 +593,7 @@ Route::group(array('domain' => Config::get('site.domain'), 'before' => 'pub-site
 		##############################################################################################
 		Route::group(array('before' => 'Rep'), function() {
 			Route::get('reports/payments/', 'ReportController@ReportPayments');
+			Route::get('reports/sales-by-date/', 'ReportController@ReportPayments');
 			Route::get('reports/payment-details/{repId}/{startDate?}/{endDate?}', 'ReportController@ReportPaymentsDetails');
 			Route::get('reports/transaction-details/{transactionId}', 'ReportController@ReportTransactionDetails');
 

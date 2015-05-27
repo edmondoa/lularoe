@@ -469,6 +469,10 @@ class ReportController extends \BaseController {
 			SELECT 
 				payments.id,
 				ROUND(SUM(payments.amount), 2) as amount,
+				CASE 
+					WHEN (payments.created_at != '0000-00-00 00:00:00') THEN payments.created_at 
+					WHEN ((payments.updated_at != '0000-00-00 00:00:00') AND (payments.created_at = '0000-00-00 00:00:00')) THEN payments.updated_at 
+					ELSE '2015-01-01' END as created_at,
 				DATE_FORMAT(payments.updated_at,'%m/%d/%Y') as created_at
 			FROM users 
 			INNER JOIN tid ON (tid.id=users.id) 
@@ -476,7 +480,7 @@ class ReportController extends \BaseController {
 			LEFT JOIN payments ON (payments.account=accounts.id) 
 			WHERE users.username=".$repId." AND batchedIn = -1 
 			GROUP BY payments.id
-			ORDER BY payments.updated_at
+			ORDER BY created_at DESC
 		";
 		$payments = DB::connection('mysql-mwl')->select($sql);
 		//the only way right now to do this correctly, is to loop through each of the transactions and check to see if it is a batch itself
