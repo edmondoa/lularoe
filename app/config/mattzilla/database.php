@@ -15,6 +15,17 @@
                             'prefix'    => '',
                     ),
 
+					'mysql-mwl' => array(
+						'driver'    => 'mysql',
+						'host'      => 'localhost',
+						'database'  => 'llr',
+						'username'  => 'authUser',
+                        'password'  => 'C0ntr01p@d',
+						'charset'   => 'utf8',
+						'collation' => 'utf8_unicode_ci',
+						'prefix'    => '',
+					),
+
             ),
 
             'migrations' => 'migrations',

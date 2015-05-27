@@ -20,6 +20,19 @@ class ExternalAuthController extends \BaseController {
 		return(htmlspecialchars($modelname));
 	}
 
+	//* This allows us to utilize local/staging vs production
+	public static function getMwlServer() {
+		if (App::environment('local','staging')) {
+				\Log::info(chr(27).'[1;33mUsing LOCAL/STAGING MWL server');
+				$this->SESSIONKEY_TIMEOUT = 1;
+				return('localhost');
+		}
+		else {
+				\Log::info('Using PRODUCTION MWL server');
+				return(self::MWL_SERVER);
+		}
+	}
+
 	public static function getUserByKey($key = '') {
 		if (empty($key) && Auth::user()) {
 			\Log::info("No Key, but Authed = Return warehouse inventory user");
@@ -34,23 +47,30 @@ class ExternalAuthController extends \BaseController {
 
 		\Log::info("Pulling all the way back from the MWL: {$key}");			
 		try {
-			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			$dbinfo = Config::get('database.connections.mysql-mwl');
+			\Log::info("MWL HOST: {$dbinfo['host']} DB: {$dbinfo['database']}");
+			$mysqli = new mysqli($dbinfo['host'], $dbinfo['username'], $dbinfo['password'], $dbinfo['database']);
 		}
 		catch (Exception $e)
 		{
-			\Log::error("{$key} this this key is not locked to a user account in mwl!");
+			\Log::error("{$key} lookup causing mysqli error exception: ".$e->getMessage());
 			$noconnect = array('error'=>true,'message'=>'Transaction database connection failure: '.$e->getMessage());
-			return App::abort(401, json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again (2)')));
+			return App::abort(401, json_encode($noconnect));
 		}
 		// This is not good .. WHERE'S MY API!
-		$Q = "SELECT username FROM sessionkey LEFT JOIN users ON (userid=id) WHERE `key`='".$mysqli->escape_string($key)."' LIMIT 1";
+		$Q = "SELECT username FROM llr.sessionkey LEFT JOIN users ON (userid=id) WHERE `key`='".$mysqli->escape_string($key)."' LIMIT 1";
+		\Log::info('Check: '.$Q);
 		$res = $mysqli->query($Q);
-		$mwluser = $res->fetch_assoc();
-		\Log::info('FOUND: '.print_r($mwluser['username'],true));
 
-		$mbr = User::find($mwluser['username']);
+		if ($res) { 
+			$mwluser = $res->fetch_assoc();
+			\Log::info('FOUND: '.print_r($mwluser['username'],true));
+			$mbr = User::find($mwluser['username']);
+		}
+
 		//$mbr = User::where('key', 'LIKE', $key.'|%')->first();
 		if (!isset($mbr) && Session::get('repsale')) {
+			\Log::error(mysqli_error($mysqli));
 			\Log::error("{$key} this is a rep sale, and this key is not locked to a user account!");
 			return App::abort(401, json_encode(array('error'=>'true','message'=>'Session Key Expired - Please Login and try again (1)')));
 		}
@@ -880,7 +900,9 @@ class ExternalAuthController extends \BaseController {
 		$cid = $this->mwl_db;
 
 		try {
-			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			$dbinfo = Config::get('database.connections.mysql-mwl');
+			\Log::info("MWL HOST: {$dbinfo['host']} DB: {$dbinfo['database']}");
+			$mysqli = new mysqli($dbinfo['host'],$dbinfo['username'], $dbinfo['password'], $dbinfo['database']);
 		}
 		catch (Exception $e)
 		{
@@ -915,7 +937,9 @@ class ExternalAuthController extends \BaseController {
 
 
 		try {
-			$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			$dbinfo = Config::get('database.connections.mysql-mwl');
+			\Log::info("MWL HOST: {$dbinfo['host']} DB: {$dbinfo['database']}");
+			$mysqli = new mysqli($dbinfo['host'],$dbinfo['username'], $dbinfo['password'], $dbinfo['database']);
 		}
 		catch (Exception $e)
 		{
@@ -957,8 +981,11 @@ class ExternalAuthController extends \BaseController {
 		$currentuser	= User::find($id);
 
 		try {
-			//$mysqli = new mysqli(self::MWL_SERVER, self::MWL_UN, self::MWL_PASS, self::MWL_DB);
-			$mysqli = new mysqli('mwl.controlpad.com', 'llr_web', '7U8$SAV*NEjuB$T%', 'llr_web');
+			//$mysqli = new mysqli(self::getMwlServer(), self::MWL_UN, self::MWL_PASS, self::MWL_DB);
+			//$mysqli = new mysqli('mwl.controlpad.com', 'llr_web', '7U8$SAV*NEjuB$T%', 'llr_web');
+			$dbinfo = Config::get('database.connections.mysql-mwl');
+			\Log::info("MWL HOST: {$dbinfo['host']} DB: {$dbinfo['database']}");
+			$mysqli = new mysqli($dbinfo['host'],$dbinfo['username'], $dbinfo['password'], $dbinfo['database']);
 /*
 			'connections' => array(
 					'mysql' => array(

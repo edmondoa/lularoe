@@ -114,8 +114,14 @@ class userController extends \BaseController {
 			return View::make('user.show', compact('user', 'addresses','mwl_user'));
 		}
 		else {
-			if (Auth::user()->hasRepInDownline($id)) echo 'true';
-			else return 'Doh!';
+			if (Auth::user()->hasRepInDownline($id)) {
+				\Log::info("Yes in downline [{$id}]");
+				return Auth::user();
+			}
+			else {	
+				\Log::info("Not in downline - (old Doh! message) [{$id}]");
+				return Auth::user();
+			}
 		}
 	}
 

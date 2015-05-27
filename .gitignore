@@ -1,3 +1,4 @@
+cron/reports/orders/*
 /bootstrap/compiled.php
 /app/controllers/Server.php
 /vendor
