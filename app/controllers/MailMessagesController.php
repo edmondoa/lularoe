@@ -61,12 +61,12 @@ class MailMessagesController extends \BaseController {
 			$message->to($person->email, $person->first.' '.$person->last)->subject($form_data['subject_line']);
 			if(!empty($merchant->email_address))
 			{
-				$message->from('notifications@'.Config::get('domain'), $merchant->name);
+				$message->from('notifications@'.Config::get('site.domain'), $merchant->name);
 				$message->replyTo($merchant->email_address, $merchant->name);
 			}
 			else
 			{
-				$message->from('no-reply@'.Config::get('domain'), $merchant->name);
+				$message->from('no-reply@'.Config::get('site.domain'), $merchant->name);
 			}
 		});
 		//exit;
