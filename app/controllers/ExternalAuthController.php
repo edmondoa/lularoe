@@ -47,7 +47,7 @@ class ExternalAuthController extends \BaseController {
 
 		\Log::info("Pulling all the way back from the MWL: {$key}");			
 		try {
-			\Log::info(print_r(Config::get('database.connections.mysql-mwl'),true));
+			\Log::info(print_r(Config::get('database.connections.mysql-mwl.host'),true));
 			$dbinfo = Config::get('database.connections.mysql-mwl');
 			$mysqli = new mysqli($dbinfo['host'],$dbinfo['username'], $dbinfo['password'], $dbinfo['database']);
 		}
@@ -895,7 +895,7 @@ class ExternalAuthController extends \BaseController {
 		$cid = $this->mwl_db;
 
 		try {
-			\Log::info(print_r(Config::get('database.connections.mysql-mwl'),true));
+			\Log::info(print_r(Config::get('database.connections.mysql-mwl.host'),true));
 			$dbinfo = Config::get('database.connections.mysql-mwl');
 			$mysqli = new mysqli($dbinfo['host'],$dbinfo['username'], $dbinfo['password'], $dbinfo['database']);
 		}
@@ -932,7 +932,7 @@ class ExternalAuthController extends \BaseController {
 
 
 		try {
-			\Log::info(print_r(Config::get('database.connections.mysql-mwl'),true));
+			\Log::info(print_r(Config::get('database.connections.mysql-mwl.host'),true));
 			$dbinfo = Config::get('database.connections.mysql-mwl');
 			$mysqli = new mysqli($dbinfo['host'],$dbinfo['username'], $dbinfo['password'], $dbinfo['database']);
 		}
@@ -978,7 +978,7 @@ class ExternalAuthController extends \BaseController {
 		try {
 			//$mysqli = new mysqli(self::getMwlServer(), self::MWL_UN, self::MWL_PASS, self::MWL_DB);
 			//$mysqli = new mysqli('mwl.controlpad.com', 'llr_web', '7U8$SAV*NEjuB$T%', 'llr_web');
-			\Log::info(print_r(Config::get('database.connections.mysql-mwl'),true));
+			\Log::info(print_r(Config::get('database.connections.mysql-mwl.host'),true));
 			$dbinfo = Config::get('database.connections.mysql-mwl');
 			$mysqli = new mysqli($dbinfo['host'],$dbinfo['username'], $dbinfo['password'], $dbinfo['database']);
 /*
