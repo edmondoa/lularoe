@@ -418,7 +418,6 @@ class ReportController extends \BaseController {
 			WHERE ledger.user_id=".$repId."
 			group by receipt_id
 			ORDER BY created_at DESC
-
 		";
 		$transactions = DB::select($sql);
 		return View::make('reports.transactions',compact('consultant','transactions'));
@@ -474,6 +473,23 @@ class ReportController extends \BaseController {
 					WHEN ((payments.updated_at != '0000-00-00 00:00:00') AND (payments.created_at = '0000-00-00 00:00:00')) THEN payments.updated_at 
 					ELSE '2015-01-01' END as created_at,
 				DATE_FORMAT(payments.updated_at,'%m/%d/%Y') as created_at
+			FROM payments 
+			LEFT JOIN accounts on payments.account = accounts.id
+			LEFT JOIN tid on tid.account=accounts.id 
+			LEFT JOIN users ON users.id = tid.id
+			WHERE users.username = ".$repId." AND batchedIn = -1
+			GROUP BY payments.id
+			ORDER BY created_at DESC	
+		";
+/*		$sql = "
+			SELECT 
+				payments.id,
+				ROUND(SUM(payments.amount), 2) as amount,
+				CASE 
+					WHEN (payments.created_at != '0000-00-00 00:00:00') THEN payments.created_at 
+					WHEN ((payments.updated_at != '0000-00-00 00:00:00') AND (payments.created_at = '0000-00-00 00:00:00')) THEN payments.updated_at 
+					ELSE '2015-01-01' END as created_at,
+				DATE_FORMAT(payments.updated_at,'%m/%d/%Y') as created_at
 			FROM users 
 			INNER JOIN tid ON (tid.id=users.id) 
 			INNER JOIN accounts ON (accounts.id=tid.account) 
@@ -482,7 +498,7 @@ class ReportController extends \BaseController {
 			GROUP BY payments.id
 			ORDER BY created_at DESC
 		";
-		$payments = DB::connection('mysql-mwl')->select($sql);
+*/		$payments = DB::connection('mysql-mwl')->select($sql);
 		//the only way right now to do this correctly, is to loop through each of the transactions and check to see if it is a batch itself
 		foreach($payments as $payment)
 		{
@@ -527,6 +543,9 @@ class ReportController extends \BaseController {
 						ELSE '1972-08-28' END as created_at,
 					CASE cashsale WHEN 1 THEN 'Cash' ELSE 'Credit' END as txtype
 				FROM payments
+				LEFT JOIN accounts on payments.account = accounts.id
+				LEFT JOIN tid on tid.account=accounts.id 
+				LEFT JOIN users ON users.id = tid.id
 				LEFT JOIN transaction ON transaction.refNum=payments.transaction
 				WHERE payments.transaction in ('".implode("','",$payment_transactions )."')
 				GROUP BY payments.transaction

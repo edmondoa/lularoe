@@ -51,7 +51,7 @@
 												<td class="col-md-2">{{date('m/d/Y',strtotime($transaction->created_at))}}</td>
 												<td class="col-md-3">{{ucwords($transaction->customer)}}</td>
 												<td class="col-md-1"><span class="pull-left">$</span><span class="pull-right">{{number_format($transaction->authAmount,2)}}</span></td>
-												{{-- <td class="text-right">${{$transaction->paid or ''}}</td></tr> --}}
+												<!-- <td class="text-right">${{$transaction->paid or ''}}</td> -->
 											</tr>
 											<?php 
 												$total += $transaction->authAmount;
