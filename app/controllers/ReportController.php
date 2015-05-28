@@ -398,7 +398,7 @@ class ReportController extends \BaseController {
 		return Response::json(null,200);
 	}
 
-	public function TransactionsByUser($repId)
+	public function TransactionsByUser($repId = null)
 	{
 		if(is_null($repId)) $repId = Auth::user()->id;
 		$consultant = User::find($repId);
